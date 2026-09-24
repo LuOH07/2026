@@ -50,15 +50,19 @@ overflow-x: hidden;
 .title-header-wrapper {
 position: relative;
 width: 100vw;
+min-width: 100vw;
+height: 100vh;
+min-height: 100vh;
 left: 50%;
 right: 50%;
 margin-left: -50vw;
 margin-right: -50vw;
-height: 100vh;
-min-height: 100vh;
+margin-top: 0;
+padding: 0;
 overflow: hidden;
-z-index: 1;
+z-index: 2;
 box-sizing: border-box;
+background: radial-gradient(circle at 50% 45%, #ffffff 0%, #f4f8f9 55%, #eaf0f2 100%);
 }
 
 .grid-container {
@@ -68,7 +72,7 @@ height: 100%;
 display: flex;
 justify-content: center;
 align-items: center;
-background: radial-gradient(circle at 50% 45%, #ffffff 0%, #f4f8f9 55%, #eaf0f2 100%);
+background: transparent;
 overflow: hidden;
 }
 
