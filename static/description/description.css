@@ -1,4 +1,4 @@
-/* STREAMING_CHUNK:Configuring custom typography and fonts */
+/* 字体声明 */
 @font-face {
 font-family: 'Albertus Nova Bold';
 src: url('https://static.igem.wiki/teams/6059/wiki/font/albertus-nova-bold.ttf') format('truetype');
@@ -39,21 +39,26 @@ font-style: normal;
 font-display: swap;
 }
 
-/* STREAMING_CHUNK:Styling page-level foundation and layout resets */
+/* 页面局部基础设置 */
 body {
 background-color: #F6F6F6;
 font-family: 'Albertus Nova Bold', -apple-system, sans-serif;
 overflow-x: hidden;
 }
 
-/* 顶部 Title / Hero 区域 */
+
 .title-header-wrapper {
-width: 100%;
+position: relative;
+width: 100vw;
+left: 50%;
+right: 50%;
+margin-left: -50vw;
+margin-right: -50vw;
 height: 100vh;
 min-height: 100vh;
 overflow: hidden;
-position: relative;
 z-index: 1;
+box-sizing: border-box;
 }
 
 .grid-container {
@@ -78,7 +83,7 @@ pointer-events: none;
 z-index: 2;
 }
 
-/* STREAMING_CHUNK:Positioning DNA and protein decorative elements */
+/* 装饰 DNA & 蛋白质 */
 .left-dna-wrapper {
 position: absolute;
 left: -6vw;
@@ -160,7 +165,7 @@ user-select: none;
 filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.06));
 }
 
-/* STREAMING_CHUNK:Styling title banner and center text overlay */
+/* 中央标题图片 */
 .center-image-wrapper {
 position: absolute;
 top: calc(42% - 15vw + 18vh);
@@ -184,6 +189,7 @@ object-fit: contain;
 display: block;
 }
 
+/* 中央描述文案 */
 .center-description-wrapper {
 position: absolute;
 top: calc(52% + 5.5vh);
@@ -207,6 +213,7 @@ margin: 0 auto;
 user-select: none;
 }
 
+/* 底部 SCROLL TO EXPLORE */
 .scroll-explore-wrapper {
 position: absolute;
 bottom: 6vh;
@@ -255,7 +262,9 @@ pointer-events: none;
 z-index: 2;
 }
 
-/* STREAMING_CHUNK:Styling sticky sidebar navigation container */
+/* ========================================================
+2. 侧边栏 TOC 导航样式
+======================================================== */
 .side-container {
 position: fixed;
 left: 0;
@@ -294,7 +303,6 @@ gap: 20px;
 width: 100%;
 }
 
-/* STREAMING_CHUNK:Styling table of contents items and active indicators */
 .toc-item {
 position: relative;
 display: flex;
@@ -400,7 +408,9 @@ color: #FFFFF4;
 text-shadow: 0 0 5px rgba(217, 210, 80, 0.8), 0 0 10px rgba(217, 210, 80, 0.5);
 }
 
-/* STREAMING_CHUNK:Styling main body container and section headings */
+/* ========================================================
+3. 主内容区容器与排版
+======================================================== */
 .main-container {
 margin-left: 17%;
 margin-right: 5%;
@@ -469,7 +479,6 @@ margin-bottom: 1em;
 scroll-margin-top: 12vh;
 }
 
-/* STREAMING_CHUNK:Styling decorative heading ribbon clips */
 .heading-1::before,
 .heading-2::before,
 .heading-3::before,
@@ -564,7 +573,9 @@ margin-right: 8%;
 margin-bottom: 1em;
 }
 
-/* STREAMING_CHUNK:Styling sword and scabbard scroll tracker elements */
+/* ========================================================
+4. 宝剑 & 剑鞘滚动进度指示器
+======================================================== */
 .scroll-sword {
 position: fixed;
 right: 0;

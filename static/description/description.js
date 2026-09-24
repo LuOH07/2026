@@ -1,11 +1,14 @@
 /**
  * Description Page Logic:
- * 1. Hero Canvas Infinite Grid Background
+ * 1. Hero Canvas Infinite Grid Background (Full-Viewport Width)
  * 2. Dynamic Table of Contents (TOC) with Active State Tracking
  * 3. Sword & Scabbard Scroll Thumb and Dragging Interactions
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    /* -------------------------------------------------------------
+     * 1. Hero 动态透视网格绘制 (Canvas Grid - 铺满视口)
+     * ------------------------------------------------------------- */
     const heroCanvas = document.getElementById('gridCanvas');
     if (heroCanvas) {
         const ctx = heroCanvas.getContext('2d');
@@ -20,7 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
         function resizeHeroCanvas() {
             const heroWrapper = document.getElementById('heroWrapper');
             const dpr = window.devicePixelRatio || 1;
-            const width = heroWrapper ? heroWrapper.clientWidth : window.innerWidth;
+            // 优先使用 window.innerWidth 或 heroWrapper 视口全宽
+            const width = Math.max(window.innerWidth, heroWrapper ? heroWrapper.clientWidth : 0);
             const height = heroWrapper ? heroWrapper.clientHeight : window.innerHeight;
 
             heroCanvas.width = width * dpr;
@@ -161,6 +165,9 @@ document.addEventListener('DOMContentLoaded', () => {
         resizeHeroCanvas();
     }
 
+    /* -------------------------------------------------------------
+     * 2. 侧边栏 TOC 目录构建与滚动跟随
+     * ------------------------------------------------------------- */
     const tocNav = document.getElementById('tocNav');
     const mainContainer = document.getElementById('mainContainer');
     const sideContainer = document.getElementById('sideContainer');
@@ -259,8 +266,8 @@ document.addEventListener('DOMContentLoaded', () => {
             tocItem.appendChild(text);
         } else if (isH2) {
             const text = document.createElement('span');
-            text.className = 'toc-text';
             text.textContent = heading.textContent.trim();
+            text.className = 'toc-text';
 
             const triangle = document.createElement('span');
             triangle.className = 'toc-triangle';
@@ -367,6 +374,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', updateActiveToc, { passive: true });
     updateActiveToc();
 
+    /* -------------------------------------------------------------
+     * 3. 宝剑 & 剑鞘滚动条与 Back to Top 逻辑
+     * ------------------------------------------------------------- */
     const sword = document.getElementById('scrollSword');
     const scabbard = document.getElementById('scrollScabbard');
     const backToTop = document.getElementById('scrollBackToTop');
