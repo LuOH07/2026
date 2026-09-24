@@ -1,0 +1,85 @@
+/* 鼠标悬停与键盘聚焦共用的卡片显示状态。 */
+[data-sting-portrait] > img.sting-member-hover-paper{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:0;
+  visibility:hidden
+}
+
+[data-sting-arrow="ready"]:is(:hover, :focus-visible) > img.sting-member-original-paper{
+  visibility:hidden
+}
+
+[data-sting-arrow="ready"]:is(:hover, :focus-visible) > img.sting-member-hover-paper{
+  visibility:visible
+}
+
+[data-sting-portrait] > img.sting-member-hover-photo{
+  position:absolute;
+  top:10%;
+  left:12%;
+  width:76%;
+  height:58%;
+  max-width:82%;
+  max-height:78%;
+  object-fit:contain;
+  object-position:center;
+  opacity:0;
+  pointer-events:none;
+  z-index:1;
+  transition:opacity 200ms cubic-bezier(.23,1,.32,1)
+}
+
+[data-sting-portrait] > .sting-member-hover-motto{
+  position:absolute;
+  left:9%;
+  width:82%;
+  margin:0;
+  padding:0;
+  color:#5B6873;
+  text-align:center;
+  font-family:Inter;
+  font-size:20px;
+  font-style:normal;
+  font-weight:300;
+  line-height:24px;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  z-index:2;
+  transition:opacity 200ms cubic-bezier(.23,1,.32,1)
+}
+
+[data-sting-portrait="ready"]:is(:hover, :focus-visible) > .sting-member-original-name{
+  opacity:0;
+  visibility:hidden
+}
+
+[data-sting-portrait="ready"]:is(:hover, :focus-visible) > .sting-member-hover-motto{
+  opacity:1;
+  visibility:visible
+}
+
+[data-sting-portrait="ready"] > img.sting-member-original-photo{
+  transition:opacity 140ms cubic-bezier(.23,1,.32,1)
+}
+
+[data-sting-portrait="ready"]:is(:hover, :focus-visible) > img.sting-member-original-photo{
+  opacity:0
+}
+
+[data-sting-portrait="ready"]:is(:hover, :focus-visible) > img.sting-member-hover-photo{
+  opacity:1
+}
+
+@media(prefers-reduced-motion:reduce){
+  [data-sting-portrait] > .sting-member-hover-motto,[data-sting-portrait] > img.sting-member-hover-photo,[data-sting-portrait="ready"] > img.sting-member-original-photo{
+    transition:none
+  }
+
+}

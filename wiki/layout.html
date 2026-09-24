@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% endblock %} | XMU-China - iGEM 2026</title>
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+  <link rel="stylesheet" href="{{ url_for('fonts_css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='head_foot/head_foot.css') }}">
+  {% block page_styles %}{% endblock %}
+</head>
+<body>
+  {% include 'menu.html' %}
+  <main id="main-content">{% block page_content %}{% endblock %}</main>
+  {% include 'footer.html' %}
+  {% block page_scripts %}{% endblock %}
+</body>
+</html>

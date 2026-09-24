@@ -1,0 +1,8 @@
+# Python runtime files and accidentally created local environments.
+__pycache__/
+*.py[cod]
+/.venv/
+/venv/
+
+# GitLab CI output; local preview is generated outside this repository.
+/public/
