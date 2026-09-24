@@ -1,7 +1,7 @@
 /**
  * Description Page Logic:
  * 1. Hero Canvas Infinite Grid Background (Full-Viewport Width)
- * 2. Dynamic Table of Contents (TOC) with Active State Tracking
+ * 2. Dynamic Table of Contents (TOC) with Active State Tracking & Bottom Clamping
  * 3. Sword & Scabbard Scroll Thumb and Dragging Interactions
  */
 
@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
         function resizeHeroCanvas() {
             const heroWrapper = document.getElementById('heroWrapper');
             const dpr = window.devicePixelRatio || 1;
-            // 优先使用 window.innerWidth 或 heroWrapper 视口全宽
             const width = Math.max(window.innerWidth, heroWrapper ? heroWrapper.clientWidth : 0);
             const height = heroWrapper ? heroWrapper.clientHeight : window.innerHeight;
 
@@ -166,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* -------------------------------------------------------------
-     * 2. 侧边栏 TOC 目录构建与滚动跟随
+     * 2. 侧边栏 TOC 目录构建与滚动跟随（含底边齐平与渐隐逻辑）
      * ------------------------------------------------------------- */
     const tocNav = document.getElementById('tocNav');
     const mainContainer = document.getElementById('mainContainer');
@@ -177,11 +176,44 @@ document.addEventListener('DOMContentLoaded', () => {
     if (sideContainer) {
         const updateSidebarPosition = () => {
             const mainRect = mainContainer.getBoundingClientRect();
+            const sidebarRect = sideContainer.getBoundingClientRect();
+            const sidebarHeight = sideContainer.offsetHeight || sidebarRect.height;
             const targetTop = window.innerHeight * 0.15;
+            const expectedBottom = targetTop + sidebarHeight;
+
+            // 1. 顶部进入阶段：页面刚滑过 Hero 区域，未完全进入视口 15%
             if (mainRect.top > targetTop) {
                 sideContainer.style.top = `${mainRect.top}px`;
-            } else {
-                sideContainer.style.top = '15vh';
+                sideContainer.style.opacity = '1';
+                sideContainer.style.visibility = 'visible';
+                sideContainer.style.pointerEvents = 'auto';
+            }
+            // 2. 底部齐平与渐隐阶段：主体白色矩形底边升起，触碰或高过 Sidebar 期望底边
+            else if (mainRect.bottom < expectedBottom) {
+                // 让 Sidebar 底边严格与 mainContainer 底边齐平，随之向上收紧，绝不伸入页脚
+                const alignedTop = mainRect.bottom - sidebarHeight;
+                sideContainer.style.top = `${alignedTop}px`;
+
+                // 齐平后平滑渐变消失（在 150px 的滚动行程内从 1 线性淡出至 0）
+                const fadeDistance = Math.min(160, sidebarHeight * 0.45);
+                const distancePast = expectedBottom - mainRect.bottom;
+                const opacity = Math.max(0, Math.min(1, 1 - distancePast / fadeDistance));
+
+                sideContainer.style.opacity = `${opacity}`;
+                if (opacity <= 0.02) {
+                    sideContainer.style.visibility = 'hidden';
+                    sideContainer.style.pointerEvents = 'none';
+                } else {
+                    sideContainer.style.visibility = 'visible';
+                    sideContainer.style.pointerEvents = 'auto';
+                }
+            }
+            // 3. 正文中间阅读阶段：正常固定在 15vh
+            else {
+                sideContainer.style.top = `${targetTop}px`;
+                sideContainer.style.opacity = '1';
+                sideContainer.style.visibility = 'visible';
+                sideContainer.style.pointerEvents = 'auto';
             }
         };
 

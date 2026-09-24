@@ -267,7 +267,7 @@ z-index: 2;
 }
 
 /* ========================================================
-2. 侧边栏 TOC 导航样式
+2. 侧边栏 TOC 导航样式（支持平滑渐变隐去与贴底）
 ======================================================== */
 .side-container {
 position: fixed;
@@ -278,7 +278,8 @@ height: 60vh;
 background-color: #142F5C;
 border-radius: 0 32px 32px 0;
 box-shadow: 4px 12px 35px rgba(20, 47, 92, 0.16), 0 2px 10px rgba(0, 0, 0, 0.04);
-transition: box-shadow 0.3s ease;
+transition: box-shadow 0.3s ease, opacity 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+will-change: top, opacity;
 z-index: 10;
 padding: 32px 16px;
 display: flex;
