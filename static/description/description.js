@@ -190,37 +190,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 sideContainer.style.visibility = 'visible';
                 sideContainer.style.pointerEvents = 'auto';
             }
-            // 2. 正文中间阅读阶段：正常固定在视口 15vh
+            // 2. 正文中间阅读阶段：正常固定在视口 15vh，完全可见
             else if (alignedTop > targetTop) {
                 sideContainer.style.top = `${targetTop}px`;
                 sideContainer.style.opacity = '1';
                 sideContainer.style.visibility = 'visible';
                 sideContainer.style.pointerEvents = 'auto';
             }
-            // 3. 底部齐平与展示页脚阶段：底边与主体卡片齐平，页脚展现时平滑消失
+            // 3. 底部齐平阶段：底边贴齐主体卡片底边；滚轮继续往下滑动则平滑淡出，往上滚动则线性恢复
             else {
-                // 让 Sidebar 底边严格与 mainContainer 底边齐平对齐
+                // 让 Sidebar 底边严格与 mainContainer 底边齐平对齐并随之向上移动
                 sideContainer.style.top = `${alignedTop}px`;
 
-                // 检测页脚（Footer）位置：当主体内容结束、页脚滑入视口时平滑淡出
-                const footer = document.querySelector('footer') || document.querySelector('.footer');
-                let fadeProgress = 0; // 0 表示完全显示，1 表示完全消失
-
-                if (footer) {
-                    const footerRect = footer.getBoundingClientRect();
-                    // 当页脚顶边进入视口下方时开始线性淡出，完全进入后彻底隐藏
-                    if (footerRect.top < window.innerHeight) {
-                        const fadeRange = Math.min(180, window.innerHeight * 0.25);
-                        fadeProgress = Math.min(1, Math.max(0, (window.innerHeight - footerRect.top) / fadeRange));
-                    }
-                } else {
-                    // 若无标准 footer 标签，当主体卡片底边离开视口下半区时渐隐
-                    if (mainRect.bottom < window.innerHeight * 0.6) {
-                        fadeProgress = Math.min(1, Math.max(0, (window.innerHeight * 0.6 - mainRect.bottom) / 150));
-                    }
-                }
-
+                // 纯滚轮/滚动距离计算：超过齐平临界点后向下滑动的溢出距离 (px)
+                const overflowDistance = targetTop - alignedTop; // >= 0
+                // 渐隐滚动的缓冲行程（160px 行程提供最自然的滚轮过渡感）
+                const fadeRange = 160;
+                const fadeProgress = Math.min(1, Math.max(0, overflowDistance / fadeRange));
                 const opacity = Math.max(0, 1 - fadeProgress);
+
                 sideContainer.style.opacity = `${opacity}`;
                 if (opacity <= 0.02) {
                     sideContainer.style.visibility = 'hidden';
