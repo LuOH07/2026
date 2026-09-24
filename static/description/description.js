@@ -179,7 +179,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const sidebarRect = sideContainer.getBoundingClientRect();
             const sidebarHeight = sideContainer.offsetHeight || sidebarRect.height;
             const targetTop = window.innerHeight * 0.15;
-            const expectedBottom = targetTop + sidebarHeight;
+            
+            // 计算 Sidebar 底边与 mainContainer 底边完全对齐时的顶部坐标
+            const alignedTop = mainRect.bottom - sidebarHeight;
 
             // 1. 顶部进入阶段：页面刚滑过 Hero 区域，未完全进入视口 15%
             if (mainRect.top > targetTop) {
@@ -188,17 +190,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 sideContainer.style.visibility = 'visible';
                 sideContainer.style.pointerEvents = 'auto';
             }
-            // 2. 底部齐平与渐隐阶段：主体白色矩形底边升起，触碰或高过 Sidebar 期望底边
-            else if (mainRect.bottom < expectedBottom) {
-                // 让 Sidebar 底边严格与 mainContainer 底边齐平，随之向上收紧，绝不伸入页脚
-                const alignedTop = mainRect.bottom - sidebarHeight;
+            // 2. 正文中间阅读阶段：正常固定在视口 15vh
+            else if (alignedTop > targetTop) {
+                sideContainer.style.top = `${targetTop}px`;
+                sideContainer.style.opacity = '1';
+                sideContainer.style.visibility = 'visible';
+                sideContainer.style.pointerEvents = 'auto';
+            }
+            // 3. 底部齐平与展示页脚阶段：底边与主体卡片齐平，页脚展现时平滑消失
+            else {
+                // 让 Sidebar 底边严格与 mainContainer 底边齐平对齐
                 sideContainer.style.top = `${alignedTop}px`;
 
-                // 齐平后平滑渐变消失（在 150px 的滚动行程内从 1 线性淡出至 0）
-                const fadeDistance = Math.min(160, sidebarHeight * 0.45);
-                const distancePast = expectedBottom - mainRect.bottom;
-                const opacity = Math.max(0, Math.min(1, 1 - distancePast / fadeDistance));
+                // 检测页脚（Footer）位置：当主体内容结束、页脚滑入视口时平滑淡出
+                const footer = document.querySelector('footer') || document.querySelector('.footer');
+                let fadeProgress = 0; // 0 表示完全显示，1 表示完全消失
 
+                if (footer) {
+                    const footerRect = footer.getBoundingClientRect();
+                    // 当页脚顶边进入视口下方时开始线性淡出，完全进入后彻底隐藏
+                    if (footerRect.top < window.innerHeight) {
+                        const fadeRange = Math.min(180, window.innerHeight * 0.25);
+                        fadeProgress = Math.min(1, Math.max(0, (window.innerHeight - footerRect.top) / fadeRange));
+                    }
+                } else {
+                    // 若无标准 footer 标签，当主体卡片底边离开视口下半区时渐隐
+                    if (mainRect.bottom < window.innerHeight * 0.6) {
+                        fadeProgress = Math.min(1, Math.max(0, (window.innerHeight * 0.6 - mainRect.bottom) / 150));
+                    }
+                }
+
+                const opacity = Math.max(0, 1 - fadeProgress);
                 sideContainer.style.opacity = `${opacity}`;
                 if (opacity <= 0.02) {
                     sideContainer.style.visibility = 'hidden';
@@ -207,13 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     sideContainer.style.visibility = 'visible';
                     sideContainer.style.pointerEvents = 'auto';
                 }
-            }
-            // 3. 正文中间阅读阶段：正常固定在 15vh
-            else {
-                sideContainer.style.top = `${targetTop}px`;
-                sideContainer.style.opacity = '1';
-                sideContainer.style.visibility = 'visible';
-                sideContainer.style.pointerEvents = 'auto';
             }
         };
 
