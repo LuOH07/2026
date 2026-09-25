@@ -83,3 +83,79 @@
   }
 
 }
+
+/* 每位成员的 hover 介绍旋转角度：正数顺时针，负数逆时针；与父卡片角度叠加。 */
+/* CAI Chenlin */
+[data-member-id="CAI_Chenlin"] > .sting-member-hover-motto {
+  transform: rotate(-4.5deg);
+}
+
+/* CHEN Zaiyang */
+[data-member-id="CHEN_Zaiyang"] > .sting-member-hover-motto {
+  transform: rotate(3deg);
+}
+
+/* GAO Mandi */
+[data-member-id="GAO_Mandi"] > .sting-member-hover-motto {
+  transform: rotate(2.8deg);
+}
+
+/* GUO Junhong */
+[data-member-id="GUO_Junhong"] > .sting-member-hover-motto {
+  transform: rotate(3deg);
+}
+
+/* LU Yuzhi */
+[data-member-id="LU_Yuzhi"] > .sting-member-hover-motto {
+  transform: rotate(2deg);
+}
+
+/* LI Wenyu */
+[data-member-id="LI_Wenyu"] > .sting-member-hover-motto {
+  transform: rotate(-3.8deg);
+}
+
+/* LIN Zhijun */
+[data-member-id="LIN_Zhijun"] > .sting-member-hover-motto {
+  transform: rotate(3deg);
+}
+
+/* LI Wanxin */
+[data-member-id="LI_Wanxin"] > .sting-member-hover-motto {
+  transform: rotate(-4.5deg);
+}
+
+/* REN Moye */
+[data-member-id="REN_Moye"] > .sting-member-hover-motto {
+  transform: rotate(2.8deg);
+}
+
+/* WANG Kexin */
+[data-member-id="WANG_Kexin"] > .sting-member-hover-motto {
+  transform: rotate(-4deg);
+}
+
+/* WANG Guanzhe */
+[data-member-id="WANG_Guanzhe"] > .sting-member-hover-motto {
+  transform: rotate(2deg);
+}
+
+/* WANG Qingyu */
+[data-member-id="WANG_Qingyu"] > .sting-member-hover-motto {
+  transform: rotate(-4deg);
+}
+
+/* ZHANG Ke */
+[data-member-id="ZHANG_Ke"] > .sting-member-hover-motto {
+  transform: rotate(3deg);
+}
+
+/* ZHANG Jingxuan */
+[data-member-id="ZHANG_Jingxuan"] > .sting-member-hover-motto {
+  transform: rotate(3.5deg);
+}
+
+/* ZHANG Xiwen */
+[data-member-id="ZHANG_Xiwen"] > .sting-member-hover-motto {
+  transform: rotate(3deg);
+}
