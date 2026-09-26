@@ -637,34 +637,35 @@ width: 100%;
 }
 
 .figure-image {
-max-width: 100%;
-height: auto;
-display: block;
-margin: 0 auto;
-border-radius: 8px;
+    display: block;
+    margin-top: 1.5em;          
+    margin-bottom: 12px;        
+    margin-left: auto;          
+    margin-right: auto;         
+    max-width: 84%;            
+    height: auto;
 }
 
-/* 标题样式：继承正文加粗字体，字号与行间距与正文一致 */
 .figure-caption {
-font-family: 'verdana', -apple-system, sans-serif;
-font-stretch: semi-condensed;
-font-weight: bold;
-font-size: 22px;
-letter-spacing: 0.5px;
-line-height: 1.5;
-color: #748699;
-text-align: center;
-margin-top: 14px;
-margin-bottom: 0;
-width: 100%;
+    font-family: 'verdana', -apple-system, sans-serif;
+    font-size: 22px;
+    font-weight: bold;          
+    line-height: 1.5;           
+    letter-spacing: 0.5px;     
+    color: #748699;             
+    text-align: center;        
+    margin-top: 0;              
+    margin-bottom: 1.5em;       
+    margin-left: 8%;            
+    margin-right: 8%;
 }
 
-/* 就像正文加粗一样，仅需用  或  包裹 Figure 编号 */
+/* 仅针对 Figure X 部分赋予青色 */
 .figure-caption b,
 .figure-caption strong {
-color: #1C9594;
-font-family: 'verdana', -apple-system, sans-serif;
-font-weight: bold;
+    color: #1C9594;
+    font-weight: bold;
+    margin-right: 0.5em;        
 }
 
 /* ========================================================
