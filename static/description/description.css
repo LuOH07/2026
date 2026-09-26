@@ -1,5 +1,7 @@
-/* STREAMING_CHUNK:Declaring custom font faces... /
-/ 字体声明 */
+/* ========================================================
+
+字体声明 (@font-face)
+======================================================== */
 @font-face {
 font-family: 'Albertus Nova Bold';
 src: url('https://static.igem.wiki/teams/6059/wiki/font/albertus-nova-bold.ttf') format('truetype');
@@ -16,11 +18,30 @@ font-style: normal;
 font-display: swap;
 }
 
+/* Verdana 常规体 (Regular) */
 @font-face {
 font-family: 'verdana';
 src: url('https://static.igem.wiki/teams/6059/wiki/font/verdana.ttf') format('truetype');
 font-weight: normal;
 font-style: normal;
+font-display: swap;
+}
+
+/* Verdana 粗体 (Bold) */
+@font-face {
+font-family: 'verdana';
+src: url('https://static.igem.wiki/teams/6059/wiki/font/verdanab.ttf') format('truetype');
+font-weight: bold;
+font-style: normal;
+font-display: swap;
+}
+
+/* Verdana 斜体 (Italic) */
+@font-face {
+font-family: 'verdana';
+src: url('https://static.igem.wiki/teams/6059/wiki/font/verdanai.ttf') format('truetype');
+font-weight: normal;
+font-style: italic;
 font-display: swap;
 }
 
@@ -40,8 +61,9 @@ font-style: normal;
 font-display: swap;
 }
 
-/* STREAMING_CHUNK:Configuring global page layout and banner header... /
-/ 页面局部基础设置 */
+/* ========================================================
+2. 页面基础与全屏横幅设置
+======================================================== */
 body {
 background-color: #F6F6F6;
 font-family: 'Albertus Nova Bold', -apple-system, sans-serif;
@@ -88,8 +110,7 @@ pointer-events: none;
 z-index: 2;
 }
 
-/* STREAMING_CHUNK:Styling decorative biological elements... /
-/ 装饰 DNA & 蛋白质 */
+/* 装饰 DNA & 蛋白质 */
 .left-dna-wrapper {
 position: absolute;
 left: -6vw;
@@ -171,8 +192,7 @@ user-select: none;
 filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.06));
 }
 
-/* STREAMING_CHUNK:Styling hero title text and scroll hints... /
-/ 中央标题图片 */
+/* 中央大标题图片 */
 .center-image-wrapper {
 position: absolute;
 top: calc(42% - 15vw + 18vh);
@@ -269,9 +289,8 @@ pointer-events: none;
 z-index: 2;
 }
 
-/* STREAMING_CHUNK:Styling sidebar table of contents... /
-/ ========================================================
-2. 侧边栏 TOC 导航样式（支持平滑渐变隐去与贴底）
+/* ========================================================
+3. 侧边栏 TOC 导航样式
 ======================================================== */
 .side-container {
 position: fixed;
@@ -417,10 +436,12 @@ color: #FFFFF4;
 text-shadow: 0 0 5px rgba(217, 210, 80, 0.8), 0 0 10px rgba(217, 210, 80, 0.5);
 }
 
-
+/* ========================================================
+4. 正文主体容器及标题样式
+======================================================== */
 .main-container {
 margin-left: 17%;
-margin-right: 3%;
+margin-right: 4%;
 margin-top: 17%;
 margin-bottom: 10vh;
 padding-top: 48px;
@@ -486,7 +507,7 @@ margin-bottom: 1em;
 scroll-margin-top: 12vh;
 }
 
-/* STREAMING_CHUNK:Styling heading decorative arrows and polygon accents... */
+/* 装饰剪裁箭头 */
 .heading-1::before,
 .heading-2::before,
 .heading-3::before,
@@ -569,7 +590,9 @@ clip-path: polygon(
 .heading-1::after { background-color: #9CDBDD; }
 .heading-reference::after { background-color: #B9C7D1; }
 
-
+/* ========================================================
+5. 正文段落及加粗、斜体样式
+======================================================== */
 .body-text {
 font-family: 'verdana', -apple-system, sans-serif;
 font-stretch: semi-condensed;
@@ -584,7 +607,23 @@ margin-right: 8%;
 margin-bottom: 1em;
 }
 
-/* STREAMING_CHUNK:Styling fixed sword and back-to-top scroll controls... */
+/* 加粗：自动映射调用 verdanab.ttf */
+.body-text strong,
+.body-text b {
+font-family: 'verdana', -apple-system, sans-serif;
+font-weight: bold;
+}
+
+/* 斜体：自动映射调用 verdanai.ttf */
+.body-text em,
+.body-text i {
+font-family: 'verdana', -apple-system, sans-serif;
+font-style: italic;
+}
+
+/* ========================================================
+6. 悬浮卷轴与返回顶部按钮
+======================================================== */
 .scroll-sword {
 position: fixed;
 right: 0;
