@@ -16,8 +16,8 @@ font-display: swap;
 }
 
 @font-face {
-font-family: 'opensans semicondensed light';
-src: url('https://static.igem.wiki/teams/6059/wiki/font/opensans-semicondensed-light.ttf') format('truetype');
+font-family: 'verdana';
+src: url('https://static.igem.wiki/teams/6059/wiki/font/verdana.ttf') format('truetype');
 font-weight: normal;
 font-style: normal;
 font-display: swap;
@@ -567,7 +567,7 @@ clip-path: polygon(
 .heading-reference::after { background-color: #B9C7D1; }
 
 .body-text {
-font-family: 'opensans semicondensed light', -apple-system, sans-serif;
+font-family: 'verdana', -apple-system, sans-serif;
 font-stretch: semi-condensed;
 font-size: 22px;
 letter-spacing: 0.5px;
@@ -578,9 +578,7 @@ margin-right: 8%;
 margin-bottom: 1em;
 }
 
-/* ========================================================
-4. 宝剑 & 剑鞘滚动进度指示器
-======================================================== */
+
 .scroll-sword {
 position: fixed;
 right: 0;
