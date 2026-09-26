@@ -1,4 +1,4 @@
-/* STREAMING_CHUNK:Declaring custom font faces /
+/* STREAMING_CHUNK:Declaring custom font faces... /
 / 字体声明 */
 @font-face {
 font-family: 'Albertus Nova Bold';
@@ -17,8 +17,8 @@ font-display: swap;
 }
 
 @font-face {
-font-family: 'opensans semicondensed light';
-src: url('https://static.igem.wiki/teams/6059/wiki/font/opensans-semicondensed-light.ttf') format('truetype');
+font-family: 'verdana';
+src: url('https://static.igem.wiki/teams/6059/wiki/font/verdana.ttf') format('truetype');
 font-weight: normal;
 font-style: normal;
 font-display: swap;
@@ -40,7 +40,7 @@ font-style: normal;
 font-display: swap;
 }
 
-/* STREAMING_CHUNK:Configuring base and header layout /
+/* STREAMING_CHUNK:Configuring global page layout and banner header... /
 / 页面局部基础设置 */
 body {
 background-color: #F6F6F6;
@@ -88,7 +88,7 @@ pointer-events: none;
 z-index: 2;
 }
 
-/* STREAMING_CHUNK:Positioning decorative DNA and protein graphics /
+/* STREAMING_CHUNK:Styling decorative biological elements... /
 / 装饰 DNA & 蛋白质 */
 .left-dna-wrapper {
 position: absolute;
@@ -171,7 +171,7 @@ user-select: none;
 filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.06));
 }
 
-/* STREAMING_CHUNK:Styling hero title and description text /
+/* STREAMING_CHUNK:Styling hero title text and scroll hints... /
 / 中央标题图片 */
 .center-image-wrapper {
 position: absolute;
@@ -269,7 +269,7 @@ pointer-events: none;
 z-index: 2;
 }
 
-/* STREAMING_CHUNK:Styling sidebar table of contents /
+/* STREAMING_CHUNK:Styling sidebar table of contents... /
 / ========================================================
 2. 侧边栏 TOC 导航样式（支持平滑渐变隐去与贴底）
 ======================================================== */
@@ -417,14 +417,11 @@ color: #FFFFF4;
 text-shadow: 0 0 5px rgba(217, 210, 80, 0.8), 0 0 10px rgba(217, 210, 80, 0.5);
 }
 
-/* STREAMING_CHUNK:Styling main content container and headings /
-/ ========================================================
-3. 主内容区容器与排版
-======================================================== */
+
 .main-container {
 margin-left: 17%;
-margin-right: 5%;
-margin-top: 10vh;
+margin-right: 17%;
+margin-top: 17%;
 margin-bottom: 10vh;
 padding-top: 48px;
 padding-bottom: 48px;
@@ -489,6 +486,7 @@ margin-bottom: 1em;
 scroll-margin-top: 12vh;
 }
 
+/* STREAMING_CHUNK:Styling heading decorative arrows and polygon accents... */
 .heading-1::before,
 .heading-2::before,
 .heading-3::before,
@@ -571,26 +569,22 @@ clip-path: polygon(
 .heading-1::after { background-color: #9CDBDD; }
 .heading-reference::after { background-color: #B9C7D1; }
 
-/* STREAMING_CHUNK:Styling body text alignment and spacing */
+
 .body-text {
-font-family: 'opensans semicondensed light', -apple-system, sans-serif;
+font-family: 'verdana', -apple-system, sans-serif;
 font-stretch: semi-condensed;
 font-size: 22px;
 letter-spacing: 0.5px;
 line-height: 1;
+color: #000000;
 text-align: justify;
 text-justify: inter-word;
-color: #000000;
-margin-top: 8%;
 margin-left: 8%;
 margin-right: 8%;
 margin-bottom: 1em;
 }
 
-/* STREAMING_CHUNK:Styling progress indicator scroll sword elements /
-/ ========================================================
-4. 宝剑 & 剑鞘滚动进度指示器
-======================================================== */
+/* STREAMING_CHUNK:Styling fixed sword and back-to-top scroll controls... */
 .scroll-sword {
 position: fixed;
 right: 0;
