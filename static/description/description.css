@@ -622,7 +622,53 @@ font-style: italic;
 }
 
 /* ========================================================
-6. 悬浮卷轴与返回顶部按钮
+6. 正文插图与图标题 (极简结构样式)
+======================================================== */
+.content-figure {
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+margin: 2em auto;
+padding-left: 8%;
+padding-right: 8%;
+box-sizing: border-box;
+width: 100%;
+}
+
+.figure-image {
+max-width: 100%;
+height: auto;
+display: block;
+margin: 0 auto;
+border-radius: 8px;
+}
+
+/* 标题样式：继承正文加粗字体，字号与行间距与正文一致 */
+.figure-caption {
+font-family: 'verdana', -apple-system, sans-serif;
+font-stretch: semi-condensed;
+font-weight: bold;
+font-size: 22px;
+letter-spacing: 0.5px;
+line-height: 1.5;
+color: #748699;
+text-align: center;
+margin-top: 14px;
+margin-bottom: 0;
+width: 100%;
+}
+
+/* 就像正文加粗一样，仅需用  或  包裹 Figure 编号 */
+.figure-caption b,
+.figure-caption strong {
+color: #1C9594;
+font-family: 'verdana', -apple-system, sans-serif;
+font-weight: bold;
+}
+
+/* ========================================================
+7. 悬浮卷轴与返回顶部按钮
 ======================================================== */
 .scroll-sword {
 position: fixed;
