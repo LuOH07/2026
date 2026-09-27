@@ -69,6 +69,13 @@ font-style: normal;
 font-display: swap;
 }
 
+@font-face {
+font-family: 'Helvetica Bold';
+src: url('https://static.igem.wiki/teams/6059/wiki/font/helvetica-bold.ttf') format('truetype');
+font-weight: normal;
+font-style: normal;
+font-display: swap;
+}
 
 /* ========================================================
 2. 页面基础与全屏横幅设置
@@ -603,7 +610,7 @@ clip-path: polygon(
 5. 正文段落及加粗、斜体样式
 ======================================================== */
 .body-text {
-font-family: 'harding-text-web-regular-regular', -apple-system, sans-serif;
+font-family: 'Helvetica Bold', -apple-system, sans-serif;
 font-stretch: semi-condensed;
 font-size: 22px;
 letter-spacing: 0.5px;
@@ -615,6 +622,7 @@ margin-left: 8%;
 margin-right: 8%;
 margin-bottom: 1em;
 }
+
 
 /* 
 .body-text strong,
