@@ -61,6 +61,15 @@ font-style: normal;
 font-display: swap;
 }
 
+@font-face {
+font-family: 'harding-text-web-regular-regular';
+src: url('https://static.igem.wiki/teams/6059/wiki/font/harding-text-web-regular-regular.ttf') format('truetype');
+font-weight: normal;
+font-style: normal;
+font-display: swap;
+}
+
+
 /* ========================================================
 2. 页面基础与全屏横幅设置
 ======================================================== */
@@ -594,7 +603,7 @@ clip-path: polygon(
 5. 正文段落及加粗、斜体样式
 ======================================================== */
 .body-text {
-font-family: 'verdana', -apple-system, sans-serif;
+font-family: 'harding-text-web-regular-regular', -apple-system, sans-serif;
 font-stretch: semi-condensed;
 font-size: 22px;
 letter-spacing: 0.5px;
@@ -607,19 +616,20 @@ margin-right: 8%;
 margin-bottom: 1em;
 }
 
-/* 加粗：自动映射调用 verdanab.ttf */
+/* 
 .body-text strong,
 .body-text b {
 font-family: 'verdana', -apple-system, sans-serif;
 font-weight: bold;
 }
 
-/* 斜体：自动映射调用 verdanai.ttf */
+
 .body-text em,
 .body-text i {
 font-family: 'verdana', -apple-system, sans-serif;
 font-style: italic;
 }
+*/
 
 /* ========================================================
 6. 正文插图与图标题 (极简结构样式)
