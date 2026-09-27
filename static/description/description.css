@@ -610,7 +610,7 @@ clip-path: polygon(
 5. 正文段落及加粗、斜体样式
 ======================================================== */
 .body-text {
-font-family: Calibri, -apple-system, sans-serif;
+font-family: 'verdana', -apple-system, sans-serif;
 font-stretch: semi-condensed;
 font-size: 22px;
 letter-spacing: 0.5px;
@@ -624,7 +624,6 @@ margin-bottom: 1em;
 }
 
 
-/* 
 .body-text strong,
 .body-text b {
 font-family: 'verdana', -apple-system, sans-serif;
@@ -637,7 +636,7 @@ font-weight: bold;
 font-family: 'verdana', -apple-system, sans-serif;
 font-style: italic;
 }
-*/
+
 
 /* ========================================================
 6. 正文插图与图标题 (极简结构样式)
