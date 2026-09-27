@@ -610,7 +610,7 @@ clip-path: polygon(
 5. 正文段落及加粗、斜体样式
 ======================================================== */
 .body-text {
-font-family: 'verdana', -apple-system, sans-serif;
+font-family: 'harding-text-web-regular-regular', -apple-system, sans-serif;
 font-stretch: semi-condensed;
 font-size: 22px;
 letter-spacing: 0.5px;
@@ -623,7 +623,7 @@ margin-right: 8%;
 margin-bottom: 1em;
 }
 
-
+/*
 .body-text strong,
 .body-text b {
 font-family: 'verdana', -apple-system, sans-serif;
@@ -636,7 +636,7 @@ font-weight: bold;
 font-family: 'verdana', -apple-system, sans-serif;
 font-style: italic;
 }
-
+*/
 
 /* ========================================================
 6. 正文插图与图标题 (极简结构样式)
@@ -664,7 +664,7 @@ width: 100%;
 }
 
 .figure-caption {
-    font-family: 'verdana', -apple-system, sans-serif;
+    font-family: 'harding-text-web-regular-regular', -apple-system, sans-serif;
     font-size: 22px;
     font-weight: bold;          
     line-height: 1.5;           
