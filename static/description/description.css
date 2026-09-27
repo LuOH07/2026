@@ -610,7 +610,7 @@ clip-path: polygon(
 5. 正文段落及加粗、斜体样式
 ======================================================== */
 .body-text {
-font-family: 'Helvetica Bold', -apple-system, sans-serif;
+font-family: Arial, -apple-system, sans-serif;
 font-stretch: semi-condensed;
 font-size: 22px;
 letter-spacing: 0.5px;
