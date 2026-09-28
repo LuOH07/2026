@@ -142,7 +142,7 @@ opacity: 1;
 /* STREAMING_CHUNK:Styling footer structure... */
 footer {
 background-color: #0A1B37;
-padding: 40px 6% 40px 6%;
+padding: 48px 6% 48px 6%;
 width: 100%;
 box-sizing: border-box;
 position: relative;
@@ -150,59 +150,53 @@ z-index: 40;
 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* 整体：左右两栏 */
+/* 两列布局：左 = Logo 区；右 = 图标 + 地址/按钮 */
 .footer-container {
 max-width: 1250px;
 margin: 0 auto;
-display: flex;
-flex-direction: row;
-justify-content: space-between;
+display: grid;
+grid-template-columns: minmax(0, 1fr) auto;
+column-gap: 80px;
 align-items: stretch;
-gap: 60px;
 }
 
-/* 左侧 Logo 区：放大、占据左侧、竖直居中 */
+/* 左侧：三个 Logo，放大并在整个页脚高度内竖直居中 */
 .footer-logos-container {
 display: flex;
-align-items: center;      /* Logo 之间垂直对齐 */
-align-self: center;       /* 整块在左栏内竖直居中 */
-flex-wrap: wrap;
-gap: 48px;
+align-items: center;
+justify-content: flex-start;
+gap: 56px;
+margin: 0;
 }
 
 .footer-logo {
 height: 110px;
 width: auto;
+max-width: 100%;
 object-fit: contain;
 }
 
-/* 右侧区域：上为社交图标，下为地址 + Contact Us */
+/* 右侧：上下两行，两端对齐 */
 .footer-right {
-flex: 0 1 520px;
 display: flex;
 flex-direction: column;
 justify-content: space-between;
-gap: 32px;
+align-items: stretch;
+gap: 48px;
+min-width: 420px;
 }
 
 /* STREAMING_CHUNK:Styling footer details and icons... */
-/* 社交图标：两行（3 + 2），位于右上角 */
 .footer-social-container {
 display: flex;
-flex-direction: column;
-align-items: flex-end;
-gap: 12px;
-}
-
-.social-row {
-display: flex;
+gap: 14px;
+align-items: center;
 justify-content: flex-end;
-gap: 12px;
 }
 
 .social-icon-placeholder {
-width: 44px;
-height: 44px;
+width: 46px;
+height: 46px;
 background-color: #BDD0E3;
 border: 1px solid #92AFD6;
 color: #4275B3;
@@ -223,18 +217,20 @@ opacity: 0.9;
 }
 
 .social-icon-img {
-width: 26px;
-height: 26px;
+width: 27px;
+height: 27px;
 object-fit: contain;
 pointer-events: none;
 }
 
-/* 下方信息行：左下地址，右下 Contact Us */
-.footer-info-row {
+/* STREAMING_CHUNK:Styling footer bottom bar... */
+/* 右下区域：左 = 地址，右 = Contact Us */
+.footer-bottom-container {
 display: flex;
 justify-content: space-between;
 align-items: flex-end;
-gap: 24px;
+gap: 40px;
+margin: 0;
 }
 
 .footer-address {
@@ -242,7 +238,7 @@ color: #ffffff;
 font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 font-size: 15px;
 font-weight: 700;
-line-height: 22px;
+line-height: 24px;
 letter-spacing: 0.3px;
 text-transform: none;
 }
@@ -251,7 +247,6 @@ text-transform: none;
 margin: 0;
 }
 
-/* STREAMING_CHUNK:Styling footer bottom bar... */
 .footer-copyright {
 font-family: 'DM Mono', monospace;
 font-size: 11px;
@@ -271,10 +266,10 @@ text-decoration: none;
 font-size: 15px;
 font-weight: 700;
 letter-spacing: 0.5px;
-padding: 10px 32px;
+padding: 11px 34px;
 border-radius: 22px;
-white-space: nowrap;
 box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+white-space: nowrap;
 transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
@@ -283,29 +278,38 @@ background-color: #132437;
 transform: translateY(-1px);
 }
 
+/* 响应式：中等屏幕缩小 Logo；小屏改为上下堆叠 */
+@media (max-width: 1100px) {
+.footer-container { column-gap: 40px; }
+.footer-logos-container { gap: 32px; }
+.footer-logo { height: 84px; }
+}
+
+@media (max-width: 860px) {
+.footer-container {
+grid-template-columns: 1fr;
+row-gap: 36px;
+}
+.footer-logos-container {
+flex-wrap: wrap;
+justify-content: center;
+gap: 28px;
+}
+.footer-logo { height: 72px; }
+.footer-right { min-width: 0; gap: 28px; }
+.footer-social-container { justify-content: center; flex-wrap: wrap; }
+.footer-bottom-container {
+flex-direction: column;
+align-items: center;
+text-align: center;
+gap: 24px;
+}
+}
+
 footer {
 position: relative !important;
 z-index: 40 !important;
 clear: both;
-}
-
-/* 窄屏：上下堆叠 */
-@media (max-width: 900px) {
-.footer-container {
-flex-direction: column;
-align-items: stretch;
-gap: 32px;
-}
-.footer-logos-container {
-align-self: flex-start;
-gap: 28px;
-}
-.footer-logo {
-height: 80px;
-}
-.footer-right {
-flex: none;
-}
 }
 
 /* STREAMING_CHUNK:Configuring legal footer text... */
