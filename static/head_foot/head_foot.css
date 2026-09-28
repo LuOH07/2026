@@ -128,9 +128,9 @@ nav a.nav-link.active,
 footer {
     background-color: #0A1B37;
     padding-top: 40px;
-    padding-right: 6%;
+    padding-right: 2%;
     padding-bottom: 40px;
-    padding-left: 6%; /* 修改这里调整整个页脚左侧间距，例如改为8% */
+    padding-left: 2%;
     width: 100%;
     box-sizing: border-box;
     position: relative;
@@ -150,8 +150,7 @@ footer {
     align-items: flex-start;
     gap: 60px;
     height: 100%;
-    /* 左侧logo组定位到页脚高度60% */
-    padding-top: calc((100% - 100px) * 0.6);
+    padding-top: calc((100% - 100px) * 0.5);
 }
 
 /* 左侧三个logo */
