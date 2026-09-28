@@ -59,14 +59,5 @@
                 </div>
             </div>
 
-            <!-- 7. AWARD -->
-            <div class="nav-item">
-                <a href="#" class="nav-link">AWARD</a>
-                <div class="dropdown-menu">
-                    <a href="{{ url_for('pages', page='integrated-human-practices') }}" class="dropdown-item"{% if request.endpoint == "pages" and request.view_args.get("page") == "integrated-human-practices" %} aria-current="page"{% endif %}>Integrated<br>Human Practices</a>
-                    <a href="{{ url_for('pages', page='model') }}" class="dropdown-item"{% if request.endpoint == "pages" and request.view_args.get("page") == "model" %} aria-current="page"{% endif %}>Model</a>
-                    <a href="{{ url_for('pages', page='parts-collection') }}" class="dropdown-item"{% if request.endpoint == "pages" and request.view_args.get("page") == "parts-collection" %} aria-current="page"{% endif %}>Parts<br>Collection</a>
-                </div>
-            </div>
         </nav>
     </header>
