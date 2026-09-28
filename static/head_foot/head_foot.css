@@ -148,7 +148,7 @@ align-items: flex-start;
 justify-content: space-between;
 gap: 60px;
 height: 100%;
-padding-top: calc((100% - 100px) * 0.6);
+padding-top: calc((100% - 100px) * 0.8);
 }
 /* 左侧：三个 Logo 强制一行，竖直居中 */
 .footer-logos-container {
@@ -163,7 +163,7 @@ flex: 1 1 auto;
 min-width: 0;
 }
 .footer-logo {
-height: 100px;
+height: 110px;
 width: auto;
 max-width: 100%;
 flex: 0 1 auto;
