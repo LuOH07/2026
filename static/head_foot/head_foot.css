@@ -128,7 +128,7 @@ opacity: 1;
 /* STREAMING_CHUNK:Styling footer structure... */
 footer {
 background-color: #0A1B37;
-padding: 40px 6% 40px 6%;
+padding: 40px 6% 40px 2%;
 width: 100%;
 box-sizing: border-box;
 position: relative;
@@ -148,7 +148,7 @@ align-items: flex-start;
 justify-content: space-between;
 gap: 60px;
 height: 100%;
-top: 60%;
+top: 50%;
 }
 /* 左侧：三个 Logo 强制一行，竖直居中 */
 .footer-logos-container {
