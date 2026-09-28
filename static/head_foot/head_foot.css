@@ -135,17 +135,17 @@ position: relative;
 z-index: 40;
 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
-/* 页脚容器：左、右两大块水平并排 */
+/* 两列：左 = 三个 Logo 横排；右 = 图标行 / 地址 / 按钮 纵向堆叠 */
 .footer-container {
 max-width: 1250px;
 margin: 0 auto;
 display: flex;
-flex-wrap: wrap;
-align-items: center;
+flex-wrap: nowrap;
+align-items: flex-start;
 justify-content: space-between;
 gap: 60px;
 }
-/* 左侧：三个Logo 一横排 */
+/* 左侧：三个 Logo 强制一行，整体竖直居中 */
 .footer-logos-container {
 display: flex;
 flex-direction: row;
@@ -164,18 +164,16 @@ max-width: 100%;
 flex: 0 1 auto;
 object-fit: contain;
 }
-/* ========= 修改重点：右侧改为横向排布5个社交图标 ========= */
+/* 右侧：纵向堆叠：5个横向图标 → 地址 → contact按钮，全部右对齐 */
 .footer-right {
 display: flex;
-flex-direction: row;
-flex-wrap: nowrap;
-align-items: center;
-justify-content: flex-end;
-gap:14px;
+flex-direction: column;
+align-items: flex-end;
+gap: 18px;
 flex: 0 0 auto;
 width: max-content;
 }
-/* 社交图标容器：一行展示全部5个图标 */
+/* 社交图标：一横行 */
 .footer-social-container {
 display: flex;
 flex-direction: row;
@@ -185,8 +183,8 @@ align-items: center;
 gap: 14px;
 }
 .social-icon-placeholder {
-width: 42px;
-height: 42px;
+width: 52px;
+height: 52px;
 flex: 0 0 auto;
 background-color: #BDD0E3;
 border: 1px solid #92AFD6;
@@ -206,24 +204,50 @@ transform: translateY(-2px);
 opacity: 0.9;
 }
 .social-icon-img {
-width: 26px;
-height: 26px;
+width: 32px;
+height: 32px;
 object-fit: contain;
 pointer-events: none;
 }
-
-/* 【如果你不需要地址、contact按钮，可以保留display:none；如果后续要恢复注释掉即可】 */
+/* 地址 右对齐 */
 .footer-address {
-display:none;
+display: block;
+color: #ffffff;
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+font-size: 15px;
+font-weight: 700;
+line-height: 22px;
+letter-spacing: 0.3px;
+text-transform: none;
+text-align: right;
 }
-.footer-contact-btn {
-display:none;
+.footer-address p {
+margin: 0;
 }
-
+/* 左下角版权文字：不显示 */
 .footer-copyright {
 display: none !important;
 }
-
+/* Contact Us：位于地址下方，靠右 */
+.footer-contact-btn {
+align-self: flex-end;
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+background-color: #4C6E8F;
+color: #FFFFFF;
+text-decoration: none;
+font-size: 15px;
+font-weight: 700;
+letter-spacing: 0.5px;
+padding: 10px 32px;
+border-radius: 22px;
+box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+white-space: nowrap;
+transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.footer-contact-btn:hover {
+background-color: #132437;
+transform: translateY(-1px);
+}
 /* 响应式 */
 @media (max-width: 1100px) {
 .footer-container { gap: 32px; }
@@ -239,11 +263,14 @@ gap: 32px;
 .footer-logos-container { justify-content: center; flex-wrap: wrap; }
 .footer-logo { height: 64px; }
 .footer-right {
-width:100%;
-justify-content:center;
+align-items: center;
+width: 100%;
 }
 .footer-social-container{
 justify-content:center;
+}
+.footer-address{
+text-align:center;
 }
 }
 footer {
