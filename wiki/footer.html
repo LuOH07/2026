@@ -1,14 +1,12 @@
 <footer>
     <div class="footer-container">
-
-        <!-- 左侧：三个 Logo（放大，竖直居中） -->
+        <!-- 左侧：三个 Logo -->
         <div class="footer-logos-container">
             <img src="{{ asset_url('head_foot/xmu_1.png') }}" alt="XMU Logo" class="footer-logo">
             <img src="{{ asset_url('head_foot/xmu-china.png') }}" alt="XMU China Logo" class="footer-logo">
             <img src="{{ asset_url('head_foot/STING_logo_Blue.png') }}" alt="STING Logo" class="footer-logo">
         </div>
-
-        <!-- 右侧：上方社交图标一行；下方左为地址、右为 Contact Us -->
+        <!-- 右侧：不再嵌套footer-bottom-container -->
         <div class="footer-right">
             <div class="footer-social-container">
                 <div class="social-icon-placeholder">
@@ -27,16 +25,12 @@
                     <img src="{{ asset_url('head_foot/5.png') }}" alt="Social 5" class="social-icon-img">
                 </div>
             </div>
-
-            <div class="footer-bottom-container">
-                <div class="footer-address" id="contact">
-                    <p>Xiamen University, Fujian, China</p>
-                    <p>No.422, Siming South Road, Fujian,</p>
-                    <p>P.R.China 361005</p>
-                </div>
-                <a href="#contact" class="footer-contact-btn">Contact Us</a>
+            <div class="footer-address" id="contact">
+                <p>Xiamen University, Fujian, China</p>
+                <p>No.422, Siming South Road, Fujian,</p>
+                <p>P.R.China 361005</p>
             </div>
+            <a href="#contact" class="footer-contact-btn">Contact Us</a>
         </div>
-
     </div>
 </footer>
