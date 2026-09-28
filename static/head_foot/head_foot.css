@@ -142,7 +142,7 @@ opacity: 1;
 /* STREAMING_CHUNK:Styling footer structure... */
 footer {
 background-color: #0A1B37;
-padding: 48px 6% 48px 6%;
+padding: 40px 6% 40px 6%;
 width: 100%;
 box-sizing: border-box;
 position: relative;
@@ -150,53 +150,63 @@ z-index: 40;
 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* 两列布局：左 = Logo 区；右 = 图标 + 地址/按钮 */
+/* 两列：左 = 三个 Logo 横排；右 = 图标行 / 地址 / 按钮 纵向堆叠 */
 .footer-container {
 max-width: 1250px;
 margin: 0 auto;
-display: grid;
-grid-template-columns: minmax(0, 1fr) auto;
-column-gap: 80px;
-align-items: stretch;
+display: flex;
+flex-direction: row;
+align-items: center;
+justify-content: space-between;
+gap: 60px;
 }
 
-/* 左侧：三个 Logo，放大并在整个页脚高度内竖直居中 */
+/* 左侧：三个 Logo 强制一行，整体竖直居中 */
 .footer-logos-container {
 display: flex;
+flex-direction: row;
+flex-wrap: nowrap;
 align-items: center;
 justify-content: flex-start;
-gap: 56px;
+gap: 40px;
 margin: 0;
+flex: 1 1 auto;
+min-width: 0;
 }
 
 .footer-logo {
-height: 110px;
+height: 100px;
 width: auto;
 max-width: 100%;
+flex: 0 1 auto;
 object-fit: contain;
 }
 
-/* 右侧：上下两行，两端对齐 */
+/* 右侧：纵向堆叠 */
 .footer-right {
 display: flex;
 flex-direction: column;
-justify-content: space-between;
 align-items: stretch;
-gap: 48px;
-min-width: 420px;
+gap: 20px;
+flex: 0 0 auto;
+width: max-content;
 }
 
 /* STREAMING_CHUNK:Styling footer details and icons... */
+/* 社交图标：一横行，宽度与下方地址对齐 */
 .footer-social-container {
 display: flex;
-gap: 14px;
+flex-direction: row;
+flex-wrap: nowrap;
+justify-content: space-between;
 align-items: center;
-justify-content: flex-end;
+gap: 14px;
 }
 
 .social-icon-placeholder {
-width: 46px;
-height: 46px;
+width: 42px;
+height: 42px;
+flex: 0 0 auto;
 background-color: #BDD0E3;
 border: 1px solid #92AFD6;
 color: #4275B3;
@@ -217,28 +227,19 @@ opacity: 0.9;
 }
 
 .social-icon-img {
-width: 27px;
-height: 27px;
+width: 26px;
+height: 26px;
 object-fit: contain;
 pointer-events: none;
 }
 
-/* STREAMING_CHUNK:Styling footer bottom bar... */
-/* 右下区域：左 = 地址，右 = Contact Us */
-.footer-bottom-container {
-display: flex;
-justify-content: space-between;
-align-items: flex-end;
-gap: 40px;
-margin: 0;
-}
-
+/* 地址 */
 .footer-address {
 color: #ffffff;
 font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 font-size: 15px;
 font-weight: 700;
-line-height: 24px;
+line-height: 22px;
 letter-spacing: 0.3px;
 text-transform: none;
 }
@@ -247,18 +248,14 @@ text-transform: none;
 margin: 0;
 }
 
+/* 左下角版权文字：不显示 */
 .footer-copyright {
-font-family: 'DM Mono', monospace;
-font-size: 11px;
-font-weight: 400;
-color: #ffffff;
-letter-spacing: 0.6px;
-text-transform: capitalize;
-display: flex;
-gap: 35px;
+display: none !important;
 }
 
+/* Contact Us：位于地址下方，靠右 */
 .footer-contact-btn {
+align-self: flex-end;
 font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 background-color: #4C6E8F;
 color: #FFFFFF;
@@ -266,7 +263,7 @@ text-decoration: none;
 font-size: 15px;
 font-weight: 700;
 letter-spacing: 0.5px;
-padding: 11px 34px;
+padding: 10px 32px;
 border-radius: 22px;
 box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
 white-space: nowrap;
@@ -278,32 +275,22 @@ background-color: #132437;
 transform: translateY(-1px);
 }
 
-/* 响应式：中等屏幕缩小 Logo；小屏改为上下堆叠 */
+/* 响应式 */
 @media (max-width: 1100px) {
-.footer-container { column-gap: 40px; }
-.footer-logos-container { gap: 32px; }
-.footer-logo { height: 84px; }
+.footer-container { gap: 32px; }
+.footer-logos-container { gap: 24px; }
+.footer-logo { height: 76px; }
 }
 
 @media (max-width: 860px) {
 .footer-container {
-grid-template-columns: 1fr;
-row-gap: 36px;
-}
-.footer-logos-container {
-flex-wrap: wrap;
-justify-content: center;
-gap: 28px;
-}
-.footer-logo { height: 72px; }
-.footer-right { min-width: 0; gap: 28px; }
-.footer-social-container { justify-content: center; flex-wrap: wrap; }
-.footer-bottom-container {
 flex-direction: column;
 align-items: center;
-text-align: center;
-gap: 24px;
+gap: 32px;
 }
+.footer-logos-container { justify-content: center; flex-wrap: wrap; }
+.footer-logo { height: 64px; }
+.footer-right { width: 100%; max-width: 320px; }
 }
 
 footer {
