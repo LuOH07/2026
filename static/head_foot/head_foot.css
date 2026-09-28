@@ -155,7 +155,7 @@ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica N
 max-width: 1250px;
 margin: 0 auto;
 display: flex;
-flex-direction: row;
+flex-wrap: nowrap;
 align-items: center;
 justify-content: space-between;
 gap: 60px;
@@ -185,7 +185,7 @@ object-fit: contain;
 /* 右侧：纵向堆叠 */
 .footer-right {
 display: flex;
-flex-direction: column;
+flex-wrap: nowrap;
 align-items: stretch;
 gap: 20px;
 flex: 0 0 auto;
