@@ -162,11 +162,11 @@ text-align: right;
 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* 左侧三个 logo：靠左 3%，垂直中心固定在页脚高度 60% 处 */
+
 .footer-logos {
 position: absolute;
 left: 8%;
-top: 80%;
+top: 40%;
 transform: translateY(-50%);
 display: flex;
 align-items: center;
