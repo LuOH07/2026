@@ -1,14 +1,5 @@
-/**
- * Description Page Logic:
- * 1. Hero Canvas Infinite Grid Background (Full-Viewport Width)
- * 2. Dynamic Table of Contents (TOC) with Active State Tracking & Bottom Clamping
- * 3. Sword & Scabbard Scroll Thumb and Dragging Interactions
- */
-
 document.addEventListener('DOMContentLoaded', () => {
-    /* -------------------------------------------------------------
-     * 1. Hero 动态透视网格绘制 (Canvas Grid - 铺满视口)
-     * ------------------------------------------------------------- */
+
     const heroCanvas = document.getElementById('gridCanvas');
     if (heroCanvas) {
         const ctx = heroCanvas.getContext('2d');
