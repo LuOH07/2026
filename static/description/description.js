@@ -38,24 +38,29 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.lineWidth = THEME.lineWidth;
             ctx.lineCap = 'round';
 
-            const { innerTop, cNearX, cFarX } = geom;
+            const { cNearX, cFarX, wFarTopY } = geom;
+            const nearY = 0;
+            const farY = wFarTopY;
+            const bandY = farY - nearY;
 
             ctx.beginPath();
-            ctx.moveTo(cFarX, innerTop);
-            ctx.lineTo(w - cFarX, innerTop);
+            ctx.moveTo(cFarX, farY);
+            ctx.lineTo(w - cFarX, farY);
             ctx.stroke();
 
             ctx.beginPath();
-            ctx.moveTo(cNearX, 0);
-            ctx.lineTo(cFarX, innerTop);
-            ctx.moveTo(w - cNearX, 0);
-            ctx.lineTo(w - cFarX, innerTop);
+            ctx.moveTo(cNearX, nearY);
+            ctx.lineTo(cFarX, farY);
+            ctx.moveTo(w - cNearX, nearY);
+            ctx.lineTo(w - cFarX, farY);
             ctx.stroke();
 
+            // 横向进深线按"近端 -> 远端"的实际区间铺开，这样最后一条正好落在
+            // 远端边线上（原先按 innerTop 取比例，在窄屏会与远端边线错开）
             CEILING_H_STEPS.forEach((t) => {
-                const y = innerTop * t;
+                const y = nearY + bandY * t;
                 const leftX = cNearX + (cFarX - cNearX) * t;
-                const rightX = (w - cNearX) - (cFarX - cNearX) * t;
+                const rightX = (w - cNearX) - (cNearX - cFarX) * t;
 
                 ctx.beginPath();
                 ctx.moveTo(leftX, y);
@@ -72,8 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const endX = cFarX + (w - 2 * cFarX) * ratio;
 
                 ctx.beginPath();
-                ctx.moveTo(startX, 0);
-                ctx.lineTo(endX, innerTop);
+                ctx.moveTo(startX, nearY);
+                ctx.lineTo(endX, farY);
                 ctx.stroke();
             }
 
@@ -86,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.lineWidth = THEME.lineWidth;
             ctx.lineCap = 'round';
 
-            const { innerTop, wNearTopY, wFarTopY, wFarX, wNearBottomY, wFarBottomY } = geom;
+            const { wNearTopY, wFarTopY, wFarX, wNearBottomY, wFarBottomY } = geom;
 
             ['left', 'right'].forEach((side) => {
                 const isLeft = side === 'left';
@@ -135,20 +140,48 @@ document.addEventListener('DOMContentLoaded', () => {
         function drawGrid(w, h) {
             ctx.clearRect(0, 0, w, h);
 
-            const innerTop = h * 0.1452;
-            const baselineNearX = w * 0.14;
-            const baselineFarX = w * 0.284;
+            // PC 的几何是按 1440x900 调好的；手机首屏接近正方形，那套比例会把
+            // 墙体前沿算到 y<0（上部被裁掉），天花板远端也会比墙体视平线高出一个
+            // gapOffset，导致顶上左右两角空白。窄屏单独调整几何，PC 分支照旧。
+            const narrowHero = window.innerWidth <= 820 && h < w * 1.4;
 
-            const gapOffset = Math.max(12, Math.min(w, h) * 0.016);
-            const slope = innerTop / (baselineFarX - baselineNearX);
+            const gapOffset = narrowHero
+                ? Math.max(12, w * 0.03)
+                : Math.max(12, Math.min(w, h) * 0.016);
+
+            let innerTop, cNearX, cFarX, wFarX, wNearTopY, wFarTopY;
+
+            if (narrowHero) {
+                // 天花板与墙体共用同一条视平线（wFarTopY）与同一个透视中心，
+                // 视平线按 Hero 高度下移，使墙体前沿落在画面内、顶部两角不再空白
+                const slope = 0.15;
+
+                cNearX = gapOffset;
+                cFarX = (w / 2) * (1 - slope) - gapOffset * slope;
+                wFarX = cFarX;
+                wNearTopY = h * 0.16;
+                wFarTopY = wNearTopY * (1 - slope);
+                innerTop = wFarTopY;
+            } else {
+                const baselineNearX = w * 0.14;
+                const baselineFarX = w * 0.284;
+                const slope = (h * 0.1452) / (baselineFarX - baselineNearX);
+
+                cNearX = baselineNearX + gapOffset;
+                cFarX = baselineFarX + gapOffset;
+                wFarX = baselineFarX - gapOffset;
+                wFarTopY = h * 0.1452 + gapOffset * slope;
+                wNearTopY = (h * 0.1452 + gapOffset * slope) - slope * wFarX;
+                innerTop = h * 0.1452;
+            }
 
             const geom = {
                 innerTop: innerTop,
-                cNearX: baselineNearX + gapOffset,
-                cFarX: baselineFarX + gapOffset,
-                wFarX: baselineFarX - gapOffset,
-                wNearTopY: (innerTop + gapOffset * slope) - slope * (baselineFarX - gapOffset),
-                wFarTopY: innerTop + gapOffset * slope,
+                cNearX: cNearX,
+                cFarX: cFarX,
+                wFarX: wFarX,
+                wNearTopY: wNearTopY,
+                wFarTopY: wFarTopY,
                 wNearBottomY: h * 0.748,
                 wFarBottomY: h * 0.4862
             };
