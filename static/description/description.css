@@ -859,11 +859,8 @@ aspect-ratio: 2336 / 824;                /* 素材固有比例 2.835:1 */
 object-fit: contain;
 }
 
-/* 中央引言：居中，纵向紧贴中央图片正下方
-   （图片底边 = 40.8%H + 50.8vw/2.835/2 = 43.2% + 8.96vw，取 38.6% + 13.6vw
-   使文字与图片下沿保持约 1.7vw 间距，同时屏幕底部留白减半） */
 .center-description-wrapper {
-top: calc(38.6% + 12.1vw);   /* 原 13.6vw：移动端引言上移，贴近标题图片下沿 */
+top: calc(38.6% + 12.6vw);   
 width: 86%;
 max-width: 640px;
 transform: translateX(-50%);
