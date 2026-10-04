@@ -130,7 +130,8 @@
             });
         }
 
-        /* 点击大标题：含二级菜单的选中展开，不含二级菜单的（如 HOME）直接跳转 */
+        /* 点击大标题：含二级菜单的选中展开（同时把状态推进到 stage 2 立即显示小标题），
+           不含二级菜单的（如 HOME）仍按原链接跳转 */
         navItems.forEach(function (item) {
             var link = item.querySelector(':scope > a.nav-link');
             var menu = item.querySelector(':scope > .dropdown-menu');
