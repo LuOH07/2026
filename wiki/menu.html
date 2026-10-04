@@ -1,6 +1,17 @@
 <header class="site-header">
         <img src="{{ asset_url('head_foot/STING_logo_Blue.png') }}" alt="STING Logo" class="logo">
-        <nav>
+
+        <!-- 移动端：右侧三层叠放按钮。勾选状态同时作为菜单展开的 CSS 状态源 -->
+        <label class="nav-toggle" aria-label="Menu">
+            <input type="checkbox" id="nav-toggle" aria-label="Open menu">
+            <span class="nav-toggle-btn" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+        </label>
+
+        <nav id="site-nav">
             <!-- 1. HOME -->
             <div class="nav-item">
                 <a href="{{ url_for('home') }}" class="nav-link"{% if request.endpoint == "home" %} aria-current="page"{% endif %}>HOME</a>
@@ -61,3 +72,81 @@
 
         </nav>
     </header>
+
+    <script>
+    /* 移动端竖向菜单交互：点击大标题在面板内展开二级菜单
+       （桌面端不生效，仍使用原有的悬停展开） */
+    (function () {
+        var toggle  = document.getElementById('nav-toggle');
+        var nav     = document.getElementById('site-nav');
+        if (!toggle || !nav) return;
+
+        var mobileQuery = window.matchMedia('(max-width: 1024px)');
+        var navItems    = nav.querySelectorAll('.nav-item');
+
+        function isMobile() { return mobileQuery.matches; }
+
+        function collapseAll() {
+            navItems.forEach(function (item) { item.classList.remove('is-expanded'); });
+        }
+
+        function syncScrollLock() {
+            document.body.classList.toggle('menu-open', toggle.checked);
+        }
+
+        /* 点击大标题：含二级菜单的展开，不含二级菜单的（如 HOME）直接跳转 */
+        navItems.forEach(function (item) {
+            var link = item.querySelector(':scope > a.nav-link');
+            var menu = item.querySelector(':scope > .dropdown-menu');
+            if (!link || !menu) return;
+
+            /* 二级菜单顶部插入“返回”按钮 */
+            var back = document.createElement('button');
+            back.type = 'button';
+            back.className = 'submenu-back';
+            back.innerHTML = '<i></i>Back';
+            back.addEventListener('click', function (event) {
+                event.preventDefault();
+                item.classList.remove('is-expanded');
+            });
+            menu.insertBefore(back, menu.firstChild);
+
+            link.addEventListener('click', function (event) {
+                if (!isMobile()) return;          /* 桌面端保持原链接行为 */
+                event.preventDefault();
+                var willOpen = !item.classList.contains('is-expanded');
+                collapseAll();
+                if (willOpen) item.classList.add('is-expanded');
+            });
+        });
+
+        /* 菜单开关状态变化 */
+        toggle.addEventListener('change', function () {
+            if (!toggle.checked) collapseAll();
+            syncScrollLock();
+        });
+
+        /* 移动端菜单展开时锁定页面滚动 */
+        var backdrop = document.createElement('div');
+        backdrop.className = 'nav-backdrop';
+        backdrop.addEventListener('click', function () {
+            toggle.checked = false;
+            collapseAll();
+            syncScrollLock();
+        });
+        document.body.appendChild(backdrop);
+
+        /* 视口回到桌面尺寸时复位 */
+        function reset() {
+            if (!isMobile()) {
+                toggle.checked = false;
+                collapseAll();
+                syncScrollLock();
+            }
+        }
+        if (mobileQuery.addEventListener) mobileQuery.addEventListener('change', reset);
+        else if (mobileQuery.addListener) mobileQuery.addListener(reset);
+        window.addEventListener('resize', reset);
+        window.addEventListener('orientationchange', reset);
+    })();
+    </script>
