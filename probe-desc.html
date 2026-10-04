@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="static/head_foot/head_foot.css">
+<link rel="stylesheet" href="static/description/description.css">
+<script src="static/head_foot/head_foot.js" defer></script>
+</head>
+<body>
+<header class="site-header">
+  <img src="probe-assets/logo.png" alt="STING Logo" class="logo" style="width:102px;height:34px">
+  <label class="nav-toggle" aria-label="Menu">
+    <input type="checkbox" id="nav-toggle" aria-label="Open menu">
+    <span class="nav-toggle-btn" aria-hidden="true"><span></span><span></span><span></span></span>
+  </label>
+  <nav id="site-nav">
+    <div class="nav-item"><a href="#" class="nav-link">HOME</a></div>
+    <div class="nav-item"><a href="#" class="nav-link">TEAM</a><div class="dropdown-menu"><a href="#" class="dropdown-item">Members</a></div></div>
+  </nav>
+</header>
+<main id="main-content">
+  <header class="title-header-wrapper" id="heroWrapper">
+    <div class="grid-container" id="heroGridContainer">
+      <canvas id="gridCanvas"></canvas>
+      <div class="left-dna-wrapper"><img src="probe-assets/DNA_1.png" alt="" class="left-dna-image" style="width:200px;height:300px;background:#dde"></div>
+      <div class="right-protein-wrapper"><img src="probe-assets/protein.png" alt="" class="right-protein-image" style="width:180px;height:200px"></div>
+      <div class="bottom-right-dna-wrapper"><img src="probe-assets/DNA_2.png" alt="" class="bottom-right-dna-image" style="width:180px;height:280px"></div>
+      <div class="center-image-wrapper"><img src="probe-assets/description.avif" alt="Description" class="title-image" style="width:330px"></div>
+      <div class="center-description-wrapper">
+        <p class="center-description-text">We are an international team of students, researchers,<br>and innovators exploring the frontiers of bacterial<br>genome engineering through the power of STING.</p>
+      </div>
+      <div class="scroll-explore-wrapper"><span class="scroll-line"></span><span class="scroll-text">SCROLL TO EXPLORE</span><span class="scroll-line"></span></div>
+      <div class="bottom-dots-decor"></div>
+    </div>
+  </header>
+  <section style="height:600px;background:#fff"></section>
+</main>
+<script>
+window.addEventListener('load', function () {
+  setTimeout(function () {
+    function rect(sel) {
+      var el = document.querySelector(sel);
+      if (!el) return sel + '=MISSING';
+      var r = el.getBoundingClientRect();
+      return sel + '=top:' + Math.round(r.top) + ' h:' + Math.round(r.height) + ' w:' + Math.round(r.width);
+    }
+    var cs = getComputedStyle(document.querySelector('.title-header-wrapper'));
+    var ci = getComputedStyle(document.querySelector('.center-image-wrapper'));
+    var gc = getComputedStyle(document.querySelector('.grid-container'));
+    console.log('M0 innerWidth=' + window.innerWidth + ' innerHeight=' + window.innerHeight);
+    console.log('M0 header ' + rect('header.site-header'));
+    console.log('M0 main ' + rect('#main-content'));
+    console.log('M0 hero ' + rect('.title-header-wrapper') + ' mt=' + cs.marginTop + ' pt=' + cs.paddingTop + ' height=' + cs.height);
+    console.log('M0 grid ' + rect('.grid-container') + ' alignItems=' + gc.alignItems);
+    console.log('M0 centerImg ' + rect('.center-image-wrapper') + ' topStyle=' + ci.top);
+    console.log('M0 titleImg ' + rect('.title-image'));
+    console.log('M0 desc ' + rect('.center-description-wrapper'));
+  }, 400);
+});
+</script>
+</body>
+</html>

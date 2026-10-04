@@ -843,7 +843,7 @@ opacity: 0.45;                           /* PC 值 */
 
 
 .center-image-wrapper {
-top: 40.8%;
+top: calc(31% - 30px);                   /* 上移约 145px：让标题与固定页眉（62px）之间只留约 30px */
 left: 50%;
 max-width: 50.8vw;
 max-height: none;
