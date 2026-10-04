@@ -411,7 +411,7 @@ transform: scale(1.12);
 .toc-item-h2 .toc-text {
 color: #FFFFFF;
 font-family: 'Albertus Nova', -apple-system, sans-serif;
-font-size: 22px;
+font-size: 20px;
 font-weight: normal;
 letter-spacing: 0;
 line-height: 1.6;
@@ -439,7 +439,7 @@ display: block;
 .toc-item-h3 .toc-text {
 color: #72819A;
 font-family: 'Albertus Nova', -apple-system, sans-serif;
-font-size: 20px;
+font-size: 18px;
 font-weight: normal;
 letter-spacing: 0;
 line-height: 1.6;
