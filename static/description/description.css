@@ -801,6 +801,11 @@ height: clamp(380px, 100vw, 100vh);
 min-height: 0;
 }
 
+/* 背景网格（canvas 透视网格）移动端整体去掉，仅保留白底与装饰元素 */
+#gridCanvas {
+display: none !important;
+}
+
 /* PC 用 Grid 垂直居中；窄屏改为从顶部起排，便于按比例摆放 */
 .grid-container {
 align-items: flex-start;
