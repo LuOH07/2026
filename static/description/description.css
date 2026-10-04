@@ -763,3 +763,184 @@ transition: filter 0.2s ease;
 .scroll-back-to-top:hover {
 filter: drop-shadow(0 0 6px rgba(136, 216, 177, 0.6));
 }
+
+/* ========================================================
+8. 移动端响应式（手机 / 竖屏窄屏）
+   断点 820px：以下规则只作用于窄屏，PC 端布局完全不受影响
+======================================================== */
+@media (max-width: 820px) {
+
+/* ---------- 8.1 正文主体：左右边界改为页面宽度的 4% 与 96% ---------- */
+.main-container {
+margin-left: 4%;
+margin-right: 4%;
+width: auto;
+margin-top: 96px;         /* 让开固定 80px 高的顶部导航 */
+margin-bottom: 6vh;
+padding: 24px 0 32px;
+min-height: 0;
+border-radius: 18px;
+}
+
+/* ---------- 8.2 侧边目录（TOC）在移动端整体隐藏 ---------- */
+/* JS 仍会写入内联 top / opacity，因此用 !important 兜底 */
+.side-container {
+display: none !important;
+}
+
+/* ---------- 8.3 右侧宝剑 / 剑鞘 / BACK TO TOP 索引条隐藏 ---------- */
+.scroll-sword,
+.scroll-scabbard,
+.scroll-back-to-top {
+display: none !important;
+}
+
+/* ---------- 8.4 首屏 Hero：压缩高度并重排装饰元素 ---------- */
+.title-header-wrapper {
+height: 86vh;
+min-height: 86vh;
+}
+
+.center-image-wrapper {
+top: 38%;
+max-width: 82vw;
+max-height: 26vh;
+overflow: hidden;
+transform: translate(-50%, -50%) scale(1);
+}
+
+.title-image {
+max-height: 24vh;
+}
+
+.center-description-wrapper {
+top: calc(54% + 2vh);
+width: 88%;
+max-width: none;
+}
+
+.center-description-text {
+font-size: 0.98rem;
+line-height: 1.7;
+}
+
+/* 窄屏取消人为断行，让文字自然回流 */
+.center-description-text br {
+display: none;
+}
+
+.scroll-explore-wrapper {
+bottom: 3.5vh;
+gap: 10px;
+}
+
+.scroll-text {
+font-size: 0.7rem;
+letter-spacing: 0.22em;
+}
+
+.bottom-dots-decor {
+opacity: 0.12;
+}
+
+.left-dna-wrapper {
+left: -14vw;
+width: 42vw;
+max-width: 210px;
+opacity: 0.16;
+}
+
+.right-protein-wrapper {
+right: 3vw;
+top: 12vh;
+width: 24vw;
+max-width: 130px;
+min-width: 76px;
+opacity: 0.75;
+}
+
+.bottom-right-dna-wrapper {
+right: 2vw;
+width: 34vw;
+max-width: 190px;
+opacity: 0.2;
+}
+
+/* ---------- 8.5 正文标题：缩小字号，箭头改用 vw 定宽 ---------- */
+/* 原箭头宽 12/16/20vh，窄屏下会占满整行并挤掉标题文字 */
+.heading-1,
+.heading-2,
+.heading-3,
+.heading-reference {
+height: auto;
+min-height: 0;
+gap: 12px;
+margin-left: 5%;
+margin-right: 5%;
+}
+
+.heading-1::before,
+.heading-2::before,
+.heading-3::before,
+.heading-reference::before,
+.heading-1::after,
+.heading-reference::after {
+height: 4.2vh;
+}
+
+.heading-1::before { width: 6.5vw; }
+.heading-2::before { width: 8.5vw; }
+.heading-3::before { width: 10.5vw; }
+.heading-reference::before { width: 6.5vw; }
+
+.heading-1 {
+font-size: 25px;
+line-height: 1.25;
+margin-top: 1.2em;
+margin-bottom: 0.7em;
+}
+
+.heading-2 {
+font-size: 20px;
+line-height: 1.45;
+margin-bottom: 0.7em;
+}
+
+.heading-3 {
+font-size: 17px;
+line-height: 1.45;
+margin-bottom: 0.7em;
+}
+
+.heading-reference {
+font-size: 25px;
+line-height: 1.25;
+margin-top: 1.2em;
+margin-bottom: 0.7em;
+}
+
+/* ---------- 8.6 正文段落与插图 ---------- */
+.body-text {
+font-size: 16px;
+line-height: 1.85;
+letter-spacing: 0.2px;
+text-align: left;         /* 窄屏两端对齐会产生难看的字距空隙 */
+margin-left: 5%;
+margin-right: 5%;
+margin-bottom: 0.9em;
+}
+
+.figure-image {
+max-width: 100%;
+margin-top: 1em;
+}
+
+.figure-caption {
+font-size: 15px;
+line-height: 1.5;
+margin-left: 5%;
+margin-right: 5%;
+margin-bottom: 1.2em;
+}
+
+}

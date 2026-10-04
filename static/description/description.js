@@ -1,5 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    /* 移动端（宽度 <= 820px，与 description.css 第 8 节断点保持一致）：
+       侧边目录与滚动剑/剑鞘均由 CSS 隐藏，这里直接跳过相关逻辑，
+       避免对隐藏元素做无用的布局读写。首屏 canvas 在两端都会绘制。 */
+    const mobileViewport = window.matchMedia('(max-width: 820px)');
+    const isMobile = () => mobileViewport.matches;
+
     const heroCanvas = document.getElementById('gridCanvas');
     if (heroCanvas) {
         const ctx = heroCanvas.getContext('2d');
@@ -164,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!tocNav || !mainContainer) return;
 
-    if (sideContainer) {
+    if (sideContainer && !isMobile()) {
         const updateSidebarPosition = () => {
             const mainRect = mainContainer.getBoundingClientRect();
             const sidebarRect = sideContainer.getBoundingClientRect();
@@ -218,6 +224,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const headings = mainContainer.querySelectorAll('h1.heading-1, h2.heading-2, h3.heading-3, h1.heading-reference');
     if (headings.length === 0) return;
+
+    // 移动端隐藏了侧边目录，直接跳过目录构建（标题 id 已全部写好，锚点依然可用）
+    if (isMobile()) return;
 
     tocNav.innerHTML = '';
 
