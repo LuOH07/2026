@@ -152,15 +152,18 @@ document.addEventListener('DOMContentLoaded', () => {
             let innerTop, cNearX, cFarX, wFarX, wNearTopY, wFarTopY;
 
             if (narrowHero) {
-                // 天花板与墙体共用同一条视平线（wFarTopY）与同一个透视中心，
-                // 视平线按 Hero 高度下移，使墙体前沿落在画面内、顶部两角不再空白
-                const slope = 0.15;
+                // 天花板与墙体共用同一条视平线（wFarTopY）与同一个透视中心。
+                // slope 越大远端收得越紧 = 两侧墙越窄；0.39 使单侧墙宽
+                // (390-116.1)=273.9 -> 163.9 的 3/5；同时把整块网格按顶部
+                // 固定导航高度（80px）下移，否则顶部网格会被导航条盖住。
+                const slope = 0.39;
+                const headerOffset = 84;
 
                 cNearX = gapOffset;
                 cFarX = (w / 2) * (1 - slope) - gapOffset * slope;
                 wFarX = cFarX;
-                wNearTopY = h * 0.16;
-                wFarTopY = wNearTopY * (1 - slope);
+                wNearTopY = headerOffset + h * 0.16;
+                wFarTopY = headerOffset + h * 0.16 * (1 - slope);
                 innerTop = wFarTopY;
             } else {
                 const baselineNearX = w * 0.14;
