@@ -795,75 +795,121 @@ display: none !important;
 display: none !important;
 }
 
-/* ---------- 8.4 首屏 Hero：压缩高度并重排装饰元素 ---------- */
+/* ---------- 8.4 首屏 Hero：把 PC 构图整体等比例缩放搬过来 ---------- */
+/* 原理：Hero 是一套以 100vw 为基准的居中构图，PC 的尺寸/坐标全部由
+   vw / vh 驱动。窄屏下把这些值统一换成"同一比例因子"的 vw 长度
+   （1vw = 1% 视口宽），每个元素就按同一比例缩小，构图与 PC 一致。
+   高度用 clamp 控制区间，避免窄屏出现超长留白。 */
 .title-header-wrapper {
-height: 86vh;
-min-height: 86vh;
+/* 高度跟随宽度：PC 是 100vw x 100vh，窄屏把它压成近方形，
+   这样构图整体等比缩小后仍能完整放进首屏，又不会出现超长留白。
+   下限 380px 保证正文引言与 SCROLL 提示仍有落位空间。 */
+height: clamp(380px, 100vw, 100vh);
+min-height: 0;
 }
 
+/* PC 用 Grid 垂直居中；窄屏改为从顶部起排，便于按比例摆放 */
+.grid-container {
+align-items: flex-start;
+}
+
+/* 装饰：左侧 DNA / 右上蛋白 —— 尺寸、位移、透明度全部对齐 PC 比例 */
+.left-dna-wrapper {
+left: -6vw;                              /* PC: -6vw */
+/* PC 是 50% + 5vw；窄屏 Hero 宽度更小，把 5vw 折算成 1.28%H 使纵向锚点
+   同样随宽度缩放（H = 100vw 时 5vw = 5%H，原式在 PC 上约 55%） */
+top: 51.28%;
+width: 25vw;                             /* PC: 25vw；max-width 320px 在窄屏不触发 */
+max-width: none;
+transform: translateY(-50%) scale(2.5);  /* PC 的缩放与原点原样保留 */
+opacity: 0.3;                            /* PC 值 */
+}
+
+.right-protein-wrapper {
+right: 3vw;                              /* PC: right 3vw */
+top: 16.2%;                              /* PC: 9vh @900px 高视口 = Hero 高度的 9%，此处按比例 */
+width: 20vw;                             /* PC: 20vw；1440 下的 260px 上限窄屏不触发 */
+max-width: none;
+min-width: 0;
+opacity: 1;
+}
+
+/* 装饰：右下 DNA —— PC: right 5vw / bottom 0 / scale(1.6) / 22vw */
+.bottom-right-dna-wrapper {
+right: 5vw;
+bottom: 0;
+width: 22vw;
+max-width: none;
+transform: scale(1.6);
+opacity: 0.45;                           /* PC 值 */
+}
+
+/* 中央标题图：宽度比例与 PC 相同（PC 上限 50.8vw、放大 1.155 倍照搬）；
+   PC 另有 46.2vh / 图片 44vh 的高度上限，窄屏改用 aspect-ratio 精确
+   复刻，这样标题的高宽比与 PC 一致，也不会被 vh 反向拉伸 */
 .center-image-wrapper {
-top: 38%;
-max-width: 82vw;
-max-height: 26vh;
-overflow: hidden;
-transform: translate(-50%, -50%) scale(1);
+/* PC: top = calc(42% - 15vw + 18vh)，在 1440x900 下等于 378px，
+   即标题中心正好落在 Hero 高度的 42%；但式子里的 18vh 是按 900px 高的
+   视口推出来的，窄屏 vh 与宽度脱钩，会把标题一路推到画面下方。
+   这里改用纯百分比复刻同一个 42%：容器高度 = 50.8vw / 2.835
+   ≈ 17.918%H，故 top = 42%H - 8.959%H = 33.041%H。 */
+top: 33.04%;
+left: 50%;
+max-width: 50.8vw;
+max-height: none;
+overflow: visible;
+transform: translate(-50%, -50%) scale(1.155);
 }
 
 .title-image {
-max-height: 24vh;
+width: 100%;
+height: auto;
+max-height: none;
+aspect-ratio: 2336 / 824;                /* 素材固有比例 2.835:1 */
+object-fit: contain;
 }
 
+/* 中央引言：脱离绝对定位，跟到标题图下方正常流排布 */
 .center-description-wrapper {
-top: calc(54% + 2vh);
-width: 88%;
+position: static;
+width: auto;
 max-width: none;
+margin: 1.6vw 6% 0;
+text-align: center;
+transform: none;
 }
 
 .center-description-text {
-font-size: 0.98rem;
-line-height: 1.7;
+font-size: clamp(0.95rem, 1.6vw, 1.55rem);   /* 与 PC 的 clamp 完全一致 */
+line-height: 1.68;
 }
 
-/* 窄屏取消人为断行，让文字自然回流 */
+/* PC 的 <br> 是为 1440 宽定的断行位置，窄屏必须去掉才能自然折行 */
 .center-description-text br {
 display: none;
 }
 
+/* 底部 SCROLL TO EXPLORE：同样进入正常流，紧跟在引言之后 */
 .scroll-explore-wrapper {
-bottom: 3.5vh;
-gap: 10px;
+position: static;
+left: auto;
+bottom: auto;
+margin-top: 5vw;
+transform: none;
+gap: 3vw;                                /* PC: 20px @1440 ≈ 1.4vw，按比例放大到 3vw */
+}
+
+.scroll-line {
+width: clamp(26px, 3.5vw, 52px);         /* PC: clamp(30px, 3.5vw, 52px) */
 }
 
 .scroll-text {
-font-size: 0.7rem;
-letter-spacing: 0.22em;
+font-size: clamp(0.72rem, 0.95vw, 0.98rem);  /* PC: clamp(0.75rem, 0.95vw, 0.98rem) */
+letter-spacing: 0.32em;                  /* PC 值 */
 }
 
 .bottom-dots-decor {
-opacity: 0.12;
-}
-
-.left-dna-wrapper {
-left: -14vw;
-width: 42vw;
-max-width: 210px;
-opacity: 0.16;
-}
-
-.right-protein-wrapper {
-right: 3vw;
-top: 12vh;
-width: 24vw;
-max-width: 130px;
-min-width: 76px;
-opacity: 0.75;
-}
-
-.bottom-right-dna-wrapper {
-right: 2vw;
-width: 34vw;
-max-width: 190px;
-opacity: 0.2;
+opacity: 0.2;                            /* PC 值 */
 }
 
 /* ---------- 8.5 正文标题：缩小字号，箭头改用 vw 定宽 ---------- */
@@ -924,7 +970,7 @@ margin-bottom: 0.7em;
 font-size: 16px;
 line-height: 1.85;
 letter-spacing: 0.2px;
-text-align: left;         /* 窄屏两端对齐会产生难看的字距空隙 */
+text-align: left;        
 margin-left: 5%;
 margin-right: 5%;
 margin-bottom: 0.9em;
