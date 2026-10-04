@@ -235,7 +235,7 @@ display: block;
 /* 中央描述文案 */
 .center-description-wrapper {
 position: absolute;
-top: calc(52% + 5.5vh);
+top: calc(52% + 3.5vh);   /* 原 5.5vh：引言整体上移，靠近中央标题 */
 left: 50%;
 transform: translateX(-50%);
 width: 90%;
@@ -474,7 +474,7 @@ text-shadow: 0 0 5px rgba(217, 210, 80, 0.8), 0 0 10px rgba(217, 210, 80, 0.5);
 .main-container {
 margin-left: 17%;
 margin-right: 4%;
-margin-top: 17%;
+margin-top: 6%;   /* 原 17%：标题首屏与正文之间留白过大，压缩为一点点间隔 */
 margin-bottom: 10vh;
 padding-top: 48px;
 padding-bottom: 48px;
@@ -775,7 +775,7 @@ filter: drop-shadow(0 0 6px rgba(136, 216, 177, 0.6));
 margin-left: 4%;
 margin-right: 4%;
 width: auto;
-margin-top: 96px;         /* 让开固定 80px 高的顶部导航 */
+margin-top: 56px;         /* 让开固定 80px 高的顶部导航；原 96px 空白过大已压缩 */
 margin-bottom: 6vh;
 padding: 24px 0 32px;
 min-height: 0;
@@ -863,7 +863,7 @@ object-fit: contain;
    （图片底边 = 40.8%H + 50.8vw/2.835/2 = 43.2% + 8.96vw，取 38.6% + 13.6vw
    使文字与图片下沿保持约 1.7vw 间距，同时屏幕底部留白减半） */
 .center-description-wrapper {
-top: calc(38.6% + 13.6vw);
+top: calc(38.6% + 12.1vw);   /* 原 13.6vw：移动端引言上移，贴近标题图片下沿 */
 width: 86%;
 max-width: 640px;
 transform: translateX(-50%);
