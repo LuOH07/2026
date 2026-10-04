@@ -292,16 +292,15 @@ text-decoration: underline;
    - 桌面端（> 1024px）保持原有横向菜单与页脚布局，完全不受影响
    - 页眉只保留 logo + 右侧汉堡按钮（汉堡 → × 的形变动画保持不变）
    - 右上角“悬浮弹窗”承担全部导航：
-       * 第 1 次点汉堡：弹窗从右上角滑出，大标题（一级菜单）自上而下逐行排列
-       * 第 2 次点汉堡：在各大标题下方逐行展开对应的小标题（二级菜单）
-       * 第 3 次点汉堡：整个弹窗收起
-   - 三态循环无法只靠一个 checkbox 完成（纯 CSS 只有开 / 关两态），
-     因此由 menu.html 里已有的那段脚本给 .nav-toggle 打上
-     data-stage="0 | 1 | 2" 作为状态源，CSS 只负责各状态的呈现：
-       data-stage="1" → 只显示大标题；data-stage="2" → 同一弹窗内接着显示小标题
+       * 点汉堡：弹窗从右上角滑出，大标题（一级菜单）自上而下逐行排列
+       * 再点一次汉堡：整个弹窗收起
+       * 点某一行大标题：在该行下方展开它的小标题；再点这一行收起
+   - 状态源：弹窗开 / 关由 label 内的 checkbox 决定
+     （.nav-toggle:has(input:checked) ~ nav），
+     某一行的展开 / 收起由该行的 .is-expanded 类决定，二者都由 head_foot.js 维护
    ======================================================================= */
 
-/* 窄屏：完全关闭“悬停 / 聚焦自动显示下拉菜单”，小标题一律由点击（stage 2）触发 */
+/* 窄屏：完全关闭“悬停 / 聚焦自动显示下拉菜单”，小标题一律由点击大标题触发 */
 @media (max-width: 1024px) {
 .nav-item:hover .dropdown-menu,
 .nav-item:focus-within .dropdown-menu {
@@ -386,9 +385,8 @@ transition: transform 0.3s ease, opacity 0.25s ease, background-color 0.25s ease
 
 /* -----------------------------------------------------------------------
    右上角悬浮弹窗（导航本体）：贴着汉堡按钮下方垂下的一列标题
-   第 1 / 2 次点击：opacity / visibility 由 checkbox 打开
-   第 3 次点击：checkbox 取消 → 弹窗收起（取消勾选前先让 data-stage 回 0，
-   因此收起的淡出 + 上滑过渡同样是可见的）
+   宽度按最长的一行文字（PROJECT / DRYLAB 等）来定，保持窄条观感
+   弹窗开 / 关：点汉堡时 checkbox 勾选 / 取消
    ----------------------------------------------------------------------- */
 nav {
 position: absolute;
@@ -397,9 +395,9 @@ right: clamp(10px, 4vw, 16px);
 left: auto;
 bottom: auto;
 display: block;
-width: min(80vw, 288px);
+width: min(60vw, 200px);
 min-width: 0;
-max-width: 288px;
+max-width: 200px;
 height: auto;
 max-height: calc(100vh - 62px - 26px - env(safe-area-inset-bottom));
 max-height: calc(100dvh - 62px - 26px - env(safe-area-inset-bottom));
@@ -424,7 +422,7 @@ transition: opacity 0.28s ease, transform 0.28s ease, visibility 0.28s ease;
 z-index: 125;
 }
 
-/* 展开：由 .nav-toggle（label）内的 checkbox 触发（三态由 data-stage 细化） */
+/* 展开：由 .nav-toggle（label）内的 checkbox 触发 */
 .nav-toggle:has(input:checked) ~ nav {
 opacity: 1;
 visibility: visible;
@@ -472,13 +470,8 @@ transition: transform 0.25s ease, border-color 0.25s ease;
 }
 nav .nav-item:has(.dropdown-menu) > a.nav-link:hover::after { border-color: #ffffff; }
 
-/* 第 2 次点击前（stage 0 / 1）：箭头一律收起；进入 stage 2 后统一转向 */
-.nav-toggle[data-stage="0"] nav .nav-item > a.nav-link::after,
-.nav-toggle[data-stage="1"] nav .nav-item > a.nav-link::after {
-transform: rotate(-45deg);
-border-color: #7f97b3;
-}
-.nav-toggle[data-stage="2"] nav .nav-item:has(.dropdown-menu) > a.nav-link::after {
+/* 箭头：默认收起；该行被选中（.is-expanded，即点开了它的小标题）时转向下 */
+nav .nav-item.is-expanded:has(.dropdown-menu) > a.nav-link::after {
 transform: rotate(45deg);
 border-color: #ffffff;
 }
@@ -502,9 +495,8 @@ display: none;
 z-index: 1;
 }
 
-/* 进入 stage 2（第 2 次点击）后，弹窗内的小标题逐行铺开
-   （data-stage 写在 .nav-toggle 这个 label 上，checkbox 在其内部，故用 :has 判断勾选） */
-.nav-toggle[data-stage="2"]:has(input:checked) ~ nav .nav-item > .dropdown-menu {
+/* 点开某一行大标题（.is-expanded）后，在该行下方就地铺开它的小标题；再点该行收起 */
+.nav-toggle:has(input:checked) ~ nav .nav-item.is-expanded > .dropdown-menu {
 display: block;
 opacity: 1;
 visibility: visible;
@@ -524,11 +516,12 @@ nav .submenu-back { display: none; }
 nav .dropdown-item {
 justify-content: flex-start;
 width: 100%;
-padding: 11px 18px 11px 30px;
+padding: 11px 16px 11px 26px;
 font-size: 14px;
 line-height: 1.4;
 letter-spacing: 0.2px;
 text-align: left;
+white-space: nowrap;
 color: #9fb8d0;
 background-color: transparent;
 border-bottom: 1px solid rgba(199, 216, 233, 0.06);
@@ -627,12 +620,12 @@ word-break: break-word;
 @media (max-width: 420px) {
 .logo { height: 30px; }
 nav {
-width: min(86vw, 262px);
-max-width: 262px;
+width: min(64vw, 186px);
+max-width: 186px;
 right: 8px;
 }
-nav .nav-item > a.nav-link { padding: 13px 15px; font-size: 15px; }
-nav .dropdown-item { padding: 10px 15px 10px 26px; font-size: 13px; }
+nav .nav-item > a.nav-link { padding: 13px 14px; font-size: 15px; }
+nav .dropdown-item { padding: 10px 14px 10px 22px; font-size: 13px; }
 .footer-logo { max-height: 44px; max-width: 28%; }
 .footer-social img { width: 34px; height: 34px; padding: 6px; }
 .footer-address { font-size: 14px; }

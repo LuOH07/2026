@@ -1,8 +1,8 @@
 <header class="site-header">
         <img src="{{ asset_url('head_foot/STING_logo_Blue.png') }}" alt="STING Logo" class="logo">
 
-        <!-- 移动端：右侧三层叠放按钮。勾选状态同时作为菜单展开的 CSS 状态源 -->
-        <label class="nav-toggle" data-stage="0" aria-label="Menu">
+        <!-- 移动端：右侧三层叠放按钮。勾选状态同时作为弹窗展开的 CSS 状态源（由 head_foot.js 维护） -->
+        <label class="nav-toggle" aria-label="Menu">
             <input type="checkbox" id="nav-toggle" aria-label="Open menu">
             <span class="nav-toggle-btn" aria-hidden="true">
                 <span></span>
@@ -73,5 +73,5 @@
         </nav>
     </header>
 
-    <!-- 移动端动效（汉堡三态弹窗等）已移至 static/head_foot/head_foot.js，
-         由 wiki/layout.html 统一引入，此处不再内联脚本 -->
+    <!-- 移动端动效（汉堡开关弹窗、点大标题展开小标题等）已移至
+         static/head_foot/head_foot.js，由 wiki/layout.html 统一引入，此处不再内联脚本 -->

@@ -1,12 +1,12 @@
 /* =============================================================================
    head_foot.js —— 页眉页脚交互（仅移动端生效，桌面端不做任何改动）
    -----------------------------------------------------------------------------
-   右上角悬浮弹窗的三态循环：
-     第 1 次点汉堡 → 弹窗展开，只显示大标题
-     第 2 次点汉堡 → 在同一弹窗内展开小标题（二级菜单）
-     第 3 次点汉堡 → 整个弹窗收起（同时解锁 body 滚动）
-   汉堡 → × 的形变动画由 head_foot.css 的 .nav-toggle:has(input:checked) 驱动，
-   这里只维护 .nav-toggle 上的 data-stage（0 / 1 / 2）作为三态状态源。
+   右上角悬浮弹窗：
+     点汉堡           → 弹窗展开，大标题（一级菜单）自上而下逐行排列
+     再点一次汉堡     → 整个弹窗收起
+     点某一行大标题   → 在该行下方展开它的小标题；再点这一行收起
+   汉堡 → × 的形变动画由 head_foot.css 的 .nav-toggle:has(input:checked) 驱动：
+   脚本只负责维护 checkbox（弹窗开 / 关）与每行的 .is-expanded（该项小标题开 / 关）。
    ============================================================================= */
 (function () {
     'use strict';
@@ -37,32 +37,20 @@
             document.body.classList.toggle('menu-open', !!toggle.checked);
         }
 
-        function setStage(value) {
-            if (toggleLabel && toggleLabel.setAttribute) {
-                toggleLabel.setAttribute('data-stage', String(value));
-            }
-        }
-
-        /* ---------- 三态状态机 ----------
-           open     : 弹窗是否展开（对应 checkbox 勾选 → CSS 显示弹窗、汉堡变 ×）
-           submenu  : 是否已进入第 2 态（对应 data-stage="2" → CSS 展开小标题）
-           两者都由本脚本维护，不再依赖 label 的默认勾选行为。 */
-        var open    = !!toggle.checked;
-        var submenu = false;
+        /* ---------- 弹窗开 / 关 ----------
+           open 与 checkbox 勾选状态一一对应（CSS 据此显示弹窗、汉堡变 ×）。
+           点击汉堡时在冒泡到 label 的第一发事件上 preventDefault，取消 label 的默认
+           翻转行为，改由脚本统一维护，避免“勾选被立即改回”导致的状态错乱。 */
+        var open = !!toggle.checked;
 
         function applyState() {
             toggle.checked = open;
-            setStage(open ? (submenu ? 2 : 1) : 0);
-            if (!open) {
-                submenu = false;
-                collapseAll();
-            }
+            if (!open) collapseAll();      /* 收起弹窗时把已展开的小标题一并收回 */
             syncScrollLock();
         }
 
         function closeMenu() {
             open = false;
-            submenu = false;
             applyState();
         }
 
@@ -79,29 +67,12 @@
             closeMenu();
         });
 
-        /* ---------- 汉堡按钮：三态循环 ----------
-           关键点：checkbox 位于 label 内部，点击汉堡后 label 的“激活行为”会自行翻转
-           checkbox，并向 input 再派发一次 click；正是这次翻转会把脚本刚写入的状态改回去
-           （第二次点击看起来像被“吃掉”）。因此这里在冒泡到 label 的第一发事件上
-           preventDefault 取消默认翻转，改由脚本按阶段驱动 checkbox：
-             第 1 次 → 展开弹窗，只显示大标题
-             第 2 次 → 同一弹窗内展开小标题
-             第 3 次 → 整体收起 */
+        /* ---------- 汉堡按钮：弹窗开 / 关 ---------- */
         toggleLabel.addEventListener('click', function (event) {
             if (!isMobile()) return;        /* 桌面端不介入，保持原有悬停菜单 */
 
-            event.preventDefault();         /* 取消 label 激活行为，state 由脚本维护 */
-
-            if (!open) {                    /* 第 1 次点击：展开弹窗 */
-                open = true;
-                submenu = false;
-            } else if (!submenu) {          /* 第 2 次点击：展开小标题 */
-                submenu = true;
-            } else {                        /* 第 3 次点击：整体收起 */
-                open = false;
-                submenu = false;
-            }
-
+            event.preventDefault();         /* 取消 label 激活行为，勾选状态由脚本维护 */
+            open = !open;
             applyState();
         });
 
@@ -125,27 +96,20 @@
                     menu.insertBefore(back, menu.firstChild);
                 }
 
+                /* 点这一行大标题：展开它的小标题；再点这一行收起（只影响本行） */
                 link.addEventListener('click', function (event) {
                     if (!isMobile()) return;     /* 桌面端保持原链接行为 */
                     event.preventDefault();
-                    var willOpen = !item.classList.contains('is-expanded');
-                    collapseAll();
-                    if (willOpen) {
-                        item.classList.add('is-expanded');
-                    } else if (submenu) {
-                        submenu = false;         /* 收回小标题，回到只看大标题的第 1 态 */
-                        applyState();
-                    }
+                    item.classList.toggle('is-expanded');
                 });
             })(navItems[i]);
         }
 
-        /* ---------- checkbox 状态被外部改动时同步状态机 ---------- */
+        /* ---------- checkbox 状态被外部改动时同步（如浏览器还原表单状态） ---------- */
         toggle.addEventListener('change', function () {
             var checked = !!toggle.checked;
             if (checked === open) return;        /* 脚本自身写入的状态，无需处理 */
             open = checked;
-            if (!open) submenu = false;
             applyState();
         });
 
