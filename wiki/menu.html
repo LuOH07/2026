@@ -2,7 +2,7 @@
         <img src="{{ asset_url('head_foot/STING_logo_Blue.png') }}" alt="STING Logo" class="logo">
 
         <!-- 移动端：右侧三层叠放按钮。勾选状态同时作为菜单展开的 CSS 状态源 -->
-        <label class="nav-toggle" aria-label="Menu">
+        <label class="nav-toggle" data-stage="0" aria-label="Menu">
             <input type="checkbox" id="nav-toggle" aria-label="Open menu">
             <span class="nav-toggle-btn" aria-hidden="true">
                 <span></span>
@@ -74,12 +74,18 @@
     </header>
 
     <script>
-    /* 移动端竖向菜单交互：点击大标题在面板内展开二级菜单
+    /* 移动端右上角悬浮弹窗交互（三态）：
+       - 第 1 次点汉堡：弹窗展开，只显示大标题
+       - 第 2 次点汉堡：在当前选中的大标题下方展开小标题
+       - 第 3 次点汉堡：整个弹窗收起
+       汉堡 → × 的形变动画仍由 input:checked 驱动，保持不变；
+       这里只维护 .nav-toggle 上的 data-stage（0 / 1 / 2）供 CSS 使用。
        （桌面端不生效，仍使用原有的悬停展开） */
     (function () {
         var toggle  = document.getElementById('nav-toggle');
         var nav     = document.getElementById('site-nav');
         if (!toggle || !nav) return;
+        var toggleLabel = toggle.closest('.nav-toggle') || toggle.parentNode;
 
         var mobileQuery = window.matchMedia('(max-width: 1024px)');
         var navItems    = nav.querySelectorAll('.nav-item');
@@ -94,7 +100,37 @@
             document.body.classList.toggle('menu-open', toggle.checked);
         }
 
-        /* 点击大标题：含二级菜单的展开，不含二级菜单的（如 HOME）直接跳转 */
+        function setStage(value) {
+            if (toggleLabel && toggleLabel.setAttribute) toggleLabel.setAttribute('data-stage', String(value));
+        }
+        function currentStage() {
+            return toggleLabel && toggleLabel.getAttribute
+                ? (parseInt(toggleLabel.getAttribute('data-stage'), 10) || 0)
+                : 0;
+        }
+        setStage(0);
+
+        /* 点击汉堡按钮：三态循环（只拦截 label 的默认勾选，X 形变动画未改动） */
+        if (toggleLabel && toggleLabel.addEventListener) {
+            toggleLabel.addEventListener('click', function (event) {
+                if (!isMobile()) return;
+
+                /* 弹窗已打开且有选中的大标题：第 3 次点击 → 先回到 stage 0（让收起过渡可见），再取消勾选 */
+                if (toggle.checked && currentStage() >= 2) {
+                    event.preventDefault();
+                    setStage(0);
+                    collapseAll();
+                    toggle.checked = false;
+                    syncScrollLock();
+                    return;
+                }
+
+                /* 第 1 次点击：stage 1 只显示大标题；第 2 次点击：保持已选中的大标题并放行到 stage 2 */
+                setStage(toggle.checked ? 2 : 1);
+            });
+        }
+
+        /* 点击大标题：含二级菜单的选中展开，不含二级菜单的（如 HOME）直接跳转 */
         navItems.forEach(function (item) {
             var link = item.querySelector(':scope > a.nav-link');
             var menu = item.querySelector(':scope > .dropdown-menu');
@@ -130,6 +166,7 @@
         var backdrop = document.createElement('div');
         backdrop.className = 'nav-backdrop';
         backdrop.addEventListener('click', function () {
+            setStage(0);
             toggle.checked = false;
             collapseAll();
             syncScrollLock();
@@ -139,6 +176,7 @@
         /* 视口回到桌面尺寸时复位 */
         function reset() {
             if (!isMobile()) {
+                setStage(0);
                 toggle.checked = false;
                 collapseAll();
                 syncScrollLock();

@@ -288,20 +288,20 @@ text-decoration: underline;
 }
 
 /* =======================================================================
-   响应式 / 移动端
-   - 桌面端（> 1024px）保持原有横向菜单与页脚布局，不受影响
-   - 移动端（<= 1024px）：
-       * 页面宽度 100% 贴合屏幕，禁止左右拉动
-       * 页眉只保留 logo；标题本身是一条竖直窄条，
-         悬浮在页面右上角（收起时显示 “MENU”）
-       * 第 1 次 click 窄条：在窄条位置滑出大标题（一级菜单）
-       * 第 2 次 click 大标题：展开该标题的小标题（二级菜单）
-       * 再次 click 窄条（此时显示 “CLOSE”）或遮罩：整套收起
-       * 页脚重新排版为居中单列
+   响应式 / 移动端（<= 1024px）
+   - 桌面端（> 1024px）保持原有横向菜单与页脚布局，完全不受影响
+   - 页眉只保留 logo + 右侧汉堡按钮（汉堡 → × 的形变动画保持不变）
+   - 右上角“悬浮弹窗”承担全部导航：
+       * 第 1 次点汉堡：弹窗从右上角滑出，大标题（一级菜单）自上而下逐行排列
+       * 第 2 次点汉堡：在当前选中的大标题下方展开小标题（二级菜单）
+       * 第 3 次点汉堡：整个弹窗收起
+   - 三态循环无法只靠一个 checkbox 完成（纯 CSS 只有开 / 关两态），
+     因此由 menu.html 里已有的那段脚本给 .nav-toggle 打上
+     data-stage="0 | 1 | 2" 作为状态源，CSS 只负责各状态的呈现：
+       data-stage="1" → 只显示大标题；data-stage="2" → 同一弹窗内接着显示小标题
    ======================================================================= */
 
-/* 窄屏：完全关闭“悬停 / 聚焦自动显示下拉菜单”，小标题改由点击触发
-   （仅 .is-expanded 状态显示，JS 在点击大标题时切换该类） */
+/* 窄屏：完全关闭“悬停 / 聚焦自动显示下拉菜单”，小标题一律由点击（stage 2）触发 */
 @media (max-width: 1024px) {
 .nav-item:hover .dropdown-menu,
 .nav-item:focus-within .dropdown-menu {
@@ -309,19 +309,12 @@ opacity: 0;
 visibility: hidden;
 transform: none;
 }
-.nav-item.is-expanded .dropdown-menu,
-.nav-item.is-expanded:focus-within .dropdown-menu,
-.nav-item.is-expanded:hover .dropdown-menu {
-opacity: 1;
-visibility: visible;
-transform: none;
-}
 }
 
-/* ---------- 移动端：页眉 / 竖向菜单 ---------- */
+/* ---------- 移动端：页眉 / 右上角悬浮弹窗 ---------- */
 @media (max-width: 1024px) {
 
-/* 页眉：贴合屏幕宽度，只留 logo */
+/* 页眉：贴合屏幕宽度，只留 logo + 汉堡按钮 */
 header {
 height: 62px;
 padding: 0 16px;
@@ -336,28 +329,20 @@ margin-left: 0;
 left: 10%;
 }
 
-/* 标题窄条：悬浮在页面右上角的竖直窄条。
-   label 本身就是整条窄条的点击区（内含 checkbox），
-   所以不需要 JS：点窄条 = 勾选 checkbox。 */
+/* 汉堡按钮：固定在页眉右上角（形变动画保持原样） */
 .nav-toggle {
 position: fixed;
-top: calc(10px + env(safe-area-inset-top));
-right: calc(8px + env(safe-area-inset-right));
-z-index: 140;
+top: 0;
+right: 0;
+z-index: 130;
 display: flex;
 align-items: center;
 justify-content: center;
-width: 46px;
-height: min(340px, 66vh);
-margin: 0;
-border: 1px solid rgba(199, 216, 233, 0.22);
-border-radius: 23px;
-background: linear-gradient(180deg, #143157 0%, #0A1C37 62%, #08152b 100%);
-box-shadow: 0 10px 26px rgba(4, 12, 26, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+width: 62px;
+height: 62px;
+margin-right: env(safe-area-inset-right);
 cursor: pointer;
-transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
-.nav-toggle:hover { border-color: rgba(199, 216, 233, 0.5); }
 .nav-toggle input {
 position: absolute;
 width: 1px;
@@ -365,83 +350,86 @@ height: 1px;
 opacity: 0;
 pointer-events: none;
 }
-
-/* 窄条上的文字：竖排；收起时 “MENU”，展开后 “CLOSE” */
 .nav-toggle-btn {
 display: flex;
-align-items: center;
+flex-direction: column;
 justify-content: center;
-width: 100%;
-height: 100%;
-pointer-events: none;
+align-items: center;
+gap: 5px;
+width: 40px;
+height: 40px;
+border-radius: 8px;
+cursor: pointer;
 }
-.nav-toggle-btn span { display: none; }
-.nav-toggle-btn::before,
-.nav-toggle-btn::after {
-writing-mode: vertical-rl;
-text-orientation: mixed;
-white-space: nowrap;
-font-family: 'Helvetica Bold', sans-serif;
-font-size: 12px;
-line-height: 1;
-letter-spacing: 3px;
-text-transform: uppercase;
-color: #cfe0f2;
-transition: color 0.3s ease;
-}
-.nav-toggle-btn::before { content: "MENU"; }
-.nav-toggle-btn::after { content: "CLOSE"; display: none; }
-.nav-toggle:hover .nav-toggle-btn::before,
-.nav-toggle:hover .nav-toggle-btn::after { color: #ffffff; }
-
-/* 展开状态：窄条文字换成 “CLOSE”（提示再点一下就收起） */
-.nav-toggle input:checked ~ .nav-toggle-btn::before { display: none; }
-.nav-toggle input:checked ~ .nav-toggle-btn::after { display: block; }
-
-/* 竖向菜单面板：出现于标题窄条左侧，从屏幕右侧滑入 */
-nav {
-position: fixed;
-top: 62px;
-right: calc(8px + env(safe-area-inset-right));
-bottom: 12px;
-left: auto;
+.nav-toggle-btn span {
 display: block;
-width: 74vw;
-max-width: 320px;
+width: 24px;
+height: 2px;
+border-radius: 2px;
+background-color: #cfe0f2;
+transition: transform 0.3s ease, opacity 0.25s ease, background-color 0.25s ease;
+}
+.nav-toggle:hover .nav-toggle-btn span { background-color: #ffffff; }
+
+/* 展开时三层线变为关闭“X”（此动画按要求保持原样） */
+.nav-toggle input:checked ~ .nav-toggle-btn span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle input:checked ~ .nav-toggle-btn span:nth-child(2) { opacity: 0; transform: scaleX(0.2); }
+.nav-toggle input:checked ~ .nav-toggle-btn span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* -----------------------------------------------------------------------
+   右上角悬浮弹窗（导航本体）：贴着汉堡按钮下方垂下的一列标题
+   第 1 / 2 次点击：opacity / visibility 由 checkbox 打开
+   第 3 次点击：checkbox 取消 → 弹窗收起（取消勾选前先让 data-stage 回 0，
+   因此收起的淡出 + 上滑过渡同样是可见的）
+   ----------------------------------------------------------------------- */
+nav {
+position: absolute;
+top: calc(100% + 8px);
+right: clamp(10px, 4vw, 16px);
+left: auto;
+bottom: auto;
+display: block;
+width: min(80vw, 288px);
+min-width: 0;
+max-width: 288px;
 height: auto;
-margin: 0;
-padding-bottom: env(safe-area-inset-bottom);
+max-height: calc(100vh - 62px - 26px - env(safe-area-inset-bottom));
+max-height: calc(100dvh - 62px - 26px - env(safe-area-inset-bottom));
+margin-right: 0;
+padding: 0;
 overflow-y: auto;
 overflow-x: hidden;
 -webkit-overflow-scrolling: touch;
 overscroll-behavior: contain;
-background-color: #0A1C37;
-border: 1px solid rgba(199, 216, 233, 0.16);
-border-radius: 16px;
-box-shadow: -12px 12px 34px rgba(4, 12, 26, 0.45);
+background-color: rgba(10, 28, 55, 0.97);
+border: 1px solid rgba(199, 216, 233, 0.22);
+border-radius: 14px;
+box-shadow: 0 18px 38px rgba(3, 10, 22, 0.45);
+-webkit-backdrop-filter: saturate(140%) blur(6px);
+backdrop-filter: saturate(140%) blur(6px);
 opacity: 0;
 visibility: hidden;
 pointer-events: none;
-transform: translateX(calc(100% + 26px));
-transition: transform 0.34s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.28s ease,
-visibility 0.34s ease;
-z-index: 130;
+transform: translateY(-10px) scale(0.97);
+transform-origin: top right;
+transition: opacity 0.28s ease, transform 0.28s ease, visibility 0.28s ease;
+z-index: 125;
 }
 
-/* 展开：由 .nav-toggle 内的 checkbox 触发（无需 JS），JS 只负责同步 body 锁滚动 */
+/* 展开：由 .nav-toggle 内的 checkbox 触发（三态由 data-stage 细化） */
 .nav-toggle input:checked ~ nav {
 opacity: 1;
 visibility: visible;
 pointer-events: auto;
-transform: translateX(0);
+transform: translateY(0) scale(1);
 }
 
-/* 大标题（一级菜单）：竖向排成一列 */
+/* 大标题（一级菜单）：自上而下逐行排列，每行一条细分隔线 */
 nav .nav-item {
 display: block;
 width: 100%;
 height: auto;
-border-bottom: 1px solid rgba(199, 216, 233, 0.10);
+border-bottom: 1px solid rgba(199, 216, 233, 0.12);
 }
 nav .nav-item:last-child { border-bottom: 0; }
 
@@ -451,19 +439,19 @@ align-items: center;
 justify-content: space-between;
 width: 100%;
 height: auto;
-padding: 17px 18px 17px 20px;
+padding: 15px 18px;
 font-size: 16px;
 letter-spacing: 1.4px;
 color: #cfe0f2;
 }
 nav .nav-item > a.nav-link:hover,
 nav .nav-item > a.nav-link.active {
-background-color: rgba(19, 45, 85, 0.9);
+background-color: transparent;
 color: #ffffff;
 }
-nav .nav-item:hover > a.nav-link { color: #ffffff; background-color: rgba(19, 45, 85, 0.9); }
+nav .nav-item:hover > a.nav-link { color: #ffffff; background-color: transparent; }
 
-/* 只有含小标题的大标题才显示箭头（提示可点开） */
+/* 只有含二级菜单的大标题才显示箭头 */
 nav .nav-item:has(.dropdown-menu) > a.nav-link::after {
 content: "";
 width: 8px;
@@ -476,79 +464,82 @@ transition: transform 0.25s ease, border-color 0.25s ease;
 }
 nav .nav-item:has(.dropdown-menu) > a.nav-link:hover::after { border-color: #ffffff; }
 
-/* 小标题（二级菜单）：第 2 次 click 后覆盖在大标题之上显示 */
+/* 第 2 次点击前（stage 0 / 1）：箭头一律收起；进入 stage 2 后统一转向 */
+.nav-toggle[data-stage="0"] nav .nav-item > a.nav-link::after,
+.nav-toggle[data-stage="1"] nav .nav-item > a.nav-link::after {
+transform: rotate(-45deg);
+border-color: #7f97b3;
+}
+.nav-toggle[data-stage="2"] nav .nav-item:has(.dropdown-menu) > a.nav-link::after {
+transform: rotate(45deg);
+border-color: #ffffff;
+}
+
+/* 二级菜单（小标题）：不再整屏铺开，而是在当前选中的大标题下方就地展开 */
 nav .dropdown-menu {
-position: absolute;
-top: 0;
-right: 0;
-bottom: 0;
-left: 0;
+position: static;
+top: auto;
+right: auto;
+bottom: auto;
+left: auto;
 width: 100%;
 min-width: 0;
 max-height: none;
-overflow-y: auto;
-overflow-x: hidden;
--webkit-overflow-scrolling: touch;
-background-color: #0e2444;
+overflow: visible;
+background-color: rgba(9, 25, 50, 0.45);
 border-radius: 0;
 box-shadow: none;
-z-index: 5;
+transform: none;
+display: none;
+z-index: 1;
 }
 
-/* 小标题列表顶部：当前所属大标题的标题栏（JS 插入的返回按钮，点击即回到大标题） */
-nav .submenu-back {
-display: flex;
-align-items: center;
-gap: 9px;
-width: 100%;
-padding: 15px 18px;
-border: 0;
-border-bottom: 1px solid rgba(199, 216, 233, 0.14);
-background-color: #132D55;
-color: #cfe0f2;
-font-family: 'Helvetica Bold', sans-serif;
-font-size: 11px;
-letter-spacing: 1.6px;
-text-transform: uppercase;
-cursor: pointer;
-}
-nav .submenu-back:hover { color: #ffffff; background-color: #173461; }
-nav .submenu-back i {
-width: 7px;
-height: 7px;
-border-left: 2px solid currentColor;
-border-bottom: 2px solid currentColor;
-transform: rotate(45deg);
+/* 进入 stage 2（第 2 次点击）后，弹窗内的小标题随 data-stage 逐个铺开 */
+.nav-toggle input:checked[data-stage="2"] ~ nav .nav-item > .dropdown-menu {
+display: block;
+opacity: 1;
+visibility: visible;
+transform: none;
+animation: navSubmenuIn 0.24s ease;
 }
 
-/* 小标题（二级菜单项） */
+@keyframes navSubmenuIn {
+from { opacity: 0; transform: translateY(-5px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+/* 弹窗内不需要“返回”按钮：再点一次汉堡即可整体收起 */
+nav .submenu-back { display: none; }
+
+/* 小标题（二级菜单项）：逐行排列，左侧留出缩进与大标题区分 */
 nav .dropdown-item {
 justify-content: flex-start;
 width: 100%;
-padding: 14px 18px;
+padding: 11px 18px 11px 30px;
 font-size: 14px;
 line-height: 1.4;
 letter-spacing: 0.2px;
 text-align: left;
+color: #9fb8d0;
 background-color: transparent;
-border-bottom: 1px solid rgba(199, 216, 233, 0.08);
+border-bottom: 1px solid rgba(199, 216, 233, 0.06);
 }
+nav .dropdown-item:last-child { border-bottom: 0; }
 nav .dropdown-item:hover,
 nav .dropdown-item:active {
-background-color: #1b3a6b;
+background-color: rgba(19, 45, 85, 0.92);
 color: #ffffff;
 }
-nav .dropdown-item:hover::before { opacity: 1; }
+nav .dropdown-item::before { display: none; }
+nav .dropdown-item:hover::before { opacity: 0; }
 
-/* 遮罩：点击窄条/面板以外的区域同样收起（整屏覆盖，含页眉区域） */
+/* 遮罩：整屏覆盖，点空白处同样可以收起弹窗（页眉与汉堡按钮在遮罩之上，保持可点） */
 body.menu-open .nav-backdrop {
 display: block;
 position: fixed;
 inset: 0;
-z-index: 120;
-background-color: rgba(4, 12, 26, 0.42);
--webkit-backdrop-filter: blur(1.5px);
-backdrop-filter: blur(1.5px);
+z-index: 110;
+background-color: rgba(4, 12, 26, 0.45);
 }
 }
 
@@ -624,23 +615,23 @@ word-break: break-word;
 /* ---------- 超窄屏（<= 420px）进一步压缩 ---------- */
 @media (max-width: 420px) {
 .logo { height: 30px; }
-.nav-toggle { width: 40px; border-radius: 20px; height: min(300px, 62vh); }
-.nav-toggle-btn::before,
-.nav-toggle-btn::after { font-size: 11px; letter-spacing: 2px; }
-nav { width: 78vw; max-width: 290px; }
-nav .nav-item > a.nav-link { padding: 15px 16px; font-size: 15px; }
-nav .dropdown-item { padding: 12px 16px; font-size: 13px; }
+nav {
+width: min(86vw, 262px);
+max-width: 262px;
+right: 8px;
+}
+nav .nav-item > a.nav-link { padding: 13px 15px; font-size: 15px; }
+nav .dropdown-item { padding: 10px 15px 10px 26px; font-size: 13px; }
 .footer-logo { max-height: 44px; max-width: 28%; }
 .footer-social img { width: 34px; height: 34px; padding: 6px; }
 .footer-address { font-size: 14px; }
 }
 
-/* ---------- 横屏手机：收紧菜单的纵向留白，窄条改为横向不占满 ---------- */
+/* ---------- 横屏手机：收紧悬浮弹窗的纵向留白 ---------- */
 @media (max-width: 1024px) and (orientation: landscape) and (max-height: 480px) {
-.nav-toggle { height: min(240px, 56vh); }
-nav { top: 54px; bottom: 8px; }
-nav .nav-item > a.nav-link { padding: 12px 18px; }
-nav .dropdown-item { padding: 11px 18px; }
+nav { max-height: calc(100vh - 62px - 18px); max-height: calc(100dvh - 62px - 18px); }
+nav .nav-item > a.nav-link { padding: 11px 16px; }
+nav .dropdown-item { padding: 9px 16px 9px 26px; }
 footer { padding-top: 28px; padding-bottom: 28px; }
 }
 
