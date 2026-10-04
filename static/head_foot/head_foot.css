@@ -331,6 +331,7 @@ padding-right: max(16px, env(safe-area-inset-right));
 height: 34px;
 max-width: 46vw;
 margin-left: 0;
+left: 10%;
 }
 
 /* 汉堡按钮：固定在页眉右侧 */
