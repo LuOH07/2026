@@ -797,7 +797,7 @@ display: none !important;
 
 /* ---------- 8.4 首屏 Hero：把 PC 构图整体等比例缩放搬过来 ---------- */
 .title-header-wrapper {
-height: clamp(380px, 100vw, 100vh);
+height: max(300px, min(100vh, calc(81vw + 38px)));
 min-height: 0;
 }
 
@@ -830,10 +830,11 @@ min-width: 0;
 opacity: 1;
 }
 
-/* 装饰：右下 DNA —— PC: right 5vw / bottom 0 / scale(1.6) / 22vw */
+/* 装饰：右下 DNA —— 改为跟随引言定位，随下方留白压缩同步上移
+   （bottom = 原 48px@390 + 本次压缩量 37.2px = 5.9%H + 2.1vw） */
 .bottom-right-dna-wrapper {
 right: 5vw;
-bottom: 0;
+bottom: calc(5.9% + 2.1vw);
 width: 22vw;
 max-width: none;
 transform: scale(1.6);
@@ -842,7 +843,7 @@ opacity: 0.45;                           /* PC 值 */
 
 
 .center-image-wrapper {
-top: 33.04%;
+top: 40.8%;
 left: 50%;
 max-width: 50.8vw;
 max-height: none;
@@ -858,9 +859,11 @@ aspect-ratio: 2336 / 824;                /* 素材固有比例 2.835:1 */
 object-fit: contain;
 }
 
-/* 中央引言：居中，纵向对齐到期中央图片的正下方 */
+/* 中央引言：居中，纵向紧贴中央图片正下方
+   （图片底边 = 40.8%H + 50.8vw/2.835/2 = 43.2% + 8.96vw，取 38.6% + 13.6vw
+   使文字与图片下沿保持约 1.7vw 间距，同时屏幕底部留白减半） */
 .center-description-wrapper {
-top: calc(37% + 11.7vw);
+top: calc(38.6% + 13.6vw);
 width: 86%;
 max-width: 640px;
 transform: translateX(-50%);
@@ -868,7 +871,7 @@ transform: translateX(-50%);
 
 .center-description-text {
 font-size: clamp(0.95rem, 1.6vw, 1.55rem);
-line-height: 1.68;
+line-height: 1.52;
 }
 
 /* PC 的 <br> 是为 1440 宽定的断行位置，窄屏去掉才能自然折行 */
