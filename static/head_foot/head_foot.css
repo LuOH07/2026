@@ -314,19 +314,25 @@ transform: none;
 /* ---------- 移动端：页眉 / 右上角悬浮弹窗 ---------- */
 @media (max-width: 1024px) {
 
-/* 页眉：贴合屏幕宽度，只留 logo + 汉堡按钮 */
+/* 页眉：贴合屏幕宽度，只留 logo + 汉堡按钮
+   （position: relative 仅为移动端 logo 的 30% 定位提供参照，桌面端不受影响） */
 header {
+position: relative;
 height: 62px;
 padding: 0 16px;
 padding-left: max(16px, env(safe-area-inset-left));
 padding-right: max(16px, env(safe-area-inset-right));
 }
 
+/* logo：移动端固定在页眉左侧 30% 处（以自身中心对齐 30% 分位） */
 .logo {
+position: absolute;
+top: 50%;
+left: 30%;
+transform: translate(-50%, -50%);
 height: 34px;
 max-width: 46vw;
 margin-left: 0;
-left: 30%;
 }
 
 /* 汉堡按钮：固定在页眉右上角（形变动画保持原样） */
