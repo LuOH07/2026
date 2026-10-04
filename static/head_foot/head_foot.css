@@ -315,7 +315,7 @@ transform: none;
 @media (max-width: 1024px) {
 
 /* 页眉：贴合屏幕宽度，只留 logo + 汉堡按钮
-   （position: relative 仅为移动端 logo 的 30% 定位提供参照，桌面端不受影响） */
+   （position: relative 仅为移动端 logo 的 20% 定位提供参照，桌面端不受影响） */
 header {
 position: relative;
 height: 62px;
@@ -324,11 +324,11 @@ padding-left: max(16px, env(safe-area-inset-left));
 padding-right: max(16px, env(safe-area-inset-right));
 }
 
-/* logo：移动端固定在页眉左侧 30% 处（以自身中心对齐 30% 分位） */
+/* logo：移动端固定在页眉左侧 20% 处（以自身中心对齐 20% 分位） */
 .logo {
 position: absolute;
 top: 50%;
-left: 30%;
+left: 20%;
 transform: translate(-50%, -50%);
 height: 34px;
 max-width: 46vw;
@@ -377,10 +377,12 @@ transition: transform 0.3s ease, opacity 0.25s ease, background-color 0.25s ease
 }
 .nav-toggle:hover .nav-toggle-btn span { background-color: #ffffff; }
 
-/* 展开时三层线变为关闭“X”（此动画按要求保持原样） */
-.nav-toggle input:checked ~ .nav-toggle-btn span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.nav-toggle input:checked ~ .nav-toggle-btn span:nth-child(2) { opacity: 0; transform: scaleX(0.2); }
-.nav-toggle input:checked ~ .nav-toggle-btn span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+/* 展开时三层线变为关闭“X”（此动画按要求保持原样）
+   注意：checkbox 位于 .nav-toggle（label）内部，与 nav 并非兄弟节点，
+   因此状态源只能用 .nav-toggle:has(input:checked)，不能用 input ~ nav */
+.nav-toggle:has(input:checked) .nav-toggle-btn span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle:has(input:checked) .nav-toggle-btn span:nth-child(2) { opacity: 0; transform: scaleX(0.2); }
+.nav-toggle:has(input:checked) .nav-toggle-btn span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 /* -----------------------------------------------------------------------
    右上角悬浮弹窗（导航本体）：贴着汉堡按钮下方垂下的一列标题
@@ -422,8 +424,8 @@ transition: opacity 0.28s ease, transform 0.28s ease, visibility 0.28s ease;
 z-index: 125;
 }
 
-/* 展开：由 .nav-toggle 内的 checkbox 触发（三态由 data-stage 细化） */
-.nav-toggle input:checked ~ nav {
+/* 展开：由 .nav-toggle（label）内的 checkbox 触发（三态由 data-stage 细化） */
+.nav-toggle:has(input:checked) ~ nav {
 opacity: 1;
 visibility: visible;
 pointer-events: auto;
@@ -500,8 +502,9 @@ display: none;
 z-index: 1;
 }
 
-/* 进入 stage 2（第 2 次点击）后，弹窗内的小标题随 data-stage 逐个铺开 */
-.nav-toggle input:checked[data-stage="2"] ~ nav .nav-item > .dropdown-menu {
+/* 进入 stage 2（第 2 次点击）后，弹窗内的小标题逐行铺开
+   （data-stage 写在 .nav-toggle 这个 label 上，checkbox 在其内部，故用 :has 判断勾选） */
+.nav-toggle[data-stage="2"]:has(input:checked) ~ nav .nav-item > .dropdown-menu {
 display: block;
 opacity: 1;
 visibility: visible;
@@ -539,12 +542,14 @@ color: #ffffff;
 nav .dropdown-item::before { display: none; }
 nav .dropdown-item:hover::before { opacity: 0; }
 
-/* 遮罩：整屏覆盖，点空白处同样可以收起弹窗（页眉与汉堡按钮在遮罩之上，保持可点） */
+/* 遮罩：整屏覆盖，点空白处同样可以收起弹窗。
+   注意 z-index 必须低于页眉（header 为 100），否则会盖住汉堡按钮，
+   第 2 / 3 次点击就会落到遮罩上而无法展开小标题或收起弹窗。 */
 body.menu-open .nav-backdrop {
 display: block;
 position: fixed;
 inset: 0;
-z-index: 110;
+z-index: 90;
 background-color: rgba(4, 12, 26, 0.45);
 }
 }

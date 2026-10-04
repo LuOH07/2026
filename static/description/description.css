@@ -907,10 +907,11 @@ margin-right: 5%;
 height: 4.2vh;
 }
 
-.heading-1::before { width: 6.5vw; }
-.heading-2::before { width: 8.5vw; }
-.heading-3::before { width: 10.5vw; }
-.heading-reference::before { width: 6.5vw; }
+/* 装饰矩形加长（原 6.5 / 8.5 / 10.5vw 偏短），并保留 H1 < H2 < H3 的长度区隔 */
+.heading-1::before { width: 10.5vw; }
+.heading-2::before { width: 14.5vw; }
+.heading-3::before { width: 18.5vw; }
+.heading-reference::before { width: 10.5vw; }
 
 .heading-1 {
 font-size: 25px;
