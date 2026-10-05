@@ -770,17 +770,20 @@ filter: drop-shadow(0 0 6px rgba(136, 216, 177, 0.6));
 ======================================================== */
 @media (max-width: 820px) {
 
-/* ---------- 8.0 基准量：首屏标题图片在窄屏的实际高度 ----------
-   标题宽 = 78vw（见 8.4 .center-image-wrapper），素材固有比例 2.835:1
-   → 标题高 ≈ 78vw / 2.835 ≈ 27.5vw。
-   下面装饰元素按“标题高的百分比”位移时统一引用该变量，
-   以后调整只改百分比即可；若改动标题宽度，这里要同步重算。
-   注：8.4 的 scale(1.155) 只放大显示、不计入此基准，
-   故屏幕上量到的标题高 ≈ 27.5vw × 1.155 ≈ 31.8vw
-   （若要按屏幕显示高度取百分比，把系数再乘 1.155 即可）。 */
-:root {
---hero-title-h: 27.5vw;
-}
+/* ---------- 8.0 首屏几何基准与装饰目标位置 ----------
+   与 8.4 共用同一套公式（vw = 视口宽 / 100）：
+     标题图片尺寸：宽 78vw，固有比例 2.835:1 → 高 ≈ 27.5vw（显示时再 ×1.155 放大）
+     标题竖直中心 = 92px + 13.75vw        （页眉 62px + 30px 空档 + 标题半径）
+     引言文字顶边 = 96px + 43.3vw         （标题下边缘再往下约 24px）
+     引言文字块：宽 86%、最宽 640px、水平居中
+                 → 其右边界距首屏右边 = max(7vw, (100vw - 640px) / 2)
+
+   三个装饰的目标位置：
+     左侧 DNA  竖直中心 对齐 标题竖直中心
+     右上蛋白  右上角   对齐 引言文字块右上角
+     右下 DNA  右下角   对齐 引言文字块右下角
+   文字块高度随换行在 3~5 行之间变化，无法用 vw 公式表达，
+   故右下 DNA 的底边由 description.js 按实测写入（CSS 给的是无 JS 时的近似值）。 */
 
 /* ---------- 8.1 正文主体：左右边界改为页面宽度的 4% 与 96% ---------- */
 .main-container {
@@ -827,23 +830,24 @@ display: none !important;
 align-items: flex-start;
 }
 
-/* 装饰：左侧 DNA —— 继承 PC 的竖直基准位置，再下移“标题高的 30%”
-   （标题高 = var(--hero-title-h) ≈ 27.5vw → 下移 8.25vw；
-     基准 top 仍为 PC 的 calc(44% + 7.5vw)，随屏宽按 vw 等比缩放） */
+/* 装饰：左侧 DNA —— 竖直中心对齐“整个标题”的竖直中心
+   .left-dna-wrapper 自带 translateY(-50%)，元素自身的竖直中心正好落在 top 上，
+   因此 top 直接取 .center-image-wrapper 的 top（= 标题中心）即可精确对齐。 */
 .left-dna-wrapper {
 left: -6vw;                              /* PC: -6vw */
-top: calc(44% + 7.5vw + var(--hero-title-h) * 0.30);
+top: calc(92px + 13.75vw);               /* = 标题竖直中心 */
 width: 25vw;                             /* PC: 25vw；max-width 320px 在窄屏不触发 */
 max-width: none;
 transform: translateY(-50%) scale(2.5);  /* PC 的缩放与原点原样保留 */
 opacity: 0.3;                            /* PC 值 */
 }
 
-/* 装饰：右上蛋白 —— 基准贴住“下方介绍文字”顶边（calc(96px + 43.3vw)），再上移“标题高的 5%”
-   （27.5vw × 0.05 = 1.375vw ≈ 5px @390 宽屏），右边界 ≈ 视口 93% → right: 7vw */
+/* 装饰：右上蛋白 —— 右上角对齐引言文字块的右上角
+   top   = 文字块顶边（与 .center-description-wrapper 同一公式）
+   right = 文字块右边界（宽 86% 居中、最宽 640px → max(7vw, (100vw - 640px) / 2)） */
 .right-protein-wrapper {
-right: 7vw;
-top: calc(96px + 43.3vw - var(--hero-title-h) * 0.05);
+right: max(7vw, calc((100vw - 640px) / 2));
+top: calc(96px + 43.3vw);                /* = 引言文字顶边 */
 width: 20vw;                             /* PC: 20vw；1440 下的 260px 上限窄屏不触发 */
 max-width: none;
 min-width: 0;
@@ -851,11 +855,12 @@ z-index: 2;                              /* 压在标题层之下，不遮挡文
 opacity: 1;
 }
 
-/* 装饰：右下 DNA —— 基准贴住“下方介绍文字”右下角（bottom: calc(22.2vw - 20px)），
-   元素以 bottom 定位，故“下移标题高的 5%”= bottom 再减 var(--hero-title-h) * 0.05 */
+/* 装饰：右下 DNA —— 右下角对齐引言文字块的右下角
+   transform-origin: bottom right 保证 scale(1.6) 后右下角位置不变，故右边界同蛋白；
+   底边由 description.js 写入“首屏底边 − 文字块底边”，这里给的是无 JS 时的近似值。 */
 .bottom-right-dna-wrapper {
-right: 7vw;
-bottom: calc(22.2vw - 20px - var(--hero-title-h) * 0.05);
+right: max(7vw, calc((100vw - 640px) / 2));
+bottom: calc(22.2vw - 20px);             /* 近似值，JS 会用实测值覆盖 */
 width: 22vw;
 max-width: none;
 transform: scale(1.6);
