@@ -781,7 +781,8 @@ filter: drop-shadow(0 0 6px rgba(136, 216, 177, 0.6));
    贴图宽度铺满首屏（左右两侧贴边、无留白），高度按素材比例自适应，
    首屏高度随贴图高度变化；原先由代码拼装并逐个定位的部件在移动端全部不渲染，
    对应的定位规则也一并删除。PC 端（>820px）布局完全不受影响。
-   若贴图导出时是从页眉下沿开始的，给 .title-header-wrapper 补 margin-top: 62px 即可。 */
+   页眉（head_foot.css：≤1024px 时高 62px）是 position: fixed 悬浮在页面顶部的，
+   故移动端首屏整体下移 62px，贴图正好从页眉下沿开始、不被遮挡。 */
 
 /* ---------- 8.1 正文主体：左右边界改为页面宽度的 4% 与 96% ---------- */
 .main-container {
@@ -812,6 +813,7 @@ display: none !important;
 .title-header-wrapper {
 height: auto;                            /* 首屏高度由贴图撑开 */
 min-height: 0;
+margin-top: 62px;                        /* 让开固定页眉（移动端高 62px），贴图不被遮挡 */
 }
 
 /* 贴图：铺满首屏宽度（与两侧对齐），高度自适应 */
