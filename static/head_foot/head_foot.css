@@ -314,9 +314,8 @@ transform: none;
 @media (max-width: 1024px) {
 
 /* 页眉：贴合屏幕宽度，只留 logo + 汉堡按钮
-   （position: relative 仅为移动端 logo 的 20% 定位提供参照，桌面端不受影响） */
+   注意不要在这里写 position（基础样式的 position:fixed 负责让页眉常驻页面顶部） */
 header {
-position: relative;
 height: 62px;
 padding: 0 16px;
 padding-left: max(16px, env(safe-area-inset-left));

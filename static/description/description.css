@@ -795,9 +795,13 @@ display: none !important;
 display: none !important;
 }
 
-/* ---------- 8.4 首屏 Hero：把 PC 构图整体等比例缩放搬过来 ---------- */
+/* ---------- 8.4 首屏 Hero：标题与装饰整体上移，页眉下方只留约 30px ----------
+   版面换算（W = 视口宽，vw = W/100）：
+     标题宽 = 78vw，固有比例 2.835:1 → 标题高 h ≈ 27.5vw
+     标题中心需落在 92px + h/2 处，才能让标题上边缘正好在页眉（62px）下方 30px
+     于是 top = 92px + 13.75vw（随屏宽等比缩放，任何手机宽度下都是 30px 空档） */
 .title-header-wrapper {
-height: max(300px, min(100vh, calc(81vw + 38px)));
+height: max(344px, min(100vh, calc(90vw + 20px)));   /* 容住上移后的标题 + 引言 + 滚动提示，避免首屏被截断 */
 min-height: 0;
 }
 
@@ -811,10 +815,10 @@ display: none !important;
 align-items: flex-start;
 }
 
-/* 装饰：左侧 DNA / 右上蛋白 —— 尺寸、位移、透明度全部对齐 PC 比例 */
+/* 装饰：随标题一起上移 */
 .left-dna-wrapper {
 left: -6vw;                              /* PC: -6vw */
-top: 51.28%;
+top: calc(92px + 13.75vw);               /* 与标题同一水平中线 */
 width: 25vw;                             /* PC: 25vw；max-width 320px 在窄屏不触发 */
 max-width: none;
 transform: translateY(-50%) scale(2.5);  /* PC 的缩放与原点原样保留 */
@@ -823,18 +827,17 @@ opacity: 0.3;                            /* PC 值 */
 
 .right-protein-wrapper {
 right: 3vw;                              /* PC: right 3vw */
-top: 16.2%;                              /* PC: 9vh @900px 高视口 = Hero 高度的 9%，此处按比例 */
+top: calc(72px + 2vw);                   /* 上移到标题顶侧，与标题同处首屏上半部 */
 width: 20vw;                             /* PC: 20vw；1440 下的 260px 上限窄屏不触发 */
 max-width: none;
 min-width: 0;
 opacity: 1;
 }
 
-/* 装饰：右下 DNA —— 改为跟随引言定位，随下方留白压缩同步上移
-   （bottom = 原 48px@390 + 本次压缩量 37.2px = 5.9%H + 2.1vw） */
+/* 装饰：右下 DNA —— 跟随引言定位，随标题上移同步大幅上移 */
 .bottom-right-dna-wrapper {
 right: 5vw;
-bottom: calc(5.9% + 2.1vw);
+bottom: calc(24% + 2.1vw);
 width: 22vw;
 max-width: none;
 transform: scale(1.6);
@@ -843,9 +846,10 @@ opacity: 0.45;                           /* PC 值 */
 
 
 .center-image-wrapper {
-top: calc(31% - 30px);                   /* 上移约 145px：让标题与固定页眉（62px）之间只留约 30px */
+top: calc(92px + 13.75vw);               /* 页眉 62px + 30px 空档 + 标题半径 → 标题上边缘距页眉 30px */
 left: 50%;
-max-width: 50.8vw;
+width: 78vw;
+max-width: none;
 max-height: none;
 overflow: visible;
 transform: translate(-50%, -50%) scale(1.155);
@@ -860,7 +864,7 @@ object-fit: contain;
 }
 
 .center-description-wrapper {
-top: calc(38.6% + 12.6vw);   
+top: calc(96px + 43.3vw);                /* 标题下边缘（92px + 27.5vw）再往下约 24px */
 width: 86%;
 max-width: 640px;
 transform: translateX(-50%);
