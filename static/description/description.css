@@ -835,7 +835,7 @@ align-items: flex-start;
    因此 top 直接取 .center-image-wrapper 的 top（= 标题中心）即可精确对齐。 */
 .left-dna-wrapper {
 left: -6vw;                              /* PC: -6vw */
-top: calc(92px + 53.75vw);               /* = 标题竖直中心 */
+top: calc(122px + 53.75vw);               /* = 标题竖直中心 */
 width: 25vw;                             /* PC: 25vw；max-width 320px 在窄屏不触发 */
 max-width: none;
 transform: translateY(-50%) scale(2.5);  /* PC 的缩放与原点原样保留 */
@@ -847,7 +847,7 @@ opacity: 0.3;                            /* PC 值 */
    right = 文字块右边界（宽 86% 居中、最宽 640px → max(7vw, (100vw - 640px) / 2)） */
 .right-protein-wrapper {
 right: max(7vw, calc((100vw - 640px) / 2));
-top: calc(96px + 13.3vw);                /* = 引言文字顶边 */
+top: calc(126px + 13.3vw);                /* = 引言文字顶边 */
 width: 20vw;                             /* PC: 20vw；1440 下的 260px 上限窄屏不触发 */
 max-width: none;
 min-width: 0;
@@ -860,7 +860,7 @@ opacity: 1;
    底边由 description.js 写入“首屏底边 − 文字块底边”，这里给的是无 JS 时的近似值。 */
 .bottom-right-dna-wrapper {
 right: max(7vw, calc((100vw - 640px) / 2));
-bottom: calc(2.2vw - 20px);             /* 近似值，JS 会用实测值覆盖 */
+bottom: calc(2.2vw);             /* 近似值，JS 会用实测值覆盖 */
 width: 22vw;
 max-width: none;
 transform: scale(1.6);
