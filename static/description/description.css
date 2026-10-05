@@ -232,6 +232,11 @@ object-fit: contain;
 display: block;
 }
 
+/* 移动端整块首屏贴图：PC 端不渲染，仅移动端显示（移动端规则见文末第 8.4 节） */
+.mobile-hero-image {
+display: none;
+}
+
 /* 中央描述文案 */
 .center-description-wrapper {
 position: absolute;
@@ -770,20 +775,13 @@ filter: drop-shadow(0 0 6px rgba(136, 216, 177, 0.6));
 ======================================================== */
 @media (max-width: 820px) {
 
-/* ---------- 8.0 首屏几何基准与装饰目标位置 ----------
-   与 8.4 共用同一套公式（vw = 视口宽 / 100）：
-     标题图片尺寸：宽 78vw，固有比例 2.835:1 → 高 ≈ 27.5vw（显示时再 ×1.155 放大）
-     标题竖直中心 = 92px + 13.75vw        （页眉 62px + 30px 空档 + 标题半径）
-     引言文字顶边 = 96px + 43.3vw         （标题下边缘再往下约 24px）
-     引言文字块：宽 86%、最宽 640px、水平居中
-                 → 其右边界距首屏右边 = max(7vw, (100vw - 640px) / 2)
-
-   三个装饰的目标位置：
-     左侧 DNA  竖直中心 对齐 标题竖直中心
-     右上蛋白  右上角   对齐 引言文字块右上角
-     右下 DNA  右下角   对齐 引言文字块右下角
-   文字块高度随换行在 3~5 行之间变化，无法用 vw 公式表达，
-   故右下 DNA 的底边由 description.js 按实测写入（CSS 给的是无 JS 时的近似值）。 */
+/* ---------- 8.0 移动端首屏：整块贴图 ----------
+   移动端首屏（标题 + DNA / 蛋白装饰 + 引言文字）改用一张设计稿贴图：
+       https://static.igem.wiki/teams/6059/wiki/move/description.avif
+   贴图宽度铺满首屏（左右两侧贴边、无留白），高度按素材比例自适应，
+   首屏高度随贴图高度变化；原先由代码拼装并逐个定位的部件在移动端全部不渲染，
+   对应的定位规则也一并删除。PC 端（>820px）布局完全不受影响。
+   若贴图导出时是从页眉下沿开始的，给 .title-header-wrapper 补 margin-top: 62px 即可。 */
 
 /* ---------- 8.1 正文主体：左右边界改为页面宽度的 4% 与 96% ---------- */
 .main-container {
@@ -810,108 +808,37 @@ display: none !important;
 display: none !important;
 }
 
-/* ---------- 8.4 首屏 Hero：标题与装饰整体上移，页眉下方只留约 30px ----------
-   版面换算（W = 视口宽，vw = W/100）：
-     标题宽 = 78vw，固有比例 2.835:1 → 标题高 h ≈ 27.5vw
-     标题中心需落在 92px + h/2 处，才能让标题上边缘正好在页眉（62px）下方 30px
-     于是 top = 92px + 13.75vw（随屏宽等比缩放，任何手机宽度下都是 30px 空档） */
+/* ---------- 8.4 首屏 Hero：移动端只渲染整块贴图 ---------- */
 .title-header-wrapper {
-height: max(344px, min(100vh, calc(90vw + 20px)));   /* 容住上移后的标题 + 引言 + 滚动提示，避免首屏被截断 */
+height: auto;                            /* 首屏高度由贴图撑开 */
 min-height: 0;
 }
 
-/* 背景网格（canvas 透视网格）移动端整体去掉，仅保留白底与装饰元素 */
-#gridCanvas {
+/* 贴图：铺满首屏宽度（与两侧对齐），高度自适应 */
+.mobile-hero-image {
+display: block;
+width: 100%;
+height: auto;
+}
+
+/* 代码拼装的部件在移动端全部不渲染：
+   透视网格、左 DNA、蛋白、右下 DNA、标题图、引言文字块、
+   SCROLL TO EXPLORE、底部圆点 —— 它们都已经包含在贴图里。 */
+#gridCanvas,
+.left-dna-wrapper,
+.right-protein-wrapper,
+.bottom-right-dna-wrapper,
+.center-image-wrapper,
+.center-description-wrapper,
+.scroll-explore-wrapper,
+.bottom-dots-decor {
 display: none !important;
 }
 
-/* PC 用 Grid 垂直居中；窄屏改为从顶部起排，便于按比例摆放 */
+/* 容器改为普通流：唯一内容就是贴图，高度随贴图自然撑开 */
 .grid-container {
-align-items: flex-start;
-}
-
-/* 装饰：左侧 DNA —— 竖直中心对齐“整个标题”的竖直中心
-   .left-dna-wrapper 自带 translateY(-50%)，元素自身的竖直中心正好落在 top 上，
-   因此 top 直接取 .center-image-wrapper 的 top（= 标题中心）即可精确对齐。 */
-.left-dna-wrapper {
-left: -6vw;                              /* PC: -6vw */
-top: calc(122px + 53.75vw);               /* = 标题竖直中心 */
-width: 25vw;                             /* PC: 25vw；max-width 320px 在窄屏不触发 */
-max-width: none;
-transform: translateY(-50%) scale(2.5);  /* PC 的缩放与原点原样保留 */
-opacity: 0.3;                            /* PC 值 */
-}
-
-/* 装饰：右上蛋白 —— 右上角对齐引言文字块的右上角
-   top   = 文字块顶边（与 .center-description-wrapper 同一公式）
-   right = 文字块右边界（宽 86% 居中、最宽 640px → max(7vw, (100vw - 640px) / 2)） */
-.right-protein-wrapper {
-right: max(7vw, calc((100vw - 640px) / 2));
-top: calc(126px + 13.3vw);                /* = 引言文字顶边 */
-width: 20vw;                             /* PC: 20vw；1440 下的 260px 上限窄屏不触发 */
-max-width: none;
-min-width: 0;
-z-index: 2;                              /* 压在标题层之下，不遮挡文字 */
-opacity: 1;
-}
-
-/* 装饰：右下 DNA —— 右下角对齐引言文字块的右下角
-   transform-origin: bottom right 保证 scale(1.6) 后右下角位置不变，故右边界同蛋白；
-   底边由 description.js 写入“首屏底边 − 文字块底边”，这里给的是无 JS 时的近似值。 */
-.bottom-right-dna-wrapper {
-right: max(7vw, calc((100vw - 640px) / 2));
-bottom: calc(2.2vw);             /* 近似值，JS 会用实测值覆盖 */
-width: 22vw;
-max-width: none;
-transform: scale(1.6);
-transform-origin: bottom right;          /* 缩放后仍贴住右下角 */
-z-index: 2;
-opacity: 0.45;                           /* PC 值 */
-}
-
-
-.center-image-wrapper {
-top: calc(92px + 13.75vw);               /* 页眉 62px + 30px 空档 + 标题半径 → 标题上边缘距页眉 30px */
-left: 50%;
-width: 78vw;
-max-width: none;
-max-height: none;
-overflow: visible;
-transform: translate(-50%, -50%) scale(1.155);
-}
-
-.title-image {
-width: 100%;
+display: block;
 height: auto;
-max-height: none;
-aspect-ratio: 2336 / 824;                /* 素材固有比例 2.835:1 */
-object-fit: contain;
-}
-
-.center-description-wrapper {
-top: calc(96px + 43.3vw);                /* 标题下边缘（92px + 27.5vw）再往下约 24px */
-width: 86%;
-max-width: 640px;
-transform: translateX(-50%);
-}
-
-.center-description-text {
-font-size: clamp(0.95rem, 1.6vw, 1.55rem);
-line-height: 1.52;
-}
-
-/* PC 的 <br> 是为 1440 宽定的断行位置，窄屏去掉才能自然折行 */
-.center-description-text br {
-display: none;
-}
-
-/* 移动端删除 SCROLL TO EXPLORE 一行 */
-.scroll-explore-wrapper {
-display: none;
-}
-
-.bottom-dots-decor {
-opacity: 0.2;
 }
 
 /* ---------- 8.5 正文标题：缩小字号，箭头改用 vw 定宽 ---------- */

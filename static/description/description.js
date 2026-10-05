@@ -198,41 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* -------------------------------------------------------------
-     * 1.5 首屏装饰定位（仅移动端；目标位置见 description.css 第 8.0 节）
-     *   左侧 DNA  竖直中心 = 标题竖直中心   —— CSS 公式已精确，这里不再介入
-     *   右上蛋白  右上角   = 文字块右上角   —— CSS 公式已精确，这里不再介入
-     *   右下 DNA  右下角   = 文字块右下角   —— 文字块高度随折行在 3~5 行间变化，
-     *                          无法用 vw 公式表达，故按实测的底边写入 bottom
-     * ------------------------------------------------------------- */
-    const heroWrapper = document.getElementById('heroWrapper');
-    const descWrapper = document.querySelector('.center-description-wrapper');
-    const bottomRightDna = document.querySelector('.bottom-right-dna-wrapper');
-
-    if (heroWrapper && descWrapper && bottomRightDna) {
-        const alignBottomRightDna = () => {
-            if (!isMobile()) {
-                bottomRightDna.style.bottom = '';   // 恢复 CSS 里的 PC 值
-                return;
-            }
-
-            // 装饰以 bottom 定位，包含块就是 .grid-container（= 首屏高度），
-            // 故 bottom = 首屏底边 − 文字块底边，即两者的右下角对齐
-            const heroRect = heroWrapper.getBoundingClientRect();
-            const descRect = descWrapper.getBoundingClientRect();
-            bottomRightDna.style.bottom = `${(heroRect.bottom - descRect.bottom).toFixed(2)}px`;
-        };
-
-        alignBottomRightDna();
-        window.addEventListener('load', alignBottomRightDna);
-        window.addEventListener('resize', alignBottomRightDna, { passive: true });
-
-        // 字体真正就位后文字折行可能变化，再对齐一次
-        if (document.fonts && document.fonts.ready) {
-            document.fonts.ready.then(alignBottomRightDna).catch(() => {});
-        }
-    }
-
-    /* -------------------------------------------------------------
      * 2. 侧边栏 TOC 目录构建与滚动跟随（含底边齐平与渐隐逻辑）
      * ------------------------------------------------------------- */
     const tocNav = document.getElementById('tocNav');
