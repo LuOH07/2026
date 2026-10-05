@@ -123,6 +123,61 @@
         }
         window.addEventListener('resize', reset);
         window.addEventListener('orientationchange', reset);
+
+        alignHeroDecor();
+        if (mobileQuery) {
+            if (mobileQuery.addEventListener) mobileQuery.addEventListener('change', alignHeroDecor);
+            else if (mobileQuery.addListener) mobileQuery.addListener(alignHeroDecor);
+        }
+        window.addEventListener('resize', alignHeroDecor);
+        window.addEventListener('orientationchange', alignHeroDecor);
+        window.addEventListener('load', alignHeroDecor);
+    }
+
+    /* =========================================================================
+       内容页首屏装饰对齐（仅窄屏，<= 820px）
+       把右上蛋白贴到“下方介绍文字”的右上角、右下 DNA 贴到它的右下角，
+       左侧 DNA 对齐“中心大标题 + 介绍文字”整体的竖直中心。
+       CSS 里给的是按屏宽估算的锚点，这里用文字的真实外框再修正一次，
+       因此换机型、换文案都仍然贴合；只记录一次初始位置并施加固定偏移，
+       重复触发（resize / orientationchange / load）不会叠加漂移。
+       ========================================================================= */
+    function alignHeroDecor() {
+        if (!window.matchMedia || !window.matchMedia('(max-width: 820px)').matches) return;
+
+        var text = document.querySelector('.center-description-text') ||
+                   document.querySelector('.center-description-wrapper');
+        var protein = document.querySelector('.right-protein-wrapper');
+        var dnaBR = document.querySelector('.bottom-right-dna-wrapper');
+        var leftDna = document.querySelector('.left-dna-wrapper');
+        var titleBox = document.querySelector('.center-image-wrapper') ||
+                       document.querySelector('.title-header-wrapper .title-image');
+        if (!text || !protein || !dnaBR) return;
+
+        var t = text.getBoundingClientRect();
+        var hero = document.querySelector('.title-header-wrapper');
+        var heroTop = hero ? hero.getBoundingClientRect().top : 0;
+
+        /* 右上蛋白：右边缘对齐文字右边界，上边缘对齐文字顶边 */
+        protein.style.right = 'auto';
+        protein.style.bottom = 'auto';
+        protein.style.left = Math.round(t.right - protein.offsetWidth) + 'px';
+        protein.style.top = Math.round(t.top - heroTop) + 'px';
+
+        /* 右下 DNA：右边缘对齐文字右边界，下边缘对齐文字底边 */
+        dnaBR.style.right = 'auto';
+        dnaBR.style.bottom = 'auto';
+        dnaBR.style.left = Math.round(t.right - dnaBR.offsetWidth) + 'px';
+        dnaBR.style.top = Math.round(t.bottom - heroTop - dnaBR.offsetHeight) + 'px';
+
+        /* 左侧 DNA：竖直居中于“中心大标题 + 下方介绍文字”整体
+           注意该元素带 scale(2.5) 变换，必须用实测高度（含缩放）计算半高 */
+        if (leftDna && titleBox) {
+            var ti = titleBox.getBoundingClientRect();
+            var targetCenter = (ti.top + t.bottom) / 2;
+            var half = (leftDna.getBoundingClientRect().height || leftDna.offsetHeight) / 2;
+            leftDna.style.top = Math.round((targetCenter - heroTop) - half) + 'px';
+        }
     }
 
     if (document.readyState === 'loading') {

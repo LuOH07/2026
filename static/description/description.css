@@ -815,38 +815,41 @@ display: none !important;
 align-items: flex-start;
 }
 
-/* 装饰：左侧 DNA —— 位于“标题 + 引言”整体的竖直中心
-   （标题中心 = 92px + 13.75vw；该整体中心 ≈ 首屏高 50% - 7vw，故取 50% - 7vw） */
+/* 装饰：左侧 DNA —— 位于“中心大标题 + 下方介绍文字”整体的竖直中心
+   （标题 92–380px、介绍文字 305–415px，整体中心约在 250px；随屏宽按 vw 等比缩放） */
 .left-dna-wrapper {
 left: -6vw;                              /* PC: -6vw */
-top: calc(50% - 7vw);
+top: calc(44% + 7.5vw);
 width: 25vw;                             /* PC: 25vw；max-width 320px 在窄屏不触发 */
 max-width: none;
 transform: translateY(-50%) scale(2.5);  /* PC 的缩放与原点原样保留 */
 opacity: 0.3;                            /* PC 值 */
 }
 
-/* 装饰：右上蛋白 —— 贴到引言文字的右上角
-   （引言文字右边界 ≈ 视口 93%，顶边 ≈ 首屏高度 26%，与 .center-description-wrapper 的定位同源） */
+/* 装饰：右上蛋白 —— 贴到“下方介绍文字”的右上角
+   介绍文字顶边 = calc(96px + 43.3vw)（与 .center-description-wrapper 同一公式），
+   右边界 ≈ 视口 93% → right: 7vw */
 .right-protein-wrapper {
-right: 3vw;                              /* PC: right 3vw */
-top: 26%;                                /* 与引言文字顶边齐平 */
+right: 7vw;
+top: calc(96px + 43.3vw);                /* 与介绍文字顶边齐平 */
 width: 20vw;                             /* PC: 20vw；1440 下的 260px 上限窄屏不触发 */
 max-width: none;
 min-width: 0;
-z-index: 2;                              /* 压在标题层之下，不遮挡标题文字 */
+z-index: 2;                              /* 压在标题层之下，不遮挡文字 */
 opacity: 1;
 }
 
-/* 装饰：右下 DNA —— 贴到引言文字的右下角 */
+/* 装饰：右下 DNA —— 贴到“下方介绍文字”的右下角
+   首屏高 = calc(90vw + 20px)，文字底边距首屏底 ≈ 文字顶边 + 文字高(≈25vw) 之后到首屏底的余量，
+   故 bottom = calc(18.5% + 6px) */
 .bottom-right-dna-wrapper {
-right: 5vw;
-bottom: 25%;                             /* 与引言文字底边齐平 */
+right: 7vw;
+bottom: calc(22.2vw - 20px);             /* 与介绍文字底边齐平（首屏底 − 文字底边） */
 width: 22vw;
 max-width: none;
 transform: scale(1.6);
 transform-origin: bottom right;          /* 缩放后仍贴住右下角 */
-z-index: 2;                              /* 同样不遮挡文字 */
+z-index: 2;
 opacity: 0.45;                           /* PC 值 */
 }
 
