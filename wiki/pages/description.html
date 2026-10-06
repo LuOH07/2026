@@ -10,6 +10,12 @@
 <header class="title-header-wrapper" id="heroWrapper">
     <div class="grid-container" id="heroGridContainer">
         <canvas id="gridCanvas"></canvas>
+
+        <!-- 移动端整块首屏贴图（标题 + DNA / 蛋白装饰 + 引言文字一体）：移动端只渲染它，
+             PC 端由 description.css 隐藏，见该文件第 8.0 / 8.4 节 -->
+        <img class="mobile-hero-image"
+             src="https://static.igem.wiki/teams/6059/wiki/move/description.avif"
+             alt="Description — STING: an international team of students, researchers, and innovators exploring the frontiers of bacterial genome engineering.">
         
         <!-- 左侧装饰 DNA (通过 asset-map.json 解析) -->
         <div class="left-dna-wrapper">
