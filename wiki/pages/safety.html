@@ -4,6 +4,8 @@
 
 {% block page_styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='description/description.css') }}">
+<!-- Safety 页差异样式：必须放在 description.css 之后，才能覆盖同名规则 -->
+<link rel="stylesheet" href="{{ url_for('static', filename='description/safety.css') }}">
 {% endblock %}
 
 {% block page_content %}

@@ -1,0 +1,17 @@
+/* ========================================================
+ Safety 页面专属样式覆盖
+ 本文件在 description.css 之后加载（见 wiki/pages/safety.html 的 page_styles），
+ 因此同选择器、同优先级的规则会覆盖 description.css 的写法。
+ 只存放 Safety 页与 Description 页的差异项，公共样式仍由 description.css 提供。
+======================================================== */
+
+/* ---------- 正文插图宽度：60% -> 50% ----------
+ description.css 中 .figure-image 的 max-width 为 60%，
+ 这里改为 50%，仅作用于 PC 端（>820px）；
+ 移动端（<=820px）description.css 中另有 max-width: 100% 的响应式规则，
+ 用 min-width 限定范围可避免误伤窄屏布局。 */
+@media (min-width: 821px) {
+    .figure-image {
+        max-width: 50%;
+    }
+}
