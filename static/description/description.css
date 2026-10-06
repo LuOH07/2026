@@ -379,9 +379,15 @@ letter-spacing: 0;
 line-height: 1.6;
 text-decoration: underline;
 text-underline-offset: 4px;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
+/* 一级 / 二级 / 三级标题统一允许换行：不再用 nowrap + 省略号，
+   长标题在侧边栏宽度内自动折成多行并完整显示 */
+white-space: normal;
+overflow: visible;
+text-overflow: clip;
+flex: 1 1 auto;
+min-width: 0;
+overflow-wrap: break-word;
+word-break: break-word;
 text-align: left;
 transition: color 0.25s ease, text-shadow 0.25s ease;
 }
@@ -413,7 +419,7 @@ box-shadow: 0 0 5px rgba(217, 210, 80, 0.6), 0 0 10px rgba(217, 210, 80, 0.35), 
 transform: scale(1.12);
 }
 
-/* 第二级标题：多行自动换行（覆盖 .toc-text 的 nowrap / 省略号） */
+/* 第二级标题：只改字号与字重；换行能力由 .toc-text 基础规则统一提供 */
 .toc-item-h2 .toc-text {
 color: #FFFFFF;
 font-family: 'Albertus Nova', -apple-system, sans-serif;
@@ -423,13 +429,6 @@ letter-spacing: 0;
 line-height: 1.6;
 text-decoration: none;
 text-align: left;
-white-space: normal;
-overflow: visible;
-text-overflow: clip;
-flex: 1 1 auto;
-min-width: 0;
-overflow-wrap: break-word;
-word-break: break-word;
 }
 
 .toc-triangle {
@@ -449,7 +448,7 @@ flex-shrink: 0;
 display: block;
 }
 
-/* 第三级标题：多行自动换行（覆盖 .toc-text 的 nowrap / 省略号） */
+/* 第三级标题：只改颜色与字号；换行能力由 .toc-text 基础规则统一提供 */
 .toc-item-h3 .toc-text {
 color: #72819A;
 font-family: 'Albertus Nova', -apple-system, sans-serif;
@@ -459,13 +458,6 @@ letter-spacing: 0;
 line-height: 1.6;
 text-decoration: none;
 text-align: left;
-white-space: normal;
-overflow: visible;
-text-overflow: clip;
-flex: 1 1 auto;
-min-width: 0;
-overflow-wrap: break-word;
-word-break: break-word;
 }
 
 .toc-item-h3.active .toc-text {
