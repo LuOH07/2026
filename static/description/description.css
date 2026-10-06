@@ -232,10 +232,15 @@ object-fit: contain;
 display: block;
 }
 
+/* 移动端整块首屏贴图：PC 端不渲染，仅移动端显示（移动端规则见文末第 8.4 节） */
+.mobile-hero-image {
+display: none;
+}
+
 /* 中央描述文案 */
 .center-description-wrapper {
 position: absolute;
-top: calc(52% + 5.5vh);
+top: calc(52% + 3.5vh);   /* 原 5.5vh：引言整体上移，靠近中央标题 */
 left: 50%;
 transform: translateX(-50%);
 width: 90%;
@@ -408,15 +413,23 @@ box-shadow: 0 0 5px rgba(217, 210, 80, 0.6), 0 0 10px rgba(217, 210, 80, 0.35), 
 transform: scale(1.12);
 }
 
+/* 第二级标题：多行自动换行（覆盖 .toc-text 的 nowrap / 省略号） */
 .toc-item-h2 .toc-text {
 color: #FFFFFF;
 font-family: 'Albertus Nova', -apple-system, sans-serif;
-font-size: 22px;
+font-size: 20px;
 font-weight: normal;
 letter-spacing: 0;
 line-height: 1.6;
 text-decoration: none;
 text-align: left;
+white-space: normal;
+overflow: visible;
+text-overflow: clip;
+flex: 1 1 auto;
+min-width: 0;
+overflow-wrap: break-word;
+word-break: break-word;
 }
 
 .toc-triangle {
@@ -436,15 +449,23 @@ flex-shrink: 0;
 display: block;
 }
 
+/* 第三级标题：多行自动换行（覆盖 .toc-text 的 nowrap / 省略号） */
 .toc-item-h3 .toc-text {
 color: #72819A;
 font-family: 'Albertus Nova', -apple-system, sans-serif;
-font-size: 20px;
+font-size: 18px;
 font-weight: normal;
 letter-spacing: 0;
 line-height: 1.6;
 text-decoration: none;
 text-align: left;
+white-space: normal;
+overflow: visible;
+text-overflow: clip;
+flex: 1 1 auto;
+min-width: 0;
+overflow-wrap: break-word;
+word-break: break-word;
 }
 
 .toc-item-h3.active .toc-text {
@@ -458,7 +479,7 @@ text-shadow: 0 0 5px rgba(217, 210, 80, 0.8), 0 0 10px rgba(217, 210, 80, 0.5);
 .main-container {
 margin-left: 17%;
 margin-right: 4%;
-margin-top: 17%;
+margin-top: 6%;   /* 原 17%：标题首屏与正文之间留白过大，压缩为一点点间隔 */
 margin-bottom: 10vh;
 padding-top: 48px;
 padding-bottom: 48px;
@@ -746,4 +767,158 @@ transition: filter 0.2s ease;
 
 .scroll-back-to-top:hover {
 filter: drop-shadow(0 0 6px rgba(136, 216, 177, 0.6));
+}
+
+/* ========================================================
+8. 移动端响应式（手机 / 竖屏窄屏）
+   断点 820px：以下规则只作用于窄屏，PC 端布局完全不受影响
+======================================================== */
+@media (max-width: 820px) {
+
+/* ---------- 8.0 移动端首屏：整块贴图 ----------
+   移动端首屏（标题 + DNA / 蛋白装饰 + 引言文字）改用一张设计稿贴图：
+       https://static.igem.wiki/teams/6059/wiki/move/description.avif
+   贴图宽度铺满首屏（左右两侧贴边、无留白），高度按素材比例自适应，
+   首屏高度随贴图高度变化；原先由代码拼装并逐个定位的部件在移动端全部不渲染，
+   对应的定位规则也一并删除。PC 端（>820px）布局完全不受影响。
+   页眉（head_foot.css：≤1024px 时高 62px）是 position: fixed 悬浮在页面顶部的，
+   故移动端首屏整体下移 62px，贴图正好从页眉下沿开始、不被遮挡。 */
+
+/* ---------- 8.1 正文主体：左右边界改为页面宽度的 4% 与 96% ---------- */
+.main-container {
+margin-left: 4%;
+margin-right: 4%;
+width: auto;
+margin-top: 56px;         /* 让开固定 80px 高的顶部导航；原 96px 空白过大已压缩 */
+margin-bottom: 6vh;
+padding: 24px 0 32px;
+min-height: 0;
+border-radius: 18px;
+}
+
+/* ---------- 8.2 侧边目录（TOC）在移动端整体隐藏 ---------- */
+/* JS 仍会写入内联 top / opacity，因此用 !important 兜底 */
+.side-container {
+display: none !important;
+}
+
+/* ---------- 8.3 右侧宝剑 / 剑鞘 / BACK TO TOP 索引条隐藏 ---------- */
+.scroll-sword,
+.scroll-scabbard,
+.scroll-back-to-top {
+display: none !important;
+}
+
+/* ---------- 8.4 首屏 Hero：移动端只渲染整块贴图 ---------- */
+.title-header-wrapper {
+height: auto;                            /* 首屏高度由贴图撑开 */
+min-height: 0;
+margin-top: 62px;                        /* 让开固定页眉（移动端高 62px），贴图不被遮挡 */
+}
+
+/* 贴图：铺满首屏宽度（与两侧对齐），高度自适应 */
+.mobile-hero-image {
+display: block;
+width: 100%;
+height: auto;
+}
+
+/* 代码拼装的部件在移动端全部不渲染：
+   透视网格、左 DNA、蛋白、右下 DNA、标题图、引言文字块、
+   SCROLL TO EXPLORE、底部圆点 —— 它们都已经包含在贴图里。 */
+#gridCanvas,
+.left-dna-wrapper,
+.right-protein-wrapper,
+.bottom-right-dna-wrapper,
+.center-image-wrapper,
+.center-description-wrapper,
+.scroll-explore-wrapper,
+.bottom-dots-decor {
+display: none !important;
+}
+
+/* 容器改为普通流：唯一内容就是贴图，高度随贴图自然撑开 */
+.grid-container {
+display: block;
+height: auto;
+}
+
+/* ---------- 8.5 正文标题：缩小字号，箭头改用 vw 定宽 ---------- */
+/* 原箭头宽 12/16/20vh，窄屏下会占满整行并挤掉标题文字 */
+.heading-1,
+.heading-2,
+.heading-3,
+.heading-reference {
+height: auto;
+min-height: 0;
+gap: 12px;
+margin-left: 5%;
+margin-right: 5%;
+}
+
+.heading-1::before,
+.heading-2::before,
+.heading-3::before,
+.heading-reference::before,
+.heading-1::after,
+.heading-reference::after {
+height: 4.2vh;
+}
+
+/* 装饰矩形加长（原 6.5 / 8.5 / 10.5vw 偏短），并保留 H1 < H2 < H3 的长度区隔 */
+.heading-1::before { width: 10.5vw; }
+.heading-2::before { width: 14.5vw; }
+.heading-3::before { width: 18.5vw; }
+.heading-reference::before { width: 10.5vw; }
+
+.heading-1 {
+font-size: 25px;
+line-height: 1.25;
+margin-top: 1.2em;
+margin-bottom: 0.7em;
+}
+
+.heading-2 {
+font-size: 20px;
+line-height: 1.45;
+margin-bottom: 0.7em;
+}
+
+.heading-3 {
+font-size: 17px;
+line-height: 1.45;
+margin-bottom: 0.7em;
+}
+
+.heading-reference {
+font-size: 25px;
+line-height: 1.25;
+margin-top: 1.2em;
+margin-bottom: 0.7em;
+}
+
+/* ---------- 8.6 正文段落与插图 ---------- */
+.body-text {
+font-size: 16px;
+line-height: 1.85;
+letter-spacing: 0.2px;
+text-align: left;        
+margin-left: 5%;
+margin-right: 5%;
+margin-bottom: 1.5em;
+}
+
+.figure-image {
+max-width: 100%;
+margin-top: 1em;
+}
+
+.figure-caption {
+font-size: 15px;
+line-height: 1.5;
+margin-left: 5%;
+margin-right: 5%;
+margin-bottom: 1.2em;
+}
+
 }
