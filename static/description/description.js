@@ -6,11 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileViewport = window.matchMedia('(max-width: 820px)');
     const isMobile = () => mobileViewport.matches;
 
-    const heroCanvas = document.getElementById('gridCanvas');
-    if (heroCanvas) {
-        const ctx = heroCanvas.getContext('2d');
-
+    const canvas = document.getElementById('gridCanvas');
+    if (canvas) {
         const container = document.querySelector('.grid-container');
+        const ctx = canvas.getContext('2d');
 
         function injectLeftDnaImage() {
             if (document.querySelector('.left-dna-wrapper')) return;
@@ -135,6 +134,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        /* ------------------------------------------------------------------
+         * 首屏透视网格
+         * PC 端（宽度 > 820px）与 static/members/title/title.js 完全一致：
+         * THEME、CEILING_H_STEPS、WALL_V_STEPS、resizeCanvas、
+         * drawInfiniteCeiling、drawInfiniteSideWalls、drawGrid 的取值、
+         * 参数顺序与绘制顺序逐行对应，改动 title.js 时这里同步即可。
+         * 窄屏几何见 drawNarrowHeroGrid，仅作用于 ≤820px 的窗口（那时
+         * #gridCanvas 已被 description.css 第 8.4 节隐藏）。
+         * ------------------------------------------------------------------ */
         const THEME = {
             gridColor: '#A5B4B5',
             lineWidth: 2.4,
@@ -143,22 +151,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const CEILING_H_STEPS = [0.06, 0.29, 0.51, 0.73];
         const WALL_V_STEPS = [0.035, 0.170, 0.300, 0.425, 0.545, 0.660, 0.770, 0.875];
 
-        function resizeHeroCanvas() {
-            const heroWrapper = document.getElementById('heroWrapper');
+        function resizeCanvas() {
             const dpr = window.devicePixelRatio || 1;
-            const width = Math.max(window.innerWidth, heroWrapper ? heroWrapper.clientWidth : 0);
-            const height = heroWrapper ? heroWrapper.clientHeight : window.innerHeight;
 
-            heroCanvas.width = width * dpr;
-            heroCanvas.height = height * dpr;
-            heroCanvas.style.width = width + 'px';
-            heroCanvas.style.height = height + 'px';
+            // PC 端与 title.js 完全一致：画布尺寸直接取整个窗口视口
+            let width = window.innerWidth;
+            let height = window.innerHeight;
+
+            // 窄屏首屏高度由移动端贴图撑开，画布改为跟随 #heroWrapper 实测尺寸
+            if (window.innerWidth <= 820) {
+                const heroWrapper = document.getElementById('heroWrapper');
+                width = Math.max(width, heroWrapper ? heroWrapper.clientWidth : 0);
+                height = heroWrapper ? heroWrapper.clientHeight : height;
+            }
+
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
 
             ctx.scale(dpr, dpr);
             drawGrid(width, height);
         }
 
-        function drawInfiniteCeiling(ctx, w, h, geom) {
+        function drawInfiniteCeiling(ctx, w, h, vpX, vpY, geom) {
             ctx.save();
             ctx.strokeStyle = THEME.gridColor;
             ctx.lineWidth = THEME.lineWidth;
@@ -206,13 +222,13 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.restore();
         }
 
-        function drawInfiniteSideWalls(ctx, w, h, geom) {
+        function drawInfiniteSideWalls(ctx, w, h, vpX, vpY, geom) {
             ctx.save();
             ctx.strokeStyle = THEME.gridColor;
             ctx.lineWidth = THEME.lineWidth;
             ctx.lineCap = 'round';
 
-            const { wNearTopY, wFarTopY, wFarX, wNearBottomY, wFarBottomY } = geom;
+            const { innerTop, wNearTopY, wFarTopY, wFarX, wNearBottomY, wFarBottomY } = geom;
 
             ['left', 'right'].forEach((side) => {
                 const isLeft = side === 'left';
@@ -261,57 +277,71 @@ document.addEventListener('DOMContentLoaded', () => {
         function drawGrid(w, h) {
             ctx.clearRect(0, 0, w, h);
 
-            // PC 的几何是按 1440x900 调好的；手机首屏接近正方形，那套比例会把
-            // 墙体前沿算到 y<0（上部被裁掉），天花板远端也会比墙体视平线高出一个
-            // gapOffset，导致顶上左右两角空白。窄屏单独调整几何，PC 分支照旧。
-            const narrowHero = window.innerWidth <= 820 && h < w * 1.4;
-
-            const gapOffset = narrowHero
-                ? Math.max(12, w * 0.03)
-                : Math.max(12, Math.min(w, h) * 0.016);
-
-            let innerTop, cNearX, cFarX, wFarX, wNearTopY, wFarTopY;
-
-            if (narrowHero) {
-                // 天花板与墙体共用同一条视平线（wFarTopY）与同一个透视中心。
-                // slope 越大远端收得越紧 = 两侧墙越窄；0.39 使单侧墙宽
-                // (390-116.1)=273.9 -> 163.9 的 3/5；同时把整块网格按顶部
-                // 固定导航高度（80px）下移，否则顶部网格会被导航条盖住。
-                const slope = 0.39;
-                const headerOffset = 84;
-
-                cNearX = gapOffset;
-                cFarX = (w / 2) * (1 - slope) - gapOffset * slope;
-                wFarX = cFarX;
-                wNearTopY = headerOffset + h * 0.16;
-                wFarTopY = headerOffset + h * 0.16 * (1 - slope);
-                innerTop = wFarTopY;
-            } else {
-                const baselineNearX = w * 0.14;
-                const baselineFarX = w * 0.284;
-                const slope = (h * 0.1452) / (baselineFarX - baselineNearX);
-
-                cNearX = baselineNearX + gapOffset;
-                cFarX = baselineFarX + gapOffset;
-                wFarX = baselineFarX - gapOffset;
-                wFarTopY = h * 0.1452 + gapOffset * slope;
-                wNearTopY = (h * 0.1452 + gapOffset * slope) - slope * wFarX;
-                innerTop = h * 0.1452;
+            // 窄屏（≤820px）另用一套几何，PC 分支不受影响
+            if (window.innerWidth <= 820 && h < w * 1.4) {
+                drawNarrowHeroGrid(w, h);
+                return;
             }
+
+            /* 以下与 static/members/title/title.js 的 drawGrid 完全一致 */
+            const vpX = w * 0.5;
+            const vpY = h * 0.45;
+
+            const innerTop = h * 0.1452;
+            const baselineNearX = w * 0.14;
+            const baselineFarX = w * 0.284;
+
+            const gapOffset = Math.max(12, Math.min(w, h) * 0.016);
+            const slope = innerTop / (baselineFarX - baselineNearX);
 
             const geom = {
                 innerTop: innerTop,
-                cNearX: cNearX,
-                cFarX: cFarX,
-                wFarX: wFarX,
-                wNearTopY: wNearTopY,
-                wFarTopY: wFarTopY,
+                cNearX: baselineNearX + gapOffset,
+                cFarX: baselineFarX + gapOffset,
+                wFarX: baselineFarX - gapOffset,
+                wNearTopY: (innerTop + gapOffset * slope) - slope * (baselineFarX - gapOffset),
+                wFarTopY: innerTop + gapOffset * slope,
                 wNearBottomY: h * 0.748,
                 wFarBottomY: h * 0.4862
             };
 
-            drawInfiniteCeiling(ctx, w, h, geom);
-            drawInfiniteSideWalls(ctx, w, h, geom);
+            drawInfiniteCeiling(ctx, w, h, vpX, vpY, geom);
+            drawInfiniteSideWalls(ctx, w, h, vpX, vpY, geom);
+        }
+
+        /* 窄屏几何：PC 那套按 1440x900 调好的比例在接近正方形的首屏上会把
+           墙体前沿算到 y<0（上部被裁掉），天花板远端也会比墙体视平线高出一个
+           gapOffset，导致顶上左右两角空白，因此窄屏单独调整几何。 */
+        function drawNarrowHeroGrid(w, h) {
+            const gapOffset = Math.max(12, w * 0.03);
+
+            // 天花板与墙体共用同一条视平线（wFarTopY）与同一个透视中心。
+            // slope 越大远端收得越紧 = 两侧墙越窄；0.39 使单侧墙宽
+            // (390-116.1)=273.9 -> 163.9 的 3/5；同时把整块网格按顶部
+            // 固定导航高度（80px）下移，否则顶部网格会被导航条盖住。
+            const slope = 0.39;
+            const headerOffset = 84;
+
+            const cNearX = gapOffset;
+            const cFarX = (w / 2) * (1 - slope) - gapOffset * slope;
+            const wFarX = cFarX;
+
+            const geom = {
+                innerTop: headerOffset + h * 0.16 * (1 - slope),
+                cNearX: cNearX,
+                cFarX: cFarX,
+                wFarX: wFarX,
+                wNearTopY: headerOffset + h * 0.16,
+                wFarTopY: headerOffset + h * 0.16 * (1 - slope),
+                wNearBottomY: h * 0.748,
+                wFarBottomY: h * 0.4862
+            };
+
+            const vpX = w * 0.5;
+            const vpY = h * 0.45;
+
+            drawInfiniteCeiling(ctx, w, h, vpX, vpY, geom);
+            drawInfiniteSideWalls(ctx, w, h, vpX, vpY, geom);
         }
 
         function init() {
@@ -320,10 +350,10 @@ document.addEventListener('DOMContentLoaded', () => {
             injectRightProteinImage();
             injectCenterImage();
             injectTextElements();
-            resizeHeroCanvas();
+            resizeCanvas();
         }
 
-        window.addEventListener('resize', resizeHeroCanvas, { passive: true });
+        window.addEventListener('resize', resizeCanvas, { passive: true });
         init();
     }
 

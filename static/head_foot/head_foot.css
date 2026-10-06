@@ -138,6 +138,10 @@ opacity: 0;
 transition: opacity 0.2s ease;
 }
 
+/* 介词保持小写：.dropdown-item 上的 text-transform: capitalize 会把 of / the 等
+   介词一并首字母大写，用这个类把需要强制小写的词包起来即可（如 Proof of Concept）。 */
+.dropdown-item .keep-lower { text-transform: lowercase; }
+
 .dropdown-item:hover {
 background-color: #E2EBF4;
 color: #0b1c36;

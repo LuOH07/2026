@@ -38,7 +38,7 @@
                     <a href="{{ url_for('pages', page='design') }}" class="dropdown-item"{% if request.endpoint == "pages" and request.view_args.get("page") == "design" %} aria-current="page"{% endif %}>Design</a>
                     <a href="{{ url_for('pages', page='engineering') }}" class="dropdown-item"{% if request.endpoint == "pages" and request.view_args.get("page") == "engineering" %} aria-current="page"{% endif %}>Engineering<br>Success</a>
                     <a href="{{ url_for('pages', page='results') }}" class="dropdown-item"{% if request.endpoint == "pages" and request.view_args.get("page") == "results" %} aria-current="page"{% endif %}>Results</a>
-                    <a href="{{ url_for('pages', page='proof-of-concept') }}" class="dropdown-item"{% if request.endpoint == "pages" and request.view_args.get("page") == "proof-of-concept" %} aria-current="page"{% endif %}>Proof of<br>Concept</a>
+                    <a href="{{ url_for('pages', page='proof-of-concept') }}" class="dropdown-item"{% if request.endpoint == "pages" and request.view_args.get("page") == "proof-of-concept" %} aria-current="page"{% endif %}>Proof <span class="keep-lower">of</span><br>Concept</a>
                     <a href="{{ url_for('pages', page='proposed-implementation') }}" class="dropdown-item"{% if request.endpoint == "pages" and request.view_args.get("page") == "proposed-implementation" %} aria-current="page"{% endif %}>Proposed<br>Implementation</a>
                 </div>
             </div>
