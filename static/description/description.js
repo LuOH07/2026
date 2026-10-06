@@ -1,5 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    /* 移动端（宽度 <= 820px，与 description.css 第 8 节断点保持一致）：
+       侧边目录与滚动剑/剑鞘均由 CSS 隐藏，这里直接跳过相关逻辑，
+       避免对隐藏元素做无用的布局读写。首屏 canvas 在两端都会绘制。 */
+    const mobileViewport = window.matchMedia('(max-width: 820px)');
+    const isMobile = () => mobileViewport.matches;
+
     const heroCanvas = document.getElementById('gridCanvas');
     if (heroCanvas) {
         const ctx = heroCanvas.getContext('2d');
@@ -32,24 +38,29 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.lineWidth = THEME.lineWidth;
             ctx.lineCap = 'round';
 
-            const { innerTop, cNearX, cFarX } = geom;
+            const { cNearX, cFarX, wFarTopY } = geom;
+            const nearY = 0;
+            const farY = wFarTopY;
+            const bandY = farY - nearY;
 
             ctx.beginPath();
-            ctx.moveTo(cFarX, innerTop);
-            ctx.lineTo(w - cFarX, innerTop);
+            ctx.moveTo(cFarX, farY);
+            ctx.lineTo(w - cFarX, farY);
             ctx.stroke();
 
             ctx.beginPath();
-            ctx.moveTo(cNearX, 0);
-            ctx.lineTo(cFarX, innerTop);
-            ctx.moveTo(w - cNearX, 0);
-            ctx.lineTo(w - cFarX, innerTop);
+            ctx.moveTo(cNearX, nearY);
+            ctx.lineTo(cFarX, farY);
+            ctx.moveTo(w - cNearX, nearY);
+            ctx.lineTo(w - cFarX, farY);
             ctx.stroke();
 
+            // 横向进深线按"近端 -> 远端"的实际区间铺开，这样最后一条正好落在
+            // 远端边线上（原先按 innerTop 取比例，在窄屏会与远端边线错开）
             CEILING_H_STEPS.forEach((t) => {
-                const y = innerTop * t;
+                const y = nearY + bandY * t;
                 const leftX = cNearX + (cFarX - cNearX) * t;
-                const rightX = (w - cNearX) - (cFarX - cNearX) * t;
+                const rightX = (w - cNearX) - (cNearX - cFarX) * t;
 
                 ctx.beginPath();
                 ctx.moveTo(leftX, y);
@@ -66,8 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const endX = cFarX + (w - 2 * cFarX) * ratio;
 
                 ctx.beginPath();
-                ctx.moveTo(startX, 0);
-                ctx.lineTo(endX, innerTop);
+                ctx.moveTo(startX, nearY);
+                ctx.lineTo(endX, farY);
                 ctx.stroke();
             }
 
@@ -80,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.lineWidth = THEME.lineWidth;
             ctx.lineCap = 'round';
 
-            const { innerTop, wNearTopY, wFarTopY, wFarX, wNearBottomY, wFarBottomY } = geom;
+            const { wNearTopY, wFarTopY, wFarX, wNearBottomY, wFarBottomY } = geom;
 
             ['left', 'right'].forEach((side) => {
                 const isLeft = side === 'left';
@@ -129,20 +140,51 @@ document.addEventListener('DOMContentLoaded', () => {
         function drawGrid(w, h) {
             ctx.clearRect(0, 0, w, h);
 
-            const innerTop = h * 0.1452;
-            const baselineNearX = w * 0.14;
-            const baselineFarX = w * 0.284;
+            // PC 的几何是按 1440x900 调好的；手机首屏接近正方形，那套比例会把
+            // 墙体前沿算到 y<0（上部被裁掉），天花板远端也会比墙体视平线高出一个
+            // gapOffset，导致顶上左右两角空白。窄屏单独调整几何，PC 分支照旧。
+            const narrowHero = window.innerWidth <= 820 && h < w * 1.4;
 
-            const gapOffset = Math.max(12, Math.min(w, h) * 0.016);
-            const slope = innerTop / (baselineFarX - baselineNearX);
+            const gapOffset = narrowHero
+                ? Math.max(12, w * 0.03)
+                : Math.max(12, Math.min(w, h) * 0.016);
+
+            let innerTop, cNearX, cFarX, wFarX, wNearTopY, wFarTopY;
+
+            if (narrowHero) {
+                // 天花板与墙体共用同一条视平线（wFarTopY）与同一个透视中心。
+                // slope 越大远端收得越紧 = 两侧墙越窄；0.39 使单侧墙宽
+                // (390-116.1)=273.9 -> 163.9 的 3/5；同时把整块网格按顶部
+                // 固定导航高度（80px）下移，否则顶部网格会被导航条盖住。
+                const slope = 0.39;
+                const headerOffset = 84;
+
+                cNearX = gapOffset;
+                cFarX = (w / 2) * (1 - slope) - gapOffset * slope;
+                wFarX = cFarX;
+                wNearTopY = headerOffset + h * 0.16;
+                wFarTopY = headerOffset + h * 0.16 * (1 - slope);
+                innerTop = wFarTopY;
+            } else {
+                const baselineNearX = w * 0.14;
+                const baselineFarX = w * 0.284;
+                const slope = (h * 0.1452) / (baselineFarX - baselineNearX);
+
+                cNearX = baselineNearX + gapOffset;
+                cFarX = baselineFarX + gapOffset;
+                wFarX = baselineFarX - gapOffset;
+                wFarTopY = h * 0.1452 + gapOffset * slope;
+                wNearTopY = (h * 0.1452 + gapOffset * slope) - slope * wFarX;
+                innerTop = h * 0.1452;
+            }
 
             const geom = {
                 innerTop: innerTop,
-                cNearX: baselineNearX + gapOffset,
-                cFarX: baselineFarX + gapOffset,
-                wFarX: baselineFarX - gapOffset,
-                wNearTopY: (innerTop + gapOffset * slope) - slope * (baselineFarX - gapOffset),
-                wFarTopY: innerTop + gapOffset * slope,
+                cNearX: cNearX,
+                cFarX: cFarX,
+                wFarX: wFarX,
+                wNearTopY: wNearTopY,
+                wFarTopY: wFarTopY,
                 wNearBottomY: h * 0.748,
                 wFarBottomY: h * 0.4862
             };
@@ -164,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!tocNav || !mainContainer) return;
 
-    if (sideContainer) {
+    if (sideContainer && !isMobile()) {
         const updateSidebarPosition = () => {
             const mainRect = mainContainer.getBoundingClientRect();
             const sidebarRect = sideContainer.getBoundingClientRect();
@@ -218,6 +260,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const headings = mainContainer.querySelectorAll('h1.heading-1, h2.heading-2, h3.heading-3, h1.heading-reference');
     if (headings.length === 0) return;
+
+    // 移动端隐藏了侧边目录，直接跳过目录构建（标题 id 已全部写好，锚点依然可用）
+    if (isMobile()) return;
 
     tocNav.innerHTML = '';
 
