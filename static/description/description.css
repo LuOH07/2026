@@ -106,12 +106,12 @@ background: radial-gradient(circle at 50% 45%, #ffffff 0%, #f4f8f9 55%, #eaf0f2 
 
 .grid-container {
 position: relative;
-width: 100%;
-height: 100%;
+width: 100vw;
+height: 100vh;
 display: flex;
 justify-content: center;
 align-items: center;
-background: transparent;
+background: radial-gradient(circle at 50% 45%, #ffffff 0%, #f4f8f9 55%, #eaf0f2 100%);
 overflow: hidden;
 }
 
@@ -232,6 +232,15 @@ object-fit: contain;
 display: block;
 }
 
+/* 环境高光遮罩 */
+.ambient-overlay {
+position: absolute;
+inset: 0;
+pointer-events: none;
+background: radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
+z-index: 3;
+}
+
 /* 移动端整块首屏贴图：PC 端不渲染，仅移动端显示（移动端规则见文末第 8.4 节） */
 .mobile-hero-image {
 display: none;
@@ -240,7 +249,7 @@ display: none;
 /* 中央描述文案 */
 .center-description-wrapper {
 position: absolute;
-top: calc(52% + 3.5vh);   /* 原 5.5vh：引言整体上移，靠近中央标题 */
+top: calc(52% + 5.5vh);
 left: 50%;
 transform: translateX(-50%);
 width: 90%;
@@ -251,7 +260,7 @@ pointer-events: auto;
 }
 
 .center-description-text {
-font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Heiti SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 font-size: clamp(1.15rem, 1.6vw, 1.55rem);
 line-height: 1.68;
 font-weight: 400;
@@ -285,7 +294,7 @@ border-radius: 1px;
 }
 
 .scroll-text {
-font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Heiti SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 font-size: clamp(0.75rem, 0.95vw, 0.98rem);
 letter-spacing: 0.32em;
 color: #33484f;

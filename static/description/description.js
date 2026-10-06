@@ -9,6 +9,132 @@ document.addEventListener('DOMContentLoaded', () => {
     const heroCanvas = document.getElementById('gridCanvas');
     if (heroCanvas) {
         const ctx = heroCanvas.getContext('2d');
+
+        const container = document.querySelector('.grid-container');
+
+        function injectLeftDnaImage() {
+            if (document.querySelector('.left-dna-wrapper')) return;
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'left-dna-wrapper';
+
+            const img = document.createElement('img');
+            img.src = 'https://static.igem.wiki/teams/6059/wiki/members/title/dna-1.avif';
+            img.alt = 'DNA Structure Left';
+            img.className = 'left-dna-image';
+
+            img.onerror = function () {
+                this.onerror = null;
+                this.src = 'https://placehold.co/260x520/e2ecef/829699?text=DNA_1.png';
+            };
+
+            wrapper.appendChild(img);
+            container.appendChild(wrapper);
+        }
+
+        function injectBottomRightDnaImage() {
+            if (document.querySelector('.bottom-right-dna-wrapper')) return;
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'bottom-right-dna-wrapper';
+
+            const img = document.createElement('img');
+            img.src = 'https://static.igem.wiki/teams/6059/wiki/members/title/dna-2.avif';
+            img.alt = 'DNA Structure Bottom Right';
+            img.className = 'bottom-right-dna-image';
+
+            img.onerror = function () {
+                this.onerror = null;
+                this.src = 'https://placehold.co/260x520/e2ecef/829699?text=DNA_2.png';
+            };
+
+            wrapper.appendChild(img);
+            container.appendChild(wrapper);
+        }
+
+        function injectRightProteinImage() {
+            if (document.querySelector('.right-protein-wrapper')) return;
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'right-protein-wrapper';
+
+            const img = document.createElement('img');
+            img.src = 'https://static.igem.wiki/teams/6059/wiki/members/title/protein.avif';
+            img.alt = 'Protein Structure Right';
+            img.className = 'right-protein-image';
+
+            img.onerror = function () {
+                this.onerror = null;
+                this.src = 'https://placehold.co/260x260/e2ecef/829699?text=protein.png';
+            };
+
+            wrapper.appendChild(img);
+            container.appendChild(wrapper);
+        }
+
+        function injectCenterImage() {
+            if (document.querySelector('.center-image-wrapper')) return;
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'center-image-wrapper';
+
+            const img = document.createElement('img');
+            img.src = 'https://static.igem.wiki/teams/6059/wiki/members/title/title.avif';
+            img.alt = 'Title';
+            img.className = 'title-image';
+
+            img.onerror = function () {
+                this.onerror = null;
+                this.src = 'https://placehold.co/480x240/ffffff/a5b4b5?text=title.png';
+            };
+
+            wrapper.appendChild(img);
+            container.appendChild(wrapper);
+        }
+
+        function injectTextElements() {
+            // 注入中央描述文字
+            if (!document.querySelector('.center-description-wrapper')) {
+                const descWrapper = document.createElement('div');
+                descWrapper.className = 'center-description-wrapper';
+
+                const descP = document.createElement('p');
+                descP.className = 'center-description-text';
+                descP.innerHTML = 'We are an international team of students, researchers,<br>and innovators exploring the frontiers of bacterial<br>genome engineering through the power of STING.';
+
+                descWrapper.appendChild(descP);
+                container.appendChild(descWrapper);
+            }
+
+            // 注入底部 SCROLL TO EXPLORE 区域
+            if (!document.querySelector('.scroll-explore-wrapper')) {
+                const scrollWrapper = document.createElement('div');
+                scrollWrapper.className = 'scroll-explore-wrapper';
+
+                const leftLine = document.createElement('span');
+                leftLine.className = 'scroll-line';
+
+                const scrollText = document.createElement('span');
+                scrollText.className = 'scroll-text';
+                scrollText.textContent = 'SCROLL  TO  EXPLORE';
+
+                const rightLine = document.createElement('span');
+                rightLine.className = 'scroll-line';
+
+                scrollWrapper.appendChild(leftLine);
+                scrollWrapper.appendChild(scrollText);
+                scrollWrapper.appendChild(rightLine);
+                container.appendChild(scrollWrapper);
+            }
+
+            // 注入底部点阵装饰条
+            if (!document.querySelector('.bottom-dots-decor')) {
+                const dotsDecor = document.createElement('div');
+                dotsDecor.className = 'bottom-dots-decor';
+                container.appendChild(dotsDecor);
+            }
+        }
+
         const THEME = {
             gridColor: '#A5B4B5',
             lineWidth: 2.4,
@@ -38,29 +164,24 @@ document.addEventListener('DOMContentLoaded', () => {
             ctx.lineWidth = THEME.lineWidth;
             ctx.lineCap = 'round';
 
-            const { cNearX, cFarX, wFarTopY } = geom;
-            const nearY = 0;
-            const farY = wFarTopY;
-            const bandY = farY - nearY;
+            const { innerTop, cNearX, cFarX } = geom;
 
             ctx.beginPath();
-            ctx.moveTo(cFarX, farY);
-            ctx.lineTo(w - cFarX, farY);
+            ctx.moveTo(cFarX, innerTop);
+            ctx.lineTo(w - cFarX, innerTop);
             ctx.stroke();
 
             ctx.beginPath();
-            ctx.moveTo(cNearX, nearY);
-            ctx.lineTo(cFarX, farY);
-            ctx.moveTo(w - cNearX, nearY);
-            ctx.lineTo(w - cFarX, farY);
+            ctx.moveTo(cNearX, 0);
+            ctx.lineTo(cFarX, innerTop);
+            ctx.moveTo(w - cNearX, 0);
+            ctx.lineTo(w - cFarX, innerTop);
             ctx.stroke();
 
-            // 横向进深线按"近端 -> 远端"的实际区间铺开，这样最后一条正好落在
-            // 远端边线上（原先按 innerTop 取比例，在窄屏会与远端边线错开）
             CEILING_H_STEPS.forEach((t) => {
-                const y = nearY + bandY * t;
+                const y = innerTop * t;
                 const leftX = cNearX + (cFarX - cNearX) * t;
-                const rightX = (w - cNearX) - (cNearX - cFarX) * t;
+                const rightX = (w - cNearX) - (cFarX - cNearX) * t;
 
                 ctx.beginPath();
                 ctx.moveTo(leftX, y);
@@ -77,8 +198,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const endX = cFarX + (w - 2 * cFarX) * ratio;
 
                 ctx.beginPath();
-                ctx.moveTo(startX, nearY);
-                ctx.lineTo(endX, farY);
+                ctx.moveTo(startX, 0);
+                ctx.lineTo(endX, innerTop);
                 ctx.stroke();
             }
 
@@ -193,8 +314,17 @@ document.addEventListener('DOMContentLoaded', () => {
             drawInfiniteSideWalls(ctx, w, h, geom);
         }
 
+        function init() {
+            injectLeftDnaImage();
+            injectBottomRightDnaImage();
+            injectRightProteinImage();
+            injectCenterImage();
+            injectTextElements();
+            resizeHeroCanvas();
+        }
+
         window.addEventListener('resize', resizeHeroCanvas, { passive: true });
-        resizeHeroCanvas();
+        init();
     }
 
     /* -------------------------------------------------------------
