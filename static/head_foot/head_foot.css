@@ -107,11 +107,15 @@ transform: translateX(-50%) translateY(0);
 }
 
 /* STREAMING_CHUNK:Styling dropdown items... */
+/* 居中排版必须用 block + text-align，不能用 display:flex：
+   flex 会把「Proof <span class="keep-lower">of</span><br>Concept」这类内容里的
+   纯文本、<span>、<br> 各自变成独立的 flex item —— flex item 边界上的空格会被丢弃、
+   <br> 也不再换行，于是渲染成 "ProofofConcept"（Proof 与 of 之间没有空格）。
+   改成 block 后保留正常行内排版：空格照常显示，"Proof of" / "Concept"
+   仍按 <br> 分成两行，水平居中由 text-align 负责，纵向留白由 padding 负责。 */
 .dropdown-item {
 position: relative;
-display: flex;
-align-items: center;
-justify-content: center;
+display: block;
 text-align: center;
 padding: 12px 18px;
 color: #162741;
