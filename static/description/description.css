@@ -1297,7 +1297,7 @@ mark {
     content: "";
     position: absolute;
     left: 0;                      /* 贴在矩形左端 */
-    top: 50%;
+    top: 150%;
     transform: translateY(-50%);
     width: var(--upfold-icon-size);
     height: var(--upfold-icon-size);
@@ -1357,7 +1357,7 @@ mark {
 
 .main-container upfold .upfold-rail img {
     display: block;
-    width: 4ch;                   /* 与“4 个字符宽”一致 */
+    width: 2ch;                   /* 与“4 个字符宽”一致 */
     height: auto;                 /* 高度按原图比例，个数由 JS 计算 */
 }
 
