@@ -1296,8 +1296,8 @@ mark {
 .main-container .upfold > .upfold-label::before {
     content: "";
     position: absolute;
-    left: 0;                      /* 贴在矩形左端 */
-    top: 10%;
+    left: -10%;                      
+    top: -50%;
     transform: translateY(-50%);
     width: var(--upfold-icon-size);
     height: var(--upfold-icon-size);
