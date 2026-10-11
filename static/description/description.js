@@ -1134,9 +1134,9 @@ document.addEventListener('DOMContentLoaded', () => {
     var RAND_PER_FOOT = 3;        /* 每个脚印固定消耗 3 个随机数（见 6.3） */
     var FOOT_LIMIT = 200;         /* 兜底：一段正文最多画这么多个脚印 */
     /* 展开时“从上往下挨个出现”的动效参数（见 6.4）：
-       第 i 个脚印比第一个晚 i × STEP 毫秒开始，用 DURATION 毫秒从
-       SCALE 倍大小、全透明放大到原始大小 */
-    var FOOT_REVEAL_STEP = 45;
+       每秒出现 FOOT_REVEAL_PER_SECOND 个脚印（= 每 1000 / 它 毫秒排到下一个），
+       每个脚印用 DURATION 毫秒从 SCALE 倍大小、全透明放大到原始大小 */
+    var FOOT_REVEAL_PER_SECOND = 2;   /* 出现速度：1 秒 2 个（每 500ms 一个） */
     var FOOT_REVEAL_DURATION = 320;
     var FOOT_REVEAL_SCALE = 0.4;
 
@@ -1467,9 +1467,16 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ------------------------------------------------------
        6.4 展开动效：脚印从上往下挨个出现
        ------------------------------------------------------
-       点开时第 i 个脚印比第一个晚 i × FOOT_REVEAL_STEP 毫秒，从 40%
-       大小、全透明放大到原始大小（同时保留它自己的随机旋转角度）——
-       于是视觉上是一串脚印自上而下依次“踩”出来。
+       点开时第 i 个脚印比第一个晚 i × (1000 / FOOT_REVEAL_PER_SECOND) 毫秒
+       （当前 1 秒 2 个 → 每隔 500ms 排到下一个），从 40% 大小、全透明放大
+       到原始大小（同时保留它自己的随机旋转角度）——于是视觉上是一串脚印
+       自上而下依次“踩”出来。每个脚印 320ms 就淡入完，比 500ms 的间隔短，
+       所以是干干净净的一个接一个，不会几双叠着一起出现。
+
+       注意总时长随脚印个数线性增长：14 个约 6.5s、25 个约 12s（最后一个
+       的开始时间 = (个数 − 1) × 500ms）。嫌久的话把下面的
+       FOOT_REVEAL_PER_SECOND 调大（3 → 每 333ms 一个），或给它加个总时长
+       上限再按比例压缩间隔。
 
        用 Web Animations API 而不是 CSS @keyframes：每个脚印的旋转角度
        都是内联的随机值，关键帧必须由 JS 现算；这样动效也完全待在 JS 里，
@@ -1494,7 +1501,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { opacity: 1, transform: rot + ' scale(1)' }
             ], {
                 duration: FOOT_REVEAL_DURATION,
-                delay: index * FOOT_REVEAL_STEP,
+                delay: index * (1000 / FOOT_REVEAL_PER_SECOND),
                 easing: 'ease-out',
                 fill: 'backwards'
             });
