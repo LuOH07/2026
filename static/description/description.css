@@ -1301,7 +1301,7 @@ mark {
     transform: translateY(-50%);
     width: var(--upfold-icon-size);
     height: var(--upfold-icon-size);
-    background: url("https://static.igem.wiki/teams/6059/wiki/notebook/kid.avif") center center / contain no-repeat;
+    background: url("https://static.igem.wiki/teams/6059/wiki/notebook/kid-2.avif") center center / contain no-repeat;
     pointer-events: none;
     z-index: 1;                   /* 明确压在底色之上 */
 }
