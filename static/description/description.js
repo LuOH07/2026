@@ -948,3 +948,133 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 })();
+
+/* ========================================================
+   5. 正文表格：标记首行与末行
+   ========================================================
+   配合 description.css 第 12 节使用。CSS 没法可靠地判断“哪一行是
+   第一行 / 最后一行”：带 <thead> 的表格里，tbody 的第一行同样是
+   :first-child；有 <tfoot> 时 tbody 的最后一行也不是 :last-child。
+   所以这里在运行时按真实的 <tr> 顺序加上标记类，CSS 只管画线。
+
+   行数 / 列数 / 内容都在 HTML 里自由增减：每次只按当前 <tr> 的先后
+   顺序重算，完全不关心单元格里写了什么；表格内部结构被改动后会由
+   MutationObserver 自动重算。
+
+   兜底：即使本段脚本没执行，description.css 第 12 节里的结构选择器
+   也能画出同样的三条线。
+   ======================================================== */
+(function () {
+    'use strict';
+
+    /* 正文卡片里的所有表格都套用这套样式 */
+    var TABLE_SELECTOR = '.main-container table';
+    /* 已处理的表格会带上这个类，作为稳定钩子（便于调试或单独覆盖） */
+    var TABLE_CLASS = 'wp-table';
+    var FIRST_ROW_CLASS = 'wp-table-first-row';
+    var LAST_ROW_CLASS = 'wp-table-last-row';
+
+    /* 判断某个 <tr> 是否属于这张表：嵌套表格里的行不参与标记 */
+    function belongsTo(row, table) {
+        var node = row.parentNode;
+        while (node && node !== table) {
+            if (node.tagName === 'TABLE') return false;
+            node = node.parentNode;
+        }
+        return node === table;
+    }
+
+    /* 重新标记单张表的首行与末行 */
+    function markTable(table) {
+        if (!table.classList.contains(TABLE_CLASS)) {
+            table.classList.add(TABLE_CLASS);
+        }
+
+        var rows = [];
+        Array.prototype.forEach.call(table.querySelectorAll('tr'), function (row) {
+            if (belongsTo(row, table)) rows.push(row);
+        });
+
+        Array.prototype.forEach.call(rows, function (row) {
+            row.classList.remove(FIRST_ROW_CLASS);
+            row.classList.remove(LAST_ROW_CLASS);
+        });
+
+        // 只有一行的表格会同时拿到上下两条线，属于预期行为
+        if (!rows.length) return;
+        rows[0].classList.add(FIRST_ROW_CLASS);
+        rows[rows.length - 1].classList.add(LAST_ROW_CLASS);
+    }
+
+    function markAllTables() {
+        Array.prototype.forEach.call(document.querySelectorAll(TABLE_SELECTOR), markTable);
+    }
+
+    /* ------------------------------------------------------
+       5.1 表格增删行 / 列后自动重算
+       ------------------------------------------------------
+       用 requestAnimationFrame 合并连续的改动，避免一次改多行时
+       反复读写 DOM。 */
+    var frameId = null;
+
+    function scheduleMark() {
+        if (frameId !== null) return;
+        if (typeof requestAnimationFrame === 'function') {
+            frameId = requestAnimationFrame(function () {
+                frameId = null;
+                markAllTables();
+            });
+        } else {
+            markAllTables();
+        }
+    }
+
+    /* 这次改动是否发生在表格里（或本身就是一张表格） */
+    function touchesTable(node) {
+        if (!node || node.nodeType !== 1) return false;
+        if (node.tagName === 'TABLE') return true;
+        if (node.querySelector && node.querySelector('table')) return true;
+
+        var parent = node.parentNode;
+        while (parent) {
+            if (parent.tagName === 'TABLE') return true;
+            parent = parent.parentNode;
+        }
+        return false;
+    }
+
+    function observeTables() {
+        var scope = document.getElementById('mainContainer') ||
+                    document.querySelector('.main-container');
+        if (!scope || typeof MutationObserver !== 'function') return;
+
+        new MutationObserver(function (records) {
+            for (var i = 0; i < records.length; i++) {
+                var record = records[i];
+                if (touchesTable(record.target) ||
+                    touchesTable(record.addedNodes[0]) ||
+                    touchesTable(record.removedNodes[0])) {
+                    scheduleMark();
+                    return;
+                }
+            }
+        }).observe(scope, { childList: true, subtree: true });
+    }
+
+    /* ------------------------------------------------------
+       5.2 启动（与第 4 节同理：defer 执行时 DOM 已可解析）
+       ------------------------------------------------------ */
+    function start() {
+        markAllTables();
+        observeTables();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', start);
+    } else {
+        start();
+    }
+
+    /* 只读调试接口：控制台执行 __TABLES__.refresh() 可手动重算标记 */
+    window.__TABLES__ = { refresh: markAllTables };
+})();

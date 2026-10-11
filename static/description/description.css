@@ -1126,3 +1126,80 @@ mark {
 .main-container a:focus-visible {
     text-decoration-thickness: 2.5px;
 }
+
+/* ========================================================
+   12. 正文表格
+   ========================================================
+   在正文里写一个普通的 <table> 就自动获得这套样式：
+       · 第一行（表头行）—— 上边框 + 下边框；
+       · 中间各行     —— 没有任何横线；
+       · 最后一行     —— 下边框。
+   行数 / 列数 / 内容全部在 HTML 里自由增减，不需要改动这里的任何代码；
+   写不写 <thead> / <tbody> 都可以（两种结构都做了适配）。
+
+   首行与末行由 description.js 第 5 节打上 .wp-table-first-row /
+   .wp-table-last-row 标记，CSS 只负责画线；下面同时保留了结构选择器
+   兜底，脚本没跑起来时这三条线依然画得出来。
+
+   想改线的颜色或粗细，只改下面这两个自定义属性即可。 */
+.main-container table {
+    --wp-table-rule-color: #000000;
+    --wp-table-rule-width: 1.5px;
+
+    border-collapse: collapse;
+    width: 84%;                 /* 与 .body-text 的左右 8% 留白对齐 */
+    margin: 1.5em 8% 2em;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: 1.8;
+    color: inherit;
+}
+
+/* 先把所有单元格的边框清空，横线只由下面三条规则画 */
+.main-container table th,
+.main-container table td {
+    border: 0;
+    padding: 0.55em 0.9em;
+    vertical-align: top;
+    text-align: left;
+}
+
+/* <th> 默认居中加粗，这里统一改成左对齐，字重保持加粗 */
+.main-container table th {
+    font-weight: bold;
+    text-align: left;
+}
+
+/* ---------- 第一行：上边框 + 下边框 ---------- */
+.main-container table tr.wp-table-first-row > th,
+.main-container table tr.wp-table-first-row > td,
+.main-container table > thead:first-child > tr:first-child > th,
+.main-container table > thead:first-child > tr:first-child > td,
+.main-container table > tbody:first-child > tr:first-child > th,
+.main-container table > tbody:first-child > tr:first-child > td {
+    border-top: var(--wp-table-rule-width) solid var(--wp-table-rule-color);
+    border-bottom: var(--wp-table-rule-width) solid var(--wp-table-rule-color);
+}
+
+/* ---------- 最后一行：只有下边框 ---------- */
+.main-container table tr.wp-table-last-row > th,
+.main-container table tr.wp-table-last-row > td,
+.main-container table > tbody:last-child > tr:last-child > th,
+.main-container table > tbody:last-child > tr:last-child > td {
+    border-bottom: var(--wp-table-rule-width) solid var(--wp-table-rule-color);
+}
+
+/* 窄屏：与 .body-text 一样把左右留白收到 5%，并适当缩小字号与内边距 */
+@media (max-width: 820px) {
+    .main-container table {
+        width: 90%;
+        margin: 1.2em 5% 1.5em;
+        font-size: 16px;
+        line-height: 1.7;
+    }
+
+    .main-container table th,
+    .main-container table td {
+        padding: 0.45em 0.5em;
+    }
+}
