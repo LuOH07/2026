@@ -1222,7 +1222,7 @@ mark {
 .main-container .upfold {
     --upfold-bg: #53DEB7;         /* 底色 */
     --upfold-color: #FFFFFF;      /* 文字颜色 */
-    --upfold-radius: 12px;        /* 圆角大小；写成 999px 会变成胶囊形 */
+    --upfold-radius: 20px;        /* 圆角大小；写成 999px 会变成胶囊形 */
     --upfold-font-size: 26px;     /* 与 .heading-3 一致 */
 
     display: inline-block;        /* 随文字伸缩，并且能与正文排在同一行 */
