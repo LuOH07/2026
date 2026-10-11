@@ -658,7 +658,7 @@ font-style: italic;
 }
 */
 
-/* 正文里的加粗文字：加粗并统一改用主题紫 #8F8BD9
+/* 正文里的加粗文字：加粗，并单独设定颜色与字号
    （只作用于 .body-text 内部的 <b> / <strong>；正文其余文字、标题、
    图注里的加粗都保持各自原有颜色，不受影响） */
 .body-text b,
@@ -1202,5 +1202,54 @@ mark {
     .main-container table th,
     .main-container table td {
         padding: 0.45em 0.5em;
+    }
+}
+
+/* ========================================================
+   13. 正文组件 <upfold>
+   ========================================================
+   用法：把文字包进 <upfold></upfold> 即可（也支持 <span class="upfold">…</span>）：
+       <p class="body-text">……<upfold>Label text</upfold>……</p>
+
+   外观：#53DEB7 的圆角矩形 + 白色文字，字号 26px（与 .heading-3 相同），
+   放在正文里会比正文（22px）大一圈，分量上与各级标题接近。
+
+   宽度不写死：组件是 inline-block，宽度 = 文字宽度 + 左右内边距，
+   文字越长组件越宽。改 HTML 里的文字即可，不需要动这个文件。
+
+   想调整只改下面这几个自定义属性。 */
+.main-container upfold,
+.main-container .upfold {
+    --upfold-bg: #53DEB7;         /* 底色 */
+    --upfold-color: #FFFFFF;      /* 文字颜色 */
+    --upfold-radius: 12px;        /* 圆角大小；写成 999px 会变成胶囊形 */
+    --upfold-font-size: 26px;     /* 与 .heading-3 一致 */
+
+    display: inline-block;        /* 随文字伸缩，并且能与正文排在同一行 */
+    width: auto;                  /* 宽度由文字决定，不设固定值 */
+    max-width: 100%;              /* 窄屏下不会顶出容器 */
+    padding: 0.35em 1.15em;
+    background-color: var(--upfold-bg);
+    color: var(--upfold-color);
+    border-radius: var(--upfold-radius);
+    font-family: inherit;
+    font-size: var(--upfold-font-size);
+    line-height: 1.35;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* 组件里的加粗 / 链接也一并保持白色：
+   否则会带上正文各自的颜色，落在绿底上不干净 */
+.main-container upfold :is(b, strong, a),
+.main-container .upfold :is(b, strong, a) {
+    color: var(--upfold-color);
+}
+
+/* 窄屏：与 .heading-3 的移动端字号（17px）看齐 */
+@media (max-width: 820px) {
+    .main-container upfold,
+    .main-container .upfold {
+        --upfold-font-size: 17px;
     }
 }
