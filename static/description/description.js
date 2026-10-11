@@ -1086,20 +1086,21 @@ document.addEventListener('DOMContentLoaded', () => {
        <upfold>标签文字<upfold-text>点击后展开的正文</upfold-text></upfold>
    也支持 class 写法：<span class="upfold">…<span class="upfold-text">…</span></span>。
 
-   这里做三件事：
+   这里做四件事：
    ① 把标签文字包进 <span class="upfold-label">。胶囊的底色 / 内边距都画在
       这一层上，而展开的正文只是它的兄弟节点 —— 于是正文天生就在胶囊盒子
       外面，不会被胶囊的背景框住（见 description.css 第 13 节）。
-   ② 给带隐藏文字的组件绑定点击 / 键盘开合并切换 .is-open：展开时只把
-      胶囊的底色从 #53DEB7 换成 #D3F8DD，其它样式不动。
-   ③ 展开出来的正文左侧竖着铺一列装饰图标（见 6.3）：文字右退 4 个字符，
+   ② 在胶囊右端叠一把剑（见 6.2）：压在底色这一层下面，上下各漏出一节。
+   ③ 给带隐藏文字的组件绑定点击 / 键盘开合并切换 .is-open：展开时把胶囊的
+      底色从 #53DEB7 换成 #D3F8DD，同时把文字从白色换成正文字体颜色 #465E77。
+   ④ 展开出来的正文左侧竖着铺一列装饰图标（见 6.3）：文字右退 4 个字符，
       图标从上往下循环摆放，底部放不下一个完整图标就停。
 
    展开后的文字会被自动加上 .body-text 类，所以排版与正文完全一致
    （字号、行距、颜色、两端对齐都跟着 .body-text 走，正文格式以后改了
    这里自动跟随）。点击展开出来的文字本身不会收起，方便选中 / 复制。
 
-   没有 <upfold-text> 的组件只做第 ① 步：保持静态胶囊外观，点击无反应。
+   没有 <upfold-text> 的组件只做第 ① ② 步：保持静态胶囊外观，点击无反应。
    ======================================================== */
 (function () {
     'use strict';
@@ -1114,6 +1115,9 @@ document.addEventListener('DOMContentLoaded', () => {
     var ICON_CLASS = 'upfold-rail-icon';
     var EMPTY_CLASS = 'is-empty';
     var ICON_SRC = 'https://static.igem.wiki/teams/6059/wiki/notebook/steps-2.avif';
+    /* 胶囊右端叠的剑形装饰（位置 / 图层见 description.css 第 13 节） */
+    var SWORD_CLASS = 'upfold-sword';
+    var SWORD_SRC = 'https://static.igem.wiki/teams/6059/wiki/notebook/sword1-0.avif';
 
     function contentOf(host) {
         return host.querySelector(CONTENT_SELECTOR);
@@ -1141,6 +1145,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
         host.insertBefore(label, host.firstChild);
         return label;
+    }
+
+    /* ------------------------------------------------------
+       6.2 胶囊右端的剑形装饰（sword1.avif）
+       ------------------------------------------------------
+       往 .upfold-label 里塞一张剑的图片：绝对定位 + z-index: -1，
+       位置是矩形的 right 10% / top 50%（见 description.css 第 13 节），
+       于是它压在胶囊底色【下面】，上下各漏出一节；高度写成百分比，
+       胶囊变高变矮、窄屏换字号，剑都跟着一起缩放。
+
+       这里用真 <img> 而不是 CSS background-image，是为了让“宽度按原图
+       比例自动算”（height 给定 → width: auto 用素材自身宽高比），
+       以后换素材不用回来量尺寸、改样式。
+
+       纯装饰：alt="" + aria-hidden，鼠标事件也由 CSS 的 pointer-events
+       关掉，所以它既不拦点击也不挡选中；图片加载失败就整张撤掉，
+       不留下破图或一块空白占位。 */
+    function injectSword(label) {
+        if (!label || label.querySelector('.' + SWORD_CLASS)) return;
+
+        var sword = document.createElement('img');
+        sword.className = SWORD_CLASS;
+        sword.src = SWORD_SRC;
+        sword.alt = '';
+        sword.setAttribute('aria-hidden', 'true');
+        sword.addEventListener('error', function () {
+            if (sword.parentNode) sword.parentNode.removeChild(sword);
+        });
+
+        // 绝对定位，放在最前面也不会挤走标签文字
+        label.insertBefore(sword, label.firstChild);
     }
 
     /* ------------------------------------------------------
@@ -1260,7 +1295,9 @@ document.addEventListener('DOMContentLoaded', () => {
         var content = contentOf(host);
 
         // 无论能不能展开，都先把标签包起来：胶囊外观挂在 .upfold-label 上
-        wrapLabel(host, content);
+        var label = wrapLabel(host, content);
+        // 胶囊右端的剑形装饰：静态胶囊和可展开的胶囊都挂
+        injectSword(label);
         host.setAttribute(READY_ATTR, '1');
 
         if (!content) return;              // 没有隐藏内容：静态胶囊，点击无反应

@@ -1216,7 +1216,10 @@ mark {
    收起：标签是一枚 #53DEB7 的圆角胶囊，左端叠着一张 kid.avif 装饰图
         （始终显示，不随点击变化），标签文字为它让位、整体右移；
         白字，宽度随标签文字伸缩，字号 26px（与 .heading-3 同级）。
-   展开：胶囊只换底色（#53DEB7 → #D3F8DD），其余样式一律不动；
+       右端还叠着一把 sword1.avif 的剑（矩形 right 10% / top 50% 处），
+        它压在胶囊底色【下面】，上下各漏出一节；同样不随点击变化。
+   展开：胶囊换底色（#53DEB7 → #D3F8DD），文字同时换成正文颜色
+        （#FFFFFF → #465E77，见 --upfold-open-color）；
         隐藏文字出现在胶囊【下方】，与正文同样排版，没有底色也没有边框。
    开合行为在 description.js 第 6 节。
 
@@ -1243,11 +1246,16 @@ mark {
 .main-container .upfold > .upfold-label {
     --upfold-bg: #53DEB7;         /* 收起时的底色 */
     --upfold-open-bg: #D3F8DD;    /* 展开后的底色 */
-    --upfold-color: #FFFFFF;      /* 文字颜色 */
+    --upfold-color: #FFFFFF;      /* 收起时的文字颜色 */
+    --upfold-open-color: #465E77; /* 展开后的文字颜色：与正文 .body-text 一致 */
     --upfold-radius: 20px;        /* 圆角大小；写成 999px 会变成胶囊形 */
     --upfold-font-size: 26px;     /* 与 .heading-3 一致 */
     --upfold-icon-size: 4em;     /* 左端装饰图标的边长（当前值，可自由调） */
     --upfold-icon-gap: 0.4em;     /* 图标与标签文字之间的距离 */
+    --upfold-sword-height: 190%;  /* 右端剑形装饰的高度：> 100% 才会上下漏出一节 */
+    --upfold-sword-right: 10%;    /* 剑右边缘距胶囊右边 10% */
+    --upfold-sword-top: 50%;      /* 剑中心对着胶囊高度的 50% */
+    --upfold-sword-max-width: 3em;/* 兜底：素材若过宽，最多占这么宽（不拉伸变形） */
 
     position: relative;           /* 给左端叠的装饰图标当参照 */
     display: inline-block;        /* 随文字伸缩，并且能与正文排在同一行 */
@@ -1264,18 +1272,25 @@ mark {
     line-height: 1.35;
     text-align: left;             /* 文字紧跟在左端小人的右边，不居中 */
     vertical-align: middle;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* ---------- 展开：只换底色，其他样式不变 ---------- */
+/* ---------- 展开：换底色，并把文字一并换成正文字体颜色 ----------
+   ① 底色 #53DEB7 → #D3F8DD；
+   ② 文字 #FFFFFF → --upfold-open-color（#465E77，即正文 .body-text 的颜色）。
+   颜色只在“胶囊本体的那份声明”上覆盖 --upfold-color，所以胶囊里的
+   加粗 / 链接（下面那条 :is(b, strong, a) 规则用的是同一个变量）会一起变色，
+   不需要另写选择器。 */
 .main-container upfold.is-open:not([data-upfold-ready]),
 .main-container .upfold.is-open:not([data-upfold-ready]),
 .main-container upfold.is-open > .upfold-label,
 .main-container .upfold.is-open > .upfold-label {
     background-color: var(--upfold-open-bg);
+    --upfold-color: var(--upfold-open-color);
+    color: var(--upfold-open-color);
 }
 
-/* 胶囊里的加粗 / 链接保持白色：
+/* 胶囊里的加粗 / 链接跟随胶囊文字颜色（收起白字、展开正文色）：
    否则会带上正文各自的颜色，落在绿底上不干净 */
 .main-container upfold:not([data-upfold-ready]) :is(b, strong, a),
 .main-container .upfold:not([data-upfold-ready]) :is(b, strong, a),
@@ -1304,6 +1319,41 @@ mark {
     background: url("https://static.igem.wiki/teams/6059/wiki/notebook/kid-2.avif") center center / contain no-repeat;
     pointer-events: none;
     z-index: 1;                   /* 明确压在底色之上 */
+}
+
+/* ---------- 右端叠的剑形装饰（sword1.avif）----------
+   位置：矩形（胶囊本体）的 right 10% / top 50% 处，再 translateY(-50%)
+        把剑的【中心】对在这条中线上，于是上下各漏出一节（漏多少由
+        --upfold-sword-height 决定，190% 即上下各约 45% 的胶囊高度）。
+   图层：z-index: -1，压在胶囊底色这一层【下面】。之所以要宿主
+        （<upfold>）加 isolation: isolate，是因为 .upfold-label 自身
+        position: relative 但没有 z-index，本来不构成层叠上下文，
+        -1 会一路穿到页面最外面的层叠上下文里、被正文白卡片盖住；
+        给宿主做成层叠上下文后，-1 只在本组件内部生效：
+        剑（-1）画在胶囊底色（0）之前，所以被矩形挡住、只漏出上下两头。
+   尺寸：高度用百分比（跟着胶囊高低伸缩），宽度 auto —— 由图片自身的
+        宽高比算出来，不拉伸；max-width + object-fit 只是兜底。
+   图片由 description.js 第 6.2 节插进来（脚本没跑时不会有多余的图）。 */
+.main-container upfold,
+.main-container .upfold {
+    isolation: isolate;
+}
+
+.main-container upfold > .upfold-label > .upfold-sword,
+.main-container .upfold > .upfold-label > .upfold-sword {
+    position: absolute;
+    right: var(--upfold-sword-right);
+    top: var(--upfold-sword-top);
+    transform: translateY(-50%);
+    height: var(--upfold-sword-height);
+    width: auto;                  /* 宽度按原图比例自动算 */
+    max-width: var(--upfold-sword-max-width);
+    object-fit: contain;          /* 万一被 max-width 卡住也不会拉变形 */
+    z-index: -1;                  /* 压在胶囊底色下面 */
+    pointer-events: none;         /* 纯装饰：不拦点击，也不挡文字选中 */
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
 }
 
 /* ---------- 隐藏文字：脚本处理过之后才藏起来 ----------
