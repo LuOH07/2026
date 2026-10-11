@@ -1402,26 +1402,25 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!limit) return;
 
         var metrics = railMetrics(rail);
-
-        // 清掉上一轮排出来的脚印（两枚探针留着继续量高度）
-        Array.prototype.forEach.call(rail.querySelectorAll('.' + FOOT_CLASS), function (el) {
-            if (!el.classList.contains(PROBE_CLASS)) rail.removeChild(el);
-        });
-
         var sides = ['left', 'right'];
-        var batch = document.createDocumentFragment();
-        var prevTop = 0;
-        var count = 0;
 
-        while (count < FOOT_LIMIT) {
-            var side = sides[count % 2];
+        /* 第一步：只算位置，不碰 DOM。
+           每放一个脚印固定消耗 3 个随机数（横向 / 上沿间距 / 旋转），
+           序号可预期，所以同一组缓存数总能算出同一份排布。 */
+        var plan = [];
+        var marks = [];
+        var prevTop = 0;
+
+        while (plan.length < FOOT_LIMIT) {
+            var index = plan.length;
+            var side = sides[index % 2];
             var height = heights[side];
-            var base = count * RAND_PER_FOOT;
+            var base = index * RAND_PER_FOOT;
 
             // 上沿：第一个（左）固定在最上面；之后每个都比上一个低
             // 0.5 ~ 1.5 个本脚印的高度
             var top = 0;
-            if (count > 0) {
+            if (index > 0) {
                 top = prevTop + randomBetween(rail, base + 1, FOOT_GAP_MIN, FOOT_GAP_MAX) * height;
             }
 
@@ -1430,24 +1429,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // 横向：左脚印在 0 ~ spread，右脚印在 zone ~ zone + spread
             var offset = randomBetween(rail, base, 0, metrics.spread);
-            if (count % 2 === 1) offset += metrics.zone;
+            if (index % 2 === 1) offset += metrics.zone;
 
-            var foot = makeFoot(rail, side);
-            foot.style.left = offset.toFixed(3) + 'ch';
-            foot.style.top = top.toFixed(2) + 'px';
-            foot.style.transform = 'rotate(' +
-                randomBetween(rail, base + 2, -FOOT_ROTATE, FOOT_ROTATE).toFixed(2) + 'deg)';
-            batch.appendChild(foot);
+            var rotate = randomBetween(rail, base + 2, -FOOT_ROTATE, FOOT_ROTATE);
 
+            plan.push({
+                side: side,
+                left: offset.toFixed(3) + 'ch',
+                top: top.toFixed(2) + 'px',
+                rotate: rotate.toFixed(2)
+            });
+            marks.push(side + offset.toFixed(3) + ',' + top.toFixed(2) + ',' + rotate.toFixed(2));
             prevTop = top;
-            count++;
         }
 
-        rail.appendChild(batch);
+        /* 第二步：这份排布和历史完全一样时就不动 DOM。
+           必要性：展开会让内容从 display: none 变成可见，ResizeObserver
+           紧接着就会回调一次；若无条件删掉重建，刚刚开始播放的“挨个出现”
+           动效会连元素一起被换掉，动画等于没播。位置没变就不重建，
+           正在跑的动画也能继续跑完。 */
+        var signature = plan.length + '|' + marks.join(';');
+        var sameAsBefore = signature === rail.__upfoldLayout &&
+                           !!rail.querySelector('.' + FOOT_CLASS + ':not(.' + PROBE_CLASS + ')');
+
+        if (!sameAsBefore) {
+            // 清掉上一轮排出来的脚印（两枚探针留着继续量高度）
+            Array.prototype.forEach.call(rail.querySelectorAll('.' + FOOT_CLASS), function (el) {
+                if (!el.classList.contains(PROBE_CLASS)) rail.removeChild(el);
+            });
+
+            var batch = document.createDocumentFragment();
+            plan.forEach(function (item) {
+                var foot = makeFoot(rail, item.side);
+                foot.style.left = item.left;
+                foot.style.top = item.top;
+                foot.style.transform = 'rotate(' + item.rotate + 'deg)';
+                batch.appendChild(foot);
+            });
+            rail.appendChild(batch);
+            rail.__upfoldLayout = signature;
+        }
 
         // 一个都放不下时整条藏起来。用 visibility 而不是 display：
         // 探针还得留着量高度，正文一变高就能重新长出来。
-        if (count) {
+        if (plan.length) {
             rail.classList.remove(EMPTY_CLASS);
         } else {
             rail.classList.add(EMPTY_CLASS);
@@ -1457,7 +1482,8 @@ document.addEventListener('DOMContentLoaded', () => {
            （见上面的说明）。窗口缩放等重排不会打标记，所以脚印是直接
            就位的，不会每次都重新淡入一遍。
            标记只在这里消费掉 —— 素材还没加载完时上面会提前 return，
-           标记留着，等 load 回调真正排好脚印时再播。 */
+           标记留着，等 load 回调真正排好脚印时再播。
+           位置没变（sameAsBefore）时元素还在原地，直接对它们重播一次即可。 */
         if (rail.__upfoldReveal) {
             rail.__upfoldReveal = false;
             revealFeet(rail);
@@ -1605,9 +1631,20 @@ document.addEventListener('DOMContentLoaded', () => {
         initUpfolds();
     }
 
-    /* 只读调试接口：控制台执行 __UPFOLD__.refresh() 可重新扫描组件
-       （例如页面里动态插入了新的 <upfold>） */
-    window.__UPFOLD__ = { refresh: initUpfolds };
+    /* 只读调试接口：
+       __UPFOLD__.refresh() 重新扫描组件（例如页面里动态插入了新的 <upfold>）；
+       __UPFOLD__.refill()  强制重排脚印（不传参就取页面上第一个 upfold），
+       用来验证“排布没变就不重建 DOM、正在播的动效不被打断”这条路径。 */
+    window.__UPFOLD__ = {
+        refresh: initUpfolds,
+        refill: function (host) {
+            var target = host || document.querySelector(HOST_SELECTOR);
+            var content = target ? contentOf(target) : null;
+            if (!content) return false;
+            fillRail(content);
+            return true;
+        }
+    };
 })();
 
 /* ========================================================
