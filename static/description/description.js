@@ -1086,24 +1086,54 @@ document.addEventListener('DOMContentLoaded', () => {
        <upfold>标签文字<upfold-text>点击后展开的正文</upfold-text></upfold>
    也支持 class 写法：<span class="upfold">…<span class="upfold-text">…</span></span>。
 
-   点击组件（或聚焦后按 Enter / 空格）切换展开状态：展开时组件加上
-   .is-open，底色由 CSS 从 #53DEB7 变成 #D3F8DD，隐藏文字显示出来。
+   这里做两件事：
+   ① 把标签文字包进 <span class="upfold-label">。胶囊的底色 / 内边距都画在
+      这一层上，而展开的正文只是它的兄弟节点 —— 于是正文天生就在胶囊盒子
+      外面，不会被胶囊的背景框住（见 description.css 第 13 节）。
+   ② 给带隐藏文字的组件绑定点击 / 键盘开合并切换 .is-open：展开时只把
+      胶囊的底色从 #53DEB7 换成 #D3F8DD，其它样式不动。
+
    展开后的文字会被自动加上 .body-text 类，所以排版与正文完全一致
    （字号、行距、颜色、两端对齐都跟着 .body-text 走，正文格式以后改了
    这里自动跟随）。点击展开出来的文字本身不会收起，方便选中 / 复制。
 
-   没有 <upfold-text> 的组件不参与本段逻辑，保持原来的静态标签外观。
+   没有 <upfold-text> 的组件只做第 ① 步：保持静态胶囊外观，点击无反应。
    ======================================================== */
 (function () {
     'use strict';
 
     var HOST_SELECTOR = '.main-container upfold, .main-container .upfold';
     var CONTENT_SELECTOR = 'upfold-text, .upfold-text';
+    var LABEL_CLASS = 'upfold-label';
     var OPEN_CLASS = 'is-open';
     var READY_ATTR = 'data-upfold-ready';
 
     function contentOf(host) {
         return host.querySelector(CONTENT_SELECTOR);
+    }
+
+    /* 把标签文字搬进 .upfold-label，隐藏文字留在原处当兄弟节点。
+       逐个搬节点而不是重写 innerHTML，是为了不破坏已有的事件监听。 */
+    function wrapLabel(host, content) {
+        var existing = host.querySelector('.' + LABEL_CLASS);
+        if (existing) return existing;
+
+        var label = document.createElement('span');
+        label.className = LABEL_CLASS;
+
+        var movable = [];
+        Array.prototype.forEach.call(host.childNodes, function (node) {
+            if (node === content) return;                    // 隐藏文字本身不动
+            if (content && node.nodeType === 1 && node.contains && node.contains(content)) return;  // 包着内容的外壳也不动
+            movable.push(node);
+        });
+
+        Array.prototype.forEach.call(movable, function (node) {
+            label.appendChild(node);
+        });
+
+        host.insertBefore(label, host.firstChild);
+        return label;
     }
 
     function setOpen(host, open) {
@@ -1137,9 +1167,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (host.getAttribute(READY_ATTR) === '1') return;
 
         var content = contentOf(host);
-        if (!content) return;              // 没有隐藏内容：保持静态标签
 
+        // 无论能不能展开，都先把标签包起来：胶囊外观挂在 .upfold-label 上
+        wrapLabel(host, content);
         host.setAttribute(READY_ATTR, '1');
+
+        if (!content) return;              // 没有隐藏内容：静态胶囊，点击无反应
 
         // 让组件可聚焦、可被读屏识别为可展开控件
         if (!host.hasAttribute('tabindex')) host.setAttribute('tabindex', '0');
