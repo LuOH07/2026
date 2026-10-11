@@ -1213,8 +1213,9 @@ mark {
        <p class="body-text"><upfold>Materials and Apparatus:
            <upfold-text>点击后展开的正文</upfold-text></upfold></p>
 
-   收起：标签是一枚 #53DEB7 的圆角胶囊，白字，宽度随标签文字伸缩，
-        字号 26px（与 .heading-3 同级）。
+   收起：标签是一枚 #53DEB7 的圆角胶囊，左端叠着一张 kid.avif 装饰图
+        （始终显示，不随点击变化），标签文字为它让位、整体右移；
+        白字，宽度随标签文字伸缩，字号 26px（与 .heading-3 同级）。
    展开：胶囊只换底色（#53DEB7 → #D3F8DD），其余样式一律不动；
         隐藏文字出现在胶囊【下方】，与正文同样排版，没有底色也没有边框。
    开合行为在 description.js 第 6 节。
@@ -1245,11 +1246,16 @@ mark {
     --upfold-color: #FFFFFF;      /* 文字颜色 */
     --upfold-radius: 20px;        /* 圆角大小；写成 999px 会变成胶囊形 */
     --upfold-font-size: 26px;     /* 与 .heading-3 一致 */
+    --upfold-icon-size: 1.5em;    /* 左端装饰图标的边长 */
+    --upfold-icon-gap: 0.4em;     /* 图标与标签文字之间的距离 */
 
+    position: relative;           /* 给左端叠的装饰图标当参照 */
     display: inline-block;        /* 随文字伸缩，并且能与正文排在同一行 */
     width: auto;                  /* 宽度由文字决定，不设固定值 */
     max-width: 100%;              /* 窄屏下不会顶出容器 */
-    padding: 0.35em 1.15em;
+    /* 左内边距 = 图标 + 间距，于是文字自动向右让出图标的位置；
+       右内边距保持原来的 1.15em，右边看起来和以前一样 */
+    padding: 0.35em 1.15em 0.35em calc(var(--upfold-icon-size) + var(--upfold-icon-gap));
     background-color: var(--upfold-bg);
     color: var(--upfold-color);
     border-radius: var(--upfold-radius);
@@ -1276,6 +1282,28 @@ mark {
 .main-container upfold > .upfold-label :is(b, strong, a),
 .main-container .upfold > .upfold-label :is(b, strong, a) {
     color: var(--upfold-color);
+}
+
+/* ---------- 胶囊左端叠的装饰图标 ----------
+   从矩形的左端开始，压在底色这一层之上；收起 / 展开都长这样，
+   不随点击变化，也不拦鼠标（纯装饰，读屏同样忽略）。
+   标签文字的位置由上面的 padding-left 决定（= 图标 + 间距），
+   所以只改 --upfold-icon-size 就行，文字会自动跟着让位，
+   不需要再手动调 padding。 */
+.main-container upfold:not([data-upfold-ready])::before,
+.main-container .upfold:not([data-upfold-ready])::before,
+.main-container upfold > .upfold-label::before,
+.main-container .upfold > .upfold-label::before {
+    content: "";
+    position: absolute;
+    left: 0;                      /* 贴在矩形左端 */
+    top: 50%;
+    transform: translateY(-50%);
+    width: var(--upfold-icon-size);
+    height: var(--upfold-icon-size);
+    background: url("https://static.igem.wiki/teams/6059/wiki/notebook/kid.avif") center center / contain no-repeat;
+    pointer-events: none;
+    z-index: 1;                   /* 明确压在底色之上 */
 }
 
 /* ---------- 隐藏文字：脚本处理过之后才藏起来 ----------
