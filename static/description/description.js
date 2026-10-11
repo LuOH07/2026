@@ -1078,3 +1078,107 @@ document.addEventListener('DOMContentLoaded', () => {
     /* 只读调试接口：控制台执行 __TABLES__.refresh() 可手动重算标记 */
     window.__TABLES__ = { refresh: markAllTables };
 })();
+
+/* ========================================================
+   6. upfold 组件：点击展开 / 收起隐藏文字
+   ========================================================
+   配合 description.css 第 13 节。结构约定：
+       <upfold>标签文字<upfold-text>点击后展开的正文</upfold-text></upfold>
+   也支持 class 写法：<span class="upfold">…<span class="upfold-text">…</span></span>。
+
+   点击组件（或聚焦后按 Enter / 空格）切换展开状态：展开时组件加上
+   .is-open，底色由 CSS 从 #53DEB7 变成 #D3F8DD，隐藏文字显示出来。
+   展开后的文字会被自动加上 .body-text 类，所以排版与正文完全一致
+   （字号、行距、颜色、两端对齐都跟着 .body-text 走，正文格式以后改了
+   这里自动跟随）。点击展开出来的文字本身不会收起，方便选中 / 复制。
+
+   没有 <upfold-text> 的组件不参与本段逻辑，保持原来的静态标签外观。
+   ======================================================== */
+(function () {
+    'use strict';
+
+    var HOST_SELECTOR = '.main-container upfold, .main-container .upfold';
+    var CONTENT_SELECTOR = 'upfold-text, .upfold-text';
+    var OPEN_CLASS = 'is-open';
+    var READY_ATTR = 'data-upfold-ready';
+
+    function contentOf(host) {
+        return host.querySelector(CONTENT_SELECTOR);
+    }
+
+    function setOpen(host, open) {
+        if (open) {
+            host.classList.add(OPEN_CLASS);
+        } else {
+            host.classList.remove(OPEN_CLASS);
+        }
+        host.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    function toggle(host) {
+        setOpen(host, !host.classList.contains(OPEN_CLASS));
+    }
+
+    /* 点击是否落在展开出来的正文里 */
+    function isInsideContent(host, node) {
+        if (!node || node.nodeType !== 1) return false;
+        var content = contentOf(host);
+        if (!content) return false;
+
+        var current = node;
+        while (current) {
+            if (current === content) return true;
+            current = current.parentNode;
+        }
+        return false;
+    }
+
+    function setup(host) {
+        if (host.getAttribute(READY_ATTR) === '1') return;
+
+        var content = contentOf(host);
+        if (!content) return;              // 没有隐藏内容：保持静态标签
+
+        host.setAttribute(READY_ATTR, '1');
+
+        // 让组件可聚焦、可被读屏识别为可展开控件
+        if (!host.hasAttribute('tabindex')) host.setAttribute('tabindex', '0');
+        if (!host.hasAttribute('role')) host.setAttribute('role', 'button');
+        host.setAttribute('aria-expanded', 'false');
+
+        // 展开文字的排版直接复用 .body-text（见 description.css 第 5 / 13 节）
+        if (!content.classList.contains('body-text')) {
+            content.classList.add('body-text');
+        }
+
+        host.addEventListener('click', function (event) {
+            // 已展开时，点正文本身不收起，方便选中 / 复制文字
+            if (host.classList.contains(OPEN_CLASS) && isInsideContent(host, event.target)) return;
+            toggle(host);
+        });
+
+        host.addEventListener('keydown', function (event) {
+            var key = event.key;
+            if (key === 'Enter' || key === ' ' || key === 'Spacebar') {
+                event.preventDefault();
+                toggle(host);
+            } else if (key === 'Escape') {
+                setOpen(host, false);
+            }
+        });
+    }
+
+    function initUpfolds() {
+        Array.prototype.forEach.call(document.querySelectorAll(HOST_SELECTOR), setup);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initUpfolds);
+    } else {
+        initUpfolds();
+    }
+
+    /* 只读调试接口：控制台执行 __UPFOLD__.refresh() 可重新扫描组件
+       （例如页面里动态插入了新的 <upfold>） */
+    window.__UPFOLD__ = { refresh: initUpfolds };
+})();

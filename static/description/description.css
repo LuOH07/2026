@@ -1208,20 +1208,22 @@ mark {
 /* ========================================================
    13. 正文组件 <upfold>
    ========================================================
-   用法：把文字包进 <upfold></upfold> 即可（也支持 <span class="upfold">…</span>）：
-       <p class="body-text">……<upfold>Label text</upfold>……</p>
+   用法：标签文字写在 <upfold> 里，点击后要展开的隐藏文字写在
+   <upfold-text> 里（标签也可以换成 <span class="upfold">…</span>）：
+       <p class="body-text"><upfold>显示详情<upfold-text>点击后展开的正文</upfold-text></upfold></p>
 
-   外观：#53DEB7 的圆角矩形 + 白色文字，字号 26px（与 .heading-3 相同），
-   放在正文里会比正文（22px）大一圈，分量上与各级标题接近。
-
-   宽度不写死：组件是 inline-block，宽度 = 文字宽度 + 左右内边距，
-   文字越长组件越宽。改 HTML 里的文字即可，不需要动这个文件。
+   收起：底色 #53DEB7 + 白字，宽度随标签文字伸缩（inline-block），
+        字号 26px，与 .heading-3 同级。
+   展开：底色变 #D3F8DD，隐藏文字显示出来，排版与 .body-text 完全一致
+        （由 description.js 第 6 节给内容元素加上 .body-text 类）。
+   点击 / 键盘行为以及展开收起的时机都在 description.js 第 6 节。
 
    想调整只改下面这几个自定义属性。 */
 .main-container upfold,
 .main-container .upfold {
-    --upfold-bg: #53DEB7;         /* 底色 */
-    --upfold-color: #FFFFFF;      /* 文字颜色 */
+    --upfold-bg: #53DEB7;         /* 收起时的底色 */
+    --upfold-open-bg: #D3F8DD;    /* 展开后的底色 */
+    --upfold-color: #FFFFFF;      /* 收起时的文字颜色 */
     --upfold-radius: 20px;        /* 圆角大小；写成 999px 会变成胶囊形 */
     --upfold-font-size: 26px;     /* 与 .heading-3 一致 */
 
@@ -1237,13 +1239,50 @@ mark {
     line-height: 1.35;
     text-align: center;
     vertical-align: middle;
+    cursor: pointer;              /* 整块可点，开合状态由 JS 切换 */
+    user-select: none;            /* 点标签时不会顺手选中文字 */
+    -webkit-user-select: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* 组件里的加粗 / 链接也一并保持白色：
-   否则会带上正文各自的颜色，落在绿底上不干净 */
-.main-container upfold :is(b, strong, a),
-.main-container .upfold :is(b, strong, a) {
+/* 收起时，组件里的加粗 / 链接也一并保持白色：
+   否则会带上正文各自的颜色，落在绿底上不干净
+   （展开后底色变浅，就不该再压成白色了） */
+.main-container upfold:not(.is-open) :is(b, strong, a),
+.main-container .upfold:not(.is-open) :is(b, strong, a) {
     color: var(--upfold-color);
+}
+
+/* ---------- 隐藏文字：只在展开时出现 ----------
+   用后代选择器（不是 > 直接子级），与 description.js 第 6 节的
+   querySelector 查找范围保持一致：内容外面再套一层 <span> 也能正常工作。 */
+.main-container upfold :is(upfold-text, .upfold-text),
+.main-container .upfold :is(upfold-text, .upfold-text) {
+    display: none;
+}
+
+/* ---------- 展开状态：淡绿底 + 整行宽 ----------
+   变宽是为了让正文格式的文字有正常行宽：
+   收起时是贴合文字的胶囊，展开后成为一条整行宽的面板。 */
+.main-container upfold.is-open,
+.main-container .upfold.is-open {
+    display: block;
+    width: 100%;
+    background-color: var(--upfold-open-bg);
+    color: inherit;               /* 标签文字跟随所在段落（放在 .body-text 里就是正文色） */
+}
+
+/* 展开后的文字：按正文格式显示，并抵掉 .body-text 自带的左右 8% 缩进，
+   让它贴齐面板的内边距；面板里的文字照常可以选中 / 复制 */
+.main-container upfold.is-open :is(upfold-text, .upfold-text),
+.main-container .upfold.is-open :is(upfold-text, .upfold-text) {
+    display: block;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    cursor: default;
+    user-select: text;
+    -webkit-user-select: text;
 }
 
 /* 窄屏：与 .heading-3 的移动端字号（17px）看齐 */
