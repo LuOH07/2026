@@ -1095,8 +1095,8 @@ document.addEventListener('DOMContentLoaded', () => {
       description.css 第 13 节只留胶囊本身长什么样。
    ③ 给带隐藏文字的组件绑定点击 / 键盘开合并切换 .is-open：展开时把胶囊的
       底色从 #53DEB7 换成 #D3F8DD，同时把文字从白色换成正文字体颜色 #465E77。
-   ④ 展开出来的正文左侧铺一排左右交替的脚印（见 6.3）：正文从第 5 个字符
-      开始，左脚印的左边缘在 0–1.5ch、右脚印在 1.5–3ch 里各自随机；每个脚印
+   ④ 展开出来的正文左侧铺一排左右交替的脚印（见 6.3）：正文从第 3 个字符
+      开始，左脚印的左边缘在 0–1ch、右脚印在 1–2ch 里各自随机；每个脚印
       的上沿间距（1.5~2.5 个脚印高）与旋转角度也都是随机值，一直排到放不下；
       点开时这一串脚印还会从上往下挨个出现（见 6.4）。
 
@@ -1125,7 +1125,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     /* 轨道基准尺寸（ch）：默认值，实际以 CSS 变量 --upfold-rail-span 为准
        —— CSS 才是唯一出处，改那边就够 */
-    var RAIL_SPAN = 1.5;          /* 每侧“左边缘”的随机范围宽（对应 --upfold-rail-span） */
+    var RAIL_SPAN = 1;            /* 每侧“左边缘”的随机范围宽（对应 --upfold-rail-span） */
     /* 随机范围 */
     var FOOT_GAP_MIN = 1.5;       /* 相邻脚印上沿的间距：1.5 ~ 2.5 个脚印高 */
     var FOOT_GAP_MAX = 2.5;
@@ -1289,10 +1289,10 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ------------------------------------------------------
        6.3 展开文字左侧的脚印轨道
        ------------------------------------------------------
-       正文左侧让出 5ch（description.css 第 13 节的 padding-left），第 5 个
-       字符起才是正文。脚印宽 1.5ch，落点左右分开随机（宽度取自 CSS 的
-       --upfold-rail-span）：左脚印的左边缘落 0 ~ 1.5ch、右脚印落
-       1.5 ~ 3ch，即各占半条 3ch 宽的带子。素材左右各一张，交替往下排：
+       正文左侧让出 3ch（description.css 第 13 节的 padding-left），第 3 个
+       字符起才是正文。脚印宽 1ch，落点左右分开随机（宽度取自 CSS 的
+       --upfold-rail-span）：左脚印的左边缘落 0 ~ 1ch、右脚印落 1 ~ 2ch。
+       素材左右各一张，交替往下排：
 
            · 左脚印 1 的上沿固定在最上面（= 正文顶部，不随机）；
            · 之后每个脚印的上沿 = 上一个的上沿 + 1.5 ~ 2.5 个【本脚印】高度
@@ -1346,8 +1346,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* 每侧“左边缘”的随机范围宽（ch）：从 CSS 变量 --upfold-rail-span 读。
-       左脚印落 0 ~ span，右脚印落 span ~ 2×span（当前 1.5ch → 左 0~1.5ch、
-       右 1.5~3ch）；读不到就用代码里的默认值。 */
+       左脚印落 0 ~ span，右脚印落 span ~ 2×span（当前 1ch → 左 0~1ch、
+       右 1~2ch）；读不到就用代码里的默认值。 */
     function railSpan(rail) {
         var span = RAIL_SPAN;
 
