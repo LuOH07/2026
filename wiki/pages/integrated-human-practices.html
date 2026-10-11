@@ -4,8 +4,6 @@
 
 {% block page_styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='description/description.css') }}">
-<!-- IHP 增量层：只提供正文 e 标签的样式，必须排在 description.css 之后 -->
-<link rel="stylesheet" href="{{ url_for('static', filename='description/IHP.css') }}">
 {% endblock %}
 
 {% block page_content %}
@@ -206,6 +204,4 @@
 
 {% block page_scripts %}
 <script src="{{ url_for('static', filename='description/description.js') }}" defer></script>
-<!-- IHP 增量层：剔除侧边目录里的 e 标签文字，必须排在 description.js 之后 -->
-<script src="{{ url_for('static', filename='description/IHP.js') }}" defer></script>
 {% endblock %}
