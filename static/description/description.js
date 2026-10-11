@@ -1113,7 +1113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var RAIL_CLASS = 'upfold-rail';
     var ICON_CLASS = 'upfold-rail-icon';
     var EMPTY_CLASS = 'is-empty';
-    var ICON_SRC = 'https://static.igem.wiki/teams/6059/wiki/notebook/-2.avif';
+    var ICON_SRC = 'https://static.igem.wiki/teams/6059/wiki/notebook/steps-2.avif';
 
     function contentOf(host) {
         return host.querySelector(CONTENT_SELECTOR);
