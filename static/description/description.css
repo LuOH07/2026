@@ -388,8 +388,6 @@ letter-spacing: 0;
 line-height: 1.6;
 text-decoration: underline;
 text-underline-offset: 4px;
-/* 一级 / 二级 / 三级标题统一允许换行：不再用 nowrap + 省略号，
-   长标题在侧边栏宽度内自动折成多行并完整显示 */
 white-space: normal;
 overflow: visible;
 text-overflow: clip;
@@ -667,6 +665,7 @@ font-style: italic;
 .body-text strong {
     font-weight: bold;
     color: #8F8BD9;
+    font-size: 24px;
 }
 
 /* ========================================================
