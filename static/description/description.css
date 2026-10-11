@@ -1134,14 +1134,18 @@ mark {
        · 第一行（表头行）—— 上边框 + 下边框；
        · 中间各行     —— 没有任何横线；
        · 最后一行     —— 下边框。
-   行数 / 列数 / 内容全部在 HTML 里自由增减，不需要改动这里的任何代码；
    写不写 <thead> / <tbody> 都可以（两种结构都做了适配）。
 
    首行与末行由 description.js 第 5 节打上 .wp-table-first-row /
    .wp-table-last-row 标记，CSS 只负责画线；下面同时保留了结构选择器
    兜底，脚本没跑起来时这三条线依然画得出来。
 
-   表格宽度为正文容器宽度的 60%，整体水平居中，单元格文字一律居中。
+   表格宽度：PC 端为正文容器宽度的 70%，移动端铺满容器宽度（100%）；
+   表格整体水平居中，单元格文字一律居中。
+
+   行数 / 列数完全由 HTML 里的 <tr> / <td> / <th> 决定 —— 这里没有任何
+   写死的行号、列号或列宽，CSS 只按“第一行 / 最后一行”这种相对位置画线，
+   所以增删行列都不需要动这个文件。
 
    想改线的颜色或粗细，只改下面这两个自定义属性即可。 */
 .main-container table {
@@ -1149,7 +1153,7 @@ mark {
     --wp-table-rule-width: 1.5px;
 
     border-collapse: collapse;
-    width: 60%;                 /* 占正文容器宽度的 60% */
+    width: 70%;                 /* PC 端：占正文容器宽度的 70% */
     margin: 1.5em auto 2em;     /* 左右 auto：表格在容器里水平居中 */
     font-family: inherit;
     font-size: inherit;
@@ -1191,11 +1195,11 @@ mark {
     border-bottom: var(--wp-table-rule-width) solid var(--wp-table-rule-color);
 }
 
-/* 窄屏：宽度保持正文容器的 60%，只收一下字号与内边距，
+/* 窄屏：表格铺满正文容器宽度，并收一下字号与内边距，
    避免单元格里的文字被挤成一团 */
 @media (max-width: 820px) {
     .main-container table {
-        /* 宽度依旧是正文容器的 60%，这里只收一下字号与内边距 */
+        width: 100%;            /* 移动端：占满正文容器宽度 */
         margin: 1.2em auto 1.5em;
         font-size: 16px;
         line-height: 1.7;
