@@ -1135,8 +1135,8 @@ document.addEventListener('DOMContentLoaded', () => {
     var SWORD_CLASS = 'upfold-sword';
     var SWORD_SRC = 'https://static.igem.wiki/teams/6059/wiki/notebook/sword1-0.avif';
     var SWORD_RIGHT = '10%';      /* 剑的右边缘距胶囊右边 10% */
-    var SWORD_TOP = '50%';        /* 剑的中心对在胶囊高度的 50% */
-    var SWORD_HEIGHT = '190%';    /* > 100% 才会上下各漏出一节 */
+    var SWORD_TOP = '40%';        /* 剑的【中心线】所在高度：50% 是正中，40% = 往上挪 10% */
+    var SWORD_HEIGHT = '190%';    /* 长度与第一版一致（> 100% 才会上下各露一节） */
     var SWORD_MAX_WIDTH = '3em';  /* 兜底：素材若过宽，最多占这么宽 */
 
     function contentOf(host) {
@@ -1214,9 +1214,11 @@ document.addEventListener('DOMContentLoaded', () => {
        6.2 胶囊右端的剑形装饰（sword1.avif）
        ------------------------------------------------------
        往 .upfold-label 里塞一张剑的图片：绝对定位 + z-index: -1，
-       位置是矩形的 right 10% / top 50%，再用 translateY(-50%) 把剑的
-       【中心】对在这条中线上，于是它压在胶囊底色【下面】、上下各漏出
-       一节；高度写成百分比，胶囊变高变矮、窄屏换字号，剑都跟着缩放。
+       位置是矩形的 right 10% / top 40%，再用 translateY(-50%) 把剑的
+       【中心线】对在这条线上 —— top 量的是中心线，不是上边缘。
+       中心线在 40% 而不是 50%，所以它并没有居中，而是比第一版（居中）
+       整体往上挪了 10% 的胶囊高度：上方露 55%、下方露 35%。
+       高度写成百分比，胶囊变高变矮、窄屏换字号，剑都跟着缩放。
 
        用真 <img> 而不是 CSS 背景图，是为了让“宽度按原图比例自动算”
        （height 给定 → width: auto 用素材自身宽高比），以后换素材不用
@@ -1246,8 +1248,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         sword.style.position = 'absolute';
         sword.style.right = SWORD_RIGHT;
-        sword.style.top = SWORD_TOP;
-        sword.style.transform = 'translateY(-50%)';
+        sword.style.top = SWORD_TOP;             /* 这里量的是剑的中心线 */
+        sword.style.transform = 'translateY(-50%)';  /* 中心线对到 top（40% = 比居中高 10%） */
         sword.style.height = SWORD_HEIGHT;
         sword.style.width = 'auto';              /* 宽度按原图比例自动算 */
         sword.style.maxWidth = SWORD_MAX_WIDTH;
