@@ -1246,7 +1246,7 @@ mark {
     --upfold-color: #FFFFFF;      /* 文字颜色 */
     --upfold-radius: 20px;        /* 圆角大小；写成 999px 会变成胶囊形 */
     --upfold-font-size: 26px;     /* 与 .heading-3 一致 */
-    --upfold-icon-size: 12em;     /* 左端装饰图标的边长（当前值，可自由调） */
+    --upfold-icon-size: 4em;     /* 左端装饰图标的边长（当前值，可自由调） */
     --upfold-icon-gap: 0.4em;     /* 图标与标签文字之间的距离 */
 
     position: relative;           /* 给左端叠的装饰图标当参照 */
@@ -1296,8 +1296,8 @@ mark {
 .main-container .upfold > .upfold-label::before {
     content: "";
     position: absolute;
-    left: -10%;                      
-    top: -50%;
+    left: 0%;                      
+    top: 50%;
     transform: translateY(-50%);
     width: var(--upfold-icon-size);
     height: var(--upfold-icon-size);
