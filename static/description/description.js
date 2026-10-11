@@ -1090,7 +1090,9 @@ document.addEventListener('DOMContentLoaded', () => {
    ① 把标签文字包进 <span class="upfold-label">。胶囊的底色 / 内边距都画在
       这一层上，而展开的正文只是它的兄弟节点 —— 于是正文天生就在胶囊盒子
       外面，不会被胶囊的背景框住（见 description.css 第 13 节）。
-   ② 在胶囊右端叠一把剑（见 6.2）：压在底色这一层下面，上下各漏出一节。
+   ② 往胶囊上挂两枚装饰（见 6.1 / 6.2）：左端的小人图标、右端压在底色
+      下面的剑。它们的素材引用、位置、尺寸、层级都在本文件里给，
+      description.css 第 13 节只留胶囊本身长什么样。
    ③ 给带隐藏文字的组件绑定点击 / 键盘开合并切换 .is-open：展开时把胶囊的
       底色从 #53DEB7 换成 #D3F8DD，同时把文字从白色换成正文字体颜色 #465E77。
    ④ 展开出来的正文左侧竖着铺一列装饰图标（见 6.3）：文字右退 4 个字符，
@@ -1115,9 +1117,27 @@ document.addEventListener('DOMContentLoaded', () => {
     var ICON_CLASS = 'upfold-rail-icon';
     var EMPTY_CLASS = 'is-empty';
     var ICON_SRC = 'https://static.igem.wiki/teams/6059/wiki/notebook/steps-2.avif';
-    /* 胶囊右端叠的剑形装饰（位置 / 图层见 description.css 第 13 节） */
+
+    /* ------------------------------------------------------
+       胶囊上两枚装饰：素材引用 + 站位 / 尺寸 / 层级
+       ------------------------------------------------------
+       原先这两枚装饰一半在 CSS（kid-2.avif 的 ::before 背景图、
+       剑的 .upfold-sword 规则），一半在这里（图片 URL），想换个位置或
+       换张素材得翻两个文件。现在整块收到本文件，description.css 第 13 节
+       只留胶囊（矩形）本身的样式。
+       换素材 / 挪位置 / 调大小，只改下面这几行。 */
+    var KID_CLASS = 'upfold-kid';
+    var KID_SRC = 'https://static.igem.wiki/teams/6059/wiki/notebook/kid-2.avif';
+    var KID_SIZE = '4em';         /* 图标边长（em，跟着胶囊字号一起缩放） */
+    var KID_GAP = '0.4em';        /* 图标与标签文字之间的距离 */
+    var KID_TOP = '40%';          /* 图标中心在胶囊高度上的位置 */
+
     var SWORD_CLASS = 'upfold-sword';
     var SWORD_SRC = 'https://static.igem.wiki/teams/6059/wiki/notebook/sword1-0.avif';
+    var SWORD_RIGHT = '10%';      /* 剑的右边缘距胶囊右边 10% */
+    var SWORD_TOP = '50%';        /* 剑的中心对在胶囊高度的 50% */
+    var SWORD_HEIGHT = '190%';    /* > 100% 才会上下各漏出一节 */
+    var SWORD_MAX_WIDTH = '3em';  /* 兜底：素材若过宽，最多占这么宽 */
 
     function contentOf(host) {
         return host.querySelector(CONTENT_SELECTOR);
@@ -1148,28 +1168,93 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ------------------------------------------------------
+       6.1 胶囊左端的装饰图标（kid-2.avif）
+       ------------------------------------------------------
+       往 .upfold-label 里塞一张小人的图片，贴在矩形左端、压在底色之上
+       （z-index: 1）。素材引用与站位（位置 / 尺寸 / 层级）都在这里一次性
+       写成内联样式，description.css 里不再有这条背景图。
+
+       标签的左内边距也在这里按“图标 + 间距”算出来，于是文字自动为图标
+       让位（原先写在 CSS 的 padding-left 里）；图片加载失败就把图标撤掉
+       并把左内边距还原，不让文字白白退一截。
+
+       纯装饰：不拦鼠标（pointer-events: none）、不被读屏朗读（aria-hidden）。 */
+    function injectKid(label) {
+        if (!label || label.querySelector('.' + KID_CLASS)) return;
+
+        var kid = document.createElement('img');
+        kid.className = KID_CLASS;
+        kid.src = KID_SRC;
+        kid.alt = '';
+        kid.setAttribute('aria-hidden', 'true');
+
+        kid.style.position = 'absolute';
+        kid.style.left = '0';
+        kid.style.top = KID_TOP;
+        kid.style.transform = 'translateY(-50%)';
+        kid.style.width = KID_SIZE;
+        kid.style.height = KID_SIZE;
+        kid.style.objectFit = 'contain';     /* 素材不是正方形也不会被压扁 */
+        kid.style.pointerEvents = 'none';
+        kid.style.zIndex = '1';              /* 明确压在底色之上 */
+
+        kid.addEventListener('error', function () {
+            if (kid.parentNode) kid.parentNode.removeChild(kid);
+            label.style.paddingLeft = '';    // 图标没了，文字不必再让位
+        });
+
+        // 绝对定位，放在最前面也不会挤走标签文字
+        label.insertBefore(kid, label.firstChild);
+
+        // 文字为图标让位：左内边距 = 图标边长 + 间距
+        label.style.paddingLeft = 'calc(' + KID_SIZE + ' + ' + KID_GAP + ')';
+    }
+
+    /* ------------------------------------------------------
        6.2 胶囊右端的剑形装饰（sword1.avif）
        ------------------------------------------------------
        往 .upfold-label 里塞一张剑的图片：绝对定位 + z-index: -1，
-       位置是矩形的 right 10% / top 50%（见 description.css 第 13 节），
-       于是它压在胶囊底色【下面】，上下各漏出一节；高度写成百分比，
-       胶囊变高变矮、窄屏换字号，剑都跟着一起缩放。
+       位置是矩形的 right 10% / top 50%，再用 translateY(-50%) 把剑的
+       【中心】对在这条中线上，于是它压在胶囊底色【下面】、上下各漏出
+       一节；高度写成百分比，胶囊变高变矮、窄屏换字号，剑都跟着缩放。
 
-       这里用真 <img> 而不是 CSS background-image，是为了让“宽度按原图
-       比例自动算”（height 给定 → width: auto 用素材自身宽高比），
-       以后换素材不用回来量尺寸、改样式。
+       用真 <img> 而不是 CSS 背景图，是为了让“宽度按原图比例自动算”
+       （height 给定 → width: auto 用素材自身宽高比），以后换素材不用
+       回来量尺寸、改样式。
 
-       纯装饰：alt="" + aria-hidden，鼠标事件也由 CSS 的 pointer-events
-       关掉，所以它既不拦点击也不挡选中；图片加载失败就整张撤掉，
-       不留下破图或一块空白占位。 */
-    function injectSword(label) {
-        if (!label || label.querySelector('.' + SWORD_CLASS)) return;
+       宿主（<upfold>）要加 isolation: isolate：.upfold-label 自身
+       position: relative 但没有 z-index，本来不构成层叠上下文，剑的
+       z-index: -1 会一路穿到页面最外面的层叠上下文里、被正文白卡片盖住；
+       把宿主做成层叠上下文后，-1 只在本组件内部生效 —— 剑画在胶囊底色
+       之前，所以被矩形挡住、只漏出上下两头。
+
+       纯装饰：alt="" + aria-hidden，鼠标事件由 pointer-events 关掉，
+       既不拦点击也不挡选中；图片加载失败就整张撤掉，不留下破图。 */
+    function injectSword(host, label) {
+        if (!host || !label) return;
+
+        // 不管这一次插没插过图，先保证层叠上下文在
+        host.style.isolation = 'isolate';
+
+        if (label.querySelector('.' + SWORD_CLASS)) return;
 
         var sword = document.createElement('img');
         sword.className = SWORD_CLASS;
         sword.src = SWORD_SRC;
         sword.alt = '';
         sword.setAttribute('aria-hidden', 'true');
+
+        sword.style.position = 'absolute';
+        sword.style.right = SWORD_RIGHT;
+        sword.style.top = SWORD_TOP;
+        sword.style.transform = 'translateY(-50%)';
+        sword.style.height = SWORD_HEIGHT;
+        sword.style.width = 'auto';              /* 宽度按原图比例自动算 */
+        sword.style.maxWidth = SWORD_MAX_WIDTH;
+        sword.style.objectFit = 'contain';       /* 被 maxWidth 卡住也不拉变形 */
+        sword.style.zIndex = '-1';               /* 压在胶囊底色下面 */
+        sword.style.pointerEvents = 'none';
+
         sword.addEventListener('error', function () {
             if (sword.parentNode) sword.parentNode.removeChild(sword);
         });
@@ -1296,8 +1381,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 无论能不能展开，都先把标签包起来：胶囊外观挂在 .upfold-label 上
         var label = wrapLabel(host, content);
-        // 胶囊右端的剑形装饰：静态胶囊和可展开的胶囊都挂
-        injectSword(label);
+        // 胶囊上的两枚装饰：素材引用 / 站位 / 尺寸 / 层级都在 6.1、6.2 里给
+        injectKid(label);
+        injectSword(host, label);
         host.setAttribute(READY_ATTR, '1');
 
         if (!content) return;              // 没有隐藏内容：静态胶囊，点击无反应
@@ -1349,4 +1435,84 @@ document.addEventListener('DOMContentLoaded', () => {
     /* 只读调试接口：控制台执行 __UPFOLD__.refresh() 可重新扫描组件
        （例如页面里动态插入了新的 <upfold>） */
     window.__UPFOLD__ = { refresh: initUpfolds };
+})();
+
+/* ========================================================
+   7. 悬浮装饰（宝剑 / 剑鞘 / BACK TO TOP）：动效与定位
+   ========================================================
+   这三件装饰的【定位、尺寸、层级、变换、过渡】原先写在 description.css
+   第 7 节里，现在整块收到这里，由脚本写成内联样式：
+
+       · 它们的 top 本来就会被第 3 节的滚动 / 拖拽逻辑反复改写，
+         参数与改写它的代码放在一起，改一处就够；
+       · transition / will-change 是给动效用的参数，也一并归在这里。
+
+   description.css 只留它们的外观：光标、颜色、字体、白空间、
+   hover 泛光、object-fit。
+
+   元素本身（<img class="scroll-sword"> / <img class="scroll-scabbard">
+   / <div class="scroll-back-to-top">）仍然写在页面 HTML 里 —— 它们分散在
+   二十来个页面上，这里只负责把动效参数补上。窄屏隐藏仍然由
+   description.css 第 8.3 节的 display: none !important 负责
+   （内联样式压不过 !important，所以手机端照样不显示）。
+
+   执行时机：defer 脚本执行时 DOM 已解析完（readyState 为 interactive），
+   这里立刻写一遍，紧接着第 3 节的 updateSwordScabbardPosition() 会在
+   这个基础上继续按滚动位置改 top。
+   ======================================================== */
+(function () {
+    'use strict';
+
+    /* 三件装饰的动效参数：键名对应页面上的 id */
+    var DECOR_STYLE = {
+        scrollSword: {
+            position: 'fixed',
+            right: '0',
+            top: '10vh',
+            height: '50vh',
+            width: 'auto',
+            zIndex: '90',
+            transform: 'translateX(40%)',
+            transition: 'filter 0.2s ease'
+        },
+        scrollScabbard: {
+            position: 'fixed',
+            right: '0',
+            top: '23vh',
+            height: '50vh',
+            width: 'auto',
+            zIndex: '91',
+            transform: 'translateX(30%)',
+            willChange: 'top',
+            transition: 'filter 0.2s ease'
+        },
+        scrollBackToTop: {
+            position: 'fixed',
+            right: '45px',
+            top: '23vh',
+            zIndex: '92',
+            transform: 'translateY(-50%)',
+            willChange: 'top, transform',
+            transition: 'filter 0.2s ease'
+        }
+    };
+
+    function applyStyle(el, style) {
+        if (!el) return;
+        Object.keys(style).forEach(function (key) {
+            el.style[key] = style[key];
+        });
+    }
+
+    function applyScrollDecorStyles() {
+        applyStyle(document.getElementById('scrollSword'), DECOR_STYLE.scrollSword);
+        applyStyle(document.getElementById('scrollScabbard'), DECOR_STYLE.scrollScabbard);
+        applyStyle(document.getElementById('scrollBackToTop'), DECOR_STYLE.scrollBackToTop);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', applyScrollDecorStyles);
+    } else {
+        applyScrollDecorStyles();
+    }
 })();
