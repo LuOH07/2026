@@ -1140,25 +1140,29 @@ mark {
    .wp-table-last-row 标记，CSS 只负责画线；下面同时保留了结构选择器
    兜底，脚本没跑起来时这三条线依然画得出来。
 
-   表格宽度：PC 端为正文容器宽度的 70%，移动端铺满容器宽度（100%）；
+   表格宽度：PC 端为正文容器宽度的 80%，移动端铺满容器宽度（100%）；
    表格整体水平居中，单元格文字一律居中。
+   数据行文字颜色与 .body-text 的正文颜色一致（#000000）；
+   第一行（表头行）是深蓝底 #1D2D5E + 白字。
 
    行数 / 列数完全由 HTML 里的 <tr> / <td> / <th> 决定 —— 这里没有任何
    写死的行号、列号或列宽，CSS 只按“第一行 / 最后一行”这种相对位置画线，
    所以增删行列都不需要动这个文件。
 
-   想改线的颜色或粗细，只改下面这两个自定义属性即可。 */
+   想改线色 / 表头配色，只改下面这几个自定义属性即可。 */
 .main-container table {
     --wp-table-rule-color: #000000;
     --wp-table-rule-width: 1.5px;
+    --wp-table-head-bg: #1D2D5E;      /* 表头行底色 */
+    --wp-table-head-color: #FFFFFF;   /* 表头行文字颜色 */
 
     border-collapse: collapse;
-    width: 70%;                 /* PC 端：占正文容器宽度的 70% */
+    width: 80%;                 /* PC 端：占正文容器宽度的 80% */
     margin: 1.5em auto 2em;     /* 左右 auto：表格在容器里水平居中 */
     font-family: inherit;
     font-size: inherit;
     line-height: 1.8;
-    color: inherit;
+    color: #000000;             /* 与 .body-text 的正文颜色保持一致 */
 }
 
 /* 先把所有单元格的边框清空，横线只由下面三条规则画；
@@ -1176,7 +1180,7 @@ mark {
     font-weight: bold;
 }
 
-/* ---------- 第一行：上边框 + 下边框 ---------- */
+/* ---------- 第一行：上边框 + 下边框，深蓝底 + 白字 ---------- */
 .main-container table tr.wp-table-first-row > th,
 .main-container table tr.wp-table-first-row > td,
 .main-container table > thead:first-child > tr:first-child > th,
@@ -1185,6 +1189,16 @@ mark {
 .main-container table > tbody:first-child > tr:first-child > td {
     border-top: var(--wp-table-rule-width) solid var(--wp-table-rule-color);
     border-bottom: var(--wp-table-rule-width) solid var(--wp-table-rule-color);
+    background-color: var(--wp-table-head-bg);
+    color: var(--wp-table-head-color);
+}
+
+/* 表头行里若出现加粗或链接，也一并保持白色：否则会带上正文的
+   加粗紫 #8F8BD9 / 链接蓝 #91ACE0，落在深蓝底上几乎看不清 */
+.main-container table tr.wp-table-first-row :is(b, strong, a),
+.main-container table > thead:first-child > tr:first-child :is(b, strong, a),
+.main-container table > tbody:first-child > tr:first-child :is(b, strong, a) {
+    color: var(--wp-table-head-color);
 }
 
 /* ---------- 最后一行：只有下边框 ---------- */
