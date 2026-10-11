@@ -1,0 +1,138 @@
+/* ========================================================
+   Integrated Human Practices —— 页面增量样式层
+   ========================================================
+
+   本文件是 description.css 的“附加层”，不复制、不覆写其中的任何规则。
+   页面上按原顺序加载 description.css，本文件在其之后加载即可。
+
+   用途：正文中的 <e></e> 标签
+   ------------------------------------------------------
+   <e> 是页面自定义的行内标签，两端表现不同：
+       · 正文中 —— 正常显示，见第 1 节；
+       · 侧边目录 TOC（#tocNav 内）—— 完全不显示，其文字由
+         IHP.js 在构建目录时剔除（见 IHP.js 第 1 节）。
+
+   所有规则都只针对 <e> 标签本身、含 <e> 的标题、或 #tocNav 作用域，
+   不含 <e> 的标题与其余元素仍完全走 description.css 的原有规则。
+   ======================================================== */
+
+/* --------------------------------------------------------
+   1. 正文中的 <e></e>：与上下文文字完全一致地显示
+   --------------------------------------------------------
+   自定义元素在 HTML 解析后默认就是 display: inline，但浏览器对
+   “未知元素”的字体继承行为并不完全统一，所以这里显式把字体相关
+   属性全部设为 inherit。这样 <e> 内的文字与所在段落
+   （.body-text 等）看起来毫无差别，标签本身“隐形”。 */
+e {
+    display: inline;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    text-align: inherit;
+    text-transform: inherit;
+    text-decoration: inherit;
+    text-indent: 0;
+    background: none;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    /* 标签只是“隐形”的排版容器，不该成为可交互 / 可编辑对象 */
+    cursor: inherit;
+    user-select: inherit;
+    pointer-events: none;
+}
+
+/* 调试用标记：即使被手动加上 .toc-hidden，正文里也不得改变外观 */
+e.toc-hidden {
+    display: inline !important;
+    opacity: 1 !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    clip: auto !important;
+    clip-path: none !important;
+    position: static !important;
+}
+
+/* --------------------------------------------------------
+   2. 标题里的 <e></e>：必须继续按“行内文字”排版
+   --------------------------------------------------------
+   description.css 把 .heading-* 设成了 display: flex，而 flex 容器会
+   把每个直接子元素“块化”（blockify）：直接写在标题里的 <e> 会从行内
+   变成块级，于是 "标题前半 <e>隐藏段</e>" 这种写法会断成左右两栏，
+   正文外观被破坏。
+
+   解决办法是 display: contents —— 让 <e> 自身不生成盒子，它里面的
+   文字直接成为标题这个 flex 容器的内容，与没写 <e> 时完全一致。
+   代价是 flex 容器的 gap 会插在“被拆开的文字段”之间，所以含 <e> 的
+   标题把 gap 归零，再把原来那 20px 间距补到 ::before 箭头上，
+   视觉结果与原来相同。
+
+   注意：这一节只作用于“标题里真的有 <e>”的标题；其余标题保持
+   description.css 的 flex + gap: 20px，一行都不受影响。
+   -------------------------------------------------------- */
+
+/* 2.1 支持 :has() 的现代浏览器（Chrome 105+ / Safari 15.4+ / Firefox 121+） */
+.heading-1:has(e),
+.heading-2:has(e),
+.heading-3:has(e),
+.heading-reference:has(e) {
+    gap: 0;
+}
+
+.heading-1:has(e) > e,
+.heading-2:has(e) > e,
+.heading-3:has(e) > e,
+.heading-reference:has(e) > e {
+    display: contents;
+}
+
+.heading-1:has(e)::before,
+.heading-2:has(e)::before,
+.heading-3:has(e)::before,
+.heading-reference:has(e)::before {
+    margin-right: 20px; /* 顶替被归零的 gap: 20px */
+}
+
+/* 2.2 兜底：不支持 :has() 的旧浏览器。IHP.js 会给含 <e> 的标题加上
+       .ihp-has-e 类，下面的规则与 2.1 完全等价。 */
+.heading-1.ihp-has-e,
+.heading-2.ihp-has-e,
+.heading-3.ihp-has-e,
+.heading-reference.ihp-has-e {
+    gap: 0;
+}
+
+.heading-1.ihp-has-e > e,
+.heading-2.ihp-has-e > e,
+.heading-3.ihp-has-e > e,
+.heading-reference.ihp-has-e > e {
+    display: contents;
+}
+
+.heading-1.ihp-has-e::before,
+.heading-2.ihp-has-e::before,
+.heading-3.ihp-has-e::before,
+.heading-reference.ihp-has-e::before {
+    margin-right: 20px;
+}
+
+/* --------------------------------------------------------
+   3. 侧边目录中的 <e></e>：彻底不显示
+   --------------------------------------------------------
+   正常流程下 IHP.js 会在目录构建时就把 <e> 里的文字删掉，因此这里
+   兜的是“JS 还没来得及处理”的极端情况（脚本被拦截、目录被其它脚本
+   重建等）。用 clip-path + 0 尺寸而不是 display: none，是为了不改变
+   .toc-item / .toc-text 的 flex 布局结构。 */
+#tocNav e,
+#tocNav .toc-item e,
+#tocNav .toc-item .toc-text e {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    clip-path: inset(50%);
+    pointer-events: none;
+}

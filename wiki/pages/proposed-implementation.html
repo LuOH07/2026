@@ -58,6 +58,7 @@
 
 <!-- 正文主体容器 -->
 <main class="main-container" id="mainContainer">
+<<<<<<< HEAD
     <h1 class="heading-1">Heading 1</h1>
     <p class="body-text"><b>TnpB</b> CRISPR-Cas9/Cas12.</p>
 
@@ -66,6 +67,113 @@
     <h2 class="heading-2">Heading 2</h2>   
     <h3 class="heading-3">Heading 3</h3>
     <h1 class="heading-reference">Reference</h1>
+=======
+    <h1 class="heading-1">Overview</h1>
+    <p class="body-text">Genome editing is a fundamental tool for synthetic biology and metabolic engineering. However, no single genome editor is optimal for every bacterial host or target. Large nuclease systems may impose genetic cargo, expression, or delivery burdens in some contexts, while restrictive PAM or TAM requirements can limit the number of accessible genomic sites.</p>
+    <p class="body-text">Our project explores ISHahl1 TnpB, a compact RNA-guided nuclease of approximately 400 amino acids, as a complementary genome-editing platform for bacterial engineering. Rather than treating compactness alone as sufficient, our Human Practices work led us to consider a broader set of requirements for a useful editor, including activity, target-site accessibility, host compatibility, RNA stability, toxicity, engineering feasibility, and biosafety.</p>
+    <p class="body-text">During this project, we developed and characterized a TnpB-based toolkit for bacterial genome engineering, explored the engineering of TAM recognition, and developed a TnpB-based biocontainment strategy. Our proposed implementation therefore focuses on a contained, laboratory-based workflow for engineering bacterial strains, particularly in cases where compact genetic cargo or expanded target-site accessibility is valuable.</p>
+    <p class="body-text">We do not regard TnpB as a universal replacement for existing CRISPR systems. Instead, we envision it as an additional option in the genome-engineering toolbox, with its usefulness determined by the requirements of each host and application.</p>
+
+    <h1 class="heading-1">1. What Have We Demonstrated?</h1>
+    <p class="body-text">We established an ISHahl1 TnpB-based system for genome engineering in bacterial contexts and explored multiple modes of TnpB-mediated manipulation, including genome editing, interference, and base-editing-related applications. We further investigated TAM recognition and generated engineered variants with altered or broadened TAM preferences through directed evolution and screening.</p>
+    <p class="body-text">Importantly, our project also addressed a limitation that emerged from Human Practices and experimental reflection: a broader TAM is useful only if the resulting nuclease retains functional activity. We therefore did not rely on fluorescence screening alone, but incorporated TAM profiling, plasmid interference, and genome-editing validation to distinguish target-site expansion from simple changes in reporter signal.</p>
+    <p class="body-text">Finally, we developed a TnpB-based biocontainment strategy targeting essential bacterial genes, demonstrating how the same compact nuclease can contribute not only to genome engineering but also to the responsible control of engineered strains.</p>
+    <p class="body-text">Together, these results provide the experimental foundation for the implementation pathway described below.</p>
+
+    <h1 class="heading-1">2. Who Could Use Our Toolkit?</h1>
+    <h2 class="heading-2">2.1 Primary Users: Bacterial Strain-Engineering Laboratories</h2>
+    <p class="body-text">Our primary envisioned users are academic and industrial laboratories that engineer bacterial chassis for synthetic biology, metabolic engineering, and biomanufacturing.</p>
+    <p class="body-text">For these users, the central problem is not simply whether genome editing is possible, but whether an appropriate target can be reached efficiently in the host of interest. Conventional CRISPR systems remain powerful and well-established, but some projects may encounter constraints related to nuclease size, heterologous expression, or available PAM sites.</p>
+    <p class="body-text">In these situations, a compact TnpB platform may provide a complementary option. TAM-relaxed variants are particularly relevant when the natural TAM of ISHahl1 TnpB restricts access to an otherwise desirable genomic locus.</p>
+    <p class="body-text">The value of our system is therefore context-dependent: users would select TnpB when its compactness, target-site accessibility, or modularity provides an advantage for the particular strain and engineering objective.</p>
+    <h2 class="heading-2">2.2 Secondary Users: Metabolic Engineering Researchers</h2>
+    <p class="body-text">Metabolic engineering frequently requires coordinated modification of several genes or regulatory elements rather than a single genomic change.</p>
+    <p class="body-text">Researchers optimizing biosynthetic pathways could potentially use our TnpB platform for operations such as gene disruption, targeted sequence modification, pathway engineering, or regulatory intervention. Expanding TAM recognition may increase the number of candidate sites available around genes, promoters, and pathway components, providing greater flexibility when selecting engineering targets.</p>
+    <p class="body-text">However, we recognize that broader TAM recognition is not equivalent to universal host compatibility. Expression, RNA stability, DNA repair, toxicity, transformation efficiency, and other host-specific factors remain important. Consequently, extension to a new bacterial chassis would require host-specific validation rather than assuming that a variant functional in one organism will behave identically in another.</p>
+    <h2 class="heading-2">2.3 Future Users: Synthetic Biology and iGEM Communities</h2>
+    <p class="body-text">By documenting TnpB constructs, TAM-recognition data, experimental workflows, and lessons from unsuccessful as well as successful designs, future iGEM teams and synthetic biology researchers could adapt the platform to their own chassis and applications.</p>
+    <p class="body-text">For this group, the most useful output of our project is not a finished commercial product, but a reproducible engineering framework: choose a target → assess TAM accessibility → select or engineer a suitable TnpB → validate activity → test editing in the intended host → evaluate safety.</p>
+    <p class="body-text">This framework may remain useful even when future users select different TnpB homologs or develop new TAM-relaxed variants.</p>
+
+    <h1 class="heading-1">3. How Would the System Be Used?</h1>
+    <h2 class="heading-2">Step 1 — Define the Engineering Goal</h2>
+    <p class="body-text">The user first identifies the bacterial chassis and desired genetic modification, such as disruption of a gene, modification of a regulatory region, or engineering of a metabolic pathway. At this stage, the biological objective is translated into candidate genomic targets.</p>
+    <h2 class="heading-2">Step 2 — Assess Target-Site Accessibility</h2>
+    <p class="body-text">If an appropriate site is accessible to wild-type ISHahl1 TnpB, the wild-type system may be sufficient. If the natural TAM requirement prevents access to the desired locus, an engineered TnpB variant with an appropriate recognition profile can be considered. This creates a practical decision point: Desired locus → TAM analysis → WT TnpB or TAM-relaxed variant, rather than assuming that an engineered variant should always replace the wild type.</p>
+    <h2 class="heading-2">Step 3 — Evaluate Host Compatibility</h2>
+    <p class="body-text">Relevant factors include expression of the nuclease, transcription and stability of the guide RNA, RNP formation, cellular toxicity, and functional DNA targeting. These criteria arose directly from our Human Practices discussions and became part of our definition of a usable genome editor. A TnpB variant would therefore advance to genome editing only when it shows sufficient functional compatibility with the chosen bacterial chassis.</p>
+    <h2 class="heading-2">Step 4 — Perform Genome Engineering Under Containment</h2>
+    <p class="body-text">Depending on the application and experimentally validated capability, the TnpB system could be incorporated into workflows for targeted cleavage, genome modification, interference, or other bacterial engineering operations. The important point is that the nuclease is treated as a tool within a controlled engineering workflow, rather than as an organism or product intended for unrestricted environmental release.</p>
+    <h2 class="heading-2">Step 5 — Validate the Edited Strain</h2>
+    <p class="body-text">Candidate strains would be verified using appropriate molecular methods such as PCR and sequencing, together with phenotype- or application-specific measurements when necessary. For engineered TAM-relaxed TnpB variants, activity at the intended TAM should also be compared with retained activity at the original TAM whenever relevant. This distinction is important because an apparently expanded recognition spectrum is useful only when sufficient nuclease function is preserved.</p>
+    <h2 class="heading-2">Step 6 — Application-Specific Safety Review</h2>
+    <p class="body-text">A strain used only in a contained fermentation process requires a different risk assessment from a strain proposed for environmental application. Therefore, we do not propose a single universal deployment route. Instead, containment requirements should become stricter as the distance between the engineered organism and the controlled laboratory environment increases.</p>
+
+    <h1 class="heading-1">4. A Representative Application: Engineering Non-Model Bacteria</h1>
+    <p class="body-text">One application that motivated our project is the engineering of bacterial hosts whose useful metabolic capabilities are difficult to exploit genetically. For example, environmental and industrial bacteria may contain pathways relevant to pollutant degradation or production of valuable compounds, yet their engineering can be limited by available genetic tools. In such organisms, the small size of TnpB and an expanded choice of target sites could be valuable.</p>
+    <p class="body-text">Our Human Practices discussions also led us to consider alkane-degrading bacteria as a representative future application. Species such as <i>Alcanivorax</i> possess metabolic pathways associated with hydrocarbon degradation and therefore provide an example of why target accessibility in non-model organisms matters.</p>
+    <p class="body-text">Our proposed pathway would be: identify a pathway of interest → identify genes or regulatory elements to modify → analyze accessible TAMs → select an appropriate TnpB variant → establish host compatibility → perform contained genome engineering → measure the resulting phenotype.</p>
+    <p class="body-text">This application remains a future implementation scenario, not a claim that our engineered TAM-relaxed variants have already been validated across all such organisms.</p>
+
+    <h1 class="heading-1">5. Biosafety by Design</h1>
+    <h2 class="heading-2">5.1 Containment Comes First</h2>
+    <p class="body-text">Our preferred implementation model keeps genome engineering within appropriately equipped laboratories. This reduces unnecessary environmental exposure and allows biological work, validation, waste treatment, and strain storage to be performed under established institutional biosafety procedures. For early-stage implementation, contained use is therefore our default rather than environmental release.</p>
+    <h2 class="heading-2">5.2 TnpB-Based Biocontainment</h2>
+    <p class="body-text">Human Practices discussions with industrial and environmental stakeholders highlighted that improved editing performance alone is insufficient for responsible application. Stability, unintended transfer, environmental persistence, and containment must also be considered.</p>
+    <p class="body-text">In response, we developed a TnpB-based kill-switch strategy targeting essential bacterial genes. The principle is to couple survival of the engineered strain to controlled laboratory conditions. If the containment condition is lost, TnpB-mediated targeting of essential genes can reduce bacterial survival.</p>
+    <p class="body-text">This design demonstrates an important extension of our project philosophy: the nuclease used to engineer a strain can also contribute to controlling that strain. However, a kill switch should not be treated as a substitute for physical containment. Mutational escape, incomplete induction, genetic instability, and horizontal gene transfer remain possible failure modes. Biological containment should therefore operate as an additional layer within a broader safety strategy.</p>
+
+    <h1 class="heading-1">6. Risk Management</h1>
+    <p class="body-text">Real-world implementation requires us to consider not only what the technology can do, but also how it could fail.</p>
+    <h2 class="heading-2">Accidental release. </h2>
+    <p class="body-text">Our near-term implementation keeps editing operations within contained laboratories. Appropriate physical containment, sterilization, waste management, and institutional biosafety procedures would remain the first line of protection.</p>
+    <h2 class="heading-2">Failure of biological containment.</h2>
+    <p class="body-text">The TnpB-based kill switch provides an additional layer of control, but its escape frequency, long-term genetic stability, and performance under application-relevant conditions would require further characterization before deployment outside controlled research settings.</p>
+    <h2 class="heading-2">Off-target or unintended editing.</h2>
+    <p class="body-text">Candidate target sites should be computationally assessed where possible, and final edited strains should be validated experimentally. Applications requiring higher assurance would require broader sequencing-based characterization.</p>
+    <h2 class="heading-2">Horizontal gene transfer.</h2>
+    <p class="body-text">For applications involving living engineered bacteria, transfer of genetic material to environmental microorganisms must be considered. Future designs should minimize unnecessary mobile genetic elements and evaluate transfer risk according to the intended application.</p>
+    <h2 class="heading-2">Misuse or inappropriate requests.</h2>
+    <p class="body-text">If the platform is developed into a professional strain-engineering service, project and customer screening should form part of the workflow. Requests involving pathogenic organisms, harmful functions, or work outside appropriate biosafety conditions should not be accepted.</p>
+    <p class="body-text">These controls reflect a principle that emerged repeatedly from our Human Practices work: responsibility is not a final checkpoint after engineering; it is one of the design constraints of engineering itself.</p>
+    
+    <h1 class="heading-1">7. Regulatory Considerations</h1>
+    <p class="body-text">The regulatory pathway for our technology depends strongly on how it is used. Contained research involving genetically modified microorganisms is subject to institutional and national biosafety requirements. In China, further development would need to comply with applicable biotechnology R&D and biosafety regulations and institutional review requirements. Similar contained-use frameworks exist in other jurisdictions, including regulations governing recombinant or synthetic nucleic-acid research in the United States and genetically modified microorganisms in the European Union.</p>
+    <p class="body-text">However, the relevant requirements would change substantially if an engineered strain were moved from contained laboratory research to industrial production, environmental use, agriculture, or medical application.</p>
+    <p class="body-text">For this reason, we do not assume that one regulatory pathway applies to every future use of TnpB. Our implementation principle is instead: define the application first, identify the exposure pathway and stakeholders, assess the corresponding risks, and only then determine the appropriate regulatory and containment requirements.</p>
+
+    <h1 class="heading-1">8. What We Have Not Yet Demonstrated</h1>
+    <p class="body-text">A responsible implementation plan must distinguish evidence from aspiration.</p>
+    <p class="body-text">Our project provides experimental support for TnpB-based bacterial engineering, engineered TAM recognition, and a TnpB-based biocontainment concept. However, several questions remain open.</p>
+    <p class="body-text">We have not demonstrated universal host compatibility of the engineered variants. TAM relaxation increases potential target-site accessibility but does not eliminate host-dependent constraints such as nuclease expression, guide-RNA stability, toxicity, DNA repair, or transformation efficiency.</p>
+    <p class="body-text">We have not demonstrated industrial-scale strain-engineering services. Scale-up would require standardized workflows, reproducibility testing, quality-control criteria, turnaround-time evaluation, and cost analysis.</p>
+    <p class="body-text">We have not demonstrated environmental deployment of engineered strains. Such applications would require substantially more ecological characterization and containment validation.</p>
+    <p class="body-text">Finally, although compact TnpB nucleases may be interesting for other biological systems, eukaryotic or mammalian implementation is outside the experimentally validated scope of this project. Such applications should be regarded as separate future research directions requiring system-specific engineering and safety evaluation.</p>
+    <p class="body-text">These limitations define the next experiments rather than diminishing the current results.</p>
+    
+    <h1 class="heading-1">9. Roadmap Toward Implementation</h1>
+    <h2 class="heading-2">Stage 1 — Standardize the bacterial toolkit.</h2>
+    <p class="body-text">The immediate priority is to establish reproducible protocols for target selection, TAM profiling, editing, and validation, and to characterize the performance of selected TnpB variants across additional target sites.</p>
+    <h2 class="heading-2">Stage 2 — Validate additional bacterial chassis.</h2>
+    <p class="body-text">Rather than assuming broad-host functionality, we would test representative industrial or environmental bacteria individually and determine which host-specific factors limit performance.</p>
+    <h2 class="heading-2">Stage 3 — Strengthen safety and quality control.</h2>
+    <p class="body-text">The TnpB-based biocontainment system should be evaluated for escape frequency, genetic stability, and robustness. Editing workflows should incorporate defined molecular validation and quality-control criteria.</p>
+    <h2 class="heading-2">Stage 4 — Pilot a contained strain-engineering workflow.</h2>
+    <p class="body-text">After sufficient validation, the platform could be tested with academic or industrial collaborators on real strain-engineering problems. Feedback on target selection, turnaround time, reproducibility, usability, and cost would determine whether a service model is practically valuable.</p>
+    <h2 class="heading-2">Stage 5 — Application-specific translation.</h2>
+    <p class="body-text">Only after technical, safety, economic, and regulatory feasibility have been demonstrated should individual applications progress toward industrial or other real-world settings.</p>
+    <p class="body-text">Patent protection or commercialization may become relevant at this stage, but they are not substitutes for demonstrating technical feasibility, user need, safety, and reproducibility.</p>
+    
+    <h1 class="heading-1">10. Our Implementation Philosophy</h1>
+    <p class="body-text">At the beginning of the project, we were attracted to TnpB because it was small. By the end of the project, our definition of a useful genome editor had become more demanding.</p>
+    <p class="body-text">A useful editor must not only be compact. It must work in its intended host, reach biologically meaningful targets, retain sufficient activity after engineering, be experimentally verifiable, and be used under conditions appropriate to its risks.</p>
+    <p class="body-text">Our proposed implementation therefore does not begin with the question: “How can we put TnpB on the market?” It begins with a more fundamental question: “Where does TnpB provide a meaningful advantage, and what evidence and safeguards are required before it should be used there?”</p>
+    <p class="body-text">For us, the most realistic next step is a contained bacterial strain-engineering workflow in which wild-type and TAM-engineered ISHahl1 TnpB variants are selected according to the needs of each target and host, validated experimentally, and accompanied by application-specific biosafety assessment.</p>
+    <p class="body-text">In this way, our project moves from developing a smaller nuclease toward a broader goal: a genome-editing platform designed not only to reach more targets, but to be used where it is genuinely useful—and only when it can be used responsibly.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/description/figure/1.avif" alt="1" class="figure-image">
+    
+>>>>>>> 94625fc (IHP)
 </main>
 
 <img src="https://static.igem.wiki/teams/6059/wiki/description/sword.avif" alt="Sword Scroll Track" class="scroll-sword" id="scrollSword">

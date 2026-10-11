@@ -15,6 +15,7 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+<<<<<<< HEAD
 /* PC 端首屏横幅容器：与 description.css 第 2 节一致（左右满幅、100vh、渐变背景）。
    Members 页的 page.css 也按这个类名调整移动端参数（当前为 no-op）。 */
 .title-header-wrapper {
@@ -44,6 +45,16 @@ html, body {
   justify-content: center;
   align-items: center;
   background: transparent;
+=======
+.grid-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at 50% 45%, #ffffff 0%, #f4f8f9 55%, #eaf0f2 100%);
+>>>>>>> 94625fc (IHP)
   overflow: hidden;
 }
 

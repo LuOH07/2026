@@ -58,8 +58,41 @@
 
 <!-- 正文主体容器 -->
 <main class="main-container" id="mainContainer">
-    <h1 class="heading-1">Heading 1</h1>
-    <p class="body-text"><b>TnpB</b> CRISPR-Cas9/Cas12.</p>
+    <h1 class="heading-1">Effective Variant Screening</h1>
+    <h2 class="heading-2">Variant primary screening</h2>
+    <h3 class="heading-3">Materials and Apparatus:</h3>
+    <p class="body-text">Chloramphenicol (34 mg/mL)<br>
+        Ampicillin (100 mg/mL)<br>
+        20% (w/v) L-arabinose solution<br>
+        50% (w/v) glucose solution<br>
+        LB liquid medium<br>
+        LB agar plates supplemented with Cm, Amp and 0.5% (w/v) glucose<br>
+        <i>E. coli</i> competent cells harbouring plasmids pEYFP-CTAC, pEYFP-ATAC, pEYFP-TTAC, pEYFP-GTAC, pEYFP-CAAC, pEYFP-CCAC, pEYFP-CGAC, pEYFP-CTTC, pEYFP-CTCC, pEYFP-CTGC<br>
+        Tecan Infinite 200 Pro microplate reader<br>
+        DragonLab D1524R centrifuge</p>
+    <h3 class="heading-3">Protocol:</h3>
+    <p class="body-text">1. Prepare a 10 μL Gibson assembly system containing 5 μL Gibson enzyme, 16 ng insert fragment and 80 ng corresponding spacer backbone. Place the mixture on ice immediately after the reaction.<br>
+    2. Transform 10 μL assembly product into <i>E. coli</i> competent cells harboring pEYFP-TAM plasmid. Transform 1 μL pSTING-E1/2/3 plasmid as the negative control. Transform 1 μL pSTING-E1 plasmid into <i>E. coli</i> competent cells harboring pEYFP-origin plasmid as the positive control. Concentrate the bacterial suspension to 100 μL and spread onto agar plates, then incubate overnight at 37°C for 12 h.<br>
+    3. Pick single colonies from plates and inoculate into sterile culture tubes containing LB medium supplemented with Cm, Amp and 0.5% (w/v) glucose, including positive and negative controls. Incubate the tubes overnight for 14 h at 37°C with shaking at 200 r/min.<br>
+    4. Inoculate bacterial cultures at 2% (v/v) into fresh LB liquid medium, and incubate for 3 h at 37°C with shaking at 200 r/min. Set three biological replicates for each sample.<br>
+    5. Transfer 200 μL of bacterial culture to measure OD and EYFP fluorescence intensity, then add 28 μL of 20% (w/v) L-arabinose for induction. Incubate for 6 h at 37°C with shaking at 200 r/min.<br>
+    6. After 6 h of induction, take 200 μL bacterial culture to measure OD value and EYFP fluorescence intensity.<br>
+    7. Inoculate bacterial cultures at 2% (v/v) into LB liquid medium supplemented with Cm, Amp and 0.5% (w/v) glucose. Incubate for 3 h at 37°C with shaking at 200 r/min, then take 200 μL culture for OD measurement.<br>
+    8. Select variants whose fluorescence signal is lower than that of the negative control for subsequent experiments.</p>
+    <h2 class="heading-2">Plasmid Interference for Rescreening</h2>
+    <h3 class="heading-3">Materials and Apparatus:</h3>
+    <p class="body-text"><i>E. coli</i> competent cells harboring pSC101-TAM<br>
+        Variant plasmids<br>
+        SOC liquid medium, with glucose replaced by 0.2% L-arabinose<br>
+        Kanamycin (50 mg/mL)<br>
+        Chloramphenicol (25 mg/mL)<br>
+        DragonLab D1524R centrifuge<br>
+        6 &times; 6 square agar plate</p>
+    <h3 class="heading-3">Protocol:</h3>
+    <p class="body-text">1. Transform 100 ng variant plasmids into <i>E. coli</i> competent cells harboring pSC101-TAM and 100 ng pSTING-E1/2/3 plasmids as the negative control; transform 100 ng pSTING-E1 into <i>E. coli</i> competent cells harboring pSC101-CTAC as the positive control. For recovery, add 1000 μL SOC medium in which glucose was replaced by L-arabinose, and incubate for 3 h at 37°C with shaking at 200 r/min.<br>
+    2. Concentrate the bacterial suspension to 50 μL, and perform serial dilutions of 0, 10<sup>-1</sup>, 10<sup>-2</sup>, 10<sup>-3</sup>, 10<sup>-4</sup>, 10<sup>-5</sup> using SOC medium with glucose substituted by L-arabinose. <br>
+    3. Spot 5 μL bacterial suspension onto each grid of the square plate according to dilution gradients. Prepare two replicates for each sample.<br>
+    4. Incubate the plates in a 37°C incubator for 24 h, then perform colony counting.</p>
 
     <img src="https://static.igem.wiki/teams/6059/wiki/description/figure/1.avif" alt="1" class="figure-image">
     <p class="figure-caption"><b>Figure</b><b>  1</b>  Comparison of protein sizes among Cas9, TnpB, and Cas12a</p>    
