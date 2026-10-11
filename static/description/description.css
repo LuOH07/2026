@@ -1067,3 +1067,32 @@ e.toc-hidden {
     clip-path: inset(50%);
     pointer-events: none;
 }
+
+/* ========================================================
+   10. 文本高亮 <mark>
+   ========================================================
+   用法：在 HTML 里把要突出的文字用 <mark></mark> 包起来即可，例如
+       <p class="body-text">……这个结论<mark>非常关键</mark>……</p>
+
+   底色固定为 #D5D5FF；文字颜色用 color: inherit 跟随上下文，
+   所以普通正文里的高亮字仍是黑色、标题里的高亮字仍是各自的标题色，
+   不会因为高亮而被强行改成别的颜色。
+   ======================================================== */
+mark {
+    background-color: #D5D5FF;
+    color: inherit;
+    padding: 0 0.18em;
+    border-radius: 3px;
+    /* 高亮跨行时，每一行都各自补上内边距与圆角，而不是只在整块首尾补 */
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+
+/* 淡紫底 #D5D5FF 和主题紫 #8F8BD9（正文加粗、三级标题）叠在一起时
+   对比度偏低，这两种情况改用同色系的深紫，保证高亮里的紫字依然清楚。
+   若希望高亮内严格保持 #8F8BD9，把下面这一条删掉即可。 */
+.body-text mark b,
+.body-text mark strong,
+.heading-3 mark {
+    color: #5A56A8;
+}
