@@ -1232,9 +1232,9 @@ mark {
 .main-container upfold > .upfold-label,
 .main-container .upfold > .upfold-label {
     --upfold-bg: #53DEB7;         /* 收起时的底色 */
-    --upfold-open-bg: #D3F8DD;    /* 展开后的底色 */
+    --upfold-open-bg: #465E77;    /* 展开后的底色 */
     --upfold-color: #FFFFFF;      /* 收起时的文字颜色 */
-    --upfold-open-color: #465E77; /* 展开后的文字颜色：与正文 .body-text 一致 */
+    --upfold-open-color: #ffffff; /* 展开后的文字颜色：与正文 .body-text 一致 */
     --upfold-radius: 20px;        /* 圆角大小；写成 999px 会变成胶囊形 */
     --upfold-font-size: 26px;     /* 与 .heading-3 一致 */
 
