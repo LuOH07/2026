@@ -1199,8 +1199,7 @@ mark {
 
    收起：标签是一枚 #53DEB7 的圆角胶囊，白字，宽度随标签文字伸缩，
         字号 26px（与 .heading-3 同级）。
-   展开：胶囊换底色（#53DEB7 → #D3F8DD），文字同时换成正文颜色
-        （#FFFFFF → #465E77，见 --upfold-open-color）；
+   展开：胶囊换底色与文字颜色（--upfold-open-bg / --upfold-open-color）；
         隐藏文字出现在胶囊【下方】，与正文同样排版，没有底色也没有边框。
    开合行为在 description.js 第 6 节。
 
@@ -1209,6 +1208,10 @@ mark {
    既没有图片 URL、也没有定位，只负责胶囊（矩形）自己长什么样。
    左边为图标让出的内边距同样由那边按“图标 + 间距”算好后写成内联样式
    （脚本没跑时按无图标的 1.15em 显示），所以这里的 padding 不写图标宽度。
+
+   展开正文左侧那 7ch（前 6ch 放脚印）是脚印轨道（本文件末尾的 .upfold-rail
+   一节）：素材、左右分布、上沿间距与旋转角度都由 description.js 第 6.3 节
+   随机算好后写成内联样式，本文件只给轨道的两个基准尺寸与摆放方式。
 
    为什么正文不会被胶囊框住：description.js 会把标签文字单独包进
    <span class="upfold-label">，胶囊的底色 / 内边距都画在这一层上，
@@ -1328,15 +1331,16 @@ mark {
 /* 展开出来的正文：整行宽、无底色无边框，排版跟 .body-text 一致
    （description.js 第 6 节会给它加上 .body-text 类）。
    它在胶囊盒子外面，所以不会被胶囊的底色框住。
-   左侧 padding-left 让出 4 个字符给图标轨道：文字右退 4ch，而这个元素
-   的宽度是 auto（依旧填满容器），所以右侧边界一点没动。
+   左侧 padding-left 让出 7 个字符给脚印轨道（左脚印在 0–3ch、右脚印在
+   3–6ch，第 7 个字符起才是正文）：文字右退 7ch，而这个元素的宽度是 auto
+   （依旧填满容器），所以右侧边界一点没动。
    margin-top 是它与上面那枚胶囊（矩形）之间的空档：只作用于展开状态，
    收起时这块内容是 display: none，不会多出空隙。
    注意：这条与上面的“隐藏文字”权重相同，靠写在后面取胜，别调换顺序。 */
 .main-container upfold.is-open :is(upfold-text, .upfold-text),
 .main-container .upfold.is-open :is(upfold-text, .upfold-text) {
-    position: relative;           /* 给绝对定位的图标轨道当参照 */
-    padding-left: 4ch;            /* 正文右退 4 个字符 */
+    position: relative;           /* 给绝对定位的脚印轨道当参照 */
+    padding-left: 7ch;            /* 正文从第 7 个字符开始 */
     display: block;
     margin-top: 0.8em;            /* 与胶囊（矩形）之间留出的空档（桌面 ≈18px） */
     margin-left: 0;
@@ -1347,40 +1351,49 @@ mark {
     -webkit-user-select: text;
 }
 
-/* ---------- 展开文字左侧的图标轨道 ----------
-   图标由 description.js 第 6.3 节算好个数后插进来：宽度见下面的
-   --upfold-rail-icon-width，高度按原图比例，从上往下依次排，
-   每两个之间留一段间隔（见下面那条规则）；底部放不下一个完整的就不再放。
-   轨道是绝对定位的，既不推挤正文，也不影响正文右侧的边界。 */
+/* ---------- 展开文字左侧的脚印轨道 ----------
+   正文左内边距是 7ch，其中最靠左的 6ch 分成左右两条：0–3ch 归左脚印、
+   3–6ch 归右脚印（第 7 个字符起才是正文，所以右脚印右边还多出 1ch 空隙）。
+   脚印宽 1.5ch，所以每个脚印在自己那 3ch 区域里还能左右浮动 1.5ch。
+   左右脚印交替往下排，横向浮动 / 上下间距（0.5~1.5 个脚印高）/ 旋转
+   （-20°~+20°）都由 description.js 第 6.3 节随机算好后写成内联样式：
+   同一次会话里反复展开、窗口缩放都不会变，刷新页面才重新随机一遍。
+   这里只给这条轨道的基准尺寸与摆放方式；轨道是绝对定位的，既不推挤正文，
+   也不影响正文右侧的边界。 */
 .main-container upfold .upfold-rail {
-    /* 轨道图标宽度：只改这一个值，图标宽度 / 轨道宽度 / 图标间距会一起变 */
-    --upfold-rail-icon-width: 2ch;
+    /* 轨道的两个基准尺寸：JS 第 6.3 节会读它们来算随机范围，
+       所以只改这里就够（脚印宽度 / 左右区域 / 随机区间会一起变）。
+       单位必须是 ch —— 两段区域加起来 = 正文让出的 7ch 里的前 6ch。 */
+    --upfold-rail-zone: 3ch;      /* 每侧区域宽 */
+    --upfold-rail-foot: 1.5ch;    /* 脚印宽（区域内可浮动 3 - 1.5 = 1.5ch） */
 
     position: absolute;
     left: 0;
     top: 0;
-    width: var(--upfold-rail-icon-width);
+    width: calc(var(--upfold-rail-zone) * 2);
     pointer-events: none;         /* 装饰层：不挡文字选中 */
     user-select: none;
     -webkit-user-select: none;
 }
 
-.main-container upfold .upfold-rail img {
+/* 每个脚印：left / top / 旋转由 JS 写内联样式 */
+.main-container upfold .upfold-rail .upfold-foot {
+    position: absolute;
+    width: var(--upfold-rail-foot);
+    height: auto;                 /* 高度按原图比例：left/right.avif 是 103×166 */
     display: block;
-    width: var(--upfold-rail-icon-width);
-    height: auto;                 /* 高度按原图比例，个数由 JS 计算 */
+    pointer-events: none;
+    -webkit-user-drag: none;
 }
 
-/* 每两个图标之间的间隔 = steps-2 高度的一半。
-   steps-2.avif 是 110 × 91，按同样的宽度渲染时它的高度 = 宽度 × 91/110，
-   一半就是 宽度 × 91/220（现在 2ch，约 0.83ch）。
-   改上面的图标宽度时间隔会自动跟着变；
-   description.js 第 6.3 节会把这个间隔算进“这一列能放几个”里。 */
-.main-container upfold .upfold-rail img:not(:last-child) {
-    margin-bottom: calc(var(--upfold-rail-icon-width) * 91 / 220);
+/* 左右各一枚“探针”：宽度与脚印相同，只用来量脚印高度，不显示 */
+.main-container upfold .upfold-rail .upfold-rail-probe {
+    left: 0;
+    top: 0;
+    visibility: hidden;
 }
 
-/* 一个完整图标都放不下时收起轨道（保留占位，便于高度变化后重新长出来） */
+/* 一个脚印都放不下时收起轨道（保留占位，正文变高后能重新长出来） */
 .main-container upfold .upfold-rail.is-empty {
     visibility: hidden;
 }

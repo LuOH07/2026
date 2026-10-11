@@ -1095,8 +1095,10 @@ document.addEventListener('DOMContentLoaded', () => {
       description.css 第 13 节只留胶囊本身长什么样。
    ③ 给带隐藏文字的组件绑定点击 / 键盘开合并切换 .is-open：展开时把胶囊的
       底色从 #53DEB7 换成 #D3F8DD，同时把文字从白色换成正文字体颜色 #465E77。
-   ④ 展开出来的正文左侧竖着铺一列装饰图标（见 6.3）：文字右退 4 个字符，
-      图标从上往下循环摆放，底部放不下一个完整图标就停。
+   ④ 展开出来的正文左侧铺一排左右交替的脚印（见 6.3）：正文从第 7 个字符
+      开始（左脚印在 0–3ch、右脚印在 3–6ch 里各自随机浮动），每个脚印的上沿
+      间距与旋转角度也都是随机值，一直排到放不下下一个脚印为止；
+      点开时这一串脚印还会从上往下挨个出现（见 6.4）。
 
    展开后的文字会被自动加上 .body-text 类，所以排版与正文完全一致
    （字号、行距、颜色、两端对齐都跟着 .body-text 走，正文格式以后改了
@@ -1112,11 +1114,31 @@ document.addEventListener('DOMContentLoaded', () => {
     var LABEL_CLASS = 'upfold-label';
     var OPEN_CLASS = 'is-open';
     var READY_ATTR = 'data-upfold-ready';
-    /* 展开文字左侧那一列装饰图标 */
+    /* 展开文字左侧那一排脚印（6.3）：素材与随机范围都在这儿 */
     var RAIL_CLASS = 'upfold-rail';
-    var ICON_CLASS = 'upfold-rail-icon';
+    var FOOT_CLASS = 'upfold-foot';
+    var PROBE_CLASS = 'upfold-rail-probe';
     var EMPTY_CLASS = 'is-empty';
-    var ICON_SRC = 'https://static.igem.wiki/teams/6059/wiki/notebook/steps-2.avif';
+    var FOOT_SRC = {
+        left: 'https://static.igem.wiki/teams/6059/wiki/notebook/left.avif',
+        right: 'https://static.igem.wiki/teams/6059/wiki/notebook/right.avif'
+    };
+    /* 轨道基准尺寸（ch）：默认值，实际以 CSS 变量 --upfold-rail-zone /
+       --upfold-rail-foot 为准 —— 那两个才是唯一出处，改 CSS 就够 */
+    var RAIL_ZONE = 3;            /* 每侧区域宽（ch，对应 CSS 的 --upfold-rail-zone） */
+    var RAIL_FOOT = 1.5;          /* 脚印宽（ch，对应 CSS 的 --upfold-rail-foot） */
+    /* 随机范围 */
+    var FOOT_GAP_MIN = 0.5;       /* 相邻脚印上沿的间距：0.5 ~ 1.5 个脚印高 */
+    var FOOT_GAP_MAX = 1.5;
+    var FOOT_ROTATE = 20;         /* 旋转角度：±20° */
+    var RAND_PER_FOOT = 3;        /* 每个脚印固定消耗 3 个随机数（见 6.3） */
+    var FOOT_LIMIT = 200;         /* 兜底：一段正文最多画这么多个脚印 */
+    /* 展开时“从上往下挨个出现”的动效参数（见 6.4）：
+       第 i 个脚印比第一个晚 i × STEP 毫秒开始，用 DURATION 毫秒从
+       SCALE 倍大小、全透明放大到原始大小 */
+    var FOOT_REVEAL_STEP = 45;
+    var FOOT_REVEAL_DURATION = 320;
+    var FOOT_REVEAL_SCALE = 0.4;
 
     /* ------------------------------------------------------
        胶囊上两枚装饰：素材引用 + 站位 / 尺寸 / 层级
@@ -1266,15 +1288,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ------------------------------------------------------
-       6.3 展开文字左侧的图标轨道
+       6.3 展开文字左侧的脚印轨道
        ------------------------------------------------------
-       在展开出来的正文左边竖着排一列装饰图标：宽度 4 个字符（CSS 里的
-       4ch），高度按原图比例，从上往下循环摆放；底部剩下的高度不够再放
-       一个完整图标时就停下，不会出现被切掉一半的图标。
+       正文左侧让出的 7ch（description.css 第 13 节的 padding-left）里，
+       最靠左的 6ch 分成两条：0–3ch 归左脚印、3–6ch 归右脚印（第 7 个
+       字符起才是正文）。脚印宽 1.5ch，所以每个脚印在自己那 3ch 区域里
+       还能左右浮动 1.5ch。素材左右各一张，交替往下排：
 
-       图标只是装饰：不响应鼠标（pointer-events: none）、不被读屏朗读
-       （aria-hidden）。高度要等图片加载完才知道，所以加载完成后会再排一次；
-       窗口缩放、字体变化等导致正文高度变化时，由 ResizeObserver 重算。 */
+           · 左脚印 1 的上沿固定在最上面（= 正文顶部，不随机）；
+           · 之后每个脚印的上沿 = 上一个的上沿 + 0.5 ~ 1.5 个【本脚印】高度；
+           · 一直排到“离本段正文底部已经放不下下一个脚印”为止。
+
+       横向浮动、上下间距、旋转（-20° ~ +20°）都是随机值，但同一个脚印
+       在整页生命周期里只用同一组数：随机数按“轨道 + 序号”缓存在
+       randomOf() 里，所以窗口缩放、反复展开收起重算时每个脚印都待在原地；
+       刷新页面后轨道重建、缓存清空，于是重新随机一遍。
+
+       脚印只是装饰：不响应鼠标（pointer-events: none）、不被读屏朗读
+       （aria-hidden）。高度要等素材加载完才知道，所以左右两枚“探针”
+       各自加载完后再排一次；正文高度变化由 ResizeObserver 触发重算。
+
+       位置算好之后，如果是“点开”触发的这一次排布，还会按 6.4 的规则
+       让脚印从上往下挨个出现；缩放等重排不播动画，脚印直接就位。 */
     function railOf(content) {
         var rail = content.querySelector('.' + RAIL_CLASS);
         if (rail) return rail;
@@ -1283,64 +1318,187 @@ document.addEventListener('DOMContentLoaded', () => {
         rail.className = RAIL_CLASS;
         rail.setAttribute('aria-hidden', 'true');
 
-        var icon = document.createElement('img');
-        icon.className = ICON_CLASS;
-        icon.src = ICON_SRC;
-        icon.alt = '';
-        // 图片高度要等加载完成才知道，load 之后再排一次
-        icon.addEventListener('load', function () { fillRail(content); });
-        // 图片加载失败就整条轨道收起来，别留一个破图占位
-        icon.addEventListener('error', function () { rail.classList.add(EMPTY_CLASS); });
-        rail.appendChild(icon);
+        // 左右各留一枚探针：宽度与脚印一致，只用来量出脚印高度，
+        // 平时不可见（CSS 的 .upfold-rail-probe），量完一直留着便于重算。
+        ['left', 'right'].forEach(function (side) {
+            var probe = document.createElement('img');
+            probe.className = FOOT_CLASS + ' ' + PROBE_CLASS;
+            probe.setAttribute('data-side', side);
+            probe.src = FOOT_SRC[side];
+            probe.alt = '';
+            // 高度要等素材加载完才知道，load 之后再排一次
+            probe.addEventListener('load', function () { fillRail(content); });
+            // 素材坏了就整条轨道收起来，别留一个破图占位
+            probe.addEventListener('error', function () { rail.classList.add(EMPTY_CLASS); });
+            rail.appendChild(probe);
+        });
 
-        // 放在最前面：它是绝对定位的，不会挤走正文，正文由 CSS 的 padding 让位
+        // 放在最前面：绝对定位，不会挤走正文（正文由 CSS 的 padding 让位）
         content.insertBefore(rail, content.firstChild);
         return rail;
     }
 
-    function fillRail(content) {
-        var rail = railOf(content);
-        var probe = rail.firstChild;
-        if (!probe) return;
+    /* 量出某种脚印按 1.5ch 渲染时的高度（px）；没加载完（或坏了）返回 0 */
+    function probeHeight(rail, side) {
+        var probe = rail.querySelector('.' + PROBE_CLASS + '[data-side="' + side + '"]');
+        if (!probe || !probe.complete || !probe.naturalWidth) return 0;
+        return probe.getBoundingClientRect().height;
+    }
 
-        // 还没加载完（或图片坏了）先不排，等 load 回调
-        if (!probe.complete || !probe.naturalWidth) return;
+    /* 轨道基准尺寸：从 CSS 变量 --upfold-rail-zone / --upfold-rail-foot 读，
+       当纯数字用（单位约定是 ch）；读不到就退回代码里的默认值。 */
+    function railMetrics(rail) {
+        var zone = RAIL_ZONE;
+        var foot = RAIL_FOOT;
 
-        var iconHeight = probe.getBoundingClientRect().height;
-        if (!iconHeight) return;
-
-        // 图标之间的间隔由 CSS 给（= steps-2 高度的一半），从探针身上量出来：
-        // 以后在 CSS 里调间隔，这里不用改代码
-        var gap = 0;
         if (window.getComputedStyle) {
-            var marginBottom = parseFloat(window.getComputedStyle(probe).marginBottom);
-            if (marginBottom > 0) gap = marginBottom;
+            var cs = window.getComputedStyle(rail);
+            var z = parseFloat(cs.getPropertyValue('--upfold-rail-zone'));
+            var f = parseFloat(cs.getPropertyValue('--upfold-rail-foot'));
+            if (z > 0) zone = z;
+            if (f > 0) foot = f;
         }
 
-        // n 个图标的总高 = n × 图标 + (n-1) × 间隔，反解出来再向下取整：
-        // 底部放不下一个完整图标（连它前面的间隔）就不放
-        var count = Math.max(0, Math.floor((content.clientHeight + gap) / (iconHeight + gap)));
-        if (count > 200) count = 200;        // 兜底，避免异常情况下疯狂堆节点
+        return { zone: zone, foot: foot, spread: Math.max(0, zone - foot) };
+    }
 
-        // 一个完整图标都放不下时，整条轨道藏起来。用 visibility 而不是
-        // display：探针还得留着量高度，窗口一变高就能重新长出来。
+    /* 稳定的随机数：同一条轨道、同一个序号只生成一次并缓存。
+       重算时取到的还是原来那组数；刷新后轨道是新建的，缓存清空 —— 重新随机。 */
+    function randomOf(rail, index) {
+        if (!rail.__upfoldRandom) rail.__upfoldRandom = [];
+        var cache = rail.__upfoldRandom;
+        if (cache[index] === undefined) cache[index] = Math.random();
+        return cache[index];
+    }
+
+    function randomBetween(rail, index, min, max) {
+        return min + randomOf(rail, index) * (max - min);
+    }
+
+    /* 造一个脚印：从已经加载好的探针克隆，省得每次重排都重新解码素材。
+       克隆不带事件监听（探针上那两个 load / error 不会被复制）。 */
+    function makeFoot(rail, side) {
+        var probe = rail.querySelector('.' + PROBE_CLASS + '[data-side="' + side + '"]');
+        var foot = probe ? probe.cloneNode(false) : document.createElement('img');
+
+        foot.className = FOOT_CLASS;      // 去掉探针类：位置由下面写内联
+        foot.alt = '';
+        if (!foot.getAttribute('src')) foot.src = FOOT_SRC[side];
+        return foot;
+    }
+
+    function fillRail(content) {
+        var rail = railOf(content);
+
+        var heights = {
+            left: probeHeight(rail, 'left'),
+            right: probeHeight(rail, 'right')
+        };
+        // 还没加载完先不排，等 load 回调
+        if (!heights.left || !heights.right) return;
+
+        // 本段折叠文字的高度：脚印最多排到它的底部
+        var limit = content.clientHeight;
+        if (!limit) return;
+
+        var metrics = railMetrics(rail);
+
+        // 清掉上一轮排出来的脚印（两枚探针留着继续量高度）
+        Array.prototype.forEach.call(rail.querySelectorAll('.' + FOOT_CLASS), function (el) {
+            if (!el.classList.contains(PROBE_CLASS)) rail.removeChild(el);
+        });
+
+        var sides = ['left', 'right'];
+        var batch = document.createDocumentFragment();
+        var prevTop = 0;
+        var count = 0;
+
+        while (count < FOOT_LIMIT) {
+            var side = sides[count % 2];
+            var height = heights[side];
+            var base = count * RAND_PER_FOOT;
+
+            // 上沿：第一个（左）固定在最上面；之后每个都比上一个低
+            // 0.5 ~ 1.5 个本脚印的高度
+            var top = 0;
+            if (count > 0) {
+                top = prevTop + randomBetween(rail, base + 1, FOOT_GAP_MIN, FOOT_GAP_MAX) * height;
+            }
+
+            // 离本段底部放不下下一个脚印就停
+            if (top + height > limit) break;
+
+            // 横向：左脚印在 0 ~ spread，右脚印在 zone ~ zone + spread
+            var offset = randomBetween(rail, base, 0, metrics.spread);
+            if (count % 2 === 1) offset += metrics.zone;
+
+            var foot = makeFoot(rail, side);
+            foot.style.left = offset.toFixed(3) + 'ch';
+            foot.style.top = top.toFixed(2) + 'px';
+            foot.style.transform = 'rotate(' +
+                randomBetween(rail, base + 2, -FOOT_ROTATE, FOOT_ROTATE).toFixed(2) + 'deg)';
+            batch.appendChild(foot);
+
+            prevTop = top;
+            count++;
+        }
+
+        rail.appendChild(batch);
+
+        // 一个都放不下时整条藏起来。用 visibility 而不是 display：
+        // 探针还得留着量高度，正文一变高就能重新长出来。
         if (count) {
             rail.classList.remove(EMPTY_CLASS);
         } else {
             rail.classList.add(EMPTY_CLASS);
         }
 
-        // 轨道里第一个永远是探针；count 为 0 时也要留着它继续量高度
-        var total = count > 0 ? count : 1;
-        var current = rail.childNodes.length;
-        while (current > total) {
-            rail.removeChild(rail.lastChild);
-            current--;
+        /* 这一次要不要播“挨个出现”：只有 setOpen() 展开时才会打上标记
+           （见上面的说明）。窗口缩放等重排不会打标记，所以脚印是直接
+           就位的，不会每次都重新淡入一遍。
+           标记只在这里消费掉 —— 素材还没加载完时上面会提前 return，
+           标记留着，等 load 回调真正排好脚印时再播。 */
+        if (rail.__upfoldReveal) {
+            rail.__upfoldReveal = false;
+            revealFeet(rail);
         }
-        while (current < total) {
-            rail.appendChild(probe.cloneNode(true));
-            current++;
-        }
+    }
+
+    /* ------------------------------------------------------
+       6.4 展开动效：脚印从上往下挨个出现
+       ------------------------------------------------------
+       点开时第 i 个脚印比第一个晚 i × FOOT_REVEAL_STEP 毫秒，从 40%
+       大小、全透明放大到原始大小（同时保留它自己的随机旋转角度）——
+       于是视觉上是一串脚印自上而下依次“踩”出来。
+
+       用 Web Animations API 而不是 CSS @keyframes：每个脚印的旋转角度
+       都是内联的随机值，关键帧必须由 JS 现算；这样动效也完全待在 JS 里，
+       description.css 不需要加任何动画样式。fill: 'backwards' 让脚印在
+       轮到自己之前保持“不可见”的起始态，动画结束后又自动回到元素自身的
+       样式（透明度 1 + 内联旋转），所以不留后遗症。
+
+       截图 / 老浏览器：不支持 Element.animate 时直接全部显示（静态效果）；
+       系统开了“减少动态效果”时同样跳过，避免无谓的动画。 */
+    function revealFeet(rail) {
+        var feet = rail.querySelectorAll('.' + FOOT_CLASS + ':not(.' + PROBE_CLASS + ')');
+        if (!feet.length) return;
+
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        if (!feet[0].animate) return;
+
+        Array.prototype.forEach.call(feet, function (foot, index) {
+            var rot = foot.style.transform || 'rotate(0deg)';
+
+            foot.animate([
+                { opacity: 0, transform: rot + ' scale(' + FOOT_REVEAL_SCALE + ')' },
+                { opacity: 1, transform: rot + ' scale(1)' }
+            ], {
+                duration: FOOT_REVEAL_DURATION,
+                delay: index * FOOT_REVEAL_STEP,
+                easing: 'ease-out',
+                fill: 'backwards'
+            });
+        });
     }
 
     function setOpen(host, open) {
@@ -1351,10 +1509,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         host.setAttribute('aria-expanded', open ? 'true' : 'false');
 
-        // 展开的瞬间内容刚变成可见，这时才量得到高度，顺手把图标补齐
+        // 展开的瞬间内容刚变成可见，这时才量得到高度，顺手把脚印补齐。
+        // rail 上的标记表示“这一次要播挨个出现的动效”（见 6.4）；
+        // 素材还没加载完的话，标记会留到 load 回调那次排布时再用。
         if (open) {
             var content = contentOf(host);
-            if (content) fillRail(content);
+            if (content) {
+                var rail = railOf(content);
+                if (rail) rail.__upfoldReveal = true;
+                fillRail(content);
+            }
         }
     }
 
