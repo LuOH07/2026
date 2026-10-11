@@ -1224,6 +1224,23 @@ mark {
     -webkit-user-select: none;
 }
 
+/* ---------- 版块间距：前后各留一段行距，互不重叠 ----------
+   upfold 是一整块“版块”，前后各留 1.5em（桌面 ≈33px、窄屏 ≈24px）。
+   这个空档要能容下两处向上/向下的“出头”：右端那把剑露在矩形上方的
+   一截（约胶囊高度的 55%：桌面 ≈29px）和左端小人（4em，比胶囊高，
+   上下各出头 ≈31px）；所以它既不会压到上一个版块的内容，连续的
+   upfold 之间也不会贴在一起。
+
+   注意 display: inline-block：宿主 <upfold> 默认是 inline 元素，
+   而【行内元素的上下外边距不生效】，所以收起状态必须把它变成行内块，
+   下面那 1.5em 才量得出来。展开时宿主由后面的 .is-open 规则改成
+   display: block（那条选择器权重更高、位置更靠后），边距同样保留。 */
+.main-container upfold,
+.main-container .upfold {
+    display: inline-block;
+    margin: 1.5em 0;
+}
+
 /* ---------- 胶囊本体 ----------
    一份声明覆盖两种情况：① 脚本已把标签包进 .upfold-label；
    ② 脚本没跑起来，标签就是 <upfold> 自身的全部内容。 */
@@ -1313,12 +1330,15 @@ mark {
    它在胶囊盒子外面，所以不会被胶囊的底色框住。
    左侧 padding-left 让出 4 个字符给图标轨道：文字右退 4ch，而这个元素
    的宽度是 auto（依旧填满容器），所以右侧边界一点没动。
+   margin-top 是它与上面那枚胶囊（矩形）之间的空档：只作用于展开状态，
+   收起时这块内容是 display: none，不会多出空隙。
    注意：这条与上面的“隐藏文字”权重相同，靠写在后面取胜，别调换顺序。 */
 .main-container upfold.is-open :is(upfold-text, .upfold-text),
 .main-container .upfold.is-open :is(upfold-text, .upfold-text) {
     position: relative;           /* 给绝对定位的图标轨道当参照 */
     padding-left: 4ch;            /* 正文右退 4 个字符 */
     display: block;
+    margin-top: 0.8em;            /* 与胶囊（矩形）之间留出的空档（桌面 ≈18px） */
     margin-left: 0;
     margin-right: 0;
     margin-bottom: 0;
