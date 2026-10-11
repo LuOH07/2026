@@ -1297,7 +1297,7 @@ mark {
     content: "";
     position: absolute;
     left: 0%;                      
-    top: 60%;
+    top: 40%;
     transform: translateY(-50%);
     width: var(--upfold-icon-size);
     height: var(--upfold-icon-size);
