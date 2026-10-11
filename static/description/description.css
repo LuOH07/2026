@@ -1246,7 +1246,7 @@ mark {
     --upfold-color: #FFFFFF;      /* 文字颜色 */
     --upfold-radius: 20px;        /* 圆角大小；写成 999px 会变成胶囊形 */
     --upfold-font-size: 26px;     /* 与 .heading-3 一致 */
-    --upfold-icon-size: 12em;      /* 左端装饰图标的边长（原 1.5em 的 4 倍） */
+    --upfold-icon-size: 12em;     /* 左端装饰图标的边长（当前值，可自由调） */
     --upfold-icon-gap: 0.4em;     /* 图标与标签文字之间的距离 */
 
     position: relative;           /* 给左端叠的装饰图标当参照 */
@@ -1262,7 +1262,7 @@ mark {
     font-family: inherit;
     font-size: var(--upfold-font-size);
     line-height: 1.35;
-    text-align: center;
+    text-align: left;             /* 文字紧跟在左端小人的右边，不居中 */
     vertical-align: middle;
     transition: background-color 0.2s ease;
 }
