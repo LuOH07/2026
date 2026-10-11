@@ -4,6 +4,8 @@
 
 {% block page_styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='description/description.css') }}">
+<!-- IHP 增量层：只提供正文 e 标签的样式，必须排在 description.css 之后 -->
+<link rel="stylesheet" href="{{ url_for('static', filename='description/IHP.css') }}">
 {% endblock %}
 
 {% block page_content %}
@@ -74,8 +76,6 @@
     <h2 class="heading-2">2.1 From 'small' to 'usable' — defining what a good editor means</h2> 
     <h3 class="heading-3">Initial assumption</h3>
     <p class="body-text">Our starting assumption was straightforward: smaller genome editors should be advantageous in difficult or non-model hosts because compact systems can reduce genetic cargo and may ease delivery and expression burdens. This was one reason TnpB attracted our attention.</p>
-<<<<<<< HEAD
-=======
     <h3 class="heading-3">Engagement and insight</h3>
     <p class="body-text">In our discussion with Dr. Lin Xiaofeng (Hp超链接[112.1]), the evaluation criteria became more demanding. Editing efficiency and protein size alone were not sufficient. <b>TnpB expression, ωRNA transcription and stability, RNP assembly, DNA binding and cleavage, and host toxicity could all determine whether a compact editor actually functions in a particular host.</b></p>
 
@@ -90,7 +90,6 @@
     <h2 class="heading-2">Heading 2</h2>   
     <h3 class="heading-3">Heading 3</h3>
     <h1 class="heading-reference">Reference</h1>
->>>>>>> 94625fc (IHP)
 </main>
 
 <img src="https://static.igem.wiki/teams/6059/wiki/description/sword.avif" alt="Sword Scroll Track" class="scroll-sword" id="scrollSword">
@@ -100,10 +99,6 @@
 
 {% block page_scripts %}
 <script src="{{ url_for('static', filename='description/description.js') }}" defer></script>
-<<<<<<< HEAD
-{% endblock %}
-=======
-<!-- IHP 增量层：剔除侧边目录里的 <e></e> 文字，必须排在 description.js 之后 -->
+<!-- IHP 增量层：剔除侧边目录里的 e 标签文字，必须排在 description.js 之后 -->
 <script src="{{ url_for('static', filename='description/IHP.js') }}" defer></script>
 {% endblock %}
->>>>>>> 94625fc (IHP)
