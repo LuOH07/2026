@@ -1297,9 +1297,13 @@ mark {
 /* 展开出来的正文：整行宽、无底色无边框，排版跟 .body-text 一致
    （description.js 第 6 节会给它加上 .body-text 类）。
    它在胶囊盒子外面，所以不会被胶囊的底色框住。
+   左侧 padding-left 让出 4 个字符给图标轨道：文字右退 4ch，而这个元素
+   的宽度是 auto（依旧填满容器），所以右侧边界一点没动。
    注意：这条与上面的“隐藏文字”权重相同，靠写在后面取胜，别调换顺序。 */
 .main-container upfold.is-open :is(upfold-text, .upfold-text),
 .main-container .upfold.is-open :is(upfold-text, .upfold-text) {
+    position: relative;           /* 给绝对定位的图标轨道当参照 */
+    padding-left: 4ch;            /* 正文右退 4 个字符 */
     display: block;
     margin-left: 0;
     margin-right: 0;
@@ -1307,6 +1311,31 @@ mark {
     cursor: default;
     user-select: text;
     -webkit-user-select: text;
+}
+
+/* ---------- 展开文字左侧的图标轨道 ----------
+   图标由 description.js 第 6.3 节算好个数后插进来：宽度 4ch，
+   高度按原图比例，从上往下依次排；底部放不下一个完整的就不再放。
+   轨道是绝对定位的，既不推挤正文，也不影响正文右侧的边界。 */
+.main-container upfold .upfold-rail {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4ch;
+    pointer-events: none;         /* 装饰层：不挡文字选中 */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.main-container upfold .upfold-rail img {
+    display: block;
+    width: 4ch;                   /* 与“4 个字符宽”一致 */
+    height: auto;                 /* 高度按原图比例，个数由 JS 计算 */
+}
+
+/* 一个完整图标都放不下时收起轨道（保留占位，便于高度变化后重新长出来） */
+.main-container upfold .upfold-rail.is-empty {
+    visibility: hidden;
 }
 
 /* 窄屏：与 .heading-3 的移动端字号（17px）看齐

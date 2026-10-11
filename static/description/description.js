@@ -1086,12 +1086,14 @@ document.addEventListener('DOMContentLoaded', () => {
        <upfold>标签文字<upfold-text>点击后展开的正文</upfold-text></upfold>
    也支持 class 写法：<span class="upfold">…<span class="upfold-text">…</span></span>。
 
-   这里做两件事：
+   这里做三件事：
    ① 把标签文字包进 <span class="upfold-label">。胶囊的底色 / 内边距都画在
       这一层上，而展开的正文只是它的兄弟节点 —— 于是正文天生就在胶囊盒子
       外面，不会被胶囊的背景框住（见 description.css 第 13 节）。
    ② 给带隐藏文字的组件绑定点击 / 键盘开合并切换 .is-open：展开时只把
       胶囊的底色从 #53DEB7 换成 #D3F8DD，其它样式不动。
+   ③ 展开出来的正文左侧竖着铺一列装饰图标（见 6.3）：文字右退 4 个字符，
+      图标从上往下循环摆放，底部放不下一个完整图标就停。
 
    展开后的文字会被自动加上 .body-text 类，所以排版与正文完全一致
    （字号、行距、颜色、两端对齐都跟着 .body-text 走，正文格式以后改了
@@ -1107,6 +1109,11 @@ document.addEventListener('DOMContentLoaded', () => {
     var LABEL_CLASS = 'upfold-label';
     var OPEN_CLASS = 'is-open';
     var READY_ATTR = 'data-upfold-ready';
+    /* 展开文字左侧那一列装饰图标 */
+    var RAIL_CLASS = 'upfold-rail';
+    var ICON_CLASS = 'upfold-rail-icon';
+    var EMPTY_CLASS = 'is-empty';
+    var ICON_SRC = 'https://static.igem.wiki/teams/6059/wiki/notebook/steps.avif';
 
     function contentOf(host) {
         return host.querySelector(CONTENT_SELECTOR);
@@ -1136,6 +1143,75 @@ document.addEventListener('DOMContentLoaded', () => {
         return label;
     }
 
+    /* ------------------------------------------------------
+       6.3 展开文字左侧的图标轨道
+       ------------------------------------------------------
+       在展开出来的正文左边竖着排一列装饰图标：宽度 4 个字符（CSS 里的
+       4ch），高度按原图比例，从上往下循环摆放；底部剩下的高度不够再放
+       一个完整图标时就停下，不会出现被切掉一半的图标。
+
+       图标只是装饰：不响应鼠标（pointer-events: none）、不被读屏朗读
+       （aria-hidden）。高度要等图片加载完才知道，所以加载完成后会再排一次；
+       窗口缩放、字体变化等导致正文高度变化时，由 ResizeObserver 重算。 */
+    function railOf(content) {
+        var rail = content.querySelector('.' + RAIL_CLASS);
+        if (rail) return rail;
+
+        rail = document.createElement('span');
+        rail.className = RAIL_CLASS;
+        rail.setAttribute('aria-hidden', 'true');
+
+        var icon = document.createElement('img');
+        icon.className = ICON_CLASS;
+        icon.src = ICON_SRC;
+        icon.alt = '';
+        // 图片高度要等加载完成才知道，load 之后再排一次
+        icon.addEventListener('load', function () { fillRail(content); });
+        // 图片加载失败就整条轨道收起来，别留一个破图占位
+        icon.addEventListener('error', function () { rail.classList.add(EMPTY_CLASS); });
+        rail.appendChild(icon);
+
+        // 放在最前面：它是绝对定位的，不会挤走正文，正文由 CSS 的 padding 让位
+        content.insertBefore(rail, content.firstChild);
+        return rail;
+    }
+
+    function fillRail(content) {
+        var rail = railOf(content);
+        var probe = rail.firstChild;
+        if (!probe) return;
+
+        // 还没加载完（或图片坏了）先不排，等 load 回调
+        if (!probe.complete || !probe.naturalWidth) return;
+
+        var iconHeight = probe.getBoundingClientRect().height;
+        if (!iconHeight) return;
+
+        // 向下取整：底部放不下一个完整图标就不放
+        var count = Math.max(0, Math.floor(content.clientHeight / iconHeight));
+        if (count > 200) count = 200;        // 兜底，避免异常情况下疯狂堆节点
+
+        // 一个完整图标都放不下时，整条轨道藏起来。用 visibility 而不是
+        // display：探针还得留着量高度，窗口一变高就能重新长出来。
+        if (count) {
+            rail.classList.remove(EMPTY_CLASS);
+        } else {
+            rail.classList.add(EMPTY_CLASS);
+        }
+
+        // 轨道里第一个永远是探针；count 为 0 时也要留着它继续量高度
+        var total = count > 0 ? count : 1;
+        var current = rail.childNodes.length;
+        while (current > total) {
+            rail.removeChild(rail.lastChild);
+            current--;
+        }
+        while (current < total) {
+            rail.appendChild(probe.cloneNode(true));
+            current++;
+        }
+    }
+
     function setOpen(host, open) {
         if (open) {
             host.classList.add(OPEN_CLASS);
@@ -1143,6 +1219,12 @@ document.addEventListener('DOMContentLoaded', () => {
             host.classList.remove(OPEN_CLASS);
         }
         host.setAttribute('aria-expanded', open ? 'true' : 'false');
+
+        // 展开的瞬间内容刚变成可见，这时才量得到高度，顺手把图标补齐
+        if (open) {
+            var content = contentOf(host);
+            if (content) fillRail(content);
+        }
     }
 
     function toggle(host) {
@@ -1182,6 +1264,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // 展开文字的排版直接复用 .body-text（见 description.css 第 5 / 13 节）
         if (!content.classList.contains('body-text')) {
             content.classList.add('body-text');
+        }
+
+        // 窗口缩放 / 字体变化 / 里面的图片加载完，正文高度都会变，轨道跟着重算
+        if (typeof ResizeObserver === 'function') {
+            new ResizeObserver(function () { fillRail(content); }).observe(content);
+        } else if (window.addEventListener) {
+            window.addEventListener('resize', function () { fillRail(content); }, { passive: true });
         }
 
         host.addEventListener('click', function (event) {
