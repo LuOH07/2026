@@ -1096,3 +1096,33 @@ mark {
 .heading-3 mark {
     color: #5A56A8;
 }
+
+/* ========================================================
+   11. 正文超链接
+   ========================================================
+   颜色固定 #91ACE0，加粗并带下划线。
+   作用域限定在正文卡片 .main-container 内部（标题、段落、图注都在
+   其中）；页眉菜单与页脚位于 layout.html 的 <main id="main-content">
+   之外，侧边目录在 .side-container 里，二者的链接由各自样式表负责，
+   不受本节影响。 */
+.main-container a,
+.main-container a b,
+.main-container a strong {
+    color: #91ACE0;
+    font-weight: bold;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    transition: text-decoration-thickness 0.15s ease;
+}
+
+/* 已访问链接保持同一配色，避免浏览器默认的紫色破坏版面 */
+.main-container a:visited {
+    color: #91ACE0;
+}
+
+/* 悬停 / 键盘聚焦时只把下划线加粗，不改变颜色与字号 */
+.main-container a:hover,
+.main-container a:focus-visible {
+    text-decoration-thickness: 2.5px;
+}
