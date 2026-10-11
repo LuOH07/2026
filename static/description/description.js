@@ -1187,8 +1187,17 @@ document.addEventListener('DOMContentLoaded', () => {
         var iconHeight = probe.getBoundingClientRect().height;
         if (!iconHeight) return;
 
-        // 向下取整：底部放不下一个完整图标就不放
-        var count = Math.max(0, Math.floor(content.clientHeight / iconHeight));
+        // 图标之间的间隔由 CSS 给（= steps-2 高度的一半），从探针身上量出来：
+        // 以后在 CSS 里调间隔，这里不用改代码
+        var gap = 0;
+        if (window.getComputedStyle) {
+            var marginBottom = parseFloat(window.getComputedStyle(probe).marginBottom);
+            if (marginBottom > 0) gap = marginBottom;
+        }
+
+        // n 个图标的总高 = n × 图标 + (n-1) × 间隔，反解出来再向下取整：
+        // 底部放不下一个完整图标（连它前面的间隔）就不放
+        var count = Math.max(0, Math.floor((content.clientHeight + gap) / (iconHeight + gap)));
         if (count > 200) count = 200;        // 兜底，避免异常情况下疯狂堆节点
 
         // 一个完整图标都放不下时，整条轨道藏起来。用 visibility 而不是

@@ -1246,7 +1246,7 @@ mark {
     --upfold-color: #FFFFFF;      /* 文字颜色 */
     --upfold-radius: 20px;        /* 圆角大小；写成 999px 会变成胶囊形 */
     --upfold-font-size: 26px;     /* 与 .heading-3 一致 */
-    --upfold-icon-size: 1.5em;    /* 左端装饰图标的边长 */
+    --upfold-icon-size: 6em;      /* 左端装饰图标的边长（原 1.5em 的 4 倍） */
     --upfold-icon-gap: 0.4em;     /* 图标与标签文字之间的距离 */
 
     position: relative;           /* 给左端叠的装饰图标当参照 */
@@ -1297,7 +1297,7 @@ mark {
     content: "";
     position: absolute;
     left: 0;                      /* 贴在矩形左端 */
-    top: 150%;
+    top: 50%;
     transform: translateY(-50%);
     width: var(--upfold-icon-size);
     height: var(--upfold-icon-size);
@@ -1342,14 +1342,18 @@ mark {
 }
 
 /* ---------- 展开文字左侧的图标轨道 ----------
-   图标由 description.js 第 6.3 节算好个数后插进来：宽度 4ch，
-   高度按原图比例，从上往下依次排；底部放不下一个完整的就不再放。
+   图标由 description.js 第 6.3 节算好个数后插进来：宽度见下面的
+   --upfold-rail-icon-width，高度按原图比例，从上往下依次排，
+   每两个之间留一段间隔（见下面那条规则）；底部放不下一个完整的就不再放。
    轨道是绝对定位的，既不推挤正文，也不影响正文右侧的边界。 */
 .main-container upfold .upfold-rail {
+    /* 轨道图标宽度：只改这一个值，图标宽度 / 轨道宽度 / 图标间距会一起变 */
+    --upfold-rail-icon-width: 2ch;
+
     position: absolute;
     left: 0;
     top: 0;
-    width: 4ch;
+    width: var(--upfold-rail-icon-width);
     pointer-events: none;         /* 装饰层：不挡文字选中 */
     user-select: none;
     -webkit-user-select: none;
@@ -1357,8 +1361,17 @@ mark {
 
 .main-container upfold .upfold-rail img {
     display: block;
-    width: 2ch;                   /* 与“4 个字符宽”一致 */
+    width: var(--upfold-rail-icon-width);
     height: auto;                 /* 高度按原图比例，个数由 JS 计算 */
+}
+
+/* 每两个图标之间的间隔 = steps-2 高度的一半。
+   steps-2.avif 是 110 × 91，按同样的宽度渲染时它的高度 = 宽度 × 91/110，
+   一半就是 宽度 × 91/220（现在 2ch，约 0.83ch）。
+   改上面的图标宽度时间隔会自动跟着变；
+   description.js 第 6.3 节会把这个间隔算进“这一列能放几个”里。 */
+.main-container upfold .upfold-rail img:not(:last-child) {
+    margin-bottom: calc(var(--upfold-rail-icon-width) * 91 / 220);
 }
 
 /* 一个完整图标都放不下时收起轨道（保留占位，便于高度变化后重新长出来） */
