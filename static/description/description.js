@@ -1095,9 +1095,9 @@ document.addEventListener('DOMContentLoaded', () => {
       description.css 第 13 节只留胶囊本身长什么样。
    ③ 给带隐藏文字的组件绑定点击 / 键盘开合并切换 .is-open：展开时把胶囊的
       底色从 #53DEB7 换成 #D3F8DD，同时把文字从白色换成正文字体颜色 #465E77。
-   ④ 展开出来的正文左侧铺一排左右交替的脚印（见 6.3）：正文从第 7 个字符
-      开始（左脚印在 0–3ch、右脚印在 3–6ch 里各自随机浮动），每个脚印的上沿
-      间距与旋转角度也都是随机值，一直排到放不下下一个脚印为止；
+   ④ 展开出来的正文左侧铺一排左右交替的脚印（见 6.3）：正文从第 5 个字符
+      开始，左脚印的左边缘在 0–1.5ch、右脚印在 1.5–3ch 里各自随机；每个脚印
+      的上沿间距（1.5~2.5 个脚印高）与旋转角度也都是随机值，一直排到放不下；
       点开时这一串脚印还会从上往下挨个出现（见 6.4）。
 
    展开后的文字会被自动加上 .body-text 类，所以排版与正文完全一致
@@ -1123,13 +1123,12 @@ document.addEventListener('DOMContentLoaded', () => {
         left: 'https://static.igem.wiki/teams/6059/wiki/notebook/left.avif',
         right: 'https://static.igem.wiki/teams/6059/wiki/notebook/right.avif'
     };
-    /* 轨道基准尺寸（ch）：默认值，实际以 CSS 变量 --upfold-rail-zone /
-       --upfold-rail-foot 为准 —— 那两个才是唯一出处，改 CSS 就够 */
-    var RAIL_ZONE = 3;            /* 每侧区域宽（ch，对应 CSS 的 --upfold-rail-zone） */
-    var RAIL_FOOT = 1.5;          /* 脚印宽（ch，对应 CSS 的 --upfold-rail-foot） */
+    /* 轨道基准尺寸（ch）：默认值，实际以 CSS 变量 --upfold-rail-span 为准
+       —— CSS 才是唯一出处，改那边就够 */
+    var RAIL_SPAN = 1.5;          /* 每侧“左边缘”的随机范围宽（对应 --upfold-rail-span） */
     /* 随机范围 */
-    var FOOT_GAP_MIN = 0.5;       /* 相邻脚印上沿的间距：0.5 ~ 1.5 个脚印高 */
-    var FOOT_GAP_MAX = 1.5;
+    var FOOT_GAP_MIN = 1.5;       /* 相邻脚印上沿的间距：1.5 ~ 2.5 个脚印高 */
+    var FOOT_GAP_MAX = 2.5;
     var FOOT_ROTATE = 20;         /* 旋转角度：±20° */
     var RAND_PER_FOOT = 3;        /* 每个脚印固定消耗 3 个随机数（见 6.3） */
     var FOOT_LIMIT = 200;         /* 兜底：一段正文最多画这么多个脚印 */
@@ -1290,13 +1289,14 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ------------------------------------------------------
        6.3 展开文字左侧的脚印轨道
        ------------------------------------------------------
-       正文左侧让出的 7ch（description.css 第 13 节的 padding-left）里，
-       最靠左的 6ch 分成两条：0–3ch 归左脚印、3–6ch 归右脚印（第 7 个
-       字符起才是正文）。脚印宽 1.5ch，所以每个脚印在自己那 3ch 区域里
-       还能左右浮动 1.5ch。素材左右各一张，交替往下排：
+       正文左侧让出 5ch（description.css 第 13 节的 padding-left），第 5 个
+       字符起才是正文。脚印宽 1.5ch，落点左右分开随机（宽度取自 CSS 的
+       --upfold-rail-span）：左脚印的左边缘落 0 ~ 1.5ch、右脚印落
+       1.5 ~ 3ch，即各占半条 3ch 宽的带子。素材左右各一张，交替往下排：
 
            · 左脚印 1 的上沿固定在最上面（= 正文顶部，不随机）；
-           · 之后每个脚印的上沿 = 上一个的上沿 + 0.5 ~ 1.5 个【本脚印】高度；
+           · 之后每个脚印的上沿 = 上一个的上沿 + 1.5 ~ 2.5 个【本脚印】高度
+             （间隔都大于 1 个脚印高，所以上下不会叠在一起）；
            · 一直排到“离本段正文底部已经放不下下一个脚印”为止。
 
        横向浮动、上下间距、旋转（-20° ~ +20°）都是随机值，但同一个脚印
@@ -1345,21 +1345,18 @@ document.addEventListener('DOMContentLoaded', () => {
         return probe.getBoundingClientRect().height;
     }
 
-    /* 轨道基准尺寸：从 CSS 变量 --upfold-rail-zone / --upfold-rail-foot 读，
-       当纯数字用（单位约定是 ch）；读不到就退回代码里的默认值。 */
-    function railMetrics(rail) {
-        var zone = RAIL_ZONE;
-        var foot = RAIL_FOOT;
+    /* 每侧“左边缘”的随机范围宽（ch）：从 CSS 变量 --upfold-rail-span 读。
+       左脚印落 0 ~ span，右脚印落 span ~ 2×span（当前 1.5ch → 左 0~1.5ch、
+       右 1.5~3ch）；读不到就用代码里的默认值。 */
+    function railSpan(rail) {
+        var span = RAIL_SPAN;
 
         if (window.getComputedStyle) {
-            var cs = window.getComputedStyle(rail);
-            var z = parseFloat(cs.getPropertyValue('--upfold-rail-zone'));
-            var f = parseFloat(cs.getPropertyValue('--upfold-rail-foot'));
-            if (z > 0) zone = z;
-            if (f > 0) foot = f;
+            var v = parseFloat(window.getComputedStyle(rail).getPropertyValue('--upfold-rail-span'));
+            if (v > 0) span = v;
         }
 
-        return { zone: zone, foot: foot, spread: Math.max(0, zone - foot) };
+        return span;
     }
 
     /* 稳定的随机数：同一条轨道、同一个序号只生成一次并缓存。
@@ -1401,7 +1398,7 @@ document.addEventListener('DOMContentLoaded', () => {
         var limit = content.clientHeight;
         if (!limit) return;
 
-        var metrics = railMetrics(rail);
+        var span = railSpan(rail);
         var sides = ['left', 'right'];
 
         /* 第一步：只算位置，不碰 DOM。
@@ -1418,7 +1415,7 @@ document.addEventListener('DOMContentLoaded', () => {
             var base = index * RAND_PER_FOOT;
 
             // 上沿：第一个（左）固定在最上面；之后每个都比上一个低
-            // 0.5 ~ 1.5 个本脚印的高度
+            // 1.5 ~ 2.5 个本脚印的高度
             var top = 0;
             if (index > 0) {
                 top = prevTop + randomBetween(rail, base + 1, FOOT_GAP_MIN, FOOT_GAP_MAX) * height;
@@ -1427,9 +1424,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // 离本段底部放不下下一个脚印就停
             if (top + height > limit) break;
 
-            // 横向：左脚印在 0 ~ spread，右脚印在 zone ~ zone + spread
-            var offset = randomBetween(rail, base, 0, metrics.spread);
-            if (index % 2 === 1) offset += metrics.zone;
+            // 横向：左脚印的左边缘落 0 ~ span，右脚印落 span ~ 2×span
+            var offset = randomBetween(rail, base, 0, span);
+            if (index % 2 === 1) offset += span;
 
             var rotate = randomBetween(rail, base + 2, -FOOT_ROTATE, FOOT_ROTATE);
 

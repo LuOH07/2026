@@ -1209,7 +1209,7 @@ mark {
    左边为图标让出的内边距同样由那边按“图标 + 间距”算好后写成内联样式
    （脚本没跑时按无图标的 1.15em 显示），所以这里的 padding 不写图标宽度。
 
-   展开正文左侧那 7ch（前 6ch 放脚印）是脚印轨道（本文件末尾的 .upfold-rail
+   展开正文左侧那 5ch（前 3ch 放脚印）是脚印轨道（本文件末尾的 .upfold-rail
    一节）：素材、左右分布、上沿间距与旋转角度都由 description.js 第 6.3 节
    随机算好后写成内联样式，本文件只给轨道的两个基准尺寸与摆放方式。
 
@@ -1331,16 +1331,16 @@ mark {
 /* 展开出来的正文：整行宽、无底色无边框，排版跟 .body-text 一致
    （description.js 第 6 节会给它加上 .body-text 类）。
    它在胶囊盒子外面，所以不会被胶囊的底色框住。
-   左侧 padding-left 让出 7 个字符给脚印轨道（左脚印在 0–3ch、右脚印在
-   3–6ch，第 7 个字符起才是正文）：文字右退 7ch，而这个元素的宽度是 auto
-   （依旧填满容器），所以右侧边界一点没动。
+   左侧 padding-left 让出 5 个字符：左边这 3ch 让给脚印（左脚印 0–1.5ch、
+   右脚印 1.5–3ch），第 5 个字符起才是正文。文字右退 5ch，而这个元素的宽度是
+   auto（依旧填满容器），所以右侧边界一点没动。
    margin-top 是它与上面那枚胶囊（矩形）之间的空档：只作用于展开状态，
    收起时这块内容是 display: none，不会多出空隙。
    注意：这条与上面的“隐藏文字”权重相同，靠写在后面取胜，别调换顺序。 */
 .main-container upfold.is-open :is(upfold-text, .upfold-text),
 .main-container .upfold.is-open :is(upfold-text, .upfold-text) {
     position: relative;           /* 给绝对定位的脚印轨道当参照 */
-    padding-left: 7ch;            /* 正文从第 7 个字符开始 */
+    padding-left: 5ch;            /* 正文从第 5 个字符开始 */
     display: block;
     margin-top: 0.8em;            /* 与胶囊（矩形）之间留出的空档（桌面 ≈18px） */
     margin-left: 0;
@@ -1352,25 +1352,25 @@ mark {
 }
 
 /* ---------- 展开文字左侧的脚印轨道 ----------
-   正文左内边距是 7ch，其中最靠左的 6ch 分成左右两条：0–3ch 归左脚印、
-   3–6ch 归右脚印（第 7 个字符起才是正文，所以右脚印右边还多出 1ch 空隙）。
-   脚印宽 1.5ch，所以每个脚印在自己那 3ch 区域里还能左右浮动 1.5ch。
-   左右脚印交替往下排，横向浮动 / 上下间距（0.5~1.5 个脚印高）/ 旋转
+   正文左内边距是 5ch（第 5 个字符起才是正文），左边这 3ch 让给脚印：
+   左脚印的左边缘在 0–1.5ch、右脚印的左边缘在 1.5–3ch 里各自随机
+   （即各占半条 3ch 宽的带子），脚印宽 1.5ch。
+   左右脚印交替往下排，横向落点 / 上下间距（1.5~2.5 个脚印高）/ 旋转
    （-20°~+20°）都由 description.js 第 6.3 节随机算好后写成内联样式：
    同一次会话里反复展开、窗口缩放都不会变，刷新页面才重新随机一遍。
    这里只给这条轨道的基准尺寸与摆放方式；轨道是绝对定位的，既不推挤正文，
    也不影响正文右侧的边界。 */
 .main-container upfold .upfold-rail {
-    /* 轨道的两个基准尺寸：JS 第 6.3 节会读它们来算随机范围，
-       所以只改这里就够（脚印宽度 / 左右区域 / 随机区间会一起变）。
-       单位必须是 ch —— 两段区域加起来 = 正文让出的 7ch 里的前 6ch。 */
-    --upfold-rail-zone: 3ch;      /* 每侧区域宽 */
-    --upfold-rail-foot: 1.5ch;    /* 脚印宽（区域内可浮动 3 - 1.5 = 1.5ch） */
+    /* 两个基准尺寸：JS 第 6.3 节会读它们来算随机范围，所以只改这里就够。
+       单位都必须是 ch。 */
+    --upfold-rail-span: 1.5ch;    /* 每侧“左边缘”的随机范围宽：
+                                     左脚印 0 ~ span，右脚印 span ~ 2×span */
+    --upfold-rail-foot: 1.5ch;    /* 脚印宽 */
 
     position: absolute;
     left: 0;
     top: 0;
-    width: calc(var(--upfold-rail-zone) * 2);
+    width: calc(var(--upfold-rail-span) * 2);
     pointer-events: none;         /* 装饰层：不挡文字选中 */
     user-select: none;
     -webkit-user-select: none;
