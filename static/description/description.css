@@ -1510,7 +1510,7 @@ mark {
 .heading-1 > .heading-sub {
     --heading-sub-bg: #1D9695;   /* 一级副标题：青色矩形 */
     font-size: 32px;
-    font-family: 'Albertus Nova Black', -apple-system, sans-serif;
+    font-family: 'Albertus Nova', -apple-system, sans-serif;
 }
 
 .heading-sub-row.heading-sub-h2,
@@ -1518,7 +1518,7 @@ mark {
 .heading-2 > .heading-sub {
     --heading-sub-bg: #387CC1;   /* 二级副标题：蓝色矩形 */
     font-size: 26px;
-    font-family: 'Albertus Nova Bold', -apple-system, sans-serif;
+    font-family: 'Albertus Nova', -apple-system, sans-serif;
 }
 
 .heading-sub-row.heading-sub-h3,
@@ -1526,7 +1526,7 @@ mark {
 .heading-3 > .heading-sub {
     --heading-sub-bg: #9177DC;   /* 三级副标题：紫色矩形 */
     font-size: 22px;
-    font-family: 'Albertus Nova Bold', -apple-system, sans-serif;
+    font-family: 'Albertus Nova', -apple-system, sans-serif;
 }
 
 /* Reference 本身是 h1，副标题沿用一级的颜色与字号；字体则跟着它自己的
@@ -1537,7 +1537,7 @@ mark {
 .heading-reference > .heading-sub {
     --heading-sub-bg: #1D9695;
     font-size: 32px;
-    font-family: 'Albertus Nova Bold', -apple-system, sans-serif;
+    font-family: 'Albertus Nova', -apple-system, sans-serif;
 }
 
 /* ---------- 14.4 有副标题时，收掉主标题的下边距 ----------
