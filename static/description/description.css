@@ -1509,7 +1509,7 @@ mark {
 .heading-1 + .heading-sub-row,
 .heading-1 > .heading-sub {
     --heading-sub-bg: #1D9695;   /* 一级副标题：青色矩形 */
-    font-size: 30px;
+    font-size: 28px;
     font-family: 'Albertus Nova', -apple-system, sans-serif;
 }
 
