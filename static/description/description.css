@@ -1197,6 +1197,15 @@ mark {
        <p class="body-text"><upfold>Materials and Apparatus:
            <upfold-text>点击后展开的正文</upfold-text></upfold></p>
 
+   展开的正文想分两段（或多段）：写多个 <upfold-text>，一块一段 ——
+       <p class="body-text"><upfold>Why the expert discussion mattered
+           <upfold-text>第一段……</upfold-text>
+           <upfold-text>第二段……</upfold-text></upfold></p>
+   每一块都会被 description.js 第 6 节加上 .body-text，段与段之间的空档
+   见下面“展开出来的正文写成两段及以上时”那一条。注意不要写成
+   “一个 <upfold-text> 里面再套 <p>”—— 外层是 <p class="body-text">，
+   <p> 不能嵌套 <p>，浏览器会把外层段落就地截断，结构就乱了。
+
    收起：标签是一枚 #53DEB7 的圆角胶囊，白字，宽度随标签文字伸缩，
         字号 26px（与 .heading-3 同级）。
    展开：胶囊换底色与文字颜色（--upfold-open-bg / --upfold-open-color）；
@@ -1351,6 +1360,17 @@ mark {
     cursor: default;
     user-select: text;
     -webkit-user-select: text;
+}
+
+/* ---------- 展开出来的正文写成两段及以上时（见 description.js 第 6 节）----------
+   每个 <upfold-text> 各自是一段。上面那条规则给每段的 margin-top 都是
+   0.8em（第一段与胶囊之间的空档），这里把“段与段之间”改成正文的段落间距
+   1em（.body-text 的 margin-bottom 就是 1em），展开后的排版与正文一致，
+   看起来就是普通的两段正文。
+   写成单段时这条不生效，外观一点没变。 */
+.main-container upfold.is-open :is(upfold-text, .upfold-text) + :is(upfold-text, .upfold-text),
+.main-container .upfold.is-open :is(upfold-text, .upfold-text) + :is(upfold-text, .upfold-text) {
+    margin-top: 1em;
 }
 
 /* ---------- 展开文字左侧的脚印轨道 ----------

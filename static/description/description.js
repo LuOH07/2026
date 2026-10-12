@@ -1177,13 +1177,42 @@ document.addEventListener('DOMContentLoaded', () => {
     var SWORD_HEIGHT = '190%';    /* 长度与第一版一致（> 100% 才会上下各露一节） */
     var SWORD_MAX_WIDTH = '3em';  /* 兜底：素材若过宽，最多占这么宽 */
 
+    /* 一个 <upfold> 里【所有】点击后展开的正文块。
+       可以写多块，每块展开后就是独立的一段正文：
+           <upfold>标签文字
+               <upfold-text>第一段……</upfold-text>
+               <upfold-text>第二段……</upfold-text>
+           </upfold>
+       两块都会各自被加上 .body-text（见 setup），段与段之间的空档由
+       description.css 第 13 节给，看起来就跟正文分了两段一样。 */
+    function contentsOf(host) {
+        return Array.prototype.slice.call(host.querySelectorAll(CONTENT_SELECTOR));
+    }
+
+    /* 第一块正文：左侧那排脚印（见 6.3）只铺在它旁边，所以单独取一次 */
     function contentOf(host) {
         return host.querySelector(CONTENT_SELECTOR);
     }
 
+    /* 这个节点是某个正文块本身，或者包着某个正文块的外壳？
+       两种情况都不能被搬进 .upfold-label —— 否则正文会跑进胶囊里。 */
+    function holdsContent(node, contents) {
+        if (node.nodeType !== 1) return false;
+
+        for (var i = 0; i < contents.length; i++) {
+            if (node === contents[i]) return true;
+            if (node.contains && node.contains(contents[i])) return true;
+        }
+        return false;
+    }
+
     /* 把标签文字搬进 .upfold-label，隐藏文字留在原处当兄弟节点。
-       逐个搬节点而不是重写 innerHTML，是为了不破坏已有的事件监听。 */
-    function wrapLabel(host, content) {
+       逐个搬节点而不是重写 innerHTML，是为了不破坏已有的事件监听。
+
+       注意传进来的是【全部】正文块：写了两块 <upfold-text> 时两块都要留在
+       原地。以前这里只认第一块（contentOf 的 querySelector 只返回第一个），
+       第二块就被当成“标签文字”搬进胶囊 —— 那正是“第一段写在标题里”的原因。 */
+    function wrapLabel(host, contents) {
         var existing = host.querySelector('.' + LABEL_CLASS);
         if (existing) return existing;
 
@@ -1192,8 +1221,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         var movable = [];
         Array.prototype.forEach.call(host.childNodes, function (node) {
-            if (node === content) return;                    // 隐藏文字本身不动
-            if (content && node.nodeType === 1 && node.contains && node.contains(content)) return;  // 包着内容的外壳也不动
+            if (holdsContent(node, contents)) return;   // 正文块（或包着它的外壳）留在原地
             movable.push(node);
         });
 
@@ -1575,15 +1603,16 @@ document.addEventListener('DOMContentLoaded', () => {
         setOpen(host, !host.classList.contains(OPEN_CLASS));
     }
 
-    /* 点击是否落在展开出来的正文里 */
+    /* 点击是否落在展开出来的正文里（写了几块正文就查几块） */
     function isInsideContent(host, node) {
         if (!node || node.nodeType !== 1) return false;
-        var content = contentOf(host);
-        if (!content) return false;
+
+        var contents = contentsOf(host);
+        if (!contents.length) return false;
 
         var current = node;
         while (current) {
-            if (current === content) return true;
+            if (contents.indexOf(current) !== -1) return true;
             current = current.parentNode;
         }
         return false;
@@ -1592,10 +1621,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function setup(host) {
         if (host.getAttribute(READY_ATTR) === '1') return;
 
-        var content = contentOf(host);
+        // 全部正文块；第一块另外单独取出来给脚印轨道用
+        var contents = contentsOf(host);
+        var content = contents[0] || null;
 
         // 无论能不能展开，都先把标签包起来：胶囊外观挂在 .upfold-label 上
-        var label = wrapLabel(host, content);
+        var label = wrapLabel(host, contents);
         // 胶囊上的两枚装饰：素材引用 / 站位 / 尺寸 / 层级都在 6.1、6.2 里给
         injectKid(label);
         injectSword(host, label);
@@ -1608,12 +1639,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!host.hasAttribute('role')) host.setAttribute('role', 'button');
         host.setAttribute('aria-expanded', 'false');
 
-        // 展开文字的排版直接复用 .body-text（见 description.css 第 5 / 13 节）
-        if (!content.classList.contains('body-text')) {
-            content.classList.add('body-text');
-        }
+        // 展开文字的排版直接复用 .body-text（见 description.css 第 5 / 13 节）。
+        // 每一块正文都要加：只给第一块加的话，第二段以后就没有正文字号 /
+        // 行距 / 两端对齐，会掉回页面的默认字体。
+        contents.forEach(function (block) {
+            if (!block.classList.contains('body-text')) {
+                block.classList.add('body-text');
+            }
+        });
 
         // 窗口缩放 / 字体变化 / 里面的图片加载完，正文高度都会变，轨道跟着重算
+        // （脚印轨道只铺在第一块正文旁边，见 6.3）
         if (typeof ResizeObserver === 'function') {
             new ResizeObserver(function () { fillRail(content); }).observe(content);
         } else if (window.addEventListener) {
