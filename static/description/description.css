@@ -1130,12 +1130,14 @@ mark {
 }
 
 /* 先把所有单元格的边框清空，横线只由下面三条规则画；
-   文字一律水平居中（<td> 浏览器默认左对齐，这里统一覆盖） */
+   文字一律水平居中（<td> 浏览器默认左对齐，这里统一覆盖），
+   竖直方向也居中：一行里字数多的单元格会换行变高，同一行里字数少的
+   单元格（<th> / <td>）的文字上下居中，不再贴着单元格顶端。 */
 .main-container table th,
 .main-container table td {
     border: 0;
     padding: 0.55em 0.9em;
-    vertical-align: top;
+    vertical-align: middle;
     text-align: center;
 }
 
