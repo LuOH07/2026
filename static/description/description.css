@@ -1485,9 +1485,13 @@ mark {
     border-radius: 20px;         /* 圆角 20px */
     /* 上下 0.14em：矩形比文字略高一点点；左右 0.72em：文字四周留白 */
     padding: 0.14em 0.72em;
-    /* 行高比“矩形自身高度”大，换行后两行矩形之间才会留出那条窄空白。
-       调大 → 空白更宽；调到与矩形同高 → 两行矩形贴在一起。 */
-    line-height: 1.62;
+    /* 行高必须大于“矩形自身高度”，换行后两行矩形之间才会留出那条窄空白：
+         矩形高 = 字体框高 + 上下 padding = 1.442em + 0.28em ≈ 1.72em
+                   （Albertus Nova 的 hhea/win 度量：ascent 1.103em + descent 0.339em）
+         行高 1.95em  →  行间空白 ≈ 1.95 − 1.72 = 0.23em（28px 字号时约 6.5px）
+       行高低于约 1.72em 时两行矩形会直接叠在一起（不再有缝），
+       调大 → 空白更宽；调小 → 更窄。 */
+    line-height: 1.95;
     /* 换行时每一行都各自拥有完整的内边距与圆角（默认只在整块首尾补） */
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
