@@ -582,9 +582,9 @@ calc(100% - 4.2vh) 100%,
 );
 }
 
-.heading-1::before { background-color: #9CDBDD; width: 12vh; }
-.heading-2::before { background-color: #94C2F1; width: 16vh; }
-.heading-3::before { background-color: #C7C6F1; width: 20vh; }
+.heading-1::before { background-color: #9CDCDD; width: 12vh; }
+.heading-2::before { background-color: #95C3F1; width: 16vh; }
+.heading-3::before { background-color: #C7C6F2; width: 20vh; }
 .heading-reference::before { background-color: #B9C7D1; width: 12vh; }
 
 .heading-1::after,
@@ -623,7 +623,7 @@ clip-path: polygon(
 );
 }
 
-.heading-1::after { background-color: #9CDBDD; }
+.heading-1::after { background-color: #9CDCDD; }
 .heading-reference::after { background-color: #B9C7D1; }
 
 /* ========================================================
@@ -1442,7 +1442,7 @@ mark {
    ========================================================
    给每一级标题（.heading-1 / .heading-2 / .heading-3，以及同属一级的
    .heading-reference）在主标题下方加一条副标题：文字颜色用正文色 #465E77，
-   底色是主标题那枚装饰矩形的颜色（H1 #9CDBDD / H2 #94C2F1 / H3 #C7C6F1 /
+   底色是主标题那枚装饰矩形的颜色（H1 #9CDCDD / H2 #95C3F1 / H3 #C7C6F2 /
    Reference #B9C7D1，见第 4 节 ::before 的 background-color），形状不是
    裹住整行文字的圆角矩形，而是像荧光笔一样横着画在文字【下方】的一条
    粗圆边色带。
@@ -1493,7 +1493,7 @@ mark {
        在 14.3 里覆盖。
        变量必须落在【行容器】上：.heading-sub 直接声明同名变量的话，
        元素自身的声明会压过继承值，各级颜色就全都变成这里的默认色了。 */
-    --heading-sub-bar: #9CDBDD;
+    --heading-sub-bar: #9CDCDD;
 
     display: block;
     margin-left: 8%;             /* 与同级主标题的左右缩进一致（见第 4 节） */
@@ -1577,7 +1577,7 @@ mark {
 .heading-sub-row.heading-sub-h1,
 .heading-1 + .heading-sub-row,
 .heading-1 > .heading-sub {
-    --heading-sub-bar: #9CDBDD;  /* = .heading-1::before 的 #9CDBDD */
+    --heading-sub-bar: #9CDCDD;  /* = .heading-1::before 的 #9CDCDD */
     font-size: 28px;
     font-family: 'Albertus Nova', -apple-system, sans-serif;
 }
@@ -1585,7 +1585,7 @@ mark {
 .heading-sub-row.heading-sub-h2,
 .heading-2 + .heading-sub-row,
 .heading-2 > .heading-sub {
-    --heading-sub-bar: #94C2F1;  /* = .heading-2::before 的 #94C2F1 */
+    --heading-sub-bar: #95C3F1;  /* = .heading-2::before 的 #95C3F1 */
     font-size: 24px;
     font-family: 'Albertus Nova', -apple-system, sans-serif;
 }
@@ -1593,7 +1593,7 @@ mark {
 .heading-sub-row.heading-sub-h3,
 .heading-3 + .heading-sub-row,
 .heading-3 > .heading-sub {
-    --heading-sub-bar: #C7C6F1;  /* = .heading-3::before 的 #C7C6F1 */
+    --heading-sub-bar: #C7C6F2;  /* = .heading-3::before 的 #C7C6F2 */
     font-size: 22px;
     font-family: 'Albertus Nova', -apple-system, sans-serif;
 }
