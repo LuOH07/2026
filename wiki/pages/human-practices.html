@@ -145,6 +145,37 @@
     <upfold-text>This bridge between Human Practices, Dry Lab, and wet-lab validation was important because it connected a real genome-engineering constraint to a property we could both engineer and measure.</upfold-text>
 </upfold></p>
 
+    <h2 class="heading-2" id="hp-3"><e>1.4 </e>From mutation to structure-informed directed evolution</h2>
+    <p class="body-text">
+    <upfold>Initial idea
+    <upfold-text>After TAM expansion became our main optimization objective, the next question was how to alter recognition without destroying the baseline activity that made ISHahl1 attractive. Work on other TnpB homologs, especially ISDra2, suggested that TAM preference could be altered by mutating residues associated with recognition. Our first idea was therefore straightforward: use reported TAM-associated residues as references, identify corresponding positions in ISHahl1, and test mutations.</upfold-text></upfold></p>
+    <p class="body-text">
+    <upfold>The challenge
+    <upfold-text>In discussion with <b>Dr. Liao Langxing</b>, we confronted two problems with this approach. First, ISHahl1 and ISDra2 differ in sequence and structural context, so a mutation that works at one residue number in ISDra2 cannot simply be copied into ISHahl1 and assumed to have the same effect. Second, TAM recognition is coupled to DNA recognition, ωRNA-associated conformational changes, and nuclease activation. Blind mutation could change recognition while simultaneously damaging activity.</upfold-text></upfold></p>
+    <p class="body-text">
+    <upfold>A better question
+    <upfold-text>The discussion shifted our reasoning from <b>“Which residue number should we copy?”</b> to <b>“Which residues in ISHahl1 are structurally or functionally equivalent to known TAM-interacting regions in other TnpB homologs?”</b> This moved our attention from sequence position alone to <b>structure–function relationships.</b></upfold-text>
+    <upfold-text>Structural and homologous comparison could narrow the search space, but we also recognized the opposite limitation: rational design cannot predict every amino-acid substitution capable of creating a useful new TAM preference. Therefore, neither blind random mutagenesis nor a few rationally selected mutations were sufficient on their own.</upfold-text>
+</upfold></p>
+    <p class="body-text">
+    <upfold>What changed?
+    <upfold-text>We developed a <b>structure-informed directed-evolution strategy:</b> use literature and structural comparison to focus the search space, construct libraries around biologically informed candidate regions, screen for activity toward alternative TAMs, and then validate whether selected variants truly changed TAM recognition while retaining functional nuclease activity.</upfold-text></upfold></p>
+    <p class="body-text">
+    <upfold>Engineering workflow
+    <upfold-text><b>Understand</b> — use characterized TnpB systems to identify known TAM-recognition mechanisms.<br>
+    <b>Map</b> — compare sequence and structural context between known TnpB homologs and ISHahl1.<br>
+    <b>Focus</b> — define candidate TAM-associated regions instead of mutating the entire protein blindly.<br>
+    <b>Explore</b> — use directed evolution and high-throughput screening to discover solutions not predictable in advance.<br>
+    <b>Validate</b> — determine whether the variants changed the intended property rather than merely increasing general activity.
+</upfold-text></upfold></p>
+    <p class="body-text">
+    <upfold>Connection to experiments
+    <upfold-text>This logic is implemented in Results Section 2 through structural analysis, candidate residue or region selection, mutant library construction, eYFP-based high-throughput screening, and downstream validation. The output of this strategy created the next Human Practices question: <b>does a positive fluorescence signal actually prove that TAM recognition broadened?</b></upfold-text></upfold></p>
+
+
+
+
+
 
 
 
