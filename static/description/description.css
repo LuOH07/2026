@@ -543,6 +543,128 @@ margin-bottom: 1em;
 scroll-margin-top: 12vh;
 }
 
+/* --------------------------------------------------------
+   4.1 标题副标题（圆角矩形标签）
+   --------------------------------------------------------
+   用法：副标题写在标题【里面】，用 <span class="heading-sub"> 包起来，
+   主标题文字照常写在标签后面（先后顺序随意，矩形的上下顺序由书写顺序决定）：
+
+       <h1 class="heading-1">Inspiration<span class="heading-sub">灵感来源</span></h1>
+       <h2 class="heading-2">TnpB: A Transposon-Derived …<span class="heading-sub">副标题一</span><span class="heading-sub">副标题二</span></h2>
+
+   外观：圆角 20px 的实心矩形，底色按标题级别取色，文字白色；矩形宽度
+   由副标题文字长度决定（inline-block 收缩包裹文字），上下内边距只留一
+   点（0.26em），所以矩形高度只比文字高一点点。
+   字体：font-family: inherit —— 主标题是什么字体，副标题就是什么字体
+   （.heading-1 是 Albertus Nova Black，.heading-2 / -3 是 Albertus Nova Bold）。
+
+   两条及以上副标题时，矩形竖着排成一列，之间留 8px 窄空白。做法是给
+   每枚矩形配一个看不见的“换行占位”（下一条规则里的 .heading-sub::before，
+   宽度 100% 的空 flex 项），它把上一行占满、迫使矩形从新的一行开始：
+   于是矩形既能各自独占一行，又不会像 width: 100% 那样被拉长，
+   宽度仍然是贴着自己文字的长度。
+
+   若标题里写了 <e></e>（见第 9 节），这一节完全不受影响：<e> 在第 9.2 节
+   里已经被拆成 display: contents，副标题仍是标题的直接子元素。
+
+   只想调颜色 / 字号 / 圆角？改下面这几个自定义属性所在的规则即可。 */
+.heading-sub {
+    /* 一级标题副标题：矩形 #1D9695，字号 34px（与 .heading-1 同字体） */
+    --heading-sub-bg: #1D9695;
+    --heading-sub-size: 34px;
+
+    display: inline-block;        /* 宽度随文字伸缩，矩形贴着文字 */
+    width: auto;
+    /* flex 项宽度不用 width 定死（写 100% 会被拉长到整行），
+       改成“基准宽度 = 文字宽度、最多不超出容器”，文字太长时换行不顶出卡片 */
+    flex: 0 0 auto;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0.26em 1.05em;       /* 上下只留一点点：矩形略高于文字 */
+    background-color: var(--heading-sub-bg);
+    color: #FFFFFF;
+    font-family: inherit;         /* 跟着对应主标题的字体走 */
+    font-size: var(--heading-sub-size);
+    font-weight: inherit;
+    font-style: normal;
+    line-height: 1.18;
+    letter-spacing: inherit;
+    text-align: left;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    border-radius: 20px;          /* 圆角矩形 */
+    user-select: none;
+}
+
+/* 每枚矩形前面插一个宽度 100% 的空 flex 项：它先独占一行，把矩形挤到
+   下一行去 —— 这样“一列一个矩形”与“矩形宽度贴着文字”可以同时成立。
+   （纯 CSS 办法，不用往 HTML 里再套一层容器；flex 容器必须允许换行，
+   见第 4.2 节的 flex-wrap: wrap。） */
+.heading-sub::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 0;
+}
+
+/* 二级标题副标题：#387CC1，28px */
+.heading-2 > .heading-sub {
+    --heading-sub-bg: #387CC1;
+    --heading-sub-size: 28px;
+}
+
+/* 三级标题副标题：#9177DC，24px */
+.heading-3 > .heading-sub {
+    --heading-sub-bg: #9177DC;
+    --heading-sub-size: 24px;
+}
+
+/* --------------------------------------------------------
+   4.2 含副标题的标题：改成竖排，让出副标题的高度
+   --------------------------------------------------------
+   原来的 .heading-* 是横向 flex（箭头 ::before / ::after 与标题文字同一
+   行）、固定 height: 8vh 且 align-items: center，副标题进去会被压扁或
+   溢出。含副标题的标题改成纵向 flex：箭头 ::before 与标题文字排第一行
+   （行内元素之间没有空档），副标题各占一行排在下方；高度改由内容撑开。
+
+   flex-wrap: wrap 是必须的 —— 4.1 节给每枚矩形配的 ::before 空项靠换行
+   才能把矩形顶到新的一行；gap 换成 row-gap，只量竖向的行间距，于是
+   主标题与第一枚矩形之间、两枚矩形之间都是这 8px 窄空白。
+
+   选择器带 :has() / .has-heading-sub，权重高于第 8.5 节移动端那条
+   （.heading-1, .heading-2, … { height: auto; min-height: 0; … }），
+   所以窄屏同样按“内容撑开高度”来排；那里另给了副标题的字号。 */
+.heading-1:has(.heading-sub),
+.heading-2:has(.heading-sub),
+.heading-3:has(.heading-sub),
+.heading-reference:has(.heading-sub),
+.heading-1.has-heading-sub,
+.heading-2.has-heading-sub,
+.heading-3.has-heading-sub,
+.heading-reference.has-heading-sub {
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start;
+    height: auto;
+    min-height: 8vh;
+    gap: 8px;                     /* 行间窄空白；列间距用不到，留在外面无效 */
+    row-gap: 8px;
+    padding-top: 0.5em;           /* 让第一枚矩形不贴着上一段正文 */
+    padding-bottom: 0.35em;
+}
+
+/* 竖直排布后，::after 那条补白延长线已经没有存在意义（它原本是在 flex
+   行里填充剩余宽度）。只在“含副标题的标题”里隐藏它，不含副标题的一级
+   标题仍然照旧画线。 */
+.heading-1:has(.heading-sub)::after,
+.heading-reference:has(.heading-sub)::after,
+.heading-1.has-heading-sub::after,
+.heading-reference.has-heading-sub::after {
+    display: none;
+}
+
 /* 装饰剪裁箭头 */
 .heading-1::before,
 .heading-2::before,
@@ -881,6 +1003,28 @@ margin-bottom: 0.7em;
 font-size: 17px;
 line-height: 1.45;
 margin-bottom: 0.7em;
+}
+
+/* ---------- 8.5.1 标题副标题：字号按桌面比例缩小（约 0.62 倍） ----------
+   桌面 34 / 28 / 24px 对应窄屏 21 / 17 / 15px，与主标题
+   25 / 20 / 17px 的缩放幅度一致；圆角与字号无关，仍是 20px。
+   这里用后代选择器（不带 >）而不是 .heading-2 > .heading-sub，
+   因为本段的权重需要压过第 4.1 节里带 > 的那两条。 */
+.heading-1 .heading-sub { --heading-sub-size: 21px; }
+.heading-2 .heading-sub { --heading-sub-size: 17px; }
+.heading-3 .heading-sub { --heading-sub-size: 15px; }
+.heading-reference .heading-sub { --heading-sub-size: 21px; }
+
+/* 窄屏下矩形之间的空档略收窄一些（桌面 8px） */
+.heading-1:has(.heading-sub),
+.heading-2:has(.heading-sub),
+.heading-3:has(.heading-sub),
+.heading-reference:has(.heading-sub),
+.heading-1.has-heading-sub,
+.heading-2.has-heading-sub,
+.heading-3.has-heading-sub,
+.heading-reference.has-heading-sub {
+gap: 5px;
 }
 
 .heading-reference {
