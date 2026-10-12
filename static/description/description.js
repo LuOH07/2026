@@ -435,6 +435,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentH1Id = null;
     let currentH2Id = null;
 
+    /* 侧边目录里的标题文字：只取主标题，不含副标题（副标题见第 8 节）。
+       第 8 节在 DOMContentLoaded 之前就把副标题搬出了标题元素，正常情况下
+       这里根本走不到克隆分支；留着是为了兜住“副标题是后来才插进标题里的”
+       这类极端情况，保证侧边栏里永远不会混进副标题文字。 */
+    const headingLabel = (heading) => {
+        if (!heading.querySelector('.heading-sub')) return heading.textContent.trim();
+
+        const clone = heading.cloneNode(true);
+        const cloneSub = clone.querySelector('.heading-sub');
+        if (cloneSub && cloneSub.parentNode) cloneSub.parentNode.removeChild(cloneSub);
+        return clone.textContent.trim();
+    };
+
     headings.forEach((heading) => {
         const isH1 = heading.matches('h1.heading-1');
         const isH2 = heading.matches('h2.heading-2');
@@ -482,7 +495,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         tocItem.href = `#${heading.id}`;
         tocItem.setAttribute('data-target', heading.id);
-        tocItem.title = heading.textContent.trim();
+        tocItem.title = headingLabel(heading);
 
         if (isH1 || isRef) {
             const circle = document.createElement('span');
@@ -491,13 +504,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const text = document.createElement('span');
             text.className = 'toc-text';
-            text.textContent = heading.textContent.trim();
+            text.textContent = headingLabel(heading);
 
             tocItem.appendChild(circle);
             tocItem.appendChild(text);
         } else if (isH2) {
             const text = document.createElement('span');
-            text.textContent = heading.textContent.trim();
+            text.textContent = headingLabel(heading);
             text.className = 'toc-text';
 
             const triangle = document.createElement('span');
@@ -509,7 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (isH3) {
             const text = document.createElement('span');
             text.className = 'toc-text';
-            text.textContent = heading.textContent.trim();
+            text.textContent = headingLabel(heading);
 
             tocItem.appendChild(text);
         }
@@ -778,6 +791,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* 隐藏标记标签：<e></e>（HTML 标签名大小写不敏感，<e> / <E> 都行） */
     var HIDE_TAG = 'e';
+    /* 取“目录文字”时要一并剔掉的节点：<e></e> 与标题副标题（见第 8 节 /
+       description.css 第 14 节）。副标题只是主标题下面的一行标签，
+       不该出现在侧边目录里。 */
+    var TOC_HIDE_SELECTOR = HIDE_TAG + ', .heading-sub';
     /* 供 processToc() 判断“这一项已经清理过”的标记 */
     var PROCESSED_FLAG = 'ihpEProcessed';
     /* 兼容 :scope 尚未普及的环境（老 Safari / 老 Edge） */
@@ -790,14 +807,14 @@ document.addEventListener('DOMContentLoaded', () => {
        4.1 侧边目录（TOC）：剔除 <e></e> 内的文字
        ------------------------------------------------------ */
 
-    /* 只保留“正文可见文字”，<e></e> 及其内容整段丢弃。
+    /* 只保留“正文可见文字”：<e></e> 与标题副标题（.heading-sub）整段丢弃。
        在克隆节点上操作，绝不影响正文 DOM。 */
     function visibleTextOnly(source) {
         if (!source) return '';
-        if (!source.querySelector(HIDE_TAG)) return source.textContent || '';
+        if (!source.querySelector(TOC_HIDE_SELECTOR)) return source.textContent || '';
 
         var clone = source.cloneNode(true);
-        Array.prototype.forEach.call(clone.querySelectorAll(HIDE_TAG), function (node) {
+        Array.prototype.forEach.call(clone.querySelectorAll(TOC_HIDE_SELECTOR), function (node) {
             if (node.parentNode) node.parentNode.removeChild(node);
         });
         return clone.textContent || '';
@@ -1724,4 +1741,136 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         applyScrollDecorStyles();
     }
+})();
+
+/* ========================================================
+   8. 标题副标题：把 HTML 里的副标题搬到主标题下方
+   ========================================================
+   配合 description.css 第 14 节。副标题的文字写在 HTML 里，这段脚本只做
+   一次结构搬运，外观一律由 CSS 负责。
+
+   HTML 三种写法（页面里可以混用，推荐第 ① 种）：
+
+     ① 直接写在标题标签内部：
+        <h1 class="heading-1">Inspiration<span class="heading-sub">Inspiration Sub</span></h1>
+
+     ② 挂在标题属性上：
+        <h1 class="heading-1" data-subtitle="Inspiration Sub">Inspiration</h1>
+
+     ③ 自己写成紧跟标题后面的兄弟元素（不依赖本段脚本，页面照原样渲染）：
+        <h1 class="heading-1">Inspiration</h1>
+        <div class="heading-sub-row"><span class="heading-sub">Inspiration Sub</span></div>
+
+   ① ② 会被本段改写成 ③ 的结构，并给标题加一个 .has-heading-sub 类：
+
+        <h1 class="heading-1 has-heading-sub">Inspiration</h1>
+        <div class="heading-sub-row heading-sub-h1">
+            <span class="heading-sub">Inspiration Sub</span>
+        </div>
+
+   为什么要搬这一下：.heading-1/2/3 是 display: flex 的一行（箭头 + 标题
+   文字 + 装饰横线），副标题留在里面就会挤在同一行上。搬到标题外面之后，
+   主标题那一行一个节点都没动 —— 字号、颜色、箭头、高度、位置全部保持
+   原样，副标题只是下面多出来的一行；行容器是块级的，里面只放【行内】的
+   .heading-sub，矩形宽度才会随文字伸缩、换行时每行各自一个圆角框
+   （见 description.css 第 14 节）。
+
+   搬到标题外面还有第二个好处：第 2 节用标题的 textContent 生成侧边目录，
+   这时副标题已经不在标题里了，侧边栏不会混进副标题文字（第 2 / 4 节另外
+   还留了一道 .heading-sub 的过滤，见 headingLabel() 与 visibleTextOnly()）。
+
+   执行时机：本文件是 defer 脚本，执行时 DOM 已解析完（readyState 已是
+   interactive），所以这里立刻跑一遍 —— 早于第 2 节在 DOMContentLoaded
+   回调里构建目录，页面也不会闪一下“副标题还挤在标题行里”的中间态。
+   照第 4 / 5 / 6 / 7 节的写法，仍按 readyState 兜一次普通 <script> 的情况。
+   ======================================================== */
+(function () {
+    'use strict';
+
+    var HEADING_SELECTOR = 'h1.heading-1, h2.heading-2, h3.heading-3, h1.heading-reference';
+    var SUB_CLASS = 'heading-sub';
+    var ROW_CLASS = 'heading-sub-row';
+    var HAS_SUB_CLASS = 'has-heading-sub';
+    var SUBTITLE_ATTR = 'data-subtitle';
+
+    /* 标题里写的副标题元素（写法 ①）：只看标题的直接子元素，
+       也就是 <h1 …>主标题<span class="heading-sub">副标题</span></h1> 这种。 */
+    function subsOf(heading) {
+        var subs = [];
+        Array.prototype.forEach.call(heading.children, function (child) {
+            if (child.classList && child.classList.contains(SUB_CLASS)) subs.push(child);
+        });
+        return subs;
+    }
+
+    /* 这一级标题对应哪一级副标题的样式类（description.css 第 14.3 节） */
+    function levelClassOf(heading) {
+        if (heading.classList.contains('heading-2')) return 'heading-sub-h2';
+        if (heading.classList.contains('heading-3')) return 'heading-sub-h3';
+        if (heading.classList.contains('heading-reference')) return 'heading-sub-reference';
+        return 'heading-sub-h1';
+    }
+
+    function lift(heading) {
+        var next = heading.nextElementSibling;
+
+        /* 已经跟在标题后面的行容器：可能是上一次搬出来的，也可能是页面里
+           手写的（写法 ③）。有它就复用，绝不重复插。 */
+        var row = (next && next.classList && next.classList.contains(ROW_CLASS)) ? next : null;
+
+        var subs = subsOf(heading);
+
+        /* 标题里没有副标题元素，标题后面也没有行容器，就看看属性（写法 ②） */
+        if (!subs.length && !row) {
+            var text = heading.getAttribute(SUBTITLE_ATTR);
+            if (text === null || text.trim() === '') return;   // 这个标题没有副标题
+
+            var span = document.createElement('span');
+            span.className = SUB_CLASS;
+            span.textContent = text;
+            subs.push(span);
+        }
+
+        /* 副标题已经在标题外面、标题里也没有多余的元素（写法 ③）：
+           补上两个类就行，一个节点都不用搬。 */
+        if (!subs.length) {
+            row.classList.add(levelClassOf(heading));
+            heading.classList.add(HAS_SUB_CLASS);
+            return;
+        }
+
+        /* 剩下的情况都要把标题里的副标题搬进行容器：没有行容器就新建一个
+           插在标题后面（这次搬完，标题里就不会再有 .heading-sub 了）。 */
+        if (!row) {
+            row = document.createElement('div');
+            row.className = ROW_CLASS + ' ' + levelClassOf(heading);
+            heading.parentNode.insertBefore(row, heading.nextSibling);
+        } else {
+            row.classList.add(levelClassOf(heading));
+        }
+
+        Array.prototype.forEach.call(subs, function (sub) {
+            row.appendChild(sub);
+        });
+
+        heading.classList.add(HAS_SUB_CLASS);
+    }
+
+    function initHeadingSubs() {
+        var scope = document.getElementById('mainContainer') ||
+                    document.querySelector('.main-container') ||
+                    document;
+
+        Array.prototype.forEach.call(scope.querySelectorAll(HEADING_SELECTOR), lift);
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initHeadingSubs);
+    } else {
+        initHeadingSubs();
+    }
+
+    /* 只读调试接口：控制台执行 __HEADING_SUB__.refresh() 可重扫一遍
+       （例如页面里动态插入了新的标题）。已搬过的标题不会被重复处理。 */
+    window.__HEADING_SUB__ = { refresh: initHeadingSubs };
 })();
