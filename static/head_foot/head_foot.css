@@ -126,6 +126,16 @@ background-color: #C7D8E9;
 transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+/* 例外：Proof of Concept —— "of" 是介词，首字母保持小写。
+   上面的 text-transform: capitalize 会把每个单词首字母都变成大写（Proof Of Concept），
+   因此这里单独取消该变换，由 menu.html 中的原文 "Proof of<br>Concept" 决定大小写。
+   定位方式用「包含」而不是「结尾」：app.py 的 pages 路由是 /<page>/，带结尾斜杠，
+   url_for 生成的是 /proof-of-concept/，用 href$="proof-of-concept" 会匹配不到
+   （这正是不生效的原因）。href*="proof-of-concept" 对带不带斜杠都成立。 */
+.dropdown-item[href*="proof-of-concept"] {
+text-transform: none;
+}
+
 .dropdown-item::before {
 content: "";
 position: absolute;
