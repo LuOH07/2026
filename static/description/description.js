@@ -16,6 +16,12 @@ var HEADING_SUB_CLASS = 'heading-sub';
 /* 兜底类：description.css 用 :has(.heading-sub) 给含副标题的标题换竖排布局，
    不支持 :has() 的旧浏览器由这个类顶上（同第 9.2 节 :has(e) 的做法）。 */
 var HEADING_SUB_FLAG_CLASS = 'has-heading-sub';
+/* “主标题那一行”的包裹层类名（见第 0.1 节 wrapHeadingTitleRow） */
+var HEADING_TITLE_CLASS = 'heading-title';
+/* 副标题的包裹层类名（见第 0.2 节 wrapHeadingSubtitles） */
+var HEADING_SUB_WRAP_CLASS = 'heading-sub-wrap';
+/* 每一枚副标题各自的行框类名（同上） */
+var HEADING_SUB_ROW_CLASS = 'heading-sub-row';
 
 /* 模仿 DOM 的取文方式：元素拿 textContent，文本节点拿 data；
    注释节点被忽略（否则标题 HTML 里的 <!-- --> 会被当成正文文字）。 */
@@ -46,6 +52,255 @@ function headingTitle(heading) {
     });
 
     return text.trim();
+}
+
+/* --------------------------------------------------------
+   0.1 把“主标题那一行”包进一层 .heading-title
+   --------------------------------------------------------
+   目的：加了副标题之后，主标题那一行的排版要【一点不变】。
+
+   原来的 .heading-* 是横向 flex（箭头 ::before + 标题文字 + 一级标题的
+   ::after 延长线），height: 8vh、align-items: center。副标题如果直接放进
+   这个 flex 行里，会被 flex 当成第三个格子排在同一行、也可能被拉长或压扁。
+
+   所以在标题里加一层 <span class="heading-title">，把“除副标题以外的所有
+   子节点”（标题文字、<e></e> 等）原样搬进去，副标题留在外面。之后 CSS 把
+   这一层做成“仍是原来那个横向 flex 行”：
+
+       .heading-*              → 纵向 flex：第一行是这个行、下面是副标题
+       .heading-title          → 原来的横向 flex 行（8vh、居中、gap 20px）
+
+   于是箭头、标题文字、延长线、它们的高度与间距，全部与没有副标题时逐像素
+   一致；副标题只是被排到了它下面，宽度仍然贴着自己的文字。
+
+   注意 <e></e>（见第 9 节）也要一起搬进去：它靠 display: contents 参与
+   这一行的排版，留在外面就失效了。 */
+function wrapHeadingTitleRow(heading, keepSubtitles) {
+    if (!heading || heading.querySelector('.' + HEADING_TITLE_CLASS)) return null;
+
+    var row = document.createElement('span');
+    row.className = HEADING_TITLE_CLASS;
+
+    /* keepSubtitles：副标题由 setupHeadingSubtitles 负责收，这里只是别把它们
+       也搬进“主标题那一行”（其余内容照常搬进去）。 */
+    var movable = [];
+    Array.prototype.forEach.call(heading.childNodes, function (node) {
+        if (node.nodeType === 1 &&
+            node.classList && node.classList.contains(HEADING_SUB_CLASS)) return;   // 副标题留在外面
+        movable.push(node);
+    });
+
+    // 先插进 DOM 再搬节点：避免 <e> 之类元素上的事件监听在搬动中丢失
+    heading.insertBefore(row, heading.firstChild);
+    Array.prototype.forEach.call(movable, function (node) {
+        row.appendChild(node);
+    });
+
+    return row;
+}
+
+/* --------------------------------------------------------
+   0.2 副标题：太长自动换行时，把每一行做成独立的矩形
+   --------------------------------------------------------
+   副标题（.heading-sub）本身是 inline-block：宽度贴着文字，太长时按容器宽度
+   自动换行。但只靠 CSS 做不到“两行分开”：
+   · box-decoration-break: clone 在 Chrome 里只把圆角画在【最外】两侧
+     （第一行的左上、最后一行的右下），两行之间是连着的；
+   · 行内元素的背景盒上下内边距还会互相重叠。
+   所以这里把换行结果“落成实体”：量出浏览器的换行断点，按断点把文字切成
+   几段，每段单独一个 .heading-sub（块级 + nowrap，永远不会再折行），
+   各自带完整圆角 —— 两行之间就是 .heading-sub-row 的 margin-top 那道窄空白。
+
+   宽度不用精确计算：断点就是浏览器自己在“可用宽度”下选的，所以每一段都
+   放得下。插进去之后再逐个量一次，只要有一段量出来超过可用宽度（字体度量
+   差异等），就整体回滚成原本那个整块副标题 —— 宁可不拆，也不拆坏。 */
+var SUB_ROW_SEL = '.' + HEADING_SUB_ROW_CLASS;
+
+function subWrapOf(heading) {
+    var found = null;
+    Array.prototype.forEach.call(heading.children, function (child) {
+        if (child.classList && child.classList.contains(HEADING_SUB_WRAP_CLASS)) found = child;
+    });
+    return found;
+}
+
+/* 矩形能长到的最大宽度：容器宽度 - 左右内边距
+   （矩形是 inline-block + max-width:100%，宽度上限就是它的 max-width，
+   而 box-sizing: border-box 让这 100% 包含内边距，所以内容区更窄） */
+function availableWidthOf(sub) {
+    var row = sub.parentNode;
+    var wrap = row && row.parentNode;
+    var box = wrap ? wrap.getBoundingClientRect().width : 0;
+    if (!box) box = row ? row.getBoundingClientRect().width : 0;
+
+    var cs = window.getComputedStyle(sub);
+    var pad = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+    return Math.max(0, box - pad);
+}
+
+/* 把一枚副标题按浏览器的换行结果切成几段；切不了（只有一行 / 量不准）返回 null */
+function splitSubtitleIntoLines(row, sub) {
+    if (!row || !sub || !document.createRange) return null;
+    if (sub.childNodes.length !== 1 || sub.firstChild.nodeType !== 3) return null;  // 只处理纯文字
+
+    var textNode = sub.firstChild;
+    var fullText = textNode.data || '';
+    if (!fullText.trim()) return null;
+
+    var available = availableWidthOf(sub);       // 矩形的内容区宽度上限
+    if (available <= 0) return null;
+
+    /* 量断点：克隆一个副标题放进隐藏的块级宿主里量。宿主宽度取“容器宽度”，
+       克隆体与真身同 class、同内联样式，因此 max-width:100% 解析出的宽度与
+       真身一致 —— 换行结果就是浏览器真实的换行结果。量完整块删掉。
+       用克隆而不是真身：真身是 flex 项，宽度受父级牵制，改不动它的换行。 */
+    var docEl = document.body || document.documentElement;
+    var host = document.createElement('div');
+    host.setAttribute('aria-hidden', 'true');
+    host.style.cssText = 'position:absolute;left:-99999px;top:0;visibility:hidden;pointer-events:none;' +
+        'box-sizing:border-box;width:' + Math.floor(available) + 'px;';
+
+    var probe = sub.cloneNode(true);              // 同 class、同内联样式
+    // 真身可能是块级（flex 项被块化），这里恢复成“行内块”，与最终矩形一致；
+    // 宽度交给 max-width: 100% 去卡，换行点才和真身一样
+    probe.style.display = 'inline-block';
+    probe.style.width = 'auto';
+    probe.style.removeProperty('white-space');
+    host.appendChild(probe);
+    docEl.appendChild(host);
+
+    var probeText = probe.firstChild;
+    var range = document.createRange();
+    range.selectNodeContents(probe);
+    var rects = Array.prototype.slice.call(range.getClientRects());
+    range.detach && range.detach();
+
+    if (rects.length < 2) {                      // 只有一行，不用拆
+        host.parentNode.removeChild(host);
+        return null;
+    }
+
+    /* 断点：二分找“矩形个数刚好跨到下一行”的最小前缀，前缀末尾就是本行断点 */
+    var breaks = [];
+    var markRange = document.createRange();
+    var total = probeText.data.length;
+
+    for (var n = 1; n < rects.length; n++) {
+        var lo = n === 1 ? 1 : breaks[n - 2] + 1;
+        var hi = total;
+        var found = -1;
+
+        while (lo <= hi) {
+            var mid = (lo + hi) >> 1;
+            markRange.setStart(probeText, 0);
+            markRange.setEnd(probeText, mid);
+            if (markRange.getClientRects().length >= n + 1) {
+                found = mid;
+                hi = mid - 1;
+            } else {
+                lo = mid + 1;
+            }
+        }
+
+        if (found < 0) {
+            markRange.detach && markRange.detach();
+            host.parentNode.removeChild(host);
+            return null;
+        }
+        breaks.push(found);
+    }
+    markRange.detach && markRange.detach();
+    host.parentNode.removeChild(host);
+
+    var offsets = [0].concat(breaks, [total]);
+    var pieces = [];
+    for (var k = 0; k < offsets.length - 1; k++) {
+        var piece = textNode.data.slice(offsets[k], offsets[k + 1]).replace(/\s+$/, '');
+        if (!piece.trim()) return null;          // 空段说明量歪了，放弃
+        pieces.push(piece);
+    }
+    if (pieces.length !== rects.length) return null;
+
+    /* 落成实体：每段一个行框 + 一个矩形 */
+    var frag = document.createDocumentFragment();
+    pieces.forEach(function (text) {
+        var newSub = document.createElement('span');
+        newSub.className = HEADING_SUB_CLASS;
+        newSub.textContent = text;
+
+        var newRow = document.createElement('span');
+        newRow.className = HEADING_SUB_ROW_CLASS;
+        newRow.appendChild(newSub);
+        frag.appendChild(newRow);
+    });
+
+    var parent = row.parentNode;
+    if (!parent) return null;
+    parent.insertBefore(frag, row);
+
+    /* 校验：每一段都必须放得下（含内边距）。放不下就整体回滚。 */
+    /* 校验：每一段内容（不含内边距）都必须放得下。放不下就整体回滚。 */
+    var ok = true;
+    Array.prototype.forEach.call(parent.querySelectorAll('.' + HEADING_SUB_ROW_CLASS), function (r) {
+        if (!ok) return;
+        var piece = r.querySelector('.' + HEADING_SUB_CLASS);
+        if (!piece) return;
+        var pcs = window.getComputedStyle(piece);
+        var pad = (parseFloat(pcs.paddingLeft) || 0) + (parseFloat(pcs.paddingRight) || 0);
+        var contentW = r.getBoundingClientRect().width - pad;
+        if (contentW > available + 1) ok = false;
+    });
+
+    if (!ok) {
+        Array.prototype.forEach.call(parent.querySelectorAll('.' + HEADING_SUB_ROW_CLASS), function (r) {
+            if (r !== row && r.parentNode === parent) parent.removeChild(r);
+        });
+        return null;
+    }
+
+    parent.removeChild(row);
+    return true;
+}
+
+function setupHeadingSubtitles(heading) {
+    if (!heading) return null;
+
+    var wrap = subWrapOf(heading);
+    if (wrap) {
+        // 已经建好：重排时先合回一整块再重新量（换行结果会随宽度变）
+        Array.prototype.forEach.call(wrap.querySelectorAll('.' + HEADING_SUB_ROW_CLASS), function (row) {
+            var sub = row.querySelector('.' + HEADING_SUB_CLASS);
+            if (sub && row.parentNode === wrap) wrap.insertBefore(sub, row);
+            if (row.parentNode === wrap) wrap.removeChild(row);
+        });
+    } else {
+        var originals = [];
+        Array.prototype.forEach.call(heading.children, function (child) {
+            if (child.classList && child.classList.contains(HEADING_SUB_CLASS)) originals.push(child);
+        });
+        if (!originals.length) return null;
+
+        wrap = document.createElement('span');
+        wrap.className = HEADING_SUB_WRAP_CLASS;
+        heading.insertBefore(wrap, originals[0]);   // 插在第一枚副标题的位置上
+        originals.forEach(function (sub) { wrap.appendChild(sub); });
+    }
+
+    // 每一枚副标题各自一个行框，然后按需把它拆成多行
+    var subs = [];
+    Array.prototype.forEach.call(wrap.children, function (child) {
+        if (child.classList && child.classList.contains(HEADING_SUB_CLASS)) subs.push(child);
+    });
+
+    subs.forEach(function (sub) {
+        var row = document.createElement('span');
+        row.className = HEADING_SUB_ROW_CLASS;
+        wrap.insertBefore(row, sub);
+        row.appendChild(sub);
+        splitSubtitleIntoLines(row, sub);
+    });
+
+    return wrap;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -505,8 +760,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (heading.querySelector(HEADING_SUB_SELECTOR)) {
             heading.classList.add(HEADING_SUB_FLAG_CLASS);
+            /* 先把除副标题以外的内容包成“主标题那一行”（原来那个 8vh 的 flex 行），
+               再把副标题收进 .heading-sub-wrap 排到它下面。顺序不能反：
+               副标题不能被搬进 .heading-title。 */
+            wrapHeadingTitleRow(heading, true);
+            setupHeadingSubtitles(heading);
         }
     });
+
+    /* 副标题的行数会随宽度变，窗口缩放时重新量一次（第 0.2 节用 ResizeObserver
+       监听不到行数变化，所以直接挂 resize）。用 rAF 合并连续的 resize 事件。 */
+    const reflowHeadingSubtitles = () => {
+        headings.forEach((heading) => {
+            if (heading.querySelector(HEADING_SUB_SELECTOR)) setupHeadingSubtitles(heading);
+        });
+    };
+
+    let subReflowFrameId = null;
+    const scheduleSubtitleReflow = () => {
+        if (subReflowFrameId !== null) return;
+        subReflowFrameId = requestAnimationFrame(() => {
+            subReflowFrameId = null;
+            reflowHeadingSubtitles();
+        });
+    };
+
+    window.addEventListener('resize', scheduleSubtitleReflow, { passive: true });
 
     // 移动端隐藏了侧边目录，直接跳过目录构建（标题 id 已全部写好，锚点依然可用）
     if (isMobile()) return;
