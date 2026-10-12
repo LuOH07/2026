@@ -1148,7 +1148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     var FOOT_GAP_MAX = 2.5;
     var FOOT_ROTATE = 20;         /* 旋转角度：±20° */
     var RAND_PER_FOOT = 3;        /* 每个脚印固定消耗 3 个随机数（见 6.3） */
-    var FOOT_LIMIT = 200;         /* 兜底：一段正文最多画这么多个脚印 */
+    var FOOT_LIMIT = 200;         /* 兜底：整块展开区最多画这么多个脚印 */
     /* 展开时“从上往下挨个出现”的动效参数（见 6.4）：
        每秒出现 FOOT_REVEAL_PER_SECOND 个脚印（= 每 1000 / 它 毫秒排到下一个），
        每个脚印用 DURATION 毫秒从 SCALE 倍大小、全透明放大到原始大小 */
@@ -1342,7 +1342,11 @@ document.addEventListener('DOMContentLoaded', () => {
            · 左脚印 1 的上沿固定在最上面（= 正文顶部，不随机）；
            · 之后每个脚印的上沿 = 上一个的上沿 + 1.5 ~ 2.5 个【本脚印】高度
              （间隔都大于 1 个脚印高，所以上下不会叠在一起）；
-           · 一直排到“离本段正文底部已经放不下下一个脚印”为止。
+           · 一直排到“离整块展开区底部已经放不下下一个脚印”为止。
+
+       展开区的高度 = 第一块正文的顶边 → 最后一块正文的底边（见
+       expandedHeight）：所以正文分成两段及以上时，第二段左侧一样有脚印，
+       脚印从第一段一路铺到最后一段，不会只铺满第一段。
 
        横向浮动、上下间距、旋转（-20° ~ +20°）都是随机值，但同一个脚印
        在整页生命周期里只用同一组数：随机数按“轨道 + 序号”缓存在
@@ -1429,6 +1433,34 @@ document.addEventListener('DOMContentLoaded', () => {
         return foot;
     }
 
+    /* 从某个正文块往上找它所属的 <upfold>（宿主） */
+    function hostOf(content) {
+        var node = content.parentNode;
+
+        while (node && node.nodeType === 1) {
+            if (node.tagName === 'UPFOLD' ||
+                (node.classList && node.classList.contains('upfold'))) return node;
+            node = node.parentNode;
+        }
+        return null;
+    }
+
+    /* 整块展开区的高度（px）：从【第一块】正文的顶边，到【最后一块】正文的
+       底边。只写了一段时就是这一段自己的高度（与以前完全一样）；写了两段及
+       以上时，脚印会一路排到第二段的底部 —— 这样每一段左侧都有脚印。
+       注意：所有正文块都是宿主的直接子级，它们是【兄弟】不是父子，
+       所以第二块的位置只能靠 getBoundingClientRect() 量，不能用 offsetTop。 */
+    function expandedHeight(content) {
+        var host = hostOf(content);
+        var blocks = (host && host.querySelectorAll) ? contentsOf(host) : [];
+
+        if (blocks.length < 2) return content.clientHeight;
+
+        var top = blocks[0].getBoundingClientRect().top;
+        var bottom = blocks[blocks.length - 1].getBoundingClientRect().bottom;
+        return Math.max(0, bottom - top);
+    }
+
     function fillRail(content) {
         var rail = railOf(content);
 
@@ -1439,8 +1471,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // 还没加载完先不排，等 load 回调
         if (!heights.left || !heights.right) return;
 
-        // 本段折叠文字的高度：脚印最多排到它的底部
-        var limit = content.clientHeight;
+        // 整块展开区的高度：脚印从第一段的顶边一直排到最后一段的底边
+        // （写了两段及以上时，第二段左侧也要有脚印，见 expandedHeight）
+        var limit = expandedHeight(content);
         if (!limit) return;
 
         var span = railSpan(rail);
@@ -1649,9 +1682,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // 窗口缩放 / 字体变化 / 里面的图片加载完，正文高度都会变，轨道跟着重算
-        // （脚印轨道只铺在第一块正文旁边，见 6.3）
+        // （脚印要铺满整块展开区，所以每一块正文都要观察 —— 见 fillRail）
         if (typeof ResizeObserver === 'function') {
-            new ResizeObserver(function () { fillRail(content); }).observe(content);
+            var railObserver = new ResizeObserver(function () { fillRail(content); });
+            contents.forEach(function (block) { railObserver.observe(block); });
         } else if (window.addEventListener) {
             window.addEventListener('resize', function () { fillRail(content); }, { passive: true });
         }
