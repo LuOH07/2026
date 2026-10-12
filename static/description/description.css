@@ -1461,9 +1461,9 @@ mark {
     margin-right: 8%;
     margin-top: 0.1em;           /* 与主标题之间的窄空档；em 以本行的副标题字号为准 */
     margin-bottom: 1em;          /* 与下一段正文之间的空档，相当于原主标题的 margin-bottom */
-    /* 缺省按一级副标题给：34px + Albertus Nova Black（二 / 三级由 14.3 覆盖）。
+    /* 缺省按一级副标题给：32px + Albertus Nova Black（二 / 三级由 14.3 覆盖）。
        本行的字号既是 14.1 里所有 em 的基准，也是 .heading-sub 继承的字号。 */
-    font-size: 34px;
+    font-size: 32px;
     font-family: 'Albertus Nova Black', -apple-system, sans-serif;
     font-weight: 700;
     line-height: 1;              /* 行高由 .heading-sub 自己给，容器不额外撑高每一行 */
@@ -1487,11 +1487,13 @@ mark {
     padding: 0.14em 0.72em;
     /* 行高必须大于“矩形自身高度”，换行后两行矩形之间才会留出那条窄空白：
          矩形高 = 字体框高 + 上下 padding = 1.442em + 0.28em ≈ 1.72em
-                   （Albertus Nova 的 hhea/win 度量：ascent 1.103em + descent 0.339em）
-         行高 1.95em  →  行间空白 ≈ 1.95 − 1.72 = 0.23em（28px 字号时约 6.5px）
-       行高低于约 1.72em 时两行矩形会直接叠在一起（不再有缝），
-       调大 → 空白更宽；调小 → 更窄。 */
-    line-height: 1.95;
+                   （Albertus Nova 的 hhea/win 度量：ascent 1.103em + descent 0.339em，
+                     这个高度只跟字体有关，跟 line-height 无关）
+         行高 2.15em  →  行间空白 ≈ 2.15 − 1.72 = 0.43em
+                         （22 / 26 / 32px 字号时约 9.4 / 11.1 / 13.7px）
+       行高低于约 1.72em 时两行矩形会直接叠在一起（不再有缝）。
+       要把间隔再拉大 / 收窄，只改这一个数：调大 → 空白更宽，调小 → 更窄。 */
+    line-height: 2.15;
     /* 换行时每一行都各自拥有完整的内边距与圆角（默认只在整块首尾补） */
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
@@ -1507,7 +1509,7 @@ mark {
 .heading-1 + .heading-sub-row,
 .heading-1 > .heading-sub {
     --heading-sub-bg: #1D9695;   /* 一级副标题：青色矩形 */
-    font-size: 34px;
+    font-size: 32px;
     font-family: 'Albertus Nova Black', -apple-system, sans-serif;
 }
 
@@ -1515,7 +1517,7 @@ mark {
 .heading-2 + .heading-sub-row,
 .heading-2 > .heading-sub {
     --heading-sub-bg: #387CC1;   /* 二级副标题：蓝色矩形 */
-    font-size: 28px;
+    font-size: 26px;
     font-family: 'Albertus Nova Bold', -apple-system, sans-serif;
 }
 
@@ -1523,7 +1525,7 @@ mark {
 .heading-3 + .heading-sub-row,
 .heading-3 > .heading-sub {
     --heading-sub-bg: #9177DC;   /* 三级副标题：紫色矩形 */
-    font-size: 24px;
+    font-size: 22px;
     font-family: 'Albertus Nova Bold', -apple-system, sans-serif;
 }
 
@@ -1534,7 +1536,7 @@ mark {
 .heading-reference + .heading-sub-row,
 .heading-reference > .heading-sub {
     --heading-sub-bg: #1D9695;
-    font-size: 34px;
+    font-size: 32px;
     font-family: 'Albertus Nova Bold', -apple-system, sans-serif;
 }
 
@@ -1557,8 +1559,8 @@ mark {
 
 /* ---------- 14.5 移动端（≤820px）：与主标题的移动端字号同步缩小 ----------
    主标题在窄屏降到 25 / 20 / 17px（见第 8.5 节），副标题保持“比同级
-   主标题小 2px”的关系，圆角仍然是 20px。
-   若希望窄屏也固定用 34 / 28 / 24px，把这一小节整段删掉即可。 */
+   主标题小 4px”的关系（与 PC 端一致），圆角仍然是 20px。
+   若希望窄屏也固定用 32 / 26 / 22px，把这一小节整段删掉即可。 */
 @media (max-width: 820px) {
     .heading-sub-row {
         margin-left: 5%;
@@ -1570,24 +1572,24 @@ mark {
     .heading-sub-row.heading-sub-h1,
     .heading-1 + .heading-sub-row,
     .heading-1 > .heading-sub {
-        font-size: 23px;
+        font-size: 21px;
     }
 
     .heading-sub-row.heading-sub-h2,
     .heading-2 + .heading-sub-row,
     .heading-2 > .heading-sub {
-        font-size: 18px;
+        font-size: 16px;
     }
 
     .heading-sub-row.heading-sub-h3,
     .heading-3 + .heading-sub-row,
     .heading-3 > .heading-sub {
-        font-size: 15px;
+        font-size: 13px;
     }
 
     .heading-sub-row.heading-sub-reference,
     .heading-reference + .heading-sub-row,
     .heading-reference > .heading-sub {
-        font-size: 23px;
+        font-size: 21px;
     }
 }
