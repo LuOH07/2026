@@ -1,3 +1,53 @@
+/* ========================================================
+   0. 标题里 <e></e> 与副标题（.heading-sub）的公共约定
+   ========================================================
+   这两个东西的类名 / 标签名在文件里被多个小节用到（第 1.9 节的标题文字、
+   第 2 节的目录文字、第 4 节的兜底清理），所以统一写在这里 —— 它们必须
+   是【模块级】常量：第 4 节那个 IIFE 在 DOMContentLoaded 回调之外，
+   看不见回调内部的 const（写进回调里会变成 "… is not defined"）。
+   改类名 / 标签名时只改这一处。
+
+   副标题的用法见 description.css 第 4.1 节：
+       <h2 class="heading-2">主标题<span class="heading-sub">副标题</span></h2>
+   它只是版面装饰，不属于标题名字 —— 所以正文里照常显示，侧边目录里不显示。 */
+var HIDE_TAG = 'e';
+var HEADING_SUB_SELECTOR = '.heading-sub';
+var HEADING_SUB_CLASS = 'heading-sub';
+/* 兜底类：description.css 用 :has(.heading-sub) 给含副标题的标题换竖排布局，
+   不支持 :has() 的旧浏览器由这个类顶上（同第 9.2 节 :has(e) 的做法）。 */
+var HEADING_SUB_FLAG_CLASS = 'has-heading-sub';
+
+/* 模仿 DOM 的取文方式：元素拿 textContent，文本节点拿 data；
+   注释节点被忽略（否则标题 HTML 里的 <!-- --> 会被当成正文文字）。 */
+function nodeText(node) {
+    if (!node) return '';
+    if (node.nodeType === 3) return node.data || '';
+    if (node.nodeType === 1) return node.textContent || '';
+    return '';
+}
+
+/* 只取“主标题文字”：<e></e> 里的隐藏文字（见第 9 节）与 .heading-sub
+   副标题都被丢掉。侧边目录的文字与悬停提示都用这一份结果。 */
+function headingTitle(heading) {
+    if (!heading) return '';
+
+    var text = '';
+    Array.prototype.forEach.call(heading.childNodes, function (node) {
+        if (node.nodeType !== 1) {
+            text += nodeText(node);
+            return;
+        }
+
+        var tag = node.tagName ? node.tagName.toLowerCase() : '';
+        if (tag === HIDE_TAG) return;
+        if (node.classList && node.classList.contains(HEADING_SUB_CLASS)) return;
+
+        text += nodeText(node);
+    });
+
+    return text.trim();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
     /* 移动端（宽度 <= 820px，与 description.css 第 8 节断点保持一致）：
@@ -418,23 +468,19 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSidebarPosition();
     }
 
+    /* 正文里的目标标题：一级 / 二级 / 三级 / 参考文献。
+       侧边目录、标题自动编号与滚动高亮都按这一份顺序走。 */
     const headings = mainContainer.querySelectorAll('h1.heading-1, h2.heading-2, h3.heading-3, h1.heading-reference');
     if (headings.length === 0) return;
 
-    // 移动端隐藏了侧边目录，直接跳过目录构建（标题 id 已全部写好，锚点依然可用）
-    if (isMobile()) return;
-
-    tocNav.innerHTML = '';
-
+    /* 自动编号用的计数器；窄屏也要用（标题 id 在这一段统一补齐），
+       所以放在“是否移动端”判断之前。 */
     let h1Index = 0;
     let h2Index = 0;
     let h3Index = 0;
     let refIndex = 0;
 
-    const activeChainMap = {};
-    let currentH1Id = null;
-    let currentH2Id = null;
-
+    // 标题 id 与副标题兜底类都在这里补齐（窄屏没有目录，但类名一样要给）
     headings.forEach((heading) => {
         const isH1 = heading.matches('h1.heading-1');
         const isH2 = heading.matches('h2.heading-2');
@@ -456,6 +502,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 heading.id = `heading-reference-${refIndex}`;
             }
         }
+
+        if (heading.querySelector(HEADING_SUB_SELECTOR)) {
+            heading.classList.add(HEADING_SUB_FLAG_CLASS);
+        }
+    });
+
+    // 移动端隐藏了侧边目录，直接跳过目录构建（标题 id 已全部写好，锚点依然可用）
+    if (isMobile()) return;
+
+    tocNav.innerHTML = '';
+
+    const activeChainMap = {};
+    let currentH1Id = null;
+    let currentH2Id = null;
+
+    headings.forEach((heading) => {
+        const isH1 = heading.matches('h1.heading-1');
+        const isH2 = heading.matches('h2.heading-2');
+        const isH3 = heading.matches('h3.heading-3');
+        const isRef = heading.matches('h1.heading-reference');
+
+        // 标题 id 已在上面那段遍历里统一补齐，这里只按 id 建立层级关系
 
         if (isH1 || isRef) {
             currentH1Id = heading.id;
@@ -482,7 +550,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         tocItem.href = `#${heading.id}`;
         tocItem.setAttribute('data-target', heading.id);
-        tocItem.title = heading.textContent.trim();
+        /* 目录文字 = 主标题（不含副标题、不含 <e> 里的隐藏文字）；
+           悬停提示用同一份文字，免得提示里冒出目录上看不到的字符。 */
+        const headingLabel = headingTitle(heading);
+        tocItem.title = headingLabel;
 
         if (isH1 || isRef) {
             const circle = document.createElement('span');
@@ -491,13 +562,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const text = document.createElement('span');
             text.className = 'toc-text';
-            text.textContent = heading.textContent.trim();
+            text.textContent = headingLabel;
 
             tocItem.appendChild(circle);
             tocItem.appendChild(text);
         } else if (isH2) {
             const text = document.createElement('span');
-            text.textContent = heading.textContent.trim();
+            text.textContent = headingLabel;
             text.className = 'toc-text';
 
             const triangle = document.createElement('span');
@@ -509,7 +580,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (isH3) {
             const text = document.createElement('span');
             text.className = 'toc-text';
-            text.textContent = heading.textContent.trim();
+            text.textContent = headingLabel;
 
             tocItem.appendChild(text);
         }
@@ -761,8 +832,9 @@ document.addEventListener('DOMContentLoaded', () => {
        · 正文中 —— 正常显示（样式见 description.css 第 9.1 节）；
        · 侧边栏目录中 —— 不显示（样式兜底见第 9.3 节）。
 
-   实现方式：本文件第 2 节的目录构建用 heading.textContent 生成目录
-   文字，所以只要在目录项生成后，把其中的 <e> 节点整个删掉即可。
+   实现方式：本文件第 2 节生成目录文字时已经用 headingTitle() 过滤过一次
+   （丢掉 <e> 与副标题），本段再把目录项里残留的 <e> 节点整个删掉、并按
+   标题重算一遍文字，覆盖“目录项被其它脚本重建”的情况。
    用 MutationObserver 监听 #tocNav，既能覆盖第 2 节的首次构建，也能
    覆盖窗口变宽 / 其它脚本重建目录的情况。
 
@@ -776,8 +848,8 @@ document.addEventListener('DOMContentLoaded', () => {
 (function () {
     'use strict';
 
-    /* 隐藏标记标签：<e></e>（HTML 标签名大小写不敏感，<e> / <E> 都行） */
-    var HIDE_TAG = 'e';
+    /* 隐藏标记标签 <e></e> 的标签名统一放在文件开头的第 0 节
+       （HIDE_TAG），这里不再重复声明 —— 改标签名时只改那一处。 */
     /* 供 processToc() 判断“这一项已经清理过”的标记 */
     var PROCESSED_FLAG = 'ihpEProcessed';
     /* 兼容 :scope 尚未普及的环境（老 Safari / 老 Edge） */
@@ -790,21 +862,28 @@ document.addEventListener('DOMContentLoaded', () => {
        4.1 侧边目录（TOC）：剔除 <e></e> 内的文字
        ------------------------------------------------------ */
 
-    /* 只保留“正文可见文字”，<e></e> 及其内容整段丢弃。
-       在克隆节点上操作，绝不影响正文 DOM。 */
+    /* 只保留“正文可见文字”，下面两类内容整段丢弃：
+       ① <e></e> 及其内容（见第 9 节说明的用途）；
+       ② .heading-sub 副标题（见 description.css 第 4.1 节）—— 它只是标题
+          的版面装饰，不属于标题名字，所以目录里也不该出现。
+       在克隆节点上操作，绝不影响正文 DOM。
+       本文件第 2 节生成目录文字时用的是 headingTitle()（同样的过滤规则），
+       这里再兜一次，是为了覆盖“目录项被其它脚本重建”的情况。 */
     function visibleTextOnly(source) {
         if (!source) return '';
-        if (!source.querySelector(HIDE_TAG)) return source.textContent || '';
 
         var clone = source.cloneNode(true);
-        Array.prototype.forEach.call(clone.querySelectorAll(HIDE_TAG), function (node) {
-            if (node.parentNode) node.parentNode.removeChild(node);
-        });
+        Array.prototype.forEach.call(
+            clone.querySelectorAll(HIDE_TAG + ', .' + HEADING_SUB_CLASS),
+            function (node) {
+                if (node.parentNode) node.parentNode.removeChild(node);
+            }
+        );
         return clone.textContent || '';
     }
 
     /* 把目录项里所有 <e></e> 删掉，并把每个 .toc-text 的文字重设为
-       “正文可见文字”，保证目录文字与正文严格一致。 */
+       “正文可见文字”（不含 <e> 与副标题），保证目录文字与正文严格一致。 */
     function cleanTocItem(item) {
         Array.prototype.forEach.call(item.querySelectorAll(HIDE_TAG), function (hit) {
             if (hit.parentNode) hit.parentNode.removeChild(hit);
@@ -822,7 +901,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // textContent.trim() 生成目录文字的，这里保持一致。
         // 正文 DOM 不受影响，只改克隆出来的目录文字。
         var label = visibleTextOnly(heading).trim();
-
         Array.prototype.forEach.call(item.querySelectorAll('.toc-text'), function (el) {
             if (el.textContent !== label) el.textContent = label;
         });
@@ -874,7 +952,11 @@ document.addEventListener('DOMContentLoaded', () => {
        "标题前半 <e>隐藏段</e>" 这样的标题在正文里断成左右两栏。
        description.css 第 9.2 节用 :has(e) + display: contents 解决这个问题；
        这里再给含 <e> 的标题补一个 .ihp-has-e 类，作为不支持 :has()
-       的旧浏览器（Firefox < 121 等）的等价兜底。 */
+       的旧浏览器（Firefox < 121 等）的等价兜底。
+
+       需要给含副标题的标题加 .has-heading-sub 类的逻辑在文件第 1.9 节
+       （markHeadingsWithSubtitle + 标题遍历），因为窄屏下没有目录、本段
+       会提前 return，而兜底类在任何屏幕宽度下都要生效。 */
     var HEADING_SELECTOR = '.heading-1, .heading-2, .heading-3, .heading-reference';
     var FLEX_FALLBACK_CLASS = 'ihp-has-e';
 
@@ -932,7 +1014,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* 只读调试接口：例如在控制台执行
        __IHP__.sidebarLabel(document.querySelector('.heading-2'))
-       即可看到该标题在侧边栏里会显示成什么。 */
+       即可看到该标题在侧边栏里会显示成什么（不含副标题与 <e> 内容）。 */
     window.__IHP__ = {
         sidebarLabel: function (heading) {
             return visibleTextOnly(heading).trim();
