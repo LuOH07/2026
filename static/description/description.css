@@ -388,8 +388,6 @@ letter-spacing: 0;
 line-height: 1.6;
 text-decoration: underline;
 text-underline-offset: 4px;
-/* 一级 / 二级 / 三级标题统一允许换行：不再用 nowrap + 省略号，
-   长标题在侧边栏宽度内自动折成多行并完整显示 */
 white-space: normal;
 overflow: visible;
 text-overflow: clip;
@@ -524,7 +522,7 @@ margin-top: 0;
 font-size: 30px;
 font-family: 'Albertus Nova Bold', -apple-system, sans-serif;
 line-height: 1.6;
-color: #4B8ACA;
+color: #387CC1;
 margin-bottom: 1em;
 }
 
@@ -532,7 +530,7 @@ margin-bottom: 1em;
 font-size: 26px;
 font-family: 'Albertus Nova Bold', -apple-system, sans-serif;
 line-height: 1.6;
-color: #8F8BD9;
+color: #9177DC;
 margin-bottom: 1em;
 }
 
@@ -637,7 +635,7 @@ font-stretch: semi-condensed;
 font-size: 22px;
 letter-spacing: 0.5px;
 line-height: 2;
-color: #000000;
+color: #465E77;
 text-align: justify;
 text-justify: inter-word;
 margin-left: 8%;
@@ -659,6 +657,16 @@ font-family: 'verdana', -apple-system, sans-serif;
 font-style: italic;
 }
 */
+
+/* 正文里的加粗文字：加粗，并单独设定颜色与字号
+   （只作用于 .body-text 内部的 <b> / <strong>；正文其余文字、标题、
+   图注里的加粗都保持各自原有颜色，不受影响） */
+.body-text b,
+.body-text strong {
+    font-weight: bold;
+    color: #000000;
+    font-size: 22px;
+}
 
 /* ========================================================
 6. 正文插图与图标题 (极简结构样式)
@@ -708,38 +716,29 @@ width: 100%;
 
 /* ========================================================
 7. 悬浮卷轴与返回顶部按钮
-======================================================== */
+========================================================
+这三件装饰（宝剑 / 剑鞘 / BACK TO TOP）的【定位、尺寸、层级、变换、
+过渡】都是动效参数，已经统一收进 description.js 第 7 节，由那边在运行时
+写成内联样式 —— 它们的 top 本来就会被第 3 节的滚动 / 拖拽逻辑反复改写，
+参数和改写它的代码待在一起，才不用两头对着改。
+本文件只留它们的外观：光标、颜色、字体、白空间与 hover 泛光。
+
+注意：元素本身（<img class="scroll-sword"> 等）仍然写在页面 HTML 里，
+本节的样式负责它们的“看相”，description.js 负责“动效与定位”。 */
 .scroll-sword {
-position: fixed;
-right: 0;
-top: 10vh;
-height: 50vh;
-width: auto;
-z-index: 90;
 pointer-events: auto;
 cursor: pointer;
 user-select: none;
 -webkit-user-drag: none;
 object-fit: contain;
-transform: translateX(40%);
-transition: filter 0.2s ease;
 }
 
 .scroll-scabbard {
-position: fixed;
-right: 0;
-top: 23vh;
-height: 50vh;
-width: auto;
-z-index: 91;
 pointer-events: auto;
 cursor: grab;
 user-select: none;
 -webkit-user-drag: none;
 object-fit: contain;
-will-change: top;
-transform: translateX(30%);
-transition: filter 0.2s ease;
 }
 
 .scroll-scabbard:active,
@@ -748,10 +747,6 @@ cursor: grabbing;
 }
 
 .scroll-back-to-top {
-position: fixed;
-right: 45px;
-top: 23vh;
-z-index: 92;
 color: #1d9695;
 font-family: 'The artist sans', -apple-system, sans-serif;
 font-size: 40px;
@@ -761,9 +756,6 @@ user-select: none;
 cursor: pointer;
 pointer-events: auto;
 white-space: nowrap;
-will-change: top, transform;
-transform: translateY(-50%);
-transition: filter 0.2s ease;
 }
 
 .scroll-back-to-top:hover {
@@ -922,4 +914,499 @@ margin-right: 5%;
 margin-bottom: 1.2em;
 }
 
+}
+
+/* ========================================================
+   9. 正文 <e></e> 标签（原 IHP.css 的全部规则已并入本节）
+   ========================================================
+
+   用途：正文中的 <e></e> 标签
+   ------------------------------------------------------
+   <e> 是页面自定义的行内标签，两端表现不同：
+       · 正文中 —— 正常显示，见第 9.1 节；
+       · 侧边目录 TOC（#tocNav 内）—— 完全不显示，其文字由
+         description.js 第 4 节在构建目录时剔除（见第 9.3 节）。
+
+   本节所有规则都只针对 <e> 标签本身、含 <e> 的标题、或 #tocNav 作用域，
+   不含 <e> 的标题与其余元素仍完全走本文件前面的原有规则。
+   ======================================================== */
+
+/* --------------------------------------------------------
+   9.1 正文中的 <e></e>：与上下文文字完全一致地显示
+   --------------------------------------------------------
+   自定义元素在 HTML 解析后默认就是 display: inline，但浏览器对
+   “未知元素”的字体继承行为并不完全统一，所以这里显式把字体相关
+   属性全部设为 inherit。这样 <e> 内的文字与所在段落
+   （.body-text 等）看起来毫无差别，标签本身“隐形”。 */
+e {
+    display: inline;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    text-align: inherit;
+    text-transform: inherit;
+    text-decoration: inherit;
+    text-indent: 0;
+    background: none;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    /* 标签只是“隐形”的排版容器，不该成为可交互 / 可编辑对象 */
+    cursor: inherit;
+    user-select: inherit;
+    pointer-events: none;
+}
+
+/* 调试用标记：即使被手动加上 .toc-hidden，正文里也不得改变外观 */
+e.toc-hidden {
+    display: inline !important;
+    opacity: 1 !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    clip: auto !important;
+    clip-path: none !important;
+    position: static !important;
+}
+
+/* --------------------------------------------------------
+   9.2 标题里的 <e></e>：必须继续按“行内文字”排版
+   --------------------------------------------------------
+   description.css 把 .heading-* 设成了 display: flex，而 flex 容器会
+   把每个直接子元素“块化”（blockify）：直接写在标题里的 <e> 会从行内
+   变成块级，于是 "标题前半 <e>隐藏段</e>" 这种写法会断成左右两栏，
+   正文外观被破坏。
+
+   解决办法是 display: contents —— 让 <e> 自身不生成盒子，它里面的
+   文字直接成为标题这个 flex 容器的内容，与没写 <e> 时完全一致。
+   代价是 flex 容器的 gap 会插在“被拆开的文字段”之间，所以含 <e> 的
+   标题把 gap 归零，再把原来那 20px 间距补到 ::before 箭头上，
+   视觉结果与原来相同。
+
+   注意：这一节只作用于“标题里真的有 <e>”的标题；其余标题保持
+   description.css 的 flex + gap: 20px，一行都不受影响。
+   -------------------------------------------------------- */
+
+/* 9.2.1 支持 :has() 的现代浏览器（Chrome 105+ / Safari 15.4+ / Firefox 121+） */
+.heading-1:has(e),
+.heading-2:has(e),
+.heading-3:has(e),
+.heading-reference:has(e) {
+    gap: 0;
+}
+
+.heading-1:has(e) > e,
+.heading-2:has(e) > e,
+.heading-3:has(e) > e,
+.heading-reference:has(e) > e {
+    display: contents;
+}
+
+.heading-1:has(e)::before,
+.heading-2:has(e)::before,
+.heading-3:has(e)::before,
+.heading-reference:has(e)::before {
+    margin-right: 20px; /* 顶替被归零的 gap: 20px */
+}
+
+/* 9.2.2 兜底：不支持 :has() 的旧浏览器。description.js 会给含 <e> 的标题加上
+       .ihp-has-e 类，下面的规则与 9.2.1 完全等价。 */
+.heading-1.ihp-has-e,
+.heading-2.ihp-has-e,
+.heading-3.ihp-has-e,
+.heading-reference.ihp-has-e {
+    gap: 0;
+}
+
+.heading-1.ihp-has-e > e,
+.heading-2.ihp-has-e > e,
+.heading-3.ihp-has-e > e,
+.heading-reference.ihp-has-e > e {
+    display: contents;
+}
+
+.heading-1.ihp-has-e::before,
+.heading-2.ihp-has-e::before,
+.heading-3.ihp-has-e::before,
+.heading-reference.ihp-has-e::before {
+    margin-right: 20px;
+}
+
+/* --------------------------------------------------------
+   9.3 侧边目录中的 <e></e>：彻底不显示
+   --------------------------------------------------------
+   正常流程下 description.js 会在目录构建时就把 <e> 里的文字删掉，因此这里
+   兜的是“JS 还没来得及处理”的极端情况（脚本被拦截、目录被其它脚本
+   重建等）。用 clip-path + 0 尺寸而不是 display: none，是为了不改变
+   .toc-item / .toc-text 的 flex 布局结构。 */
+#tocNav e,
+#tocNav .toc-item e,
+#tocNav .toc-item .toc-text e {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    clip-path: inset(50%);
+    pointer-events: none;
+}
+
+/* ========================================================
+   10. 文本高亮 <mark>
+   ========================================================
+   用法：在 HTML 里把要突出的文字用 <mark></mark> 包起来即可，例如
+       <p class="body-text">……这个结论<mark>非常关键</mark>……</p>
+
+   底色固定为 #D5D5FF；文字颜色用 color: inherit 跟随上下文，
+   所以普通正文里的高亮字仍是黑色、标题里的高亮字仍是各自的标题色，
+   不会因为高亮而被强行改成别的颜色。
+   ======================================================== */
+mark {
+    background-color: #D5D5FF;
+    color: inherit;
+    padding: 0 0.18em;
+    border-radius: 3px;
+    /* 高亮跨行时，每一行都各自补上内边距与圆角，而不是只在整块首尾补 */
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+
+/* 淡紫底 #D5D5FF 和主题紫 #8F8BD9（正文加粗、三级标题）叠在一起时
+   对比度偏低，这两种情况改用同色系的深紫，保证高亮里的紫字依然清楚。
+   若希望高亮内严格保持 #8F8BD9，把下面这一条删掉即可。 */
+.body-text mark b,
+.body-text mark strong,
+.heading-3 mark {
+    color: #5A56A8;
+}
+
+/* ========================================================
+   11. 正文超链接
+   ========================================================
+   颜色固定 #91ACE0，加粗并带下划线。
+   作用域限定在正文卡片 .main-container 内部（标题、段落、图注都在
+   其中）；页眉菜单与页脚位于 layout.html 的 <main id="main-content">
+   之外，侧边目录在 .side-container 里，二者的链接由各自样式表负责，
+   不受本节影响。 */
+.main-container a,
+.main-container a b,
+.main-container a strong {
+    color: #91ACE0;
+    font-weight: bold;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    transition: text-decoration-thickness 0.15s ease;
+}
+
+/* 已访问链接保持同一配色，避免浏览器默认的紫色破坏版面 */
+.main-container a:visited {
+    color: #91ACE0;
+}
+
+/* 悬停 / 键盘聚焦时只把下划线加粗，不改变颜色与字号 */
+.main-container a:hover,
+.main-container a:focus-visible {
+    text-decoration-thickness: 2.5px;
+}
+
+/* ========================================================
+   12. 正文表格
+   ========================================================*/
+.main-container table {
+    --wp-table-rule-color: #000000;
+    --wp-table-rule-width: 1.5px;
+    --wp-table-head-bg: #1D2D5E;      /* 表头行底色 */
+    --wp-table-head-color: #FFFFFF;   /* 表头行文字颜色 */
+
+    border-collapse: collapse;
+    width: 80%;                 
+    margin: 1.5em auto 2em;     
+    font-family: inherit;
+    font-size: inherit;
+    line-height: 1.8;
+    color: #465E77;            
+}
+
+/* 先把所有单元格的边框清空，横线只由下面三条规则画；
+   文字一律水平居中（<td> 浏览器默认左对齐，这里统一覆盖） */
+.main-container table th,
+.main-container table td {
+    border: 0;
+    padding: 0.55em 0.9em;
+    vertical-align: top;
+    text-align: center;
+}
+
+/* 表头文字保持加粗 */
+.main-container table th {
+    font-weight: bold;
+}
+
+/* ---------- 第一行：上边框 + 下边框，深蓝底 + 白字 ---------- */
+.main-container table tr.wp-table-first-row > th,
+.main-container table tr.wp-table-first-row > td,
+.main-container table > thead:first-child > tr:first-child > th,
+.main-container table > thead:first-child > tr:first-child > td,
+.main-container table > tbody:first-child > tr:first-child > th,
+.main-container table > tbody:first-child > tr:first-child > td {
+    border-top: var(--wp-table-rule-width) solid var(--wp-table-rule-color);
+    border-bottom: var(--wp-table-rule-width) solid var(--wp-table-rule-color);
+    background-color: var(--wp-table-head-bg);
+    color: var(--wp-table-head-color);
+}
+
+/* 表头行里若出现加粗或链接，也一并保持白色：否则会带上正文的
+   加粗紫 #8F8BD9 / 链接蓝 #91ACE0，落在深蓝底上几乎看不清 */
+.main-container table tr.wp-table-first-row :is(b, strong, a),
+.main-container table > thead:first-child > tr:first-child :is(b, strong, a),
+.main-container table > tbody:first-child > tr:first-child :is(b, strong, a) {
+    color: var(--wp-table-head-color);
+}
+
+/* ---------- 最后一行：只有下边框 ---------- */
+.main-container table tr.wp-table-last-row > th,
+.main-container table tr.wp-table-last-row > td,
+.main-container table > tbody:last-child > tr:last-child > th,
+.main-container table > tbody:last-child > tr:last-child > td {
+    border-bottom: var(--wp-table-rule-width) solid var(--wp-table-rule-color);
+}
+
+/* 窄屏：表格铺满正文容器宽度，并收一下字号与内边距，
+   避免单元格里的文字被挤成一团 */
+@media (max-width: 820px) {
+    .main-container table {
+        width: 100%;            /* 移动端：占满正文容器宽度 */
+        margin: 1.2em auto 1.5em;
+        font-size: 16px;
+        line-height: 1.7;
+    }
+
+    .main-container table th,
+    .main-container table td {
+        padding: 0.45em 0.5em;
+    }
+}
+
+/* ========================================================
+   13. 正文组件 <upfold>
+   ========================================================
+   用法：标签文字写在 <upfold> 里，点击后展开的隐藏文字写在
+   <upfold-text> 里（也可以写成 <span class="upfold">…</span>）：
+       <p class="body-text"><upfold>Materials and Apparatus:
+           <upfold-text>点击后展开的正文</upfold-text></upfold></p>
+
+   收起：标签是一枚 #53DEB7 的圆角胶囊，白字，宽度随标签文字伸缩，
+        字号 26px（与 .heading-3 同级）。
+   展开：胶囊换底色与文字颜色（--upfold-open-bg / --upfold-open-color）；
+        隐藏文字出现在胶囊【下方】，与正文同样排版，没有底色也没有边框。
+   开合行为在 description.js 第 6 节。
+
+   两枚装饰（左端 kid 图标、右端压在底色下面的剑）由 description.js
+   第 6.1 / 6.2 节注入：素材引用、位置、尺寸、层级都在那边，本文件里
+   既没有图片 URL、也没有定位，只负责胶囊（矩形）自己长什么样。
+   左边为图标让出的内边距同样由那边按“图标 + 间距”算好后写成内联样式
+   （脚本没跑时按无图标的 1.15em 显示），所以这里的 padding 不写图标宽度。
+
+   展开正文左侧那 3.5ch（前 2ch 放脚印、末尾 0.5ch 是空隙）是脚印轨道
+   （本文件末尾的 .upfold-rail 一节）：素材、左右分布、上沿间距与旋转角度
+   都由 description.js 第 6.3 节随机算好后写成内联样式，本文件只给轨道的
+   两个基准尺寸与摆放方式。
+
+   为什么正文不会被胶囊框住：description.js 会把标签文字单独包进
+   <span class="upfold-label">，胶囊的底色 / 内边距都画在这一层上，
+   展开的正文只是它的兄弟节点，天生就在胶囊盒子外面。
+
+   想调整只改下面这几个自定义属性。 */
+
+/* 带隐藏文字、真的能点的组件才显示手型（JS 会给它加 role="button"） */
+.main-container upfold[role="button"],
+.main-container .upfold[role="button"] {
+    cursor: pointer;
+    user-select: none;            /* 点标签时不会顺手选中文字 */
+    -webkit-user-select: none;
+}
+
+/* ---------- 版块间距：前后各留一段行距，互不重叠 ----------
+   upfold 是一整块“版块”，前后各留 1.5em（桌面 ≈33px、窄屏 ≈24px）。
+   这个空档要能容下两处向上/向下的“出头”：右端那把剑露在矩形上方的
+   一截（约胶囊高度的 55%：桌面 ≈29px）和左端小人（4em，比胶囊高，
+   上下各出头 ≈31px）；所以它既不会压到上一个版块的内容，连续的
+   upfold 之间也不会贴在一起。
+
+   注意 display: inline-block：宿主 <upfold> 默认是 inline 元素，
+   而【行内元素的上下外边距不生效】，所以收起状态必须把它变成行内块，
+   下面那 1.5em 才量得出来。展开时宿主由后面的 .is-open 规则改成
+   display: block（那条选择器权重更高、位置更靠后），边距同样保留。 */
+.main-container upfold,
+.main-container .upfold {
+    display: inline-block;
+    margin: 1.5em 0;
+}
+
+/* ---------- 胶囊本体 ----------
+   一份声明覆盖两种情况：① 脚本已把标签包进 .upfold-label；
+   ② 脚本没跑起来，标签就是 <upfold> 自身的全部内容。 */
+.main-container upfold:not([data-upfold-ready]),
+.main-container .upfold:not([data-upfold-ready]),
+.main-container upfold > .upfold-label,
+.main-container .upfold > .upfold-label {
+    --upfold-bg: #53DEB7;         /* 收起时的底色 */
+    --upfold-open-bg: #465E77;    /* 展开后的底色 */
+    --upfold-color: #FFFFFF;      /* 收起时的文字颜色 */
+    --upfold-open-color: #ffffff; /* 展开后的文字颜色：与正文 .body-text 一致 */
+    --upfold-radius: 20px;        /* 圆角大小；写成 999px 会变成胶囊形 */
+    --upfold-font-size: 26px;     /* 与 .heading-3 一致 */
+
+    position: relative;           /* 给 JS 注入的装饰元素当参照 */
+    display: inline-block;        /* 随文字伸缩，并且能与正文排在同一行 */
+    width: auto;                  /* 宽度由文字决定，不设固定值 */
+    max-width: 100%;              /* 窄屏下不会顶出容器 */
+    /* 上下 0.35em、左右 1.15em；左内边距随后由 description.js 按
+       “左端图标 + 间距”改写成内联样式，为图标让出位置 */
+    padding: 0.35em 1.15em;
+    background-color: var(--upfold-bg);
+    color: var(--upfold-color);
+    border-radius: var(--upfold-radius);
+    font-family: inherit;
+    font-size: var(--upfold-font-size);
+    line-height: 1.35;
+    text-align: left;             /* 文字紧跟在左端小人的右边，不居中 */
+    vertical-align: middle;
+    /* 收 / 展时底色与文字颜色一起过渡（这是胶囊本身的样式；
+       触发它的是 description.js 第 6 节切换的 .is-open） */
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ---------- 展开：换底色，并把文字一并换成正文字体颜色 ----------
+   ① 底色 #53DEB7 → #D3F8DD；
+   ② 文字 #FFFFFF → --upfold-open-color（#465E77，即正文 .body-text 的颜色）。
+   颜色只在“胶囊本体的那份声明”上覆盖 --upfold-color，所以胶囊里的
+   加粗 / 链接（下面那条 :is(b, strong, a) 规则用的是同一个变量）会一起变色，
+   不需要另写选择器。 */
+.main-container upfold.is-open:not([data-upfold-ready]),
+.main-container .upfold.is-open:not([data-upfold-ready]),
+.main-container upfold.is-open > .upfold-label,
+.main-container .upfold.is-open > .upfold-label {
+    background-color: var(--upfold-open-bg);
+    --upfold-color: var(--upfold-open-color);
+    color: var(--upfold-open-color);
+}
+
+/* 胶囊里的加粗 / 链接跟随胶囊文字颜色（收起白字、展开正文色）：
+   否则会带上正文各自的颜色，落在绿底上不干净 */
+.main-container upfold:not([data-upfold-ready]) :is(b, strong, a),
+.main-container .upfold:not([data-upfold-ready]) :is(b, strong, a),
+.main-container upfold > .upfold-label :is(b, strong, a),
+.main-container .upfold > .upfold-label :is(b, strong, a) {
+    color: var(--upfold-color);
+}
+
+/* ---------- 胶囊上的两枚装饰（左端 kid 图标、右端剑）----------
+   这里本来是本文件里的 ::before 背景图（kid-2.avif）与 .upfold-sword
+   规则，现在整块搬进了 description.js 第 6.1 / 6.2 节：
+       · 素材引用（src）、位置 / 尺寸 / 层级、不拦鼠标等，
+         都由脚本在创建这两张 <img> 时写成内联样式；
+       · 剑要的 isolation: isolate（让它的 z-index: -1 只在本组件内部
+         生效，不被正文白卡片盖住）也在同一处给宿主加上。
+   这样“卡片里有没有这枚装饰”与“它长什么样、放哪儿”只在一个文件里，
+   CSS 这边不会留下元素不存在时的孤儿规则。 */
+
+/* ---------- 隐藏文字：脚本处理过之后才藏起来 ----------
+   用后代选择器（不是 > 直接子级），与 description.js 第 6 节的
+   querySelector 查找范围保持一致：内容外面再套一层 <span> 也能正常工作。
+   万一脚本没跑，[data-upfold-ready] 不存在，所有文字照常显示。 */
+.main-container upfold[data-upfold-ready] :is(upfold-text, .upfold-text),
+.main-container .upfold[data-upfold-ready] :is(upfold-text, .upfold-text) {
+    display: none;
+}
+
+/* ---------- 展开：宿主变成块级，胶囊一行、正文在下一行 ---------- */
+.main-container upfold.is-open,
+.main-container .upfold.is-open {
+    display: block;
+    width: 100%;
+}
+
+/* 展开出来的正文：整行宽、无底色无边框，排版跟 .body-text 一致
+   （description.js 第 6 节会给它加上 .body-text 类）。
+   它在胶囊盒子外面，所以不会被胶囊的底色框住。
+   左侧 padding-left 让出 3.5 个字符：左边这 2ch 让给脚印（左脚印 0–1ch、
+   右脚印 1–2ch，脚印最右到 3ch），正文从 3.5ch 起 —— 于是正文与脚印最右侧
+   之间还留着 0.5ch 空隙（旋转 ±20° 大约再吃 0.25ch，所以实际也不会贴上）。
+   文字右退 3.5ch，而这个元素的宽度是 auto（依旧填满容器），右侧边界一点没动。
+   margin-top 是它与上面那枚胶囊（矩形）之间的空档：只作用于展开状态，
+   收起时这块内容是 display: none，不会多出空隙。
+   注意：这条与上面的“隐藏文字”权重相同，靠写在后面取胜，别调换顺序。 */
+.main-container upfold.is-open :is(upfold-text, .upfold-text),
+.main-container .upfold.is-open :is(upfold-text, .upfold-text) {
+    position: relative;           /* 给绝对定位的脚印轨道当参照 */
+    padding-left: 3.5ch;          /* 正文从第 3.5 个字符开始（与脚印最右隔 0.5ch） */
+    display: block;
+    margin-top: 0.8em;            /* 与胶囊（矩形）之间留出的空档（桌面 ≈18px） */
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    cursor: default;
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+/* ---------- 展开文字左侧的脚印轨道 ----------
+   正文左内边距是 3.5ch，其中左边 2ch 让给脚印：左脚印的左边缘在 0–1ch、
+   右脚印的左边缘在 1–2ch 里各自随机（即各占 1ch 宽的一段），脚印宽 1ch
+   —— 脚印最右到 3ch，与正文之间还剩 0.5ch 空隙。
+   左右脚印交替往下排，横向落点 / 上下间距（1.5~2.5 个脚印高）/ 旋转
+   （-20°~+20°）都由 description.js 第 6.3 节随机算好后写成内联样式：
+   同一次会话里反复展开、窗口缩放都不会变，刷新页面才重新随机一遍。
+   这里只给这条轨道的基准尺寸与摆放方式；轨道是绝对定位的，既不推挤正文，
+   也不影响正文右侧的边界。 */
+.main-container upfold .upfold-rail {
+    /* 两个基准尺寸：JS 第 6.3 节会读它们来算随机范围，所以只改这里就够。
+       单位都必须是 ch。 */
+    --upfold-rail-span: 1ch;      /* 每侧“左边缘”的随机范围宽：
+                                     左脚印 0 ~ span，右脚印 span ~ 2×span */
+    --upfold-rail-foot: 1ch;      /* 脚印宽 */
+
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: calc(var(--upfold-rail-span) * 2);
+    pointer-events: none;         /* 装饰层：不挡文字选中 */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* 每个脚印：left / top / 旋转由 JS 写内联样式 */
+.main-container upfold .upfold-rail .upfold-foot {
+    position: absolute;
+    width: var(--upfold-rail-foot);
+    height: auto;                 /* 高度按原图比例：left/right.avif 是 103×166 */
+    display: block;
+    pointer-events: none;
+    -webkit-user-drag: none;
+}
+
+/* 左右各一枚“探针”：宽度与脚印相同，只用来量脚印高度，不显示 */
+.main-container upfold .upfold-rail .upfold-rail-probe {
+    left: 0;
+    top: 0;
+    visibility: hidden;
+}
+
+/* 一个脚印都放不下时收起轨道（保留占位，正文变高后能重新长出来） */
+.main-container upfold .upfold-rail.is-empty {
+    visibility: hidden;
+}
+
+/* 窄屏：与 .heading-3 的移动端字号（17px）看齐
+   （变量必须落在真正带胶囊样式的那个元素上，选择器与上面“胶囊本体”一致） */
+@media (max-width: 820px) {
+    .main-container upfold:not([data-upfold-ready]),
+    .main-container .upfold:not([data-upfold-ready]),
+    .main-container upfold > .upfold-label,
+    .main-container .upfold > .upfold-label {
+        --upfold-font-size: 17px;
+    }
 }
