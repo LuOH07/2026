@@ -1441,7 +1441,7 @@ mark {
    14. 标题副标题（.heading-sub）
    ========================================================
    给每一级标题（.heading-1 / .heading-2 / .heading-3，以及同属一级的
-   .heading-reference）在主标题下方加一条副标题：文字颜色跟随本行主标题，
+   .heading-reference）在主标题下方加一条副标题：文字颜色用正文色 #465E77，
    底色是主标题那枚装饰矩形的颜色（H1 #9CDBDD / H2 #94C2F1 / H3 #C7C6F1 /
    Reference #B9C7D1，见第 4 节 ::before 的 background-color），形状不是
    裹住整行文字的圆角矩形，而是像荧光笔一样横着画在文字【下方】的一条
@@ -1526,9 +1526,10 @@ mark {
     font-family: inherit;        /* 字体、字号、字重都跟着所在行（14.3 按级给） */
     font-size: inherit;
     font-weight: inherit;
-    /* 这里不再写 color：副标题的字色直接继承主标题（.heading-1/2/3 与
-       .heading-reference 的 color），与各自的主标题一致，
-       不再是被色块反衬的白字。 */
+    /* 文字颜色固定用正文色 #465E77（与 .body-text 的 color 一致），
+       不再跟随各级主标题的字色 —— 色带上的字与正文同色，读起来是一体的。
+       这一条会盖掉从 .heading-1/2/3 继承来的标题色，是刻意的。 */
+    color: #465E77;
     /* 荧光笔色带：一层 linear-gradient 当背景。
        下半段 = 色带本身（厚度 --heading-sub-thick），上半段全透明，
        于是色带只出现在文字下方，文字笔画压在它上面。
