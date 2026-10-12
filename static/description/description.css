@@ -553,19 +553,23 @@ scroll-margin-top: 12vh;
        <h2 class="heading-2">TnpB: A Transposon-Derived …<span class="heading-sub">副标题一</span><span class="heading-sub">副标题二</span></h2>
 
    外观：圆角 20px 的实心矩形，底色按标题级别取色，文字白色；矩形宽度
-   由副标题文字长度决定（inline-block 收缩包裹文字），上下内边距只留一
-   点（0.26em），所以矩形高度只比文字高一点点。
+   由副标题文字长度决定（宽度收缩包裹文字），上下内边距只留一点（0.26em），
+   所以矩形高度只比文字高一点点。
    字体：font-family: inherit —— 主标题是什么字体，副标题就是什么字体
    （.heading-1 是 Albertus Nova Black，.heading-2 / -3 是 Albertus Nova Bold）。
 
-   两条及以上副标题时，矩形竖着排成一列，之间留 8px 窄空白。做法是给
-   每枚矩形配一个看不见的“换行占位”（下一条规则里的 .heading-sub::before，
-   宽度 100% 的空 flex 项），它把上一行占满、迫使矩形从新的一行开始：
-   于是矩形既能各自独占一行，又不会像 width: 100% 那样被拉长，
-   宽度仍然是贴着自己文字的长度。
+   副标题【不参与主标题那一行的排版】，主标题行由 description.js 包进
+   .heading-title（见第 4.2 节），这里的样式只作用于副标题自己：
+   · display: inline —— flex 容器会把 flex 项“块化”，所以这一条要靠
+     .heading-sub 外面的 .heading-title 先把它隔离出来才有效。
+   · 自动换行（副标题太长）：行内元素换行后每一行都是一个独立的“碎片”，
+     配合 box-decoration-break: clone，每一行各自带上完整的内边距与圆角，
+     于是换行出来的两行是两块分开的圆角矩形，不会粘成一大块；
+     两行之间的空档就是上下内边距之和（0.52em）。
+     写 inline-block 就没有这个效果：整块共用一个背景盒，两行会连在一起。
 
-   若标题里写了 <e></e>（见第 9 节），这一节完全不受影响：<e> 在第 9.2 节
-   里已经被拆成 display: contents，副标题仍是标题的直接子元素。
+   若标题里写了 <e></e>（见第 9 节），这一节完全不受影响：<e> 会被一起
+   搬进 .heading-title，靠第 9.2 节的 display: contents 继续参与排版。
 
    只想调颜色 / 字号 / 圆角？改下面这几个自定义属性所在的规则即可。 */
 .heading-sub {
@@ -573,12 +577,9 @@ scroll-margin-top: 12vh;
     --heading-sub-bg: #1D9695;
     --heading-sub-size: 34px;
 
-    display: inline-block;        /* 宽度随文字伸缩，矩形贴着文字 */
+    display: inline-block;        /* 宽度收缩包裹文字：矩形长度跟着副标题文字走 */
     width: auto;
-    /* flex 项宽度不用 width 定死（写 100% 会被拉长到整行），
-       改成“基准宽度 = 文字宽度、最多不超出容器”，文字太长时换行不顶出卡片 */
-    flex: 0 0 auto;
-    max-width: 100%;
+    max-width: 100%;              /* 太长时在容器宽度内换行，不顶出正文卡片 */
     box-sizing: border-box;
     padding: 0.26em 1.05em;       /* 上下只留一点点：矩形略高于文字 */
     background-color: var(--heading-sub-bg);
@@ -587,25 +588,19 @@ scroll-margin-top: 12vh;
     font-size: var(--heading-sub-size);
     font-weight: inherit;
     font-style: normal;
-    line-height: 1.18;
+    line-height: 1.35;            /* 换行后每行一个盒，行高留够，两行不会叠在一起 */
     letter-spacing: inherit;
     text-align: left;
     white-space: normal;
     overflow-wrap: break-word;
     word-break: break-word;
     border-radius: 20px;          /* 圆角矩形 */
+    /* 关键：副标题太长自动换行时，每一行各自补上完整的内边距与圆角，
+       于是两行是两枚分开的圆角矩形（而不是共用一个背景盒连成一大块），
+       行与行之间自然留出窄空白。 */
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
     user-select: none;
-}
-
-/* 每枚矩形前面插一个宽度 100% 的空 flex 项：它先独占一行，把矩形挤到
-   下一行去 —— 这样“一列一个矩形”与“矩形宽度贴着文字”可以同时成立。
-   （纯 CSS 办法，不用往 HTML 里再套一层容器；flex 容器必须允许换行，
-   见第 4.2 节的 flex-wrap: wrap。） */
-.heading-sub::before {
-    content: "";
-    display: block;
-    width: 100%;
-    height: 0;
 }
 
 /* 二级标题副标题：#387CC1，28px */
@@ -621,20 +616,20 @@ scroll-margin-top: 12vh;
 }
 
 /* --------------------------------------------------------
-   4.2 含副标题的标题：改成竖排，让出副标题的高度
+   4.2 含副标题的标题：主标题那一行原样不动，副标题排到它下面
    --------------------------------------------------------
-   原来的 .heading-* 是横向 flex（箭头 ::before / ::after 与标题文字同一
-   行）、固定 height: 8vh 且 align-items: center，副标题进去会被压扁或
-   溢出。含副标题的标题改成纵向 flex：箭头 ::before 与标题文字排第一行
-   （行内元素之间没有空档），副标题各占一行排在下方；高度改由内容撑开。
+   description.js 会把“除副标题以外的子节点”包进 .heading-title
+   （见该文件第 0.1 节）。于是：
 
-   flex-wrap: wrap 是必须的 —— 4.1 节给每枚矩形配的 ::before 空项靠换行
-   才能把矩形顶到新的一行；gap 换成 row-gap，只量竖向的行间距，于是
-   主标题与第一枚矩形之间、两枚矩形之间都是这 8px 窄空白。
+       .heading-*        → 纵向 flex，两行：① .heading-title ② 副标题
+       .heading-title    → 原来的横向 flex 行（箭头 ::before + 标题文字
+                           + 一级标题的 ::after 延长线）
 
-   选择器带 :has() / .has-heading-sub，权重高于第 8.5 节移动端那条
-   （.heading-1, .heading-2, … { height: auto; min-height: 0; … }），
-   所以窄屏同样按“内容撑开高度”来排；那里另给了副标题的字号。 */
+   主要的两条：
+   · .heading-title 上那条 height: 8vh —— 它让“主标题那一行”还是原来那个
+     8vh 的盒子，箭头与标题文字在盒子里垂直居中，与没有副标题时逐像素一致；
+   · 副标题是 inline-block（第 4.1 节），宽度贴着文字、超长时按行拆成多枚
+     分开的圆角矩形。 */
 .heading-1:has(.heading-sub),
 .heading-2:has(.heading-sub),
 .heading-3:has(.heading-sub),
@@ -648,21 +643,59 @@ scroll-margin-top: 12vh;
     align-items: flex-start;
     justify-content: flex-start;
     height: auto;
-    min-height: 8vh;
-    gap: 8px;                     /* 行间窄空白；列间距用不到，留在外面无效 */
-    row-gap: 8px;
-    padding-top: 0.5em;           /* 让第一枚矩形不贴着上一段正文 */
-    padding-bottom: 0.35em;
+    gap: 6px;                     /* 主标题行与副标题之间 */
 }
 
-/* 竖直排布后，::after 那条补白延长线已经没有存在意义（它原本是在 flex
-   行里填充剩余宽度）。只在“含副标题的标题”里隐藏它，不含副标题的一级
-   标题仍然照旧画线。 */
-.heading-1:has(.heading-sub)::after,
-.heading-reference:has(.heading-sub)::after,
-.heading-1.has-heading-sub::after,
-.heading-reference.has-heading-sub::after {
-    display: none;
+/* 主标题那一行：仍然是原来那个横向 flex 行 */
+.heading-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;                    /* 与原来 .heading-* 的 gap 一致 */
+    width: 100%;
+    height: 8vh;                  /* 与原来 .heading-* 的 height 一致 */
+    min-height: 8vh;
+    min-width: 0;
+}
+
+/* 副标题的容器：作 flex 项占满一整行，把副标题排到主标题行下面；
+   里面按书写顺序行框一个个竖着排。 */
+.heading-sub-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+/* 一枚副标题的行框（description.js 第 0.2 节生成，一行/一枚副标题一个）：
+   块级、一行一个；行框不设宽度，让里面的矩形收缩到自己的文字宽度。
+   行与行之间就是这段 margin-top 的窄空白。 */
+.heading-sub-row {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+}
+
+.heading-sub-row + .heading-sub-row {
+    margin-top: 6px;              /* 两行/两枚副标题之间的窄空白 */
+}
+
+/* 一行一枚的矩形：inline-block，宽度收缩包裹这一行的文字，永不折行。
+   （换行已经在 JS 里按浏览器真实断点切好了，见第 0.2 节。） */
+.heading-sub-row > .heading-sub {
+    display: inline-block;
+    width: auto;
+    max-width: 100%;
+    white-space: nowrap;
+    vertical-align: top;
 }
 
 /* 装饰剪裁箭头 */
@@ -1015,7 +1048,19 @@ margin-bottom: 0.7em;
 .heading-3 .heading-sub { --heading-sub-size: 15px; }
 .heading-reference .heading-sub { --heading-sub-size: 21px; }
 
-/* 窄屏下矩形之间的空档略收窄一些（桌面 8px） */
+/* 窄屏：主标题那一行（.heading-title）按第 8.5 节的箭头高度排布，不再固定
+   8vh —— 窄屏标题本来就是 height: auto、盒子贴着文字，箭头高 4.2vh，
+   这里把行高交给内容决定，和原来“只有一个标题行”时的观感一致。
+   第 8.5 节的 .heading-* { height: auto; min-height: 0 } 只作用于标题本身，
+   .heading-title 的 8vh 必须在这里单独覆盖掉，否则窄屏会出现一条空档。 */
+.heading-title {
+    height: auto;
+    min-height: 0;
+    gap: 12px;                    /* 与第 8.5 节的 gap: 12px 一致 */
+}
+
+/* 窄屏下两枚矩形之间的空档（桌面 4px 在这里同样够用，这里只是留个明确的
+   覆盖点，将来想单独调窄屏间距就改这一条） */
 .heading-1:has(.heading-sub),
 .heading-2:has(.heading-sub),
 .heading-3:has(.heading-sub),
@@ -1024,7 +1069,7 @@ margin-bottom: 0.7em;
 .heading-2.has-heading-sub,
 .heading-3.has-heading-sub,
 .heading-reference.has-heading-sub {
-gap: 5px;
+row-gap: 4px;
 }
 
 .heading-reference {
