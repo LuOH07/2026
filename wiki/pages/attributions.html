@@ -59,19 +59,16 @@
 
 <!-- 正文主体容器 -->
 <main class="main-container" id="mainContainer">
-    <!-- ========== Attribution Form 区块 新增 ==========
-         宽度 / 边框 / 高度由 static/description/attributions.css 第 3 节给：
-         宽度与正文段落一致，高度由 attributions.js 第 2 节跟随内容变化 -->
+    <!-- ========== Attribution Form 区块 新增 ========== -->
     <section id="section1">
         <h2 class="heading-2">Attribution Form</h2>
-        <!-- 高度由脚本按内容改写，平时不会出现内部滚动条；
-             不写 scrolling="no"：万一平台没上报尺寸、高度算少了，
-             内部滚动条是用户还能看到表单的兜底，而不是把内容裁掉 -->
-        <iframe
-            id="igem-attribution-form"
-            title="iGEM Attribution Form"
-            src="https://teams.igem.org/wiki/6059/attributions"
-        ></iframe>
+        <div style="width:100%;">
+            <iframe 
+                id="igem-attribution-form" 
+                src="https://teams.igem.org/wiki/6059/attributions"
+                style="width:100%; border:none;"
+            ></iframe>
+        </div>
     </section>
 </main>
 
@@ -83,4 +80,17 @@
 {% block page_scripts %}
 <script src="{{ url_for('static', filename='description/description.js') }}" defer></script>
 <script src="{{ url_for('static', filename='description/attributions.js') }}" defer></script>
+<!-- Attribution iframe自适应脚本 -->
+<script defer>
+// Listen to size change and update form height
+window.addEventListener("message", function (e) {
+    if (e.origin === "https://teams.igem.org") {
+        const { type, data } = JSON.parse(e.data);
+        if (type === "igem-attribution-form") {
+            const element = document.getElementById("igem-attribution-form");
+            element.style.height = `${data + 100}px`;
+        }
+    }
+});
+</script>
 {% endblock %}
