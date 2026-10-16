@@ -54,9 +54,12 @@ margin-left: 4%;
    attributions.js 第 2 节按平台上报的内容高度实时改写。
    高度只设 min-height、不设 max-height —— 内容再长也跟着长，不会截断。 */
 #igem-attribution-form {
-    /* 3.1 宽度与正文内容对齐（与 .body-text / .heading-* 的 8% 一致） */
+    /* 3.1 宽度与正文内容对齐（与 .body-text / .heading-* 的 8% 一致）
+       注意：iframe 是【替换元素】，width: auto 对它会回落成浏览器默认的
+       300px，而不是撑满 —— 所以这里必须写 width: 100%，
+       再由左右各 8% 的边距把它收进正文那条内边界（100% - 8% - 8% = 84%）。 */
     display: block;
-    width: auto;             /* 宽度由下面两条边距决定：卡片宽度的 84% */
+    width: 100%;
     margin-left: 8%;
     margin-right: 8%;
     box-sizing: border-box;  /* 万一日后加了内边距 / 边框，也不会把宽度撑出这条边界 */
