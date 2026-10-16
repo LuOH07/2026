@@ -58,14 +58,19 @@
 
 <!-- 正文主体容器 -->
 <main class="main-container" id="mainContainer">
-    <h1 class="heading-1">Heading 1</h1>
-    <p class="body-text"><b>TnpB</b> CRISPR-Cas9/Cas12.</p>
-
-    <img src="https://static.igem.wiki/teams/6059/wiki/description/figure/1.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  1</b>  Comparison of protein sizes among Cas9, TnpB, and Cas12a</p>    
-    <h2 class="heading-2">Heading 2</h2>   
-    <h3 class="heading-3">Heading 3</h3>
-    <h1 class="heading-reference">Reference</h1>
+          <div class="myPage-paragraph-content">
+            <div class="row mt-4">
+              <script type="text/javascript">
+                // Listen to size change and update form height
+                window.addEventListener("message", function (e) {
+                  if (e.origin === "https://teams.igem.org") {
+                    const { type, data } = JSON.parse(e.data);
+                    if (type === "igem-attribution-form") {
+                      const element = document.getElementById("igem-attribution-form");
+                      element.style.height = `${data + 100}px`;
+                    }
+                  }
+                });
 </main>
 
 <img src="https://static.igem.wiki/teams/6059/wiki/description/sword.avif" alt="Sword Scroll Track" class="scroll-sword" id="scrollSword">
