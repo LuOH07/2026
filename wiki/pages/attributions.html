@@ -58,19 +58,21 @@
 
 <!-- 正文主体容器 -->
 <main class="main-container" id="mainContainer">
-          <div class="myPage-paragraph-content">
-            <div class="row mt-4">
-              <script type="text/javascript">
-                // Listen to size change and update form height
-                window.addEventListener("message", function (e) {
-                  if (e.origin === "https://teams.igem.org") {
-                    const { type, data } = JSON.parse(e.data);
-                    if (type === "igem-attribution-form") {
-                      const element = document.getElementById("igem-attribution-form");
-                      element.style.height = `${data + 100}px`;
-                    }
-                  }
-                });
+    <!-- ========== Attribution Form 区块 新增 ========== -->
+    <section id="section1">
+        <h2 class="heading-2">Attribution Form</h2>
+        <div style="width:100%;">
+            <iframe 
+                id="igem-attribution-form" 
+                src="https://teams.igem.org/wiki/6059/attributions"
+                style="width:100%; border:none;"
+            ></iframe>
+        </div>
+    </section>
+    <!-- =============================================== -->
+
+    <h1 class="heading-reference">Reference</h1>
+
 </main>
 
 <img src="https://static.igem.wiki/teams/6059/wiki/description/sword.avif" alt="Sword Scroll Track" class="scroll-sword" id="scrollSword">
@@ -80,4 +82,17 @@
 
 {% block page_scripts %}
 <script src="{{ url_for('static', filename='description/description.js') }}" defer></script>
+<!-- Attribution iframe自适应脚本 -->
+<script defer>
+// Listen to size change and update form height
+window.addEventListener("message", function (e) {
+    if (e.origin === "https://teams.igem.org") {
+        const { type, data } = JSON.parse(e.data);
+        if (type === "igem-attribution-form") {
+            const element = document.getElementById("igem-attribution-form");
+            element.style.height = `${data + 100}px`;
+        }
+    }
+});
+</script>
 {% endblock %}
