@@ -1,0 +1,33 @@
+/* ========================================================
+   attributions 页面样式覆盖层
+   ========================================================
+   description.css 继续负责这个页面的全部基础样式（字体、首屏 Hero、标题、
+   正文、表格、upfold、移动端响应式…）；本文件只写它需要改的两处，靠后加载
+   覆盖前者，其余一概不重复。
+
+   引用顺序（attributions.html 的 page_styles 块）：
+       description.css     先加载 —— 基础样式
+       attributions.css    后加载 —— 下面两条覆盖
+
+   两处差异：
+     1. 本页面不要侧边目录：把侧边栏 .side-container 整块隐藏。
+        页面里的 <aside class="side-container" id="sideContainer"> 节点仍然保留
+        —— description.js 的滚动 / 渐隐逻辑要引用它，节点不能删。与
+        description.css 第 8.2 节移动端隐藏侧边栏的做法一致，用 !important
+        兜住脚本随之写入的内联 top / opacity / visibility。
+     2. 正文卡片撑满：.main-container 的左边距由 17% 改为 4%，与
+        description.css 里已有的 margin-right: 4% 对称 —— 正文卡片左右各留
+        页面宽度的 4%。
+
+   description.css / description.js 两个原文件不做任何改动。
+   ======================================================== */
+
+/* ---------- 1. 去掉侧边栏 ---------- */
+.side-container {
+display: none !important;
+}
+
+/* ---------- 2. 正文主体容器：左侧 17% -> 4%，与右侧 4% 对称 ---------- */
+.main-container {
+margin-left: 4%;
+}
