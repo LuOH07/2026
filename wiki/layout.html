@@ -1,5 +1,15 @@
+{#- 加载动画遍数：Home 不播放（0），Members 连播五遍（5），其余页面播放一遍（1）。
+    /team 与 /members 是同一个 Members 页面，两者都算 Members。 -#}
+{%- set nav_page = (request.view_args or {}).get('page') -%}
+{%- if request.endpoint == 'home' -%}
+  {%- set loading_plays = 0 -%}
+{%- elif request.endpoint == 'team' or nav_page == 'members' -%}
+  {%- set loading_plays = 5 -%}
+{%- else -%}
+  {%- set loading_plays = 1 -%}
+{%- endif -%}
 <!doctype html>
-<html lang="en">
+<html lang="en" data-loading-plays="{{ loading_plays }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,9 +19,21 @@
   <link rel="stylesheet" href="{{ url_for('fonts_css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='head_foot/head_foot.css') }}">
   <script src="{{ url_for('static', filename='head_foot/head_foot.js') }}" defer></script>
+  <!-- 加载动画：样式与脚本都必须在 <head> 里同步就位，白底遮罩才会先于正文出现（见 static/loading/loading.js） -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='loading/loading.css') }}">
+  <script src="{{ url_for('static', filename='loading/loading.js') }}"></script>
   {% block page_styles %}{% endblock %}
 </head>
 <body>
+  {% if loading_plays %}
+  <!-- 全屏白底加载动画：视频居中、宽度 80%，播完（Members 为五遍）自动消失 -->
+  <div class="loading" id="loading" aria-hidden="true">
+    <video class="loading__video" id="loading-video"
+           src="{{ url_for('static', filename='loading/loading.mp4') }}"
+           preload="auto" muted playsinline webkit-playsinline
+           disablepictureinpicture aria-hidden="true"></video>
+  </div>
+  {% endif %}
   {% include 'menu.html' %}
   <main id="main-content">{% block page_content %}{% endblock %}</main>
   {% include 'footer.html' %}

@@ -1,0 +1,73 @@
+/* =============================================================================
+   loading.css —— 全屏加载动画（loading.mp4）
+   -----------------------------------------------------------------------------
+   除 Home 与 Members 之外的页面，进入时先白底全屏播放 loading.mp4：
+     · 视频居中，宽度 80%，高度自适应；
+     · 播完一遍（Members 为连播五遍）淡出并移除遮罩，页面恢复浏览。
+   .loading 默认 display: none，只有 loading.js 在 <head> 中给 <html> 加上
+   .is-loading 才会显示：脚本缺失或被拦截时页面照常显示，不会白屏卡住。
+   ============================================================================= */
+
+.loading {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    opacity: 1;
+    transition: opacity 0.45s ease;
+}
+
+/* <head> 里的脚本先加 class，body 里的遮罩随后才被解析：白底遮罩先于正文出现，
+   所以不会闪一下页面内容。.is-active 让遮罩在淡出期间保持可见（此时 .is-loading
+   已移除，正文与滚动已恢复，遮罩透明过渡露出页面）。 */
+html.is-loading .loading,
+.loading.is-active {
+    display: flex;
+}
+
+/* 播放期间锁住滚动；正文整体隐藏，避免透过白底遮罩被看到或被键盘聚焦。
+   Members 的 page.css 用 !important 把 html/body 设成 overflow-y: auto，
+   这里用同等 !important 加更高特异性压住它，否则那 30 秒的动画期间页面仍会滚走。 */
+html.is-loading {
+    overflow: hidden !important;
+}
+
+html.is-loading body > *:not(.loading) {
+    visibility: hidden;
+}
+
+.loading.is-fading {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading__video {
+    display: block;
+    width: 80%;
+    height: auto;
+    max-height: 100vh;
+    object-fit: contain;
+    background: #fff;
+    pointer-events: none;
+}
+
+/* 不支持 object-fit 的旧浏览器：退化为等比缩小，仍然居中且不超出一屏。 */
+@supports not (object-fit: contain) {
+    .loading__video {
+        width: auto;
+        max-width: 80%;
+    }
+}
+
+/* 用户要求减少动态效果时不做淡出（loading.js 同步跳过淡出延时）。 */
+@media (prefers-reduced-motion: reduce) {
+    .loading {
+        transition: none;
+    }
+}
