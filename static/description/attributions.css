@@ -2,14 +2,14 @@
    attributions 页面样式覆盖层
    ========================================================
    description.css 继续负责这个页面的全部基础样式（字体、首屏 Hero、标题、
-   正文、表格、upfold、移动端响应式…）；本文件只写它需要改的两处，靠后加载
+   正文、表格、upfold、移动端响应式…）；本文件只写它需要改的三处，靠后加载
    覆盖前者，其余一概不重复。
 
    引用顺序（attributions.html 的 page_styles 块）：
        description.css     先加载 —— 基础样式
-       attributions.css    后加载 —— 下面两条覆盖
+       attributions.css    后加载 —— 下面三条覆盖
 
-   两处差异：
+   三处差异：
      1. 本页面不要侧边目录：把侧边栏 .side-container 整块隐藏。
         页面里的 <aside class="side-container" id="sideContainer"> 节点仍然保留
         —— description.js 的滚动 / 渐隐逻辑要引用它，节点不能删。与
@@ -18,16 +18,48 @@
      2. 正文卡片撑满：.main-container 的左边距由 17% 改为 4%，与
         description.css 里已有的 margin-right: 4% 对称 —— 正文卡片左右各留
         页面宽度的 4%。
+     3. 正文里引用的 iGEM Attribution Form（<iframe>）：显示在正文容器的
+        left 5% 到 right 5% 之间 —— 左右各留 5%，中间 90% 放表单。
 
    description.css / description.js 两个原文件不做任何改动。
    ======================================================== */
 
 /* ---------- 1. 去掉侧边栏 ---------- */
 .side-container {
-display: none !important;
+    display: none !important;
 }
 
 /* ---------- 2. 正文主体容器：左侧 17% -> 4%，与右侧 4% 对称 ---------- */
 .main-container {
-margin-left: 4%;
+    margin-left: 4%;
+}
+
+/* ========================================================
+   3. 正文里引用的 iGEM Attribution Form（<iframe>）
+   ========================================================
+   要求：这份"引用进来"的表单在正文容器 .main-container 的 left 5% 到
+   right 5% 之间显示 —— 左右各让出正文容器宽度的 5%，表单占中间 90%，
+   不再像原来那样顶到卡片的左右边缘。
+
+   3.1 宽度 / 边距：90% + 5% + 5% = 100%，正好落在正文容器的
+       left 5% 到 right 5% 之间，既不留缝也不横向溢出。
+   3.2 为什么 width 要加 !important：attributions.html 的 iframe 上带着
+       内联的 style="width:100%;"，内联样式优先级高于本文件的选择器；
+       若只写边距不压宽度，iframe 会变成 100% + 5% + 5% = 110%，反而溢出。
+       （!important 只用来压这一条内联宽度，不影响其他属性。）
+   3.3 display: block + border: 0：iframe 默认是行内元素、自带 2px 内凹
+       边框；改成块级并去掉边框，左右边距才按盒模型精确生效，外观也与
+       卡片底色连成一片。
+   3.4 高度不在这里管：由 attributions.html 里的 postMessage 脚本按平台
+       上报的内容高度实时改写，本文件不设固定高度。
+
+   窄屏（description.css 第 8 节，≤820px）下正文卡片本身也是左右各 4%、
+   卡片内不再加内边距，所以这一条 5% 在两个断点上都成立，无需再写媒体查询。 */
+#igem-attribution-form {
+    display: block;
+    width: 90% !important;
+    margin-left: 5%;
+    margin-right: 5%;
+    border: 0;
+    box-sizing: border-box;
 }
