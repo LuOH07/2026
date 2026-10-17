@@ -1,15 +1,16 @@
-{#- 加载动画遍数：Home 不播放（0），Members 连播五遍（5），其余页面播放一遍（1）。
+{#- 加载动画规则：Home 不播放（0），其余页面至少完整播一遍（1）。Members 与
+    Attributions 额外标记 data-loading-wait：一遍播完页面还没加载完就继续循环，
+    直到页面全部加载完才淡出（见 static/loading/loading.js）。
     /team 与 /members 是同一个 Members 页面，两者都算 Members。 -#}
 {%- set nav_page = (request.view_args or {}).get('page') -%}
 {%- if request.endpoint == 'home' -%}
   {%- set loading_plays = 0 -%}
-{%- elif request.endpoint == 'team' or nav_page == 'members' -%}
-  {%- set loading_plays = 5 -%}
 {%- else -%}
   {%- set loading_plays = 1 -%}
 {%- endif -%}
+{%- set loading_wait = request.endpoint == 'team' or nav_page in ('members', 'attributions') -%}
 <!doctype html>
-<html lang="en" data-loading-plays="{{ loading_plays }}">
+<html lang="en" data-loading-plays="{{ loading_plays }}"{% if loading_plays and loading_wait %} data-loading-wait="1"{% endif %}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,7 +27,8 @@
 </head>
 <body>
   {% if loading_plays %}
-  <!-- 全屏白底加载动画：视频居中、宽度 80%，播完（Members 为五遍）自动消失 -->
+  <!-- 全屏白底加载动画：视频居中、宽度 80%；至少播一遍，Members/Attributions
+       会一直播到页面全部加载完才消失 -->
   <div class="loading" id="loading" aria-hidden="true">
     <video class="loading__video" id="loading-video"
            src="{{ url_for('static', filename='loading/loading.mp4') }}"
