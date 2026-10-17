@@ -63,3 +63,34 @@
     border: 0;
     box-sizing: border-box;
 }
+
+/* ========================================================
+   4. 页面宽度在加载动画前后保持不变（修掉 iframe 右侧那条空白 / 被裁掉的边）
+   ========================================================
+   现象：表单右侧空出一条（或反过来被裁掉一条），宽十几到几十像素。
+   原因：这份表单是跨域 iframe（teams.igem.org），里层页面的布局宽度是
+        【它第一次渲染那一刻】的 iframe 宽度。而本站的加载动画会临时锁住
+        滚动条 —— loading.css 里 html.is-loading { overflow: hidden } ——
+        加载期间页面没有滚动条、宽度是全屏；动画结束后滚动条回来，页面和
+        卡片整体变窄 15px 左右，iframe 跟着变窄，但里层跨域页面不会立刻重新
+        布局（Chrome 对屏幕外的 OOPIF 会延后刷新），于是 iframe 实际宽度和
+        里层页面的布局宽度对不上：要么右边空一条，要么右边被切掉一条。
+
+   修法：给 html 预留滚动条占位，并且加载期间也保持滚动条存在，这样从第一
+   帧到加载结束，页面 / 卡片 / iframe 的宽度始终不变，里层页面一次就量到
+   正确宽度，不会出现"对不上"的条带。
+
+   4.1 scrollbar-gutter: stable —— 常驻预留滚动条的位置，滚动条出现 / 消失
+       都不再让内容宽度跳变（Chrome / Edge / Firefox 均支持）。
+   4.2 html.is-loading 期间 loading.css 把 overflow 设成 hidden，此时
+       scrollbar-gutter 不再占位、滚动条也会消失；这里把纵向改回 scroll，
+       让加载动画期间滚动条照样占位（页面被遮罩盖住，多出这条滚动条不影响
+       观感，加载期间也不建议滚动）。选择器与 loading.css 同权重、本文件
+       后加载，所以覆盖有效。 */
+html {
+    scrollbar-gutter: stable;
+}
+
+html.is-loading {
+    overflow-y: scroll !important;
+}
