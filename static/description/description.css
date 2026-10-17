@@ -1130,14 +1130,22 @@ mark {
 }
 
 /* 先把所有单元格的边框清空，横线只由下面三条规则画；
+<<<<<<< HEAD
    文字一律水平居中（<td> 浏览器默认左对齐，这里统一覆盖），
    竖直方向也居中：一行里字数多的单元格会换行变高，同一行里字数少的
    单元格（<th> / <td>）的文字上下居中，不再贴着单元格顶端。 */
+=======
+   文字一律水平居中（<td> 浏览器默认左对齐，这里统一覆盖） */
+>>>>>>> 352806fe27deb0f7fc9e3d34fbc58a4cb52ad1ba
 .main-container table th,
 .main-container table td {
     border: 0;
     padding: 0.55em 0.9em;
+<<<<<<< HEAD
     vertical-align: middle;
+=======
+    vertical-align: top;
+>>>>>>> 352806fe27deb0f7fc9e3d34fbc58a4cb52ad1ba
     text-align: center;
 }
 
@@ -1199,6 +1207,7 @@ mark {
        <p class="body-text"><upfold>Materials and Apparatus:
            <upfold-text>点击后展开的正文</upfold-text></upfold></p>
 
+<<<<<<< HEAD
    展开的正文想分两段（或多段）：写多个 <upfold-text>，一块一段 ——
        <p class="body-text"><upfold>Why the expert discussion mattered
            <upfold-text>第一段……</upfold-text>
@@ -1208,6 +1217,8 @@ mark {
    “一个 <upfold-text> 里面再套 <p>”—— 外层是 <p class="body-text">，
    <p> 不能嵌套 <p>，浏览器会把外层段落就地截断，结构就乱了。
 
+=======
+>>>>>>> 352806fe27deb0f7fc9e3d34fbc58a4cb52ad1ba
    收起：标签是一枚 #53DEB7 的圆角胶囊，白字，宽度随标签文字伸缩，
         字号 26px（与 .heading-3 同级）。
    展开：胶囊换底色与文字颜色（--upfold-open-bg / --upfold-open-color）；
@@ -1224,10 +1235,13 @@ mark {
    （本文件末尾的 .upfold-rail 一节）：素材、左右分布、上沿间距与旋转角度
    都由 description.js 第 6.3 节随机算好后写成内联样式，本文件只给轨道的
    两个基准尺寸与摆放方式。
+<<<<<<< HEAD
    展开正文写成多段（多个 <upfold-text>）时，轨道从第一段的顶边一直铺到
    最后一段的底边，每一段左侧都有脚印。轨道元素本身仍然挂在第一段里，
    只是向下溢出到后面几段旁边（第一段与后面各段的左内边距都是 3.5ch，
    脚印所在的那条竖列本来就是对齐的），所以多段不需要另写样式。
+=======
+>>>>>>> 352806fe27deb0f7fc9e3d34fbc58a4cb52ad1ba
 
    为什么正文不会被胶囊框住：description.js 会把标签文字单独包进
    <span class="upfold-label">，胶囊的底色 / 内边距都画在这一层上，
@@ -1368,6 +1382,7 @@ mark {
     -webkit-user-select: text;
 }
 
+<<<<<<< HEAD
 /* ---------- 展开出来的正文写成两段及以上时（见 description.js 第 6 节）----------
    每个 <upfold-text> 各自是一段。上面那条规则给每段的 margin-top 都是
    0.8em（第一段与胶囊之间的空档），这里把“段与段之间”改成正文的段落间距
@@ -1379,6 +1394,8 @@ mark {
     margin-top: 1em;
 }
 
+=======
+>>>>>>> 352806fe27deb0f7fc9e3d34fbc58a4cb52ad1ba
 /* ---------- 展开文字左侧的脚印轨道 ----------
    正文左内边距是 3.5ch，其中左边 2ch 让给脚印：左脚印的左边缘在 0–1ch、
    右脚印的左边缘在 1–2ch 里各自随机（即各占 1ch 宽的一段），脚印宽 1ch
@@ -1436,6 +1453,7 @@ mark {
         --upfold-font-size: 17px;
     }
 }
+<<<<<<< HEAD
 
 /* ========================================================
    14. 标题副标题（.heading-sub）
@@ -1665,3 +1683,5 @@ mark {
         font-size: 21px;
     }
 }
+=======
+>>>>>>> 352806fe27deb0f7fc9e3d34fbc58a4cb52ad1ba
