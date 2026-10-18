@@ -1,9 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    /* 移动端（宽度 <= 820px，与 description.css 第 8 节断点保持一致）：
-       侧边目录与滚动剑/剑鞘均由 CSS 隐藏，这里直接跳过相关逻辑，
-       避免对隐藏元素做无用的布局读写。首屏 canvas 在两端都会绘制。 */
-    const mobileViewport = window.matchMedia('(max-width: 820px)');
+    /* 移动端断点：1024px —— 与 description.css 第 8 节、以及全站页眉
+       head_foot.css / head_foot.js 的移动端断点完全一致。
+       （曾经这里是 820px：821~1024px 这段夹缝里本页仍按 PC 布局显示侧边栏，
+       而页眉在 ≤1024px 用一条裸 nav 选择器接管了侧边栏里的 #tocNav，
+       于是出现“有 sidebar 但没有文字”。两边断点统一后夹缝消失。） */
+    const MOBILE_MAX_WIDTH = 1024;
+    const mobileViewport = window.matchMedia(`(max-width: ${MOBILE_MAX_WIDTH}px)`);
     const isMobile = () => mobileViewport.matches;
 
     const canvas = document.getElementById('gridCanvas');
@@ -136,11 +139,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         /* ------------------------------------------------------------------
          * 首屏透视网格
-         * PC 端（宽度 > 820px）与 static/members/title/title.js 完全一致：
+         * PC 端（宽度 > 1024px）与 static/members/title/title.js 完全一致：
          * THEME、CEILING_H_STEPS、WALL_V_STEPS、resizeCanvas、
          * drawInfiniteCeiling、drawInfiniteSideWalls、drawGrid 的取值、
          * 参数顺序与绘制顺序逐行对应，改动 title.js 时这里同步即可。
-         * 窄屏几何见 drawNarrowHeroGrid，仅作用于 ≤820px 的窗口（那时
+         * 窄屏几何见 drawNarrowHeroGrid，仅作用于 ≤1024px 的窗口（那时
          * #gridCanvas 已被 description.css 第 8.4 节隐藏）。
          * ------------------------------------------------------------------ */
         const THEME = {
@@ -159,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let height = window.innerHeight;
 
             // 窄屏首屏高度由移动端贴图撑开，画布改为跟随 #heroWrapper 实测尺寸
-            if (window.innerWidth <= 820) {
+            if (window.innerWidth <= MOBILE_MAX_WIDTH) {
                 const heroWrapper = document.getElementById('heroWrapper');
                 width = Math.max(width, heroWrapper ? heroWrapper.clientWidth : 0);
                 height = heroWrapper ? heroWrapper.clientHeight : height;
@@ -277,8 +280,8 @@ document.addEventListener('DOMContentLoaded', () => {
         function drawGrid(w, h) {
             ctx.clearRect(0, 0, w, h);
 
-            // 窄屏（≤820px）另用一套几何，PC 分支不受影响
-            if (window.innerWidth <= 820 && h < w * 1.4) {
+            // 窄屏（≤1024px）另用一套几何，PC 分支不受影响
+            if (window.innerWidth <= MOBILE_MAX_WIDTH && h < w * 1.4) {
                 drawNarrowHeroGrid(w, h);
                 return;
             }
@@ -359,6 +362,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* -------------------------------------------------------------
      * 2. 侧边栏 TOC 目录构建与滚动跟随（含底边齐平与渐隐逻辑）
+     * -------------------------------------------------------------
+     * 侧边栏只允许两种状态，二者都带文字或干脆没有：
+     *   ① 宽屏（>1024px）：显示，目录一定建好、文字一定可见；
+     *   ② 窄屏（≤1024px）：整块不显示（与手机端一致，由 CSS 隐藏）。
+     * 绝不允许“显示侧边栏但里面没有文字”。为此：
+     *   · 断点与页眉 head_foot 保持一致（见本文件开头的 MOBILE_MAX_WIDTH）；
+     *   · 目录宽窄屏【一律构建】：窄屏只是被 CSS 藏起来，不建目录的话，
+     *     从窄屏拖宽到宽屏就会出现“侧边栏显示了却一个字都没有”；
+     *   · 目录为空（页面没有标题 / 脚本异常）时给侧边栏加 .is-empty，
+     *     由 description.css 第 3.2 节整块隐藏；
+     *   · description.css 第 3.1 节还给 #tocNav 加固过权重，防止它被
+     *     页眉那条裸 nav 选择器（opacity: 0 / visibility: hidden）“劫持”。
      * ------------------------------------------------------------- */
     const tocNav = document.getElementById('tocNav');
     const mainContainer = document.getElementById('mainContainer');
@@ -366,8 +381,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!tocNav || !mainContainer) return;
 
-    if (sideContainer && !isMobile()) {
+    /* 目录里有没有条目 —— 侧边栏“有底板、没文字”的状态以它为准。
+       与 CSS 的 .side-container:has(.toc-nav:empty) 是同一件事的两个兜底：
+       这里负责老浏览器与运行中被清空的目录，那边负责“脚本根本没跑起来”。 */
+    const syncSidebarContent = () => {
+        if (!sideContainer) return;
+        sideContainer.classList.toggle('is-empty', tocNav.querySelectorAll('.toc-item').length === 0);
+    };
+
+    if (sideContainer) {
         const updateSidebarPosition = () => {
+            // 窄屏侧边栏由 CSS 整块隐藏，不必再算位置（也避免对隐藏元素读写布局）
+            if (isMobile()) return;
+
             const mainRect = mainContainer.getBoundingClientRect();
             const sidebarRect = sideContainer.getBoundingClientRect();
             const sidebarHeight = sideContainer.offsetHeight || sidebarRect.height;
@@ -419,11 +445,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const headings = mainContainer.querySelectorAll('h1.heading-1, h2.heading-2, h3.heading-3, h1.heading-reference');
-    if (headings.length === 0) return;
 
-    // 移动端隐藏了侧边目录，直接跳过目录构建（标题 id 已全部写好，锚点依然可用）
-    if (isMobile()) return;
-
+    /* 目录宽窄屏【一律构建】：窄屏的侧边栏虽然被 CSS 整块隐藏，但目录照建，
+       这样窗口从窄拖宽（或旋转平板）跨过断点时，侧边栏一出现就已经有文字，
+       不会出现“有 sidebar 但没有文字”的中间状态。构建成本只是十来个 <a>。
+       页面若一个标题都没有，目录就是空的，最后由 syncSidebarContent() 把
+       整块侧边栏隐藏（而不是留一个空壳）。 */
     tocNav.innerHTML = '';
 
     let h1Index = 0;
@@ -545,6 +572,10 @@ document.addEventListener('DOMContentLoaded', () => {
         tocNav.appendChild(tocItem);
     });
 
+    /* 目录建完立刻核对侧边栏状态：有条目 → 可以显示（宽屏）；
+       一条都没有 → 加 .is-empty，整块隐藏，绝不留空壳 */
+    syncSidebarContent();
+
     const centerTocItemInSidebar = (item) => {
         if (!sideContainer || !item) return;
         const containerRect = sideContainer.getBoundingClientRect();
@@ -645,6 +676,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const updateSwordScabbardPosition = () => {
         if (!sword || !scabbard || !mainContainer) return;
+        // 窄屏这两件装饰由 CSS 整块隐藏，跳过计算（窗口拖宽后 resize 会重算）
+        if (isMobile()) return;
 
         const { startScroll, scrollRange, targetTop, mainRect } = getScrollBounds();
         const sword20PercentOffsetPx = window.innerHeight * 0.1;

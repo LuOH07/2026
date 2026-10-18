@@ -38,9 +38,9 @@ html, body {
    - PC 端（> 1024px）不进入本段，页面结构、尺寸与交互完全不变
    ======================================================================= */
 
-/* PC 端：移动端长图不参与布局（图片地址只挂在 <source media> 上，
+/* PC 端：移动端长图与热区都不参与布局（图片地址只挂在 <source media> 上，
    PC 端不会选中该 source，因此这张图在 PC 上也不会被请求） */
-.members-content-image {
+.members-mobile-content {
   display: none;
 }
 
@@ -58,6 +58,13 @@ html, body {
   }
 
   /* 移动端长图：宽度占满整个页面，长度按原图比例自适应 */
+  .members-mobile-content {
+    display: block;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+  }
+
   .members-content-image {
     display: block;
     width: 100%;
@@ -69,5 +76,30 @@ html, body {
     width: 100%;
     max-width: 100%;
     height: auto;
+  }
+
+  /* 图片中“Team Video”卡片上的透明点击热区：坐标是相对图片的百分比，
+     图片怎么缩放都贴住卡片（卡片在原图 736×4000 中的位置换算而来）。
+     点击后跳到 video.html 的独立播放页。 */
+  .members-video-hotspot {
+    display: block;
+    position: absolute;
+    left: 18.97%;
+    top: 19.06%;
+    width: 63.08%;
+    height: 7.17%;
+    border-radius: 8px;
+    z-index: 2;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* 点按时的轻微反馈；平时完全透明，不影响图片观感 */
+  .members-video-hotspot:active {
+    background: rgba(255, 255, 255, 0.16);
+  }
+
+  .members-video-hotspot:focus-visible {
+    outline: 2px solid #175B50;
+    outline-offset: 2px;
   }
 }

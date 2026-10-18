@@ -1,0 +1,176 @@
+{#- 移动端 Members 页的独立视频播放页：从正文长图上的“Team Video”热区点进来。
+    不继承 layout.html —— 这里不需要页眉、页脚和加载动画，只做一件事：
+    把视频铺满屏幕，并在竖屏时把播放器旋转 90°，默认就是横向观看。
+    桌面端不会链接到这里（PC 用的是正文里的内嵌 iframe）。 -#}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Team Video | XMU-China - iGEM 2026</title>
+  <link rel="icon" type="image/avif" href="https://static.igem.wiki/teams/6059/wiki/head-foot/favicon-6.avif">
+  <style>
+    /* 整页只有播放器：黑底、无滚动条 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #071223;
+    }
+
+    body {
+      font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Heiti SC",
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    /* 播放器容器：默认铺满视口（设备横屏时天然就是横屏） */
+    .player {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #071223;
+    }
+
+    .player iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #000;
+    }
+
+    /* 竖屏兜底（“默认转横屏”）：把播放器整体旋转 90°，旋转后的宽度取屏幕
+       高度、高度取屏幕宽度，正好横向铺满；用户竖着拿手机也能看到横向视频。
+       浏览器支持屏幕方向锁定时（见页面底部脚本）会真正转成横屏，此时竖屏
+       媒体查询不再命中，这段旋转自动失效，不会重复旋转。 */
+    @media (orientation: portrait) {
+      .player {
+        inset: auto;
+        top: 50%;
+        left: 50%;
+        width: 100vh;
+        width: 100dvh;
+        height: 100vw;
+        height: 100dvw;
+        transform: translate(-50%, -50%) rotate(90deg);
+        transform-origin: center center;
+      }
+
+      /* 在播放器里点全屏后，iframe 自身变成全屏元素，同样保持横向
+         （分成两条规则写，避免不识别 :-webkit-full-screen 的浏览器整条丢弃） */
+      .player iframe:fullscreen {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 100vh;
+        width: 100dvh;
+        height: 100vw;
+        height: 100dvw;
+        transform: translate(-50%, -50%) rotate(90deg);
+        transform-origin: center center;
+      }
+
+      .player iframe:-webkit-full-screen {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        width: 100vh;
+        width: 100dvh;
+        height: 100vw;
+        height: 100dvw;
+        transform: translate(-50%, -50%) rotate(90deg);
+        transform-origin: center center;
+      }
+    }
+
+    /* 返回按钮：固定在物理屏幕左上角，不跟随播放器旋转 */
+    .player-back {
+      position: fixed;
+      top: max(10px, env(safe-area-inset-top));
+      left: max(10px, env(safe-area-inset-left));
+      z-index: 10;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 15px;
+      border-radius: 999px;
+      background: rgba(10, 28, 55, 0.74);
+      color: #ffffff;
+      font-size: 14px;
+      line-height: 1;
+      letter-spacing: 0.4px;
+      text-decoration: none;
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .player-back:hover {
+      background: rgba(10, 28, 55, 0.92);
+    }
+
+    .player-back:focus-visible {
+      outline: 2px solid #91ACE0;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="player">
+    <iframe id="team-video"
+            src="https://video.igem.org/videos/embed/pyn38ovsD5mjS7FP3bDJ4F?autoplay=1&amp;title=0&amp;warningTitle=0"
+            title="XMU-China: Team Members Introduction (2026)"
+            allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+            allowfullscreen
+            sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-presentation"></iframe>
+  </div>
+  <a class="player-back" href="{{ url_for('team') }}">&larr; Members</a>
+  <script>
+    (function () {
+      'use strict';
+
+      /* 尽力而为的“真横屏”：浏览器只允许在全屏状态下锁定屏幕方向，
+         所以这里调用失败是常态，失败就交给上面的 CSS 旋转兜底，不打扰用户。 */
+      function lockLandscape() {
+        var orientation = window.screen && window.screen.orientation;
+        if (!orientation || typeof orientation.lock !== 'function') return;
+        try {
+          var result = orientation.lock('landscape');
+          if (result && typeof result.catch === 'function') {
+            result.catch(function () { /* 拒绝：保持 CSS 旋转的横屏效果 */ });
+          }
+        } catch (error) {
+          /* 不支持或被拒绝：同样什么都不做 */
+        }
+      }
+
+      function unlockOrientation() {
+        var orientation = window.screen && window.screen.orientation;
+        if (!orientation || typeof orientation.unlock !== 'function') return;
+        try { orientation.unlock(); } catch (error) { /* 忽略 */ }
+      }
+
+      /* 进页面先试一次。 */
+      lockLandscape();
+
+      /* 用户在播放器里点全屏后，document.fullscreenElement 会变成这个
+         iframe，此时再锁一次方向通常就能真正转成横屏。 */
+      document.addEventListener('fullscreenchange', function () {
+        if (document.fullscreenElement) {
+          lockLandscape();
+        } else {
+          unlockOrientation();
+        }
+      });
+    }());
+  </script>
+</body>
+</html>
