@@ -7,9 +7,17 @@ font-display: swap;
 }
 
 *{ box-sizing: border-box; margin: 0; padding: 0; }
-html, body { width: 100%; min-height: 100%; }
-body { background-color: #f3f7f8; }
+/* overflow-x: hidden —— 移动端不出现横向滚动条（页面宽度贴合设备宽度） */
+html { overflow-x: hidden; }
+html, body { width: 100%; max-width: 100%; min-height: 100%; }
+body { background-color: #f3f7f8; overflow-x: hidden; }
 .dropdown-item[aria-disabled="true"] { cursor: default; }
+
+/* 移动端汉堡按钮 / 遮罩 / 子菜单返回按钮：桌面端默认隐藏，仅在窄屏媒体查询中启用 */
+.nav-toggle,
+.nav-toggle-btn,
+.nav-backdrop,
+.submenu-back { display: none; }
 
 /* STREAMING_CHUNK:Styling header container... */
 header {
@@ -116,6 +124,16 @@ letter-spacing: 0px;
 text-transform: capitalize;
 background-color: #C7D8E9;
 transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* 例外：Proof of Concept —— "of" 是介词，首字母保持小写。
+   上面的 text-transform: capitalize 会把每个单词首字母都变成大写（Proof Of Concept），
+   因此这里单独取消该变换，由 menu.html 中的原文 "Proof of<br>Concept" 决定大小写。
+   定位方式用「包含」而不是「结尾」：app.py 的 pages 路由是 /<page>/，带结尾斜杠，
+   url_for 生成的是 /proof-of-concept/，用 href$="proof-of-concept" 会匹配不到
+   （这正是不生效的原因）。href*="proof-of-concept" 对带不带斜杠都成立。 */
+.dropdown-item[href*="proof-of-concept"] {
+text-transform: none;
 }
 
 .dropdown-item::before {
@@ -277,4 +295,362 @@ margin: 4px 0;
 .wiki-legal a {
 color: inherit;
 text-decoration: underline;
+}
+
+/* =======================================================================
+   响应式 / 移动端（<= 1024px）
+   - 桌面端（> 1024px）保持原有横向菜单与页脚布局，完全不受影响
+   - 页眉只保留 logo + 右侧汉堡按钮（汉堡 → × 的形变动画保持不变）
+   - 右上角“悬浮弹窗”承担全部导航：
+       * 点汉堡：弹窗从右上角滑出，大标题（一级菜单）自上而下逐行排列
+       * 再点一次汉堡：整个弹窗收起
+       * 点某一行大标题：在该行下方展开它的小标题；再点这一行收起
+   - 状态源：弹窗开 / 关由 label 内的 checkbox 决定
+     （.nav-toggle:has(input:checked) ~ nav），
+     某一行的展开 / 收起由该行的 .is-expanded 类决定，二者都由 head_foot.js 维护
+   ======================================================================= */
+
+/* 窄屏：完全关闭“悬停 / 聚焦自动显示下拉菜单”，小标题一律由点击大标题触发 */
+@media (max-width: 1024px) {
+.nav-item:hover .dropdown-menu,
+.nav-item:focus-within .dropdown-menu {
+opacity: 0;
+visibility: hidden;
+transform: none;
+}
+}
+
+/* ---------- 移动端：页眉 / 右上角悬浮弹窗 ---------- */
+@media (max-width: 1024px) {
+
+/* 页眉：贴合屏幕宽度，只留 logo + 汉堡按钮
+   注意不要在这里写 position（基础样式的 position:fixed 负责让页眉常驻页面顶部） */
+header {
+height: 62px;
+padding: 0 16px;
+padding-left: max(16px, env(safe-area-inset-left));
+padding-right: max(16px, env(safe-area-inset-right));
+}
+
+/* logo：移动端固定在页眉左侧 20% 处（以自身中心对齐 20% 分位） */
+.logo {
+position: absolute;
+top: 50%;
+left: 20%;
+transform: translate(-50%, -50%);
+height: 34px;
+max-width: 46vw;
+margin-left: 0;
+}
+
+/* 汉堡按钮：固定在页眉右上角（形变动画保持原样） */
+.nav-toggle {
+position: fixed;
+top: 0;
+right: 0;
+z-index: 130;
+display: flex;
+align-items: center;
+justify-content: center;
+width: 62px;
+height: 62px;
+margin-right: env(safe-area-inset-right);
+cursor: pointer;
+}
+.nav-toggle input {
+position: absolute;
+width: 1px;
+height: 1px;
+opacity: 0;
+pointer-events: none;
+}
+.nav-toggle-btn {
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+gap: 5px;
+width: 40px;
+height: 40px;
+border-radius: 8px;
+cursor: pointer;
+}
+.nav-toggle-btn span {
+display: block;
+width: 24px;
+height: 2px;
+border-radius: 2px;
+background-color: #cfe0f2;
+transition: transform 0.3s ease, opacity 0.25s ease, background-color 0.25s ease;
+}
+.nav-toggle:hover .nav-toggle-btn span { background-color: #ffffff; }
+
+/* 展开时三层线变为关闭“X”（此动画按要求保持原样）
+   注意：checkbox 位于 .nav-toggle（label）内部，与 nav 并非兄弟节点，
+   因此状态源只能用 .nav-toggle:has(input:checked)，不能用 input ~ nav */
+.nav-toggle:has(input:checked) .nav-toggle-btn span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle:has(input:checked) .nav-toggle-btn span:nth-child(2) { opacity: 0; transform: scaleX(0.2); }
+.nav-toggle:has(input:checked) .nav-toggle-btn span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* -----------------------------------------------------------------------
+   右上角悬浮弹窗（导航本体）：贴着汉堡按钮下方垂下的一列标题
+   宽度按最长的一行文字（PROJECT / DRYLAB 等）来定，保持窄条观感
+   弹窗开 / 关：点汉堡时 checkbox 勾选 / 取消
+   ----------------------------------------------------------------------- */
+nav {
+position: absolute;
+top: calc(100% + 8px);
+right: clamp(10px, 4vw, 16px);
+left: auto;
+bottom: auto;
+display: block;
+width: min(60vw, 200px);
+min-width: 0;
+max-width: 200px;
+height: auto;
+max-height: calc(100vh - 62px - 26px - env(safe-area-inset-bottom));
+max-height: calc(100dvh - 62px - 26px - env(safe-area-inset-bottom));
+margin-right: 0;
+padding: 0;
+overflow-y: auto;
+overflow-x: hidden;
+-webkit-overflow-scrolling: touch;
+overscroll-behavior: contain;
+background-color: rgba(10, 28, 55, 0.97);
+border: 1px solid rgba(199, 216, 233, 0.22);
+border-radius: 14px;
+box-shadow: 0 18px 38px rgba(3, 10, 22, 0.45);
+-webkit-backdrop-filter: saturate(140%) blur(6px);
+backdrop-filter: saturate(140%) blur(6px);
+opacity: 0;
+visibility: hidden;
+pointer-events: none;
+transform: translateY(-10px) scale(0.97);
+transform-origin: top right;
+transition: opacity 0.28s ease, transform 0.28s ease, visibility 0.28s ease;
+z-index: 125;
+}
+
+/* 展开：由 .nav-toggle（label）内的 checkbox 触发 */
+.nav-toggle:has(input:checked) ~ nav {
+opacity: 1;
+visibility: visible;
+pointer-events: auto;
+transform: translateY(0) scale(1);
+}
+
+/* 大标题（一级菜单）：自上而下逐行排列，每行一条细分隔线 */
+nav .nav-item {
+display: block;
+width: 100%;
+height: auto;
+border-bottom: 1px solid rgba(199, 216, 233, 0.12);
+}
+nav .nav-item:last-child { border-bottom: 0; }
+
+nav .nav-item > a.nav-link {
+display: flex;
+align-items: center;
+justify-content: space-between;
+width: 100%;
+height: auto;
+padding: 15px 18px;
+font-size: 16px;
+letter-spacing: 1.4px;
+color: #cfe0f2;
+}
+nav .nav-item > a.nav-link:hover,
+nav .nav-item > a.nav-link.active {
+background-color: transparent;
+color: #ffffff;
+}
+nav .nav-item:hover > a.nav-link { color: #ffffff; background-color: transparent; }
+
+/* 只有含二级菜单的大标题才显示箭头 */
+nav .nav-item:has(.dropdown-menu) > a.nav-link::after {
+content: "";
+width: 8px;
+height: 8px;
+margin-left: 14px;
+border-right: 2px solid #7f97b3;
+border-bottom: 2px solid #7f97b3;
+transform: rotate(-45deg);
+transition: transform 0.25s ease, border-color 0.25s ease;
+}
+nav .nav-item:has(.dropdown-menu) > a.nav-link:hover::after { border-color: #ffffff; }
+
+/* 箭头：默认收起；该行被选中（.is-expanded，即点开了它的小标题）时转向下 */
+nav .nav-item.is-expanded:has(.dropdown-menu) > a.nav-link::after {
+transform: rotate(45deg);
+border-color: #ffffff;
+}
+
+/* 二级菜单（小标题）：不再整屏铺开，而是在各自大标题下方就地逐行展开 */
+nav .dropdown-menu {
+position: static;
+top: auto;
+right: auto;
+bottom: auto;
+left: auto;
+width: 100%;
+min-width: 0;
+max-height: none;
+overflow: visible;
+background-color: rgba(9, 25, 50, 0.45);
+border-radius: 0;
+box-shadow: none;
+transform: none;
+display: none;
+z-index: 1;
+}
+
+/* 点开某一行大标题（.is-expanded）后，在该行下方就地铺开它的小标题；再点该行收起 */
+.nav-toggle:has(input:checked) ~ nav .nav-item.is-expanded > .dropdown-menu {
+display: block;
+opacity: 1;
+visibility: visible;
+transform: none;
+animation: navSubmenuIn 0.24s ease;
+}
+
+@keyframes navSubmenuIn {
+from { opacity: 0; transform: translateY(-5px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+/* 弹窗内不需要“返回”按钮：再点一次汉堡即可整体收起 */
+nav .submenu-back { display: none; }
+
+/* 小标题（二级菜单项）：逐行排列，左侧留出缩进与大标题区分 */
+nav .dropdown-item {
+justify-content: flex-start;
+width: 100%;
+padding: 11px 16px 11px 26px;
+font-size: 14px;
+line-height: 1.4;
+letter-spacing: 0.2px;
+text-align: left;
+white-space: nowrap;
+color: #9fb8d0;
+background-color: transparent;
+border-bottom: 1px solid rgba(199, 216, 233, 0.06);
+}
+nav .dropdown-item:last-child { border-bottom: 0; }
+nav .dropdown-item:hover,
+nav .dropdown-item:active {
+background-color: rgba(19, 45, 85, 0.92);
+color: #ffffff;
+}
+nav .dropdown-item::before { display: none; }
+nav .dropdown-item:hover::before { opacity: 0; }
+
+/* 遮罩：整屏覆盖，点空白处同样可以收起弹窗。
+   注意 z-index 必须低于页眉（header 为 100），否则会盖住汉堡按钮，
+   第 2 / 3 次点击就会落到遮罩上而无法展开小标题或收起弹窗。 */
+body.menu-open .nav-backdrop {
+display: block;
+position: fixed;
+inset: 0;
+z-index: 90;
+background-color: rgba(4, 12, 26, 0.45);
+}
+}
+
+/* ---------- 移动端：页脚重新布局 ---------- */
+@media (max-width: 1024px) {
+footer {
+flex-direction: column;
+align-items: center;
+gap: 18px;
+width: 100%;
+padding: 36px 20px calc(36px + env(safe-area-inset-bottom));
+text-align: center;
+}
+
+/* logo 回到正常流，居中，可自动换行 */
+.footer-logos {
+position: static;
+top: auto;
+left: auto;
+transform: none;
+order: -1;
+flex-wrap: wrap;
+justify-content: center;
+gap: 18px;
+width: 100%;
+}
+.footer-logo {
+height: auto;
+width: auto;
+max-height: 56px;
+max-width: 30%;
+}
+
+.footer-social {
+flex-wrap: wrap;
+justify-content: center;
+gap: 10px;
+}
+.footer-social img {
+width: 40px;
+height: 40px;
+padding: 7px;
+}
+
+.footer-address {
+font-size: 15px;
+line-height: 1.55;
+letter-spacing: 0.2px;
+}
+
+.footer-copyright {
+flex-direction: column;
+align-items: center;
+gap: 8px;
+font-size: 11px;
+text-align: center;
+}
+
+.footer-contact-btn {
+font-size: 14px;
+padding: 10px 26px;
+}
+
+.wiki-legal {
+margin-top: 20px;
+padding: 0 20px;
+font-size: 11px;
+text-align: center;
+word-break: break-word;
+}
+}
+
+/* ---------- 超窄屏（<= 420px）进一步压缩 ---------- */
+@media (max-width: 420px) {
+.logo { height: 30px; }
+nav {
+width: min(64vw, 186px);
+max-width: 186px;
+right: 8px;
+}
+nav .nav-item > a.nav-link { padding: 13px 14px; font-size: 15px; }
+nav .dropdown-item { padding: 10px 14px 10px 22px; font-size: 13px; }
+.footer-logo { max-height: 44px; max-width: 28%; }
+.footer-social img { width: 34px; height: 34px; padding: 6px; }
+.footer-address { font-size: 14px; }
+}
+
+/* ---------- 横屏手机：收紧悬浮弹窗的纵向留白 ---------- */
+@media (max-width: 1024px) and (orientation: landscape) and (max-height: 480px) {
+nav { max-height: calc(100vh - 62px - 18px); max-height: calc(100dvh - 62px - 18px); }
+nav .nav-item > a.nav-link { padding: 11px 16px; }
+nav .dropdown-item { padding: 9px 16px 9px 26px; }
+footer { padding-top: 28px; padding-bottom: 28px; }
+}
+
+/* ---------- 触屏设备：去掉点击高亮块 ---------- */
+@media (hover: none) {
+nav a.nav-link,
+nav .dropdown-item,
+.nav-toggle { -webkit-tap-highlight-color: transparent; }
 }

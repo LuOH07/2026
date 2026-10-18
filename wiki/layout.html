@@ -1,15 +1,41 @@
+{#- 加载动画规则：Home 不播放（0），其余页面至少完整播一遍（1）。Members 与
+    Attributions 额外标记 data-loading-wait：一遍播完页面还没加载完就继续循环，
+    直到页面全部加载完才淡出（见 static/loading/loading.js）。
+    /team 与 /members 是同一个 Members 页面，两者都算 Members。 -#}
+{%- set nav_page = (request.view_args or {}).get('page') -%}
+{%- if request.endpoint == 'home' -%}
+  {%- set loading_plays = 0 -%}
+{%- else -%}
+  {%- set loading_plays = 1 -%}
+{%- endif -%}
+{%- set loading_wait = request.endpoint == 'team' or nav_page in ('members', 'attributions') -%}
 <!doctype html>
-<html lang="en">
+<html lang="en" data-loading-plays="{{ loading_plays }}"{% if loading_plays and loading_wait %} data-loading-wait="1"{% endif %}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{% endblock %} | XMU-China - iGEM 2026</title>
   <link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+  <link rel="icon" type="image/avif" href="https://static.igem.wiki/teams/6059/wiki/head-foot/favicon-6.avif">
   <link rel="stylesheet" href="{{ url_for('fonts_css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='head_foot/head_foot.css') }}">
+  <script src="{{ url_for('static', filename='head_foot/head_foot.js') }}" defer></script>
+  <!-- 加载动画：样式与脚本都必须在 <head> 里同步就位，白底遮罩才会先于正文出现（见 static/loading/loading.js） -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='loading/loading.css') }}">
+  <script src="{{ url_for('static', filename='loading/loading.js') }}"></script>
   {% block page_styles %}{% endblock %}
 </head>
 <body>
+  {% if loading_plays %}
+  <!-- 全屏白底加载动画：视频居中、宽度 80%；至少播一遍，Members/Attributions
+       会一直播到页面全部加载完才消失 -->
+  <div class="loading" id="loading" aria-hidden="true">
+    <video class="loading__video" id="loading-video"
+           src="{{ url_for('static', filename='loading/loading.mp4') }}"
+           preload="auto" muted playsinline webkit-playsinline
+           disablepictureinpicture aria-hidden="true"></video>
+  </div>
+  {% endif %}
   {% include 'menu.html' %}
   <main id="main-content">{% block page_content %}{% endblock %}</main>
   {% include 'footer.html' %}

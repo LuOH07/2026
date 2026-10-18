@@ -116,7 +116,7 @@ def pages(page):
     return render_template(template)
 
 
-@app.route("/fonts.css")
+@app.route("/fonts.css/")
 def fonts_css():
     return Response(render_template("fonts.css"), mimetype="text/css")
 

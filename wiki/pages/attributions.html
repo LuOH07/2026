@@ -1,9 +1,10 @@
 {% extends "layout.html" %}
 
-{% block title %}Description{% endblock %}
+{% block title %}Attributions{% endblock %}
 
 {% block page_styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='description/description.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='description/attributions.css') }}">
 {% endblock %}
 
 {% block page_content %}
@@ -36,7 +37,7 @@
             <p class="center-description-text">
                 We are an international team of students, researchers,<br>
                 and innovators exploring the frontiers of bacterial<br>
-                genome engineering through the power of STING.
+                genetics and genome editing. Our project is built upon<br>
             </p>
         </div>
 
@@ -58,14 +59,17 @@
 
 <!-- 正文主体容器 -->
 <main class="main-container" id="mainContainer">
-    <h1 class="heading-1">Heading 1</h1>
-    <p class="body-text"><b>TnpB</b> CRISPR-Cas9/Cas12.</p>
-
-    <img src="https://static.igem.wiki/teams/6059/wiki/description/figure/1.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  1</b>  Comparison of protein sizes among Cas9, TnpB, and Cas12a</p>    
-    <h2 class="heading-2">Heading 2</h2>   
-    <h3 class="heading-3">Heading 3</h3>
-    <h1 class="heading-reference">Reference</h1>
+    <!-- ========== Attribution Form 区块 新增 ========== -->
+    <section id="section1">
+        <h2 class="heading-2">Attribution Form</h2>
+        <div style="width:100%;">
+            <iframe 
+                id="igem-attribution-form" 
+                src="https://teams.igem.org/wiki/6059/attributions"
+                style="width:100%; border:none;"
+            ></iframe>
+        </div>
+    </section>
 </main>
 
 <img src="https://static.igem.wiki/teams/6059/wiki/description/sword.avif" alt="Sword Scroll Track" class="scroll-sword" id="scrollSword">
@@ -75,4 +79,18 @@
 
 {% block page_scripts %}
 <script src="{{ url_for('static', filename='description/description.js') }}" defer></script>
+<script src="{{ url_for('static', filename='description/attributions.js') }}" defer></script>
+<!-- Attribution iframe自适应脚本 -->
+<script defer>
+// Listen to size change and update form height
+window.addEventListener("message", function (e) {
+    if (e.origin === "https://teams.igem.org") {
+        const { type, data } = JSON.parse(e.data);
+        if (type === "igem-attribution-form") {
+            const element = document.getElementById("igem-attribution-form");
+            element.style.height = `${data + 100}px`;
+        }
+    }
+});
+</script>
 {% endblock %}

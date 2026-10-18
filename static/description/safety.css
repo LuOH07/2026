@@ -1,0 +1,10 @@
+/* ---------- 正文插图宽度：60% -> 50% ----------
+ description.css 中 .figure-image 的 max-width 为 60%，
+ 这里改为 50%，仅作用于 PC 端（>820px）；
+ 移动端（<=820px）description.css 中另有 max-width: 100% 的响应式规则，
+ 用 min-width 限定范围可避免误伤窄屏布局。 */
+@media (min-width: 821px) {
+    .figure-image {
+        max-width: 50%;
+    }
+}

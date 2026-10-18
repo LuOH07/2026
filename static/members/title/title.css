@@ -15,14 +15,35 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-.grid-container {
+/* PC 端首屏横幅容器：与 description.css 第 2 节一致（左右满幅、100vh、渐变背景）。
+   Members 页的 page.css 也按这个类名调整移动端参数（当前为 no-op）。 */
+.title-header-wrapper {
   position: relative;
   width: 100vw;
+  min-width: 100vw;
   height: 100vh;
+  min-height: 100vh;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: 0;
+  padding: 0;
+  overflow: hidden;
+  z-index: 2;
+  box-sizing: border-box;
+  background: radial-gradient(circle at 50% 45%, #ffffff 0%, #f4f8f9 55%, #eaf0f2 100%);
+}
+
+/* 横幅内部容器：尺寸交给外层横幅决定，自身不再额外铺满视口。 */
+.grid-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: radial-gradient(circle at 50% 45%, #ffffff 0%, #f4f8f9 55%, #eaf0f2 100%);
+  background: transparent;
   overflow: hidden;
 }
 

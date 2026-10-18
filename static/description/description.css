@@ -106,12 +106,12 @@ background: radial-gradient(circle at 50% 45%, #ffffff 0%, #f4f8f9 55%, #eaf0f2 
 
 .grid-container {
 position: relative;
-width: 100%;
-height: 100%;
+width: 100vw;
+height: 100vh;
 display: flex;
 justify-content: center;
 align-items: center;
-background: transparent;
+background: radial-gradient(circle at 50% 45%, #ffffff 0%, #f4f8f9 55%, #eaf0f2 100%);
 overflow: hidden;
 }
 
@@ -232,6 +232,20 @@ object-fit: contain;
 display: block;
 }
 
+/* 环境高光遮罩 */
+.ambient-overlay {
+position: absolute;
+inset: 0;
+pointer-events: none;
+background: radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
+z-index: 3;
+}
+
+/* 移动端整块首屏贴图：PC 端不渲染，仅移动端显示（移动端规则见文末第 8.4 节） */
+.mobile-hero-image {
+display: none;
+}
+
 /* 中央描述文案 */
 .center-description-wrapper {
 position: absolute;
@@ -246,7 +260,7 @@ pointer-events: auto;
 }
 
 .center-description-text {
-font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Heiti SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 font-size: clamp(1.15rem, 1.6vw, 1.55rem);
 line-height: 1.68;
 font-weight: 400;
@@ -280,7 +294,7 @@ border-radius: 1px;
 }
 
 .scroll-text {
-font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Heiti SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 font-size: clamp(0.75rem, 0.95vw, 0.98rem);
 letter-spacing: 0.32em;
 color: #33484f;
@@ -374,9 +388,13 @@ letter-spacing: 0;
 line-height: 1.6;
 text-decoration: underline;
 text-underline-offset: 4px;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
+white-space: normal;
+overflow: visible;
+text-overflow: clip;
+flex: 1 1 auto;
+min-width: 0;
+overflow-wrap: break-word;
+word-break: break-word;
 text-align: left;
 transition: color 0.25s ease, text-shadow 0.25s ease;
 }
@@ -408,10 +426,11 @@ box-shadow: 0 0 5px rgba(217, 210, 80, 0.6), 0 0 10px rgba(217, 210, 80, 0.35), 
 transform: scale(1.12);
 }
 
+/* 第二级标题：只改字号与字重；换行能力由 .toc-text 基础规则统一提供 */
 .toc-item-h2 .toc-text {
 color: #FFFFFF;
 font-family: 'Albertus Nova', -apple-system, sans-serif;
-font-size: 22px;
+font-size: 20px;
 font-weight: normal;
 letter-spacing: 0;
 line-height: 1.6;
@@ -436,10 +455,11 @@ flex-shrink: 0;
 display: block;
 }
 
+/* 第三级标题：只改颜色与字号；换行能力由 .toc-text 基础规则统一提供 */
 .toc-item-h3 .toc-text {
 color: #72819A;
 font-family: 'Albertus Nova', -apple-system, sans-serif;
-font-size: 20px;
+font-size: 18px;
 font-weight: normal;
 letter-spacing: 0;
 line-height: 1.6;
@@ -458,7 +478,7 @@ text-shadow: 0 0 5px rgba(217, 210, 80, 0.8), 0 0 10px rgba(217, 210, 80, 0.5);
 .main-container {
 margin-left: 17%;
 margin-right: 4%;
-margin-top: 17%;
+margin-top: 6%;   /* 原 17%：标题首屏与正文之间留白过大，压缩为一点点间隔 */
 margin-bottom: 10vh;
 padding-top: 48px;
 padding-bottom: 48px;
@@ -502,7 +522,7 @@ margin-top: 0;
 font-size: 30px;
 font-family: 'Albertus Nova Bold', -apple-system, sans-serif;
 line-height: 1.6;
-color: #4B8ACA;
+color: #387CC1;
 margin-bottom: 1em;
 }
 
@@ -510,7 +530,7 @@ margin-bottom: 1em;
 font-size: 26px;
 font-family: 'Albertus Nova Bold', -apple-system, sans-serif;
 line-height: 1.6;
-color: #8F8BD9;
+color: #9177DC;
 margin-bottom: 1em;
 }
 
@@ -562,9 +582,9 @@ calc(100% - 4.2vh) 100%,
 );
 }
 
-.heading-1::before { background-color: #9CDBDD; width: 12vh; }
-.heading-2::before { background-color: #94C2F1; width: 16vh; }
-.heading-3::before { background-color: #C7C6F1; width: 20vh; }
+.heading-1::before { background-color: #9CDCDD; width: 12vh; }
+.heading-2::before { background-color: #95C3F1; width: 16vh; }
+.heading-3::before { background-color: #C7C6F2; width: 20vh; }
 .heading-reference::before { background-color: #B9C7D1; width: 12vh; }
 
 .heading-1::after,
@@ -603,7 +623,7 @@ clip-path: polygon(
 );
 }
 
-.heading-1::after { background-color: #9CDBDD; }
+.heading-1::after { background-color: #9CDCDD; }
 .heading-reference::after { background-color: #B9C7D1; }
 
 /* ========================================================
@@ -615,7 +635,7 @@ font-stretch: semi-condensed;
 font-size: 22px;
 letter-spacing: 0.5px;
 line-height: 2;
-color: #000000;
+color: #465E77;
 text-align: justify;
 text-justify: inter-word;
 margin-left: 8%;
@@ -637,6 +657,16 @@ font-family: 'verdana', -apple-system, sans-serif;
 font-style: italic;
 }
 */
+
+/* 正文里的加粗文字：加粗，并单独设定颜色与字号
+   （只作用于 .body-text 内部的 <b> / <strong>；正文其余文字、标题、
+   图注里的加粗都保持各自原有颜色，不受影响） */
+.body-text b,
+.body-text strong {
+    font-weight: bold;
+    color: #000000;
+    font-size: 22px;
+}
 
 /* ========================================================
 6. 正文插图与图标题 (极简结构样式)
@@ -686,38 +716,29 @@ width: 100%;
 
 /* ========================================================
 7. 悬浮卷轴与返回顶部按钮
-======================================================== */
+========================================================
+这三件装饰（宝剑 / 剑鞘 / BACK TO TOP）的【定位、尺寸、层级、变换、
+过渡】都是动效参数，已经统一收进 description.js 第 7 节，由那边在运行时
+写成内联样式 —— 它们的 top 本来就会被第 3 节的滚动 / 拖拽逻辑反复改写，
+参数和改写它的代码待在一起，才不用两头对着改。
+本文件只留它们的外观：光标、颜色、字体、白空间与 hover 泛光。
+
+注意：元素本身（<img class="scroll-sword"> 等）仍然写在页面 HTML 里，
+本节的样式负责它们的“看相”，description.js 负责“动效与定位”。 */
 .scroll-sword {
-position: fixed;
-right: 0;
-top: 10vh;
-height: 50vh;
-width: auto;
-z-index: 90;
 pointer-events: auto;
 cursor: pointer;
 user-select: none;
 -webkit-user-drag: none;
 object-fit: contain;
-transform: translateX(40%);
-transition: filter 0.2s ease;
 }
 
 .scroll-scabbard {
-position: fixed;
-right: 0;
-top: 23vh;
-height: 50vh;
-width: auto;
-z-index: 91;
 pointer-events: auto;
 cursor: grab;
 user-select: none;
 -webkit-user-drag: none;
 object-fit: contain;
-will-change: top;
-transform: translateX(30%);
-transition: filter 0.2s ease;
 }
 
 .scroll-scabbard:active,
@@ -726,10 +747,6 @@ cursor: grabbing;
 }
 
 .scroll-back-to-top {
-position: fixed;
-right: 45px;
-top: 23vh;
-z-index: 92;
 color: #1d9695;
 font-family: 'The artist sans', -apple-system, sans-serif;
 font-size: 40px;
@@ -739,11 +756,912 @@ user-select: none;
 cursor: pointer;
 pointer-events: auto;
 white-space: nowrap;
-will-change: top, transform;
-transform: translateY(-50%);
-transition: filter 0.2s ease;
 }
 
 .scroll-back-to-top:hover {
 filter: drop-shadow(0 0 6px rgba(136, 216, 177, 0.6));
+}
+
+/* ========================================================
+8. 移动端响应式（手机 / 竖屏窄屏）
+   断点 820px：以下规则只作用于窄屏，PC 端布局完全不受影响
+======================================================== */
+@media (max-width: 820px) {
+
+/* ---------- 8.0 移动端首屏：整块贴图 ----------
+   移动端首屏（标题 + DNA / 蛋白装饰 + 引言文字）改用一张设计稿贴图：
+       https://static.igem.wiki/teams/6059/wiki/move/description.avif
+   贴图宽度铺满首屏（左右两侧贴边、无留白），高度按素材比例自适应，
+   首屏高度随贴图高度变化；原先由代码拼装并逐个定位的部件在移动端全部不渲染，
+   对应的定位规则也一并删除。PC 端（>820px）布局完全不受影响。
+   页眉（head_foot.css：≤1024px 时高 62px）是 position: fixed 悬浮在页面顶部的，
+   故移动端首屏整体下移 62px，贴图正好从页眉下沿开始、不被遮挡。 */
+
+/* ---------- 8.1 正文主体：左右边界改为页面宽度的 4% 与 96% ---------- */
+.main-container {
+margin-left: 4%;
+margin-right: 4%;
+width: auto;
+margin-top: 56px;         /* 让开固定 80px 高的顶部导航；原 96px 空白过大已压缩 */
+margin-bottom: 6vh;
+padding: 24px 0 32px;
+min-height: 0;
+border-radius: 18px;
+}
+
+/* ---------- 8.2 侧边目录（TOC）在移动端整体隐藏 ---------- */
+/* JS 仍会写入内联 top / opacity，因此用 !important 兜底 */
+.side-container {
+display: none !important;
+}
+
+/* ---------- 8.3 右侧宝剑 / 剑鞘 / BACK TO TOP 索引条隐藏 ---------- */
+.scroll-sword,
+.scroll-scabbard,
+.scroll-back-to-top {
+display: none !important;
+}
+
+/* ---------- 8.4 首屏 Hero：移动端只渲染整块贴图 ---------- */
+.title-header-wrapper {
+height: auto;                            /* 首屏高度由贴图撑开 */
+min-height: 0;
+margin-top: 62px;                        /* 让开固定页眉（移动端高 62px），贴图不被遮挡 */
+}
+
+/* 贴图：铺满首屏宽度（与两侧对齐），高度自适应 */
+.mobile-hero-image {
+display: block;
+width: 100%;
+height: auto;
+}
+
+/* 代码拼装的部件在移动端全部不渲染：
+   透视网格、左 DNA、蛋白、右下 DNA、标题图、引言文字块、
+   SCROLL TO EXPLORE、底部圆点 —— 它们都已经包含在贴图里。 */
+#gridCanvas,
+.left-dna-wrapper,
+.right-protein-wrapper,
+.bottom-right-dna-wrapper,
+.center-image-wrapper,
+.center-description-wrapper,
+.scroll-explore-wrapper,
+.bottom-dots-decor {
+display: none !important;
+}
+
+/* 容器改为普通流：唯一内容就是贴图，高度随贴图自然撑开 */
+.grid-container {
+display: block;
+height: auto;
+}
+
+/* ---------- 8.5 正文标题：缩小字号，箭头改用 vw 定宽 ---------- */
+/* 原箭头宽 12/16/20vh，窄屏下会占满整行并挤掉标题文字 */
+.heading-1,
+.heading-2,
+.heading-3,
+.heading-reference {
+height: auto;
+min-height: 0;
+gap: 12px;
+margin-left: 5%;
+margin-right: 5%;
+}
+
+.heading-1::before,
+.heading-2::before,
+.heading-3::before,
+.heading-reference::before,
+.heading-1::after,
+.heading-reference::after {
+height: 4.2vh;
+}
+
+/* 装饰矩形加长（原 6.5 / 8.5 / 10.5vw 偏短），并保留 H1 < H2 < H3 的长度区隔 */
+.heading-1::before { width: 10.5vw; }
+.heading-2::before { width: 14.5vw; }
+.heading-3::before { width: 18.5vw; }
+.heading-reference::before { width: 10.5vw; }
+
+.heading-1 {
+font-size: 25px;
+line-height: 1.25;
+margin-top: 1.2em;
+margin-bottom: 0.7em;
+}
+
+.heading-2 {
+font-size: 20px;
+line-height: 1.45;
+margin-bottom: 0.7em;
+}
+
+.heading-3 {
+font-size: 17px;
+line-height: 1.45;
+margin-bottom: 0.7em;
+}
+
+.heading-reference {
+font-size: 25px;
+line-height: 1.25;
+margin-top: 1.2em;
+margin-bottom: 0.7em;
+}
+
+/* ---------- 8.6 正文段落与插图 ---------- */
+.body-text {
+font-size: 16px;
+line-height: 1.85;
+letter-spacing: 0.2px;
+text-align: left;        
+margin-left: 5%;
+margin-right: 5%;
+margin-bottom: 1.5em;
+}
+
+.figure-image {
+max-width: 100%;
+margin-top: 1em;
+}
+
+.figure-caption {
+font-size: 15px;
+line-height: 1.5;
+margin-left: 5%;
+margin-right: 5%;
+margin-bottom: 1.2em;
+}
+
+}
+
+/* ========================================================
+   9. 正文 <e></e> 标签（原 IHP.css 的全部规则已并入本节）
+   ========================================================
+
+   用途：正文中的 <e></e> 标签
+   ------------------------------------------------------
+   <e> 是页面自定义的行内标签，两端表现不同：
+       · 正文中 —— 正常显示，见第 9.1 节；
+       · 侧边目录 TOC（#tocNav 内）—— 完全不显示，其文字由
+         description.js 第 4 节在构建目录时剔除（见第 9.3 节）。
+
+   本节所有规则都只针对 <e> 标签本身、含 <e> 的标题、或 #tocNav 作用域，
+   不含 <e> 的标题与其余元素仍完全走本文件前面的原有规则。
+   ======================================================== */
+
+/* --------------------------------------------------------
+   9.1 正文中的 <e></e>：与上下文文字完全一致地显示
+   --------------------------------------------------------
+   自定义元素在 HTML 解析后默认就是 display: inline，但浏览器对
+   “未知元素”的字体继承行为并不完全统一，所以这里显式把字体相关
+   属性全部设为 inherit。这样 <e> 内的文字与所在段落
+   （.body-text 等）看起来毫无差别，标签本身“隐形”。 */
+e {
+    display: inline;
+    font: inherit;
+    color: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    text-align: inherit;
+    text-transform: inherit;
+    text-decoration: inherit;
+    text-indent: 0;
+    background: none;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    /* 标签只是“隐形”的排版容器，不该成为可交互 / 可编辑对象 */
+    cursor: inherit;
+    user-select: inherit;
+    pointer-events: none;
+}
+
+/* 调试用标记：即使被手动加上 .toc-hidden，正文里也不得改变外观 */
+e.toc-hidden {
+    display: inline !important;
+    opacity: 1 !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    clip: auto !important;
+    clip-path: none !important;
+    position: static !important;
+}
+
+/* --------------------------------------------------------
+   9.2 标题里的 <e></e>：必须继续按“行内文字”排版
+   --------------------------------------------------------
+   description.css 把 .heading-* 设成了 display: flex，而 flex 容器会
+   把每个直接子元素“块化”（blockify）：直接写在标题里的 <e> 会从行内
+   变成块级，于是 "标题前半 <e>隐藏段</e>" 这种写法会断成左右两栏，
+   正文外观被破坏。
+
+   解决办法是 display: contents —— 让 <e> 自身不生成盒子，它里面的
+   文字直接成为标题这个 flex 容器的内容，与没写 <e> 时完全一致。
+   代价是 flex 容器的 gap 会插在“被拆开的文字段”之间，所以含 <e> 的
+   标题把 gap 归零，再把原来那 20px 间距补到 ::before 箭头上，
+   视觉结果与原来相同。
+
+   注意：这一节只作用于“标题里真的有 <e>”的标题；其余标题保持
+   description.css 的 flex + gap: 20px，一行都不受影响。
+   -------------------------------------------------------- */
+
+/* 9.2.1 支持 :has() 的现代浏览器（Chrome 105+ / Safari 15.4+ / Firefox 121+） */
+.heading-1:has(e),
+.heading-2:has(e),
+.heading-3:has(e),
+.heading-reference:has(e) {
+    gap: 0;
+}
+
+.heading-1:has(e) > e,
+.heading-2:has(e) > e,
+.heading-3:has(e) > e,
+.heading-reference:has(e) > e {
+    display: contents;
+}
+
+.heading-1:has(e)::before,
+.heading-2:has(e)::before,
+.heading-3:has(e)::before,
+.heading-reference:has(e)::before {
+    margin-right: 20px; /* 顶替被归零的 gap: 20px */
+}
+
+/* 9.2.2 兜底：不支持 :has() 的旧浏览器。description.js 会给含 <e> 的标题加上
+       .ihp-has-e 类，下面的规则与 9.2.1 完全等价。 */
+.heading-1.ihp-has-e,
+.heading-2.ihp-has-e,
+.heading-3.ihp-has-e,
+.heading-reference.ihp-has-e {
+    gap: 0;
+}
+
+.heading-1.ihp-has-e > e,
+.heading-2.ihp-has-e > e,
+.heading-3.ihp-has-e > e,
+.heading-reference.ihp-has-e > e {
+    display: contents;
+}
+
+.heading-1.ihp-has-e::before,
+.heading-2.ihp-has-e::before,
+.heading-3.ihp-has-e::before,
+.heading-reference.ihp-has-e::before {
+    margin-right: 20px;
+}
+
+/* --------------------------------------------------------
+   9.3 侧边目录中的 <e></e>：彻底不显示
+   --------------------------------------------------------
+   正常流程下 description.js 会在目录构建时就把 <e> 里的文字删掉，因此这里
+   兜的是“JS 还没来得及处理”的极端情况（脚本被拦截、目录被其它脚本
+   重建等）。用 clip-path + 0 尺寸而不是 display: none，是为了不改变
+   .toc-item / .toc-text 的 flex 布局结构。 */
+#tocNav e,
+#tocNav .toc-item e,
+#tocNav .toc-item .toc-text e {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+    clip-path: inset(50%);
+    pointer-events: none;
+}
+
+/* ========================================================
+   10. 文本高亮 <mark>
+   ========================================================
+   用法：在 HTML 里把要突出的文字用 <mark></mark> 包起来即可，例如
+       <p class="body-text">……这个结论<mark>非常关键</mark>……</p>
+
+   底色固定为 #D5D5FF；文字颜色用 color: inherit 跟随上下文，
+   所以普通正文里的高亮字仍是黑色、标题里的高亮字仍是各自的标题色，
+   不会因为高亮而被强行改成别的颜色。
+   ======================================================== */
+mark {
+    background-color: #D5D5FF;
+    color: inherit;
+    padding: 0 0.18em;
+    border-radius: 3px;
+    /* 高亮跨行时，每一行都各自补上内边距与圆角，而不是只在整块首尾补 */
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+}
+
+/* 淡紫底 #D5D5FF 和主题紫 #8F8BD9（正文加粗、三级标题）叠在一起时
+   对比度偏低，这两种情况改用同色系的深紫，保证高亮里的紫字依然清楚。
+   若希望高亮内严格保持 #8F8BD9，把下面这一条删掉即可。 */
+.body-text mark b,
+.body-text mark strong,
+.heading-3 mark {
+    color: #5A56A8;
+}
+
+/* ========================================================
+   11. 正文超链接
+   ========================================================
+   颜色固定 #91ACE0，加粗并带下划线。
+   作用域限定在正文卡片 .main-container 内部（标题、段落、图注都在
+   其中）；页眉菜单与页脚位于 layout.html 的 <main id="main-content">
+   之外，侧边目录在 .side-container 里，二者的链接由各自样式表负责，
+   不受本节影响。 */
+.main-container a,
+.main-container a b,
+.main-container a strong {
+    color: #91ACE0;
+    font-weight: bold;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    transition: text-decoration-thickness 0.15s ease;
+}
+
+/* 已访问链接保持同一配色，避免浏览器默认的紫色破坏版面 */
+.main-container a:visited {
+    color: #91ACE0;
+}
+
+/* 悬停 / 键盘聚焦时只把下划线加粗，不改变颜色与字号 */
+.main-container a:hover,
+.main-container a:focus-visible {
+    text-decoration-thickness: 2.5px;
+}
+
+/* ========================================================
+   12. 正文表格
+   ========================================================*/
+.main-container table {
+    --wp-table-rule-color: #000000;
+    --wp-table-rule-width: 1.5px;
+    --wp-table-head-bg: #1D2D5E;      /* 表头行底色 */
+    --wp-table-head-color: #FFFFFF;   /* 表头行文字颜色 */
+
+    border-collapse: collapse;
+    width: 80%;                 
+    margin: 1.5em auto 2em;     
+    font-family: inherit;
+    font-size: inherit;
+    line-height: 1.8;
+    color: #465E77;            
+}
+
+/* 先把所有单元格的边框清空，横线只由下面三条规则画；
+   文字一律水平居中（<td> 浏览器默认左对齐，这里统一覆盖），
+   竖直方向也居中：一行里字数多的单元格会换行变高，同一行里字数少的
+   单元格（<th> / <td>）的文字上下居中，不再贴着单元格顶端。 */
+.main-container table th,
+.main-container table td {
+    border: 0;
+    padding: 0.55em 0.9em;
+    vertical-align: middle;
+    text-align: center;
+}
+
+/* 表头文字保持加粗 */
+.main-container table th {
+    font-weight: bold;
+}
+
+/* ---------- 第一行：上边框 + 下边框，深蓝底 + 白字 ---------- */
+.main-container table tr.wp-table-first-row > th,
+.main-container table tr.wp-table-first-row > td,
+.main-container table > thead:first-child > tr:first-child > th,
+.main-container table > thead:first-child > tr:first-child > td,
+.main-container table > tbody:first-child > tr:first-child > th,
+.main-container table > tbody:first-child > tr:first-child > td {
+    border-top: var(--wp-table-rule-width) solid var(--wp-table-rule-color);
+    border-bottom: var(--wp-table-rule-width) solid var(--wp-table-rule-color);
+    background-color: var(--wp-table-head-bg);
+    color: var(--wp-table-head-color);
+}
+
+/* 表头行里若出现加粗或链接，也一并保持白色：否则会带上正文的
+   加粗紫 #8F8BD9 / 链接蓝 #91ACE0，落在深蓝底上几乎看不清 */
+.main-container table tr.wp-table-first-row :is(b, strong, a),
+.main-container table > thead:first-child > tr:first-child :is(b, strong, a),
+.main-container table > tbody:first-child > tr:first-child :is(b, strong, a) {
+    color: var(--wp-table-head-color);
+}
+
+/* ---------- 最后一行：只有下边框 ---------- */
+.main-container table tr.wp-table-last-row > th,
+.main-container table tr.wp-table-last-row > td,
+.main-container table > tbody:last-child > tr:last-child > th,
+.main-container table > tbody:last-child > tr:last-child > td {
+    border-bottom: var(--wp-table-rule-width) solid var(--wp-table-rule-color);
+}
+
+/* 窄屏：表格铺满正文容器宽度，并收一下字号与内边距，
+   避免单元格里的文字被挤成一团 */
+@media (max-width: 820px) {
+    .main-container table {
+        width: 100%;            /* 移动端：占满正文容器宽度 */
+        margin: 1.2em auto 1.5em;
+        font-size: 16px;
+        line-height: 1.7;
+    }
+
+    .main-container table th,
+    .main-container table td {
+        padding: 0.45em 0.5em;
+    }
+}
+
+/* ========================================================
+   13. 正文组件 <upfold>
+   ========================================================
+   用法：标签文字写在 <upfold> 里，点击后展开的隐藏文字写在
+   <upfold-text> 里（也可以写成 <span class="upfold">…</span>）：
+       <p class="body-text"><upfold>Materials and Apparatus:
+           <upfold-text>点击后展开的正文</upfold-text></upfold></p>
+
+   展开的正文想分两段（或多段）：写多个 <upfold-text>，一块一段 ——
+       <p class="body-text"><upfold>Why the expert discussion mattered
+           <upfold-text>第一段……</upfold-text>
+           <upfold-text>第二段……</upfold-text></upfold></p>
+   每一块都会被 description.js 第 6 节加上 .body-text，段与段之间的空档
+   见下面“展开出来的正文写成两段及以上时”那一条。注意不要写成
+   “一个 <upfold-text> 里面再套 <p>”—— 外层是 <p class="body-text">，
+   <p> 不能嵌套 <p>，浏览器会把外层段落就地截断，结构就乱了。
+
+   收起：标签是一枚 #53DEB7 的圆角胶囊，白字，宽度随标签文字伸缩，
+        字号 26px（与 .heading-3 同级）。
+   展开：胶囊换底色与文字颜色（--upfold-open-bg / --upfold-open-color）；
+        隐藏文字出现在胶囊【下方】，与正文同样排版，没有底色也没有边框。
+   开合行为在 description.js 第 6 节。
+
+   两枚装饰（左端 kid 图标、右端压在底色下面的剑）由 description.js
+   第 6.1 / 6.2 节注入：素材引用、位置、尺寸、层级都在那边，本文件里
+   既没有图片 URL、也没有定位，只负责胶囊（矩形）自己长什么样。
+   左边为图标让出的内边距同样由那边按“图标 + 间距”算好后写成内联样式
+   （脚本没跑时按无图标的 1.15em 显示），所以这里的 padding 不写图标宽度。
+
+   展开正文左侧那 3.5ch（前 2ch 放脚印、末尾 0.5ch 是空隙）是脚印轨道
+   （本文件末尾的 .upfold-rail 一节）：素材、左右分布、上沿间距与旋转角度
+   都由 description.js 第 6.3 节随机算好后写成内联样式，本文件只给轨道的
+   两个基准尺寸与摆放方式。
+   展开正文写成多段（多个 <upfold-text>）时，轨道从第一段的顶边一直铺到
+   最后一段的底边，每一段左侧都有脚印。轨道元素本身仍然挂在第一段里，
+   只是向下溢出到后面几段旁边（第一段与后面各段的左内边距都是 3.5ch，
+   脚印所在的那条竖列本来就是对齐的），所以多段不需要另写样式。
+
+   为什么正文不会被胶囊框住：description.js 会把标签文字单独包进
+   <span class="upfold-label">，胶囊的底色 / 内边距都画在这一层上，
+   展开的正文只是它的兄弟节点，天生就在胶囊盒子外面。
+
+   想调整只改下面这几个自定义属性。 */
+
+/* 带隐藏文字、真的能点的组件才显示手型（JS 会给它加 role="button"） */
+.main-container upfold[role="button"],
+.main-container .upfold[role="button"] {
+    cursor: pointer;
+    user-select: none;            /* 点标签时不会顺手选中文字 */
+    -webkit-user-select: none;
+}
+
+/* ---------- 版块间距：前后各留一段行距，互不重叠 ----------
+   upfold 是一整块“版块”，前后各留 1.5em（桌面 ≈33px、窄屏 ≈24px）。
+   这个空档要能容下两处向上/向下的“出头”：右端那把剑露在矩形上方的
+   一截（约胶囊高度的 55%：桌面 ≈29px）和左端小人（4em，比胶囊高，
+   上下各出头 ≈31px）；所以它既不会压到上一个版块的内容，连续的
+   upfold 之间也不会贴在一起。
+
+   注意 display: inline-block：宿主 <upfold> 默认是 inline 元素，
+   而【行内元素的上下外边距不生效】，所以收起状态必须把它变成行内块，
+   下面那 1.5em 才量得出来。展开时宿主由后面的 .is-open 规则改成
+   display: block（那条选择器权重更高、位置更靠后），边距同样保留。 */
+.main-container upfold,
+.main-container .upfold {
+    display: inline-block;
+    margin: 1.5em 0;
+}
+
+/* ---------- 胶囊本体 ----------
+   一份声明覆盖两种情况：① 脚本已把标签包进 .upfold-label；
+   ② 脚本没跑起来，标签就是 <upfold> 自身的全部内容。 */
+.main-container upfold:not([data-upfold-ready]),
+.main-container .upfold:not([data-upfold-ready]),
+.main-container upfold > .upfold-label,
+.main-container .upfold > .upfold-label {
+    --upfold-bg: #53DEB7;         /* 收起时的底色 */
+    --upfold-open-bg: #465E77;    /* 展开后的底色 */
+    --upfold-color: #FFFFFF;      /* 收起时的文字颜色 */
+    --upfold-open-color: #ffffff; /* 展开后的文字颜色：与正文 .body-text 一致 */
+    --upfold-radius: 20px;        /* 圆角大小；写成 999px 会变成胶囊形 */
+    --upfold-font-size: 26px;     /* 与 .heading-3 一致 */
+
+    position: relative;           /* 给 JS 注入的装饰元素当参照 */
+    display: inline-block;        /* 随文字伸缩，并且能与正文排在同一行 */
+    width: auto;                  /* 宽度由文字决定，不设固定值 */
+    max-width: 100%;              /* 窄屏下不会顶出容器 */
+    /* 上下 0.35em、左右 1.15em；左内边距随后由 description.js 按
+       “左端图标 + 间距”改写成内联样式，为图标让出位置 */
+    padding: 0.35em 1.15em;
+    background-color: var(--upfold-bg);
+    color: var(--upfold-color);
+    border-radius: var(--upfold-radius);
+    font-family: inherit;
+    font-size: var(--upfold-font-size);
+    line-height: 1.35;
+    text-align: left;             /* 文字紧跟在左端小人的右边，不居中 */
+    vertical-align: middle;
+    /* 收 / 展时底色与文字颜色一起过渡（这是胶囊本身的样式；
+       触发它的是 description.js 第 6 节切换的 .is-open） */
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* ---------- 展开：换底色，并把文字一并换成正文字体颜色 ----------
+   ① 底色 #53DEB7 → #D3F8DD；
+   ② 文字 #FFFFFF → --upfold-open-color（#465E77，即正文 .body-text 的颜色）。
+   颜色只在“胶囊本体的那份声明”上覆盖 --upfold-color，所以胶囊里的
+   加粗 / 链接（下面那条 :is(b, strong, a) 规则用的是同一个变量）会一起变色，
+   不需要另写选择器。 */
+.main-container upfold.is-open:not([data-upfold-ready]),
+.main-container .upfold.is-open:not([data-upfold-ready]),
+.main-container upfold.is-open > .upfold-label,
+.main-container .upfold.is-open > .upfold-label {
+    background-color: var(--upfold-open-bg);
+    --upfold-color: var(--upfold-open-color);
+    color: var(--upfold-open-color);
+}
+
+/* 胶囊里的加粗 / 链接跟随胶囊文字颜色（收起白字、展开正文色）：
+   否则会带上正文各自的颜色，落在绿底上不干净 */
+.main-container upfold:not([data-upfold-ready]) :is(b, strong, a),
+.main-container .upfold:not([data-upfold-ready]) :is(b, strong, a),
+.main-container upfold > .upfold-label :is(b, strong, a),
+.main-container .upfold > .upfold-label :is(b, strong, a) {
+    color: var(--upfold-color);
+}
+
+/* ---------- 胶囊上的两枚装饰（左端 kid 图标、右端剑）----------
+   这里本来是本文件里的 ::before 背景图（kid-2.avif）与 .upfold-sword
+   规则，现在整块搬进了 description.js 第 6.1 / 6.2 节：
+       · 素材引用（src）、位置 / 尺寸 / 层级、不拦鼠标等，
+         都由脚本在创建这两张 <img> 时写成内联样式；
+       · 剑要的 isolation: isolate（让它的 z-index: -1 只在本组件内部
+         生效，不被正文白卡片盖住）也在同一处给宿主加上。
+   这样“卡片里有没有这枚装饰”与“它长什么样、放哪儿”只在一个文件里，
+   CSS 这边不会留下元素不存在时的孤儿规则。 */
+
+/* ---------- 隐藏文字：脚本处理过之后才藏起来 ----------
+   用后代选择器（不是 > 直接子级），与 description.js 第 6 节的
+   querySelector 查找范围保持一致：内容外面再套一层 <span> 也能正常工作。
+   万一脚本没跑，[data-upfold-ready] 不存在，所有文字照常显示。 */
+.main-container upfold[data-upfold-ready] :is(upfold-text, .upfold-text),
+.main-container .upfold[data-upfold-ready] :is(upfold-text, .upfold-text) {
+    display: none;
+}
+
+/* ---------- 展开：宿主变成块级，胶囊一行、正文在下一行 ---------- */
+.main-container upfold.is-open,
+.main-container .upfold.is-open {
+    display: block;
+    width: 100%;
+}
+
+/* 展开出来的正文：整行宽、无底色无边框，排版跟 .body-text 一致
+   （description.js 第 6 节会给它加上 .body-text 类）。
+   它在胶囊盒子外面，所以不会被胶囊的底色框住。
+   左侧 padding-left 让出 3.5 个字符：左边这 2ch 让给脚印（左脚印 0–1ch、
+   右脚印 1–2ch，脚印最右到 3ch），正文从 3.5ch 起 —— 于是正文与脚印最右侧
+   之间还留着 0.5ch 空隙（旋转 ±20° 大约再吃 0.25ch，所以实际也不会贴上）。
+   文字右退 3.5ch，而这个元素的宽度是 auto（依旧填满容器），右侧边界一点没动。
+   margin-top 是它与上面那枚胶囊（矩形）之间的空档：只作用于展开状态，
+   收起时这块内容是 display: none，不会多出空隙。
+   注意：这条与上面的“隐藏文字”权重相同，靠写在后面取胜，别调换顺序。 */
+.main-container upfold.is-open :is(upfold-text, .upfold-text),
+.main-container .upfold.is-open :is(upfold-text, .upfold-text) {
+    position: relative;           /* 给绝对定位的脚印轨道当参照 */
+    padding-left: 3.5ch;          /* 正文从第 3.5 个字符开始（与脚印最右隔 0.5ch） */
+    display: block;
+    margin-top: 0.8em;            /* 与胶囊（矩形）之间留出的空档（桌面 ≈18px） */
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    cursor: default;
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+/* ---------- 展开出来的正文写成两段及以上时（见 description.js 第 6 节）----------
+   每个 <upfold-text> 各自是一段。上面那条规则给每段的 margin-top 都是
+   0.8em（第一段与胶囊之间的空档），这里把“段与段之间”改成正文的段落间距
+   1em（.body-text 的 margin-bottom 就是 1em），展开后的排版与正文一致，
+   看起来就是普通的两段正文。
+   写成单段时这条不生效，外观一点没变。 */
+.main-container upfold.is-open :is(upfold-text, .upfold-text) + :is(upfold-text, .upfold-text),
+.main-container .upfold.is-open :is(upfold-text, .upfold-text) + :is(upfold-text, .upfold-text) {
+    margin-top: 1em;
+}
+
+/* ---------- 展开文字左侧的脚印轨道 ----------
+   正文左内边距是 3.5ch，其中左边 2ch 让给脚印：左脚印的左边缘在 0–1ch、
+   右脚印的左边缘在 1–2ch 里各自随机（即各占 1ch 宽的一段），脚印宽 1ch
+   —— 脚印最右到 3ch，与正文之间还剩 0.5ch 空隙。
+   左右脚印交替往下排，横向落点 / 上下间距（1.5~2.5 个脚印高）/ 旋转
+   （-20°~+20°）都由 description.js 第 6.3 节随机算好后写成内联样式：
+   同一次会话里反复展开、窗口缩放都不会变，刷新页面才重新随机一遍。
+   这里只给这条轨道的基准尺寸与摆放方式；轨道是绝对定位的，既不推挤正文，
+   也不影响正文右侧的边界。 */
+.main-container upfold .upfold-rail {
+    /* 两个基准尺寸：JS 第 6.3 节会读它们来算随机范围，所以只改这里就够。
+       单位都必须是 ch。 */
+    --upfold-rail-span: 1ch;      /* 每侧“左边缘”的随机范围宽：
+                                     左脚印 0 ~ span，右脚印 span ~ 2×span */
+    --upfold-rail-foot: 1ch;      /* 脚印宽 */
+
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: calc(var(--upfold-rail-span) * 2);
+    pointer-events: none;         /* 装饰层：不挡文字选中 */
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* 每个脚印：left / top / 旋转由 JS 写内联样式 */
+.main-container upfold .upfold-rail .upfold-foot {
+    position: absolute;
+    width: var(--upfold-rail-foot);
+    height: auto;                 /* 高度按原图比例：left/right.avif 是 103×166 */
+    display: block;
+    pointer-events: none;
+    -webkit-user-drag: none;
+}
+
+/* 左右各一枚“探针”：宽度与脚印相同，只用来量脚印高度，不显示 */
+.main-container upfold .upfold-rail .upfold-rail-probe {
+    left: 0;
+    top: 0;
+    visibility: hidden;
+}
+
+/* 一个脚印都放不下时收起轨道（保留占位，正文变高后能重新长出来） */
+.main-container upfold .upfold-rail.is-empty {
+    visibility: hidden;
+}
+
+/* 窄屏：与 .heading-3 的移动端字号（17px）看齐
+   （变量必须落在真正带胶囊样式的那个元素上，选择器与上面“胶囊本体”一致） */
+@media (max-width: 820px) {
+    .main-container upfold:not([data-upfold-ready]),
+    .main-container .upfold:not([data-upfold-ready]),
+    .main-container upfold > .upfold-label,
+    .main-container .upfold > .upfold-label {
+        --upfold-font-size: 17px;
+    }
+}
+
+/* ========================================================
+   14. 标题副标题（.heading-sub）
+   ========================================================
+   给每一级标题（.heading-1 / .heading-2 / .heading-3，以及同属一级的
+   .heading-reference）在主标题下方加一条副标题：文字颜色用正文色 #465E77，
+   底色是主标题那枚装饰矩形的颜色（H1 #9CDCDD / H2 #95C3F1 / H3 #C7C6F2 /
+   Reference #B9C7D1，见第 4 节 ::before 的 background-color），形状不是
+   裹住整行文字的圆角矩形，而是像荧光笔（或一条加粗下划线）一样横着画在
+   文字【下方】的一条圆边色带。
+
+   实现：底色由 .heading-sub 自己的 background 画 —— 一层
+   linear-gradient，上半段全透明（露在文字后面不遮挡），下半段是那条色
+   带。色带颜色 = --heading-sub-bar（各级在 14.1 / 14.3 里给色号，与主标题
+   装饰矩形一一对应）；色带厚度 = --heading-sub-thick、下沉量 =
+   --heading-sub-drop，两个都写在 14.2 的 .heading-sub 上，改形状只动那两行。
+   gradient 是元素的背景，天生画在文字图层下面（无需 z-index / position），
+   换行时 box-decoration-break: clone 会让每一行各自画一条色带。
+
+   副标题的文字写在 HTML 里，样式全在本节，description.js 第 8 节只负责
+   把它搬到主标题下面。字号 / 字体 / 字重都不动，仍按 14.3 与主标题联动。
+
+   HTML 三种写法（页面里可以混用，推荐第 ① 种）：
+
+     ① 直接写在标题标签内部（description.js 第 8 节会把它搬到标题下面）：
+        <h1 class="heading-1">Inspiration<span class="heading-sub">Inspiration Sub</span></h1>
+
+     ② 挂在标题属性上（由 description.js 第 8 节生成 DOM）：
+        <h1 class="heading-1" data-subtitle="Inspiration Sub">Inspiration</h1>
+
+     ③ 自己写成紧跟标题后面的兄弟元素（不依赖脚本，本节样式直接生效）：
+        <h1 class="heading-1">Inspiration</h1>
+        <div class="heading-sub-row">
+            <span class="heading-sub">Inspiration Sub</span>
+        </div>
+
+   结构：外层 .heading-sub-row 是块级容器，只负责左右缩进与上下间距；
+   里面只放一个【行内】的 .heading-sub —— 做成行内元素是为了两件事：
+
+     · 色带宽度自动跟着文字长度伸缩（.heading-sub 里没有固定宽度）；
+     · 副标题排成两行及以上时，box-decoration-break: clone 会让每一行
+       各自画一条完整的圆边色带，行与行之间自然留出一条窄空白
+       （空白高度 = .heading-sub 的 line-height 减去文字自身高度）。
+       想加宽 / 收窄这条空白，只调 .heading-sub 的 line-height 即可。
+
+   主标题完全没变：.heading-1/2/3 的 flex 一行（箭头 + 文字 + 横线）、
+   字号、颜色、高度、缩进都保持原样；副标题只是下面多出来的一行。
+   唯一的联动是 14.4 —— 有副标题时把主标题的 margin-bottom: 1em 收掉，
+   否则副标题与主标题之间会空出整整一行。
+   ======================================================== */
+
+/* ---------- 14.1 副标题所在的一行（行容器） ---------- */
+.heading-sub-row {
+    /* 荧光笔色带的【颜色】默认取一级标题装饰矩形的青色；二 / 三 / 参考级
+       在 14.3 里覆盖。
+       变量必须落在【行容器】上：.heading-sub 直接声明同名变量的话，
+       元素自身的声明会压过继承值，各级颜色就全都变成这里的默认色了。 */
+    --heading-sub-bar: #9CDCDD;
+
+    display: block;
+    margin-left: 8%;             /* 与同级主标题的左右缩进一致（见第 4 节） */
+    margin-right: 8%;
+    margin-top: 0.1em;           /* 与主标题之间的窄空档；em 以本行的副标题字号为准 */
+    margin-bottom: 1em;          /* 与下一段正文之间的空档，相当于原主标题的 margin-bottom */
+    /* 缺省按一级副标题给：32px + Albertus Nova Black（二 / 三级由 14.3 覆盖）。
+       本行的字号既是 14.1 里所有 em 的基准，也是 .heading-sub 继承的字号。 */
+    font-size: 32px;
+    font-family: 'Albertus Nova Black', -apple-system, sans-serif;
+    font-weight: 700;
+    line-height: 1;              /* 行高由 .heading-sub 自己给，容器不额外撑高每一行 */
+    letter-spacing: 0;           /* 与主标题一致 */
+    text-align: left;
+    box-sizing: border-box;
+}
+
+/* ---------- 14.2 副标题本体：文字下方一条荧光笔色带 ---------- */
+.heading-sub {
+    /* 色带的几何：都做成变量，想调形状只改这三个变量。
+       --heading-sub-bar    色带颜色（各级在 14.1 / 14.3 里给）
+       --heading-sub-thick  色带厚度（绝对值 px：不随字号缩放，各级看起来一样粗；
+                            默认 7px —— 比第一版的 12px 细，接近一条加粗的下划线）
+       --heading-sub-drop   色带下移多少 px：把色带压到文字下沿再往下一点点，
+                            这样只有字母的“脚”（下伸部）会搭在色带上，
+                            主体笔画不会被盖住 —— 荧光笔划过字下的观感 */
+    --heading-sub-thick: 7px;
+    --heading-sub-drop: 1px;
+
+    display: inline;             /* 宽度随文字伸缩；换行时逐行画色带 */
+    font-family: inherit;        /* 字体、字号、字重都跟着所在行（14.3 按级给） */
+    font-size: inherit;
+    font-weight: inherit;
+    /* 文字颜色固定用正文色 #465E77（与 .body-text 的 color 一致），
+       不再跟随各级主标题的字色 —— 色带上的字与正文同色，读起来是一体的。
+       这一条会盖掉从 .heading-1/2/3 继承来的标题色，是刻意的。 */
+    color: #1c3e6f;
+    /* 荧光笔色带：一层 linear-gradient 当背景。
+       下半段 = 色带本身（厚度 --heading-sub-thick），上半段全透明，
+       于是色带只出现在文字下方，文字笔画压在它上面。
+       背景 < 文字 是浏览器的绘制顺序，所以“图层叠在文字下方”是天然的，
+       不需要 z-index / position。
+       background-size 的两个 100% 是“宽 100% × 高 100%”（行高以内，绝不
+       溢出到上下相邻的行），色带粗细由 gradient 里的 px 断点决定。 */
+    background-image: linear-gradient(
+        to bottom,
+        transparent calc(100% - var(--heading-sub-thick) - var(--heading-sub-drop)),
+        var(--heading-sub-bar) calc(100% - var(--heading-sub-thick) - var(--heading-sub-drop)),
+        var(--heading-sub-bar) calc(100% - var(--heading-sub-drop)),
+        transparent calc(100% - var(--heading-sub-drop))
+    );
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    /* 色带两端按“粗的圆边矩形”处理：圆角 999px 在这么扁的盒子上就是两端
+       半圆（胶囊头），比固定 20px 的圆角更接近荧光笔的笔头。
+       box-decoration-break: clone 让换行后每一行都各自拥有完整的两端圆角。 */
+    border-radius: 999px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+
+    /* 只有左右补白（文字两端各留一点，色带比文字略长一点，更像手画的）；
+       上下不补白 —— 色带的位置完全由上面的 gradient 决定，不用 padding 挪。 */
+    padding: 0 0.12em;
+
+    /* 行高必须大于“文字自身高度 + 色带厚度”，换行后两行色带之间才会留出
+       那条窄空白：文字框高 ≈ 1.44em（Albertus Nova 的 hhea/win 度量：
+       ascent 1.103em + descent 0.339em，与 line-height 无关），
+       行高 1.5em → 行间空白 ≈ 1.5 − 1.44 ≈ 0.06em（22 / 26 / 32px 时约
+       1.3 / 1.6 / 1.9px），加上色带本身上下各让出的那点空间，两行色带之间
+       保留一条极窄的白缝（与主标题的紧凑观感一致）——色带越细这道缝越宽，
+       7px 时约 5~7px，仍是一条窄缝而不是一行空隙。
+       要把间隔拉大 / 收窄，只改这一个数。 */
+    line-height: 1.5;
+}
+
+/* ---------- 14.3 各级的色带颜色、字号、字体（字号字体跟着对应主标题走；
+   色带颜色 = 各级主标题装饰矩形 ::before 的颜色，见第 4 节末尾那四行） ----------
+   每一级给两组选择器：
+     · .heading-sub-row.heading-sub-h*  —— description.js 第 8 节搬出来的行；
+     · .heading-N + .heading-sub-row    —— 手写在标题后面的行（写法 ③）；
+     · .heading-N > .heading-sub        —— 兜底：脚本没跑起来，副标题还留在
+       标题这一行里时，至少颜色与字号是对的，文字不会丢。 */
+.heading-sub-row.heading-sub-h1,
+.heading-1 + .heading-sub-row,
+.heading-1 > .heading-sub {
+    --heading-sub-bar: #9CDCDD;  /* = .heading-1::before 的 #9CDCDD */
+    font-size: 28px;
+    font-family: 'Albertus Nova', -apple-system, sans-serif;
+}
+
+.heading-sub-row.heading-sub-h2,
+.heading-2 + .heading-sub-row,
+.heading-2 > .heading-sub {
+    --heading-sub-bar: #95C3F1;  /* = .heading-2::before 的 #95C3F1 */
+    font-size: 24px;
+    font-family: 'Albertus Nova', -apple-system, sans-serif;
+}
+
+.heading-sub-row.heading-sub-h3,
+.heading-3 + .heading-sub-row,
+.heading-3 > .heading-sub {
+    --heading-sub-bar: #C7C6F2;  /* = .heading-3::before 的 #C7C6F2 */
+    font-size: 22px;
+    font-family: 'Albertus Nova', -apple-system, sans-serif;
+}
+
+/* Reference 本身是 h1，副标题沿用一级的颜色与字号；字体则跟着它自己的
+   主标题（.heading-reference 没有单独指定字体，用的是 'Albertus Nova Bold'）。
+   这一组必须排在 14.3 一级那组之后，同权重靠后取胜。 */
+.heading-sub-row.heading-sub-reference,
+.heading-reference + .heading-sub-row,
+.heading-reference > .heading-sub {
+    --heading-sub-bar: #B9C7D1;  /* = .heading-reference::before 的 #B9C7D1 */
+    font-size: 32px;
+    font-family: 'Albertus Nova', -apple-system, sans-serif;
+}
+
+/* ---------- 14.4 有副标题时，收掉主标题的下边距 ----------
+   主标题的箭头、字号、颜色、高度一概不动，只是原本留给正文的那 1em
+   下边距改由 .heading-sub-row 的 margin-bottom 承担 —— 否则副标题与
+   主标题之间会空出整整一行。
+   :has() 与 .has-heading-sub 等价，后者由 description.js 第 8 节加上，
+   用来兜不支持 :has() 的旧浏览器。 */
+.heading-1:has(+ .heading-sub-row),
+.heading-2:has(+ .heading-sub-row),
+.heading-3:has(+ .heading-sub-row),
+.heading-reference:has(+ .heading-sub-row),
+.heading-1.has-heading-sub,
+.heading-2.has-heading-sub,
+.heading-3.has-heading-sub,
+.heading-reference.has-heading-sub {
+    margin-bottom: 0;
+}
+
+/* ---------- 14.5 移动端（≤820px）：与主标题的移动端字号同步缩小 ----------
+   主标题在窄屏降到 25 / 20 / 17px（见第 8.5 节），副标题保持“比同级
+   主标题小 4px”的关系（与 PC 端一致）；色带厚度仍由 --heading-sub-thick
+   统一控制（默认 12px，各级一样粗，不随字号缩放）。
+   若希望窄屏也固定用 32 / 26 / 22px，把这一小节整段删掉即可。 */
+@media (max-width: 820px) {
+    .heading-sub-row {
+        margin-left: 5%;
+        margin-right: 5%;
+        margin-top: 0.1em;
+        margin-bottom: 1em;
+    }
+
+    .heading-sub-row.heading-sub-h1,
+    .heading-1 + .heading-sub-row,
+    .heading-1 > .heading-sub {
+        font-size: 21px;
+    }
+
+    .heading-sub-row.heading-sub-h2,
+    .heading-2 + .heading-sub-row,
+    .heading-2 > .heading-sub {
+        font-size: 16px;
+    }
+
+    .heading-sub-row.heading-sub-h3,
+    .heading-3 + .heading-sub-row,
+    .heading-3 > .heading-sub {
+        font-size: 13px;
+    }
+
+    .heading-sub-row.heading-sub-reference,
+    .heading-reference + .heading-sub-row,
+    .heading-reference > .heading-sub {
+        font-size: 21px;
+    }
 }

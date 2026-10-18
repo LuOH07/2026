@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+
+{% block title %}Safety{% endblock %}
+
+{% block page_styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='description/description.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='description/safety.css') }}">
+{% endblock %}
+
+{% block page_content %}
+<header class="title-header-wrapper" id="heroWrapper">
+    <div class="grid-container" id="heroGridContainer">
+        <canvas id="gridCanvas"></canvas>
+        
+        <!-- 移动端整块首屏贴图（标题 + DNA / 蛋白装饰 + 引言文字一体）：移动端只渲染它，
+             PC 端由 description.css 隐藏，见该文件第 8.0 / 8.4 节 -->
+        <img class="mobile-hero-image"
+             src="https://static.igem.wiki/teams/6059/wiki/move/safety.avif"
+             alt="Description — STING: an international team of students, researchers, and innovators exploring the frontiers of bacterial genome engineering.">
+        
+        <!-- 左侧装饰 DNA (通过 asset-map.json 解析) -->
+        <div class="left-dna-wrapper">
+            <img src="{{ asset_url('title/DNA_1.png') }}" alt="DNA Structure Left" class="left-dna-image">
+        </div>
+
+        <!-- 右侧装饰蛋白结构 -->
+        <div class="right-protein-wrapper">
+            <img src="{{ asset_url('title/protein.png') }}" alt="Protein Structure Right" class="right-protein-image">
+        </div>
+
+        <!-- 右下装饰 DNA -->
+        <div class="bottom-right-dna-wrapper">
+            <img src="{{ asset_url('title/DNA_2.png') }}" alt="DNA Structure Bottom Right" class="bottom-right-dna-image">
+        </div>
+
+        <!-- 中央大标题图片 -->
+        <div class="center-image-wrapper">
+            <img src="https://static.igem.wiki/teams/6059/wiki/title/safety.avif" alt="Description" class="title-image">
+        </div>
+
+        <!-- 中央引言文案 -->
+        <div class="center-description-wrapper">
+            <p class="center-description-text">
+                We are an international team of students, researchers,<br>
+                and innovators exploring the frontiers of bacterial<br>
+                genome engineering through the power of STING.
+            </p>
+        </div>
+
+        <!-- 底部滑动探索指引 -->
+        <div class="scroll-explore-wrapper">
+            <span class="scroll-line"></span>
+            <span class="scroll-text">SCROLL TO EXPLORE</span>
+            <span class="scroll-line"></span>
+        </div>
+
+        <div class="bottom-dots-decor"></div>
+    </div>
+</header>
+
+<!-- 侧边动态目录导航栏 (TOC) -->
+<aside class="side-container" id="sideContainer">
+    <nav class="toc-nav" id="tocNav" aria-label="Table of Contents"></nav>
+</aside>
+
+<!-- 正文主体容器 -->
+<main class="main-container" id="mainContainer">
+    <h1 class="heading-1">Safe Project Design</h1>
+    <p class="body-text">We use <i>E. coli</i> and <i>Pseudomonas putida</i> as our chassis organisms, which pose no harm to individuals or environment. <i>E. coli</i> DH5α, DH10β, BL21, BL21(DE3), and BW25113 are utilized when we implement the experiments of molecular cloning, expression, and screening.</p>
+    <p class="body-text">This year, our project aims to establish a highly efficient and versatile TnpB-based genome editing toolkit for bacterial chassis. TnpB, a compact RNA-guided nuclease, is regarded as the evolutionary ancestor of Cas12. Among the subtypes that have been discovered, ISHahl1 TnpB possesses four-base TAM specificity, which makes it suitable for our tool development. We first engineer ISHahl1 TnpB to obtain dTnpB, and then generate TnpBi and base editors based on it. Nevertheless, the stringent recognition of the TAM sequence CTAC by ISHahl1 TnpB limits its broader application. In order to overcome this issue, we next perform directed evolution to alter or expand TAM specificity. To this end, TnpB library is constructed by random mutagenesis of its 50–170 a.a. region. These variants are screened in <i>E. coli</i> BW25113 using fluorescent-reporter plasmid cleavage assays and validated by plasmid interference assays to quantify cleavage efficiency. The resulting validated TnpB variants form a versatile toolkit that enables efficient, multi-site, and programmable genome editing in bacterial chassis. To prevent the spread of engineered strains in the environment, we designed a TnpB-based suicide switch in which TnpB is programmed to target essential genes (dnaX, lspA, fabG, secY, and thiL) under an inducible promoter. TnpB expression is tightly repressed by a lab-supplied inducer in the lab; if cells escape where the inducer is absent, TnpB introduces double-strand breaks in these essential genes, leading to growth arrest and cell death. Targeting multiple essential genes simultaneously reduces the chance of escape via a single mutation.</p>
+    <p class="body-text">All the proteins are totally harmless to human body. All the plasmids are harmless for human beings, and none of our parts would raise any safety issue in our project according to the current expertise.</p>
+    <p class="body-text">In addition, we identified that the use of acids and corrosive chemicals in our laboratory work poses potential hazards to human health and safety. When preparing large amounts of buffered solution, hydrochloric acid used for adjusting the pH could splash out of the beaker, which could lead to corrosion of surfaces, instruments, and skin. To ensure experimental safety, all procedures involving these hazardous chemicals are conducted with appropriate protective measures to minimize the risk to both personnel and the environment.</p>
+    <h1 class="heading-1">Safe Lab Work</h1>
+    <p class="body-text">The laboratory is equipped with the location of emergency exits, emergency ventilation devices, fire-fighting equipment, first aid kits, and comprehensive safety management systems including personal protective equipment, inventory controls, and waste management. Every year after recruiting new members, we spend a long time training them in basic laboratory operations and handling safety accidents. When entering the laboratory, we must wear laboratory clothes, gloves, and goggles. All bacterial culture mediums have undergone sterilization treatment. We strictly follow the BSL-1 regulations to dispose of all biological materials and metabolic waste. The laboratory is also equipped with specialized operators for handling hazardous materials and biological products.</p>
+    <img src="https://static.igem.wiki/teams/6059/wiki/safety/safety-fig1.avif" alt="1" class="figure-image">
+    <p class="figure-caption"><b>Figure</b><b>  1</b>  First aid kits of our lab.</p>
+    <p class="body-text">At the same time, our PI Prof. Wenjing Hong is responsible for the safety and security of biology labs at our institution, and our institutional biosafety officer Ziyan Han ensures proper safety management for all team members.</p>
+    <img src="https://static.igem.wiki/teams/6059/wiki/safety/safety-fig2.avif" alt="1" class="figure-image">
+    <p class="figure-caption"><b>Figure</b><b>  2</b>  Members learnt laboratory safety intentions.</p> 
+    <p class="body-text">During our experimental work, all procedures are conducted in a Level 1 standard microbiological laboratory. The laboratory is equipped with chemical fume hoods and clean benches to prevent contamination and ensure proper containment. We strictly adhere to the corresponding biosafety regulations. Any contaminated waste or used materials generated will be decontaminated on-site prior to further handling or disposal, in strict accordance with established waste management protocols, ensuring complete inactivation of all biological materials before leaving the laboratory. All team members who can enter the laboratory have been trained in handling the engineered bacteria.</p>
+</main>
+
+<img src="https://static.igem.wiki/teams/6059/wiki/description/sword.avif" alt="Sword Scroll Track" class="scroll-sword" id="scrollSword">
+<img src="https://static.igem.wiki/teams/6059/wiki/description/scabbard.avif" alt="Scabbard Scroll Thumb" class="scroll-scabbard" id="scrollScabbard">
+<div class="scroll-back-to-top" id="scrollBackToTop">BACK TO TOP</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="{{ url_for('static', filename='description/description.js') }}" defer></script>
+{% endblock %}
