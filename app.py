@@ -76,15 +76,10 @@ def asset_config():
     return {path: asset_url(path) for path in ASSET_URLS}
 
 
-NOTEBOOK_ENTRIES = json.loads(
-    (PROJECT_ROOT / "data" / "notebook.json").read_text(encoding="utf-8")
-)
-
 app.jinja_env.globals.update(
     asset_url=asset_url,
     asset_config=asset_config,
     member_cards=MEMBER_CARDS,
-    notebook_entries=NOTEBOOK_ENTRIES,
     member_mottos={member["id"]: member["motto"] for member in MEMBER_CARDS},
 )
 

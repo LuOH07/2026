@@ -1,59 +1,103 @@
 {% extends "layout.html" %}
 {% block title %}Notebook{% endblock %}
 {% block page_styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='notebook/notebook.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='notebook/notebook.css', v='20261018-url-2') }}">
 {% endblock %}
 {% block page_content %}
-{# Edit the records here. Keep ISO dates and provide verified experiment text only. #}
+{# Single source for dates, sheets and dots. Optional fields: title, paragraphs, illustration_url, illustration_alt. #}
 {% set entries = [
-  {'date': '2026-04-10', 'label': '4.10'},
-  {'date': '2026-04-20', 'label': '4.20'},
-  {'date': '2026-05-01', 'label': '5.1'},
-  {'date': '2026-05-03', 'label': '5.3'},
-  {'date': '2026-05-04', 'label': '5.4'},
-  {'date': '2026-05-07', 'label': '5.7'},
-  {'date': '2026-05-10', 'label': '5.10'}
+{'date': '2026-04-10', 'label': '4.10'},
+{'date': '2026-04-20', 'label': '4.20'},
+{'date': '2026-05-01', 'label': '5.1'},
+{'date': '2026-05-03', 'label': '5.3'},
+{'date': '2026-05-04', 'label': '5.4'},
+{'date': '2026-05-07', 'label': '5.7'},
+{'date': '2026-05-10', 'label': '5.10'},
+{'date': '2026-05-11', 'label': '5.11'},
+{'date': '2026-05-12', 'label': '5.12'},
+{'date': '2026-05-13', 'label': '5.13'},
+{'date': '2026-05-14', 'label': '5.14'},
+{'date': '2026-05-15', 'label': '5.15'},
+{'date': '2026-05-16', 'label': '5.16'},
+{'date': '2026-05-17', 'label': '5.17'},
+{'date': '2026-05-18', 'label': '5.18'},
+{'date': '2026-05-19', 'label': '5.19'},
+{'date': '2026-05-20', 'label': '5.20'},
+{'date': '2026-05-21', 'label': '5.21'},
+{'date': '2026-05-22', 'label': '5.22'},
+{'date': '2026-05-23', 'label': '5.23'},
+{'date': '2026-05-24', 'label': '5.24'},
+{'date': '2026-05-25', 'label': '5.25'},
 ] %}
 <section class="notebook" aria-labelledby="notebook-title">
   <div class="notebook-intro">
     <h1 id="notebook-title">Notebook <span>Lab records</span></h1>
-    <p>Select a date to explore our laboratory notebook.</p>
+    <p>Use the previous and next buttons to explore our laboratory notebook.</p>
   </div>
   <div class="notebook-layout">
+    {# Desktop: scrollable dates and sword. Mobile: four dates per row. #}
     <aside class="notebook-timeline" aria-label="Record dates">
-      <ol>
-        {% for entry in entries %}
-        <li><button type="button" class="notebook-date" data-entry="{{ loop.index0 }}" aria-controls="notebook-entry-{{ loop.index }}" {% if loop.first %}aria-current="date"{% endif %}>
-          <span class="notebook-sword" aria-hidden="true"><img src="{{ url_for('static', filename='notebook/sword.svg') }}" alt="" width="90" height="135"></span>
-          <time datetime="{{ entry.date }}">{{ entry.label }}</time>
-        </button></li>
-        {% endfor %}
-      </ol>
+      <div class="notebook-date-viewport" tabindex="0" aria-label="Scroll record dates">
+        <ol>
+          {% for entry in entries %}
+          <li>
+            <span class="notebook-date" {% if loop.first %}aria-current="date" {% endif %}>
+              <time datetime="{{ entry.date }}">{{ entry.label }}</time>
+            </span>
+          </li>
+          {% endfor %}
+        </ol>
+      </div>
+      <span class="notebook-sword" aria-hidden="true"><img src="{{ asset_url('notebook/sword.svg') }}" alt=""></span>
     </aside>
-    <div class="notebook-reader" tabindex="0" role="region" aria-label="Notebook pages. Use left and right arrow keys to change pages.">
+    <div id="mainContainer" class="notebook-reader" tabindex="0" role="region"
+      aria-label="Notebook pages. Use the previous and next buttons to change pages.">
       <div class="notebook-stage">
+        {# One sheet per entry; only the selected sheet accepts focus and pointer input. #}
         {% for entry in entries %}
-        <article id="notebook-entry-{{ loop.index }}" class="notebook-sheet" data-sheet="{{ loop.index0 }}" data-position="{{ [3, loop.index0] | min }}" style="--paper-image: url('{{ url_for('static', filename='notebook/notebook.svg') }}')" {% if not loop.first %}aria-hidden="true" inert{% endif %}>
+        <article id="notebook-entry-{{ loop.index }}" class="notebook-sheet" data-sheet="{{ loop.index0 }}"
+          data-position="{{ [3, loop.index0] | min }}"
+          style="--paper-image: url('{{ asset_url('notebook/notebook.png') }}')" {% if not loop.first
+          %}aria-hidden="true" inert{% endif %}>
           <h2><time datetime="{{ entry.date }}">{{ entry.date | replace('-', ' / ') }}</time></h2>
           <div class="notebook-writing" tabindex="0" aria-label="Record text">
             <h3>{{ entry.title | default('Record pending') }}</h3>
-            {% for paragraph in entry.paragraphs | default(['The verified laboratory record for this date will be added here.']) %}<p>{{ paragraph }}</p>{% endfor %}
+            {% for paragraph in entry.paragraphs | default(['The verified laboratory record for this date will be added
+            here.']) %}
+            <p>{{ paragraph }}</p>
+            {% endfor %}
           </div>
           <figure class="notebook-illustration">
-            {% if entry.illustration_url | default('') %}<img src="{{ entry.illustration_url }}" alt="{{ entry.illustration_alt | default('Laboratory illustration') }}" loading="lazy">
-            {% else %}<p>Illustration pending</p>{% endif %}
+            {% if entry.illustration_url | default('') %}
+            <img src="{{ entry.illustration_url }}"
+              alt="{{ entry.illustration_alt | default('Laboratory illustration') }}" loading="lazy">
+            {% else %}
+            <p>Illustration pending</p>
+            {% endif %}
           </figure>
         </article>
         {% endfor %}
+        {# Full-height side hit areas; image size/position is controlled independently in CSS. #}
+        <div class="notebook-page-buttons" role="group" aria-label="Turn notebook pages">
+          <button type="button" class="notebook-prev" aria-label="Previous page" disabled>
+            <img src="{{ asset_url('notebook/page-prev.png') }}" alt="">
+          </button>
+          <button type="button" class="notebook-next" aria-label="Next page">
+            <img src="{{ asset_url('notebook/page-next.png') }}" alt="">
+          </button>
+        </div>
       </div>
-      <div class="notebook-dots" role="group" aria-label="Choose a notebook page">
-        {% for entry in entries %}<button type="button" data-entry="{{ loop.index0 }}" aria-controls="notebook-entry-{{ loop.index }}" aria-label="Page {{ loop.index }}, {{ entry.date }}" aria-pressed="{{ 'true' if loop.first else 'false' }}"></button>{% endfor %}
+
+      <div class="notebook-dots" role="group" aria-label="Notebook page indicators">
+        {% for entry in entries %}<span aria-label="Page {{ loop.index }}, {{ entry.date }}" {% if loop.first
+          %}aria-current="page" {% endif %}></span>{% endfor %}
       </div>
-      <p class="notebook-status" role="status" aria-live="polite" aria-atomic="true">Page 1 of {{ entries | length }}</p>
+      <p class="notebook-status" role="status" aria-live="polite" aria-atomic="true">Page 1 of {{ entries | length }}
+      </p>
     </div>
   </div>
 </section>
 {% endblock %}
 {% block page_scripts %}
-<script src="{{ url_for('static', filename='notebook/notebook.js') }}" defer></script>
+<script src="{{ url_for('static', filename='notebook/notebook.js', v='20261018-url-2') }}" defer></script>
 {% endblock %}
