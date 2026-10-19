@@ -1,68 +1,3 @@
-{% extends "layout.html" %}
-
-{% block title %}Description{% endblock %}
-
-{% block page_styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='description/description.css') }}">
-{% endblock %}
-
-{% block page_content %}
-<header class="title-header-wrapper" id="heroWrapper">
-    <div class="grid-container" id="heroGridContainer">
-        <canvas id="gridCanvas"></canvas>
-
-        <!-- 移动端整块首屏贴图（标题 + DNA / 蛋白装饰 + 引言文字一体）：移动端只渲染它，
-             PC 端由 description.css 隐藏，见该文件第 8.0 / 8.4 节 -->
-        <img class="mobile-hero-image"
-             src="https://static.igem.wiki/teams/6059/wiki/move/description.avif"
-             alt="Description — STING: an international team of students, researchers, and innovators exploring the frontiers of bacterial genome engineering.">
-        
-        <!-- 左侧装饰 DNA (通过 asset-map.json 解析) -->
-        <div class="left-dna-wrapper">
-            <img src="{{ asset_url('title/DNA_1.png') }}" alt="DNA Structure Left" class="left-dna-image">
-        </div>
-
-        <!-- 右侧装饰蛋白结构 -->
-        <div class="right-protein-wrapper">
-            <img src="{{ asset_url('title/protein.png') }}" alt="Protein Structure Right" class="right-protein-image">
-        </div>
-
-        <!-- 右下装饰 DNA -->
-        <div class="bottom-right-dna-wrapper">
-            <img src="{{ asset_url('title/DNA_2.png') }}" alt="DNA Structure Bottom Right" class="bottom-right-dna-image">
-        </div>
-
-        <!-- 中央大标题图片 -->
-        <div class="center-image-wrapper">
-            <img src="https://static.igem.wiki/teams/6059/wiki/description/description.avif" alt="Description" class="title-image">
-        </div>
-
-        <!-- 中央引言文案 -->
-        <div class="center-description-wrapper">
-            <p class="center-description-text">
-                We are an international team of students, researchers,<br>
-                and innovators exploring the frontiers of bacterial<br>
-                genome engineering through the power of STING.
-            </p>
-        </div>
-
-        <!-- 底部滑动探索指引 -->
-        <div class="scroll-explore-wrapper">
-            <span class="scroll-line"></span>
-            <span class="scroll-text">SCROLL TO EXPLORE</span>
-            <span class="scroll-line"></span>
-        </div>
-
-        <div class="bottom-dots-decor"></div>
-    </div>
-</header>
-
-<!-- 侧边动态目录导航栏 (TOC) -->
-<aside class="side-container" id="sideContainer">
-    <nav class="toc-nav" id="tocNav" aria-label="Table of Contents"></nav>
-</aside>
-
-<!-- 正文主体容器 -->
 <main class="main-container" id="mainContainer">
     <h1 class="heading-1">Inspiration</h1>
     <p class="body-text">Genome editing technology is a foundational technology in synthetic biology. However, traditional CRISPR-Cas9/Cas12a systems face challenges in non-model environmental microorganisms, including high plasmid burden, cellular toxicity associated with heterologous protein expression, and low editing efficiency (1). Such bottlenecks severely limit the feasibility of complex genetic engineering, prompting extensive efforts to develop more compact and adaptable editing platforms. In recent years, TnpB, a transposon-derived miniature nuclease (~400 a.a.) recognized as the evolutionary ancestor of Cas12, has emerged as a promising alternative due to its extremely small molecular size.</p>
@@ -82,20 +17,10 @@
 
     <p class="body-text">The function of TnpB depends on reRNA (right-end element RNA, also called ωRNA), which is transcribed from the right-end sequence of the transposon. In the TnpB system, reRNA assembles with the TnpB protein into a catalytically active ribonucleoprotein (RNP) complex, which is the active entity for DNA targeting. The RNP complex first recognizes the TAM sequence and then engages the target DNA via complementary base pairing, leading to TnpB-mediated cleavage. As with the Cas12 family, TnpB's recognition of the target DNA is strictly dependent on the transposon-associated motif (TAM), which is located adjacent to the target sequence and is necessary for complex assembly and catalytic activation of the RuvC domain (5).</p>
 
-    
-
-    <h1 class="heading-1">Background</h1>
-    <h2 class="heading-2">The Evolution of Gene-Editing Technology and the Challenges in Microbial Engineering</h2>
-    <p class="body-text">The CRISPR-Cas system has completely transformed genome editing. The miniaturisation and functional diversification of effector proteins, from Cas9 to Cas12, have continuously broadened the range of applications for editing tools (1, 4). However, conventional Cas9 systems face challenges such as high plasmid burden, low editing efficiency and toxicity from heterologous protein expression in environmental microorganisms and industrial strains, including pseudomonads (5).</p>
-    <p class="body-text">In recent years, the development of ultra-compact nucleases has become an important trend. Miniature effector proteins such as Cas12f (~400-700 aa) and transposon-derived TnpB (~400 aa) have extremely small coding sequences. This substantially reduces plasmid-construction burden and host-expression pressure and provides new avenues for genome editing in Gram-negative environmental microorganisms (6).</p>
-    
-    <h2 class="heading-2">2. TnpB: A Transposon-Derived Miniature RNA-Guided Nuclease</h2>
-    <p class="body-text">TnpB is widely distributed among the prokaryotic IS200/IS605 and IS607 insertion sequence families, and it has been shown to be the evolutionary ancestor of type V CRISPR-Cas12 effector proteins. Composed of only approximately 400 amino acid residues, TnpB nevertheless has RNA-guided, targeted DNA cleavage activity and is one of the <b>smallest</b> programmable RNA-guided nucleases known to date (7).</p>
-    <p class="body-text">TnpB function depends on reRNA (right-end element RNA), which is transcribed from the right-end sequence of the transposon. reRNA recognizes target DNA through complementary base pairing and assembles with the TnpB protein into a catalytically active ribonucleoprotein complex. As with the Cas12 family, TnpB's recognition of the target DNA is ,<b>strictly</b> dependent on the transposon-associated motif (TAM), which is located adjacent to the target sequence and is necessary for complex assembly and RuvC catalytic activation (6).</p>
     <p class="body-text">In recent years, TnpB has been successfully engineered and applied to genome editing in multiple systems, including mammalian cells (8-10) and plant cells (11). Owing to its small size, TnpB shows particular potential in scenarios where the capacity of delivery vectors, such as adeno-associated virus (AAV), is limited. In prokaryotes, genome editing has been achieved in bacteria (such as <i>E. coli</i>) (12) and archaea (such as <i>Sulfolobus islandicus</i>) (13) (Figure 2).</p>
 
-    <img src="https://static.igem.wiki/teams/6059/wiki/description/figure/fig-2.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  2</b>  TnpB has been applied in mammalian cells, plant cells, bacteria, and can be successfully delivered z<i>via</i> adeno-associated virus (AAV).</p>
+    <img src="https://static.igem.wiki/teams/6059/wiki/description/figure/fig-2-new.avif" alt="1" class="figure-image">
+    <p class="figure-caption"><b>Figure</b><b>  2</b>  TnpB has been applied in mammalian cells, plant cells, bacteria, and can be successfully delivered <i>via</i> adeno-associated virus (AAV).</p>
 
     <h1 class="heading-1">Problem</h1>
     <h2 class="heading-2">1. Limited studies have investigated TnpB recognizing four-nucleotide TAM sequences</h2>
@@ -115,7 +40,7 @@
 
 
     <h1 class="heading-1">Project</h1>
-    <p class="body-text">This project focuses on ISHahl1 TnpB, aiming to improve its utility in genome editing and gene regulation, and to broaden or alter its TAM recognition spectrum (see <b>Design</b> for details)</p>
+    <p class="body-text">This project focuses on ISHahl1 TnpB, aiming to improve its utility in genome editing and gene regulation, and to broaden or alter its TAM recognition spectrum (see <b>Design</b> for details).</p>
 
     <h2 class="heading-2">1. Development of tools based on ISHahl1 TnpB</h2>
     <h3 class="heading-3">1.1 Dual-plasmid editing system based on ISHahl1 TnpB</h3>
@@ -127,7 +52,7 @@
     <h3 class="heading-3">1.3 Base editor based on dTnpB′s localization</h3>
     <p class="body-text">We plan to construct a <b>miniature single-base editor</b> by fusing dTnpB with a cytidine deaminase (APOBEC-1) and an uracil glycosylase inhibitor (UGI). The objective is to achieve precise single-base substitution from C·G to T·A (Figure 4).</p>
 
-    <img src="https://static.igem.wiki/teams/6059/wiki/description/figure/fig44.avif" alt="1" class="figure-image">
+    <img src="https://static.igem.wiki/teams/6059/wiki/description/figure/fig-4-new.avif" alt="1" class="figure-image">
     <p class="figure-caption"><b>Figure</b><b>  4</b>   Mechanism of dTnpB-mediated precise base editing.</p>
 
 
@@ -139,13 +64,13 @@
     <p class="body-text">The TnpB mutant library will be transformed into eight <i>E. coli BW25113</i> strains carrying diverse TAM sequences ("NTAC", "CNAC" and "CTNC") in the <i>eyfp</i> reporter gene. Afterwards, the normalized EYFP fluorescence intensity will be used for positive screening to select variants with potentially altered or expanded TAM specificities (Figure 5).</p>
 
     <h3 class="heading-3">2.3 Verification of nuclease activity: plasmid interference assay</h3>
-    <p class="body-text">  To rule out false positives, the selected variants will be further tested in plasmid interference assays to verify their nuclease activity (Figure 5); confirmed active variants will then be sequenced to obtain their coding sequences.</p>
+    <p class="body-text">To rule out false positives, the selected variants will be further tested in plasmid interference assays to verify their nuclease activity (Figure 5); confirmed active variants will then be sequenced to obtain their coding sequences.</p>
 
     <img src="https://static.igem.wiki/teams/6059/wiki/description/figure/fig-5.avif" alt="1" class="figure-image">
     <p class="figure-caption"><b>Figure</b><b>  5</b>   Directed evolution of ISHahl1 TnpB for altered or expanded TAM specificity.</p>
 
     <h3 class="heading-3">2.4 Testing the genome editing performance of selected variants</h3>
-    <p class="body-text">  To further evaluate the genome-editing performance, the selected variants will be introduced into <i>E. coli</i> BL21(DE3) via the dual-plasmid editing system mentioned above.</p>
+    <p class="body-text">To further evaluate the genome-editing performance, the selected variants will be introduced into <i>E. coli</i> BL21(DE3) via the dual-plasmid editing system mentioned above.</p>
 
 
     <h1 class="heading-1">Human Practices</h1>
@@ -160,13 +85,13 @@
 
 
 
-    <h1 class="heading-reference">Reference</h1>
+    <h1 class="heading-reference">References</h1>
     <p class="body-text">[1] Wang, J. Y., Doudna, J. A., CRISPR technology: a decade of genome editing is only the beginning. Science 379, eadd8643 (2023).</p>
     <p class="body-text">[2] Ran, F. A., Cong, L., Yan, W. X.; <i>et al.</i>, In vivo genome editing using Staphylococcus aureus Cas9. Nature 520, 186-191 (2015).</p>
     <p class="body-text">[3] Tang, N., Ji, Q., Miniature CRISPR-Cas12 systems: mechanisms, engineering, and genome editing applications. ACS Chem Biol 19, 1399-1408 (2024).</p>
     <p class="body-text">[4] Cong, L., Ran, F. A., Cox, D.; <i>et al.</i>, Multiplex genome engineering using CRISPR/Cas systems. Science 339, 819-823 (2013).</p>
     <p class="body-text">[5] Karvelis, T., Druteika, G., Bigelyte, G.; <i>et al.</i>, Transposon-associated TnpB is a programmable RNA-guided DNA endonuclease. Nature 599, 692-696 (2021).</p>
-    <p class="body-text">[6] [6] Altae-Tran, H., Shmakov, S. A., Makarova, K. S.; <i>et al.</i>, Diversity, evolution, and classification of the RNA-guided nucleases TnpB and Cas12. Proc Natl Acad Sci U S A 120, e2308224120 (2023).</p>
+    <p class="body-text">[6] Altae-Tran, H., Shmakov, S. A., Makarova, K. S.; <i>et al.</i>, Diversity, evolution, and classification of the RNA-guided nucleases TnpB and Cas12. Proc Natl Acad Sci U S A 120, e2308224120 (2023).</p>
     <p class="body-text">[7] Sasnauskas, G., Tamulaitiene, G., Druteika, G.; <i>et al.</i>, TnpB structure reveals minimal functional core of Cas12 nuclease family. Nature 616, 384-389 (2023).</p>
     <p class="body-text">[8] Lu, J., Lai, J., Cheng, L.; <i>et al.</i>, Miniature and versatile genome regulation TnpB-omegaRNA toolkits facilitate cancer immunotherapy. Nat Commun 17, 4667 (2026).</p>
     <p class="body-text">[9] Wang, M., Sun, Z., Liu, Y.; <i>et al.</i>, Hypercompact TnpB and truncated TnpB systems enable efficient genome editing in vitro and in vivo. Cell Discov 10, 31 (2024).</p>
@@ -180,15 +105,3 @@
     <p class="body-text">[17] Sonbol, S., Siam, R., The association of group IIB intron with integrons in hypersaline environments. Mob DNA 12, 8 (2021).</p>
     <p class="body-text">[18] Nakagawa, R., Hirano, H., Omura, S. N.; <i>et al.</i>, Cryo-EM structure of the transposon-associated TnpB enzyme. Nature 616, 390-397 (2023).</p>
     
-
- 
-</main>
-
-<img src="https://static.igem.wiki/teams/6059/wiki/description/sword.avif" alt="Sword Scroll Track" class="scroll-sword" id="scrollSword">
-<img src="https://static.igem.wiki/teams/6059/wiki/description/scabbard.avif" alt="Scabbard Scroll Thumb" class="scroll-scabbard" id="scrollScabbard">
-<div class="scroll-back-to-top" id="scrollBackToTop">BACK TO TOP</div>
-{% endblock %}
-
-{% block page_scripts %}
-<script src="{{ url_for('static', filename='description/description.js') }}" defer></script>
-{% endblock %}
