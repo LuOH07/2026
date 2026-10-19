@@ -38,10 +38,15 @@
         max-width: 50%;
     }
 }
-
 @media (min-width: 1025px) {
     .main-container > img.figure-image:nth-of-type(4) {
         width: 50%;
+        max-width: 50%;
+    }
+}
+@media (min-width: 1025px) {
+    .main-container > img.figure-image:nth-of-type(5) {
+        width: 30%;
         max-width: 50%;
     }
 }
