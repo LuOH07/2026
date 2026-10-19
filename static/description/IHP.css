@@ -1,0 +1,172 @@
+/* ============================================================
+   IHP.css —— human-practices.html（IHP 页面）专属样式
+   ============================================================
+   只处理一件事：首屏标题区里那句 HP 补充文案 .hero-hp-note。
+
+   这一段文字原先躺在 .main-container 里当正文段落（.body-text），
+   现在直接写进标题文案（.center-description-wrapper）中，作为
+   “Engineering TnpB with the World.” 的第二行。因此它不再是正文：
+   字号、行高、字距、颜色、字体族都与标题文案逐项对齐，视觉上属于
+   标题块；唯一保留的“正文元素”是里面的 <a> 超链接，配色与下划线
+   沿用 description.css 第 11 节（正文超链接）的规则，站内观感统一。
+
+   加载顺序：本文件在 layout.html 的 page_styles 块中排在
+   description.css 之后，选择器优先级也更高（多带了
+   .title-header-wrapper 前缀），所以断点内的 display:none 覆盖得住。
+   具体数值若与 description.css 的 .center-description-text 有出入，
+   以本文件为准（两者改字号时应一起改）。
+   ============================================================ */
+
+/* ============================================================
+   1. 补充文案的排版：对齐标题文案
+   ============================================================ */
+.title-header-wrapper .hero-hp-note {
+    /* —— 以下六项与 description.css 的 .center-description-text 完全一致 —— */
+    font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB",
+                 "Heiti SC", -apple-system, BlinkMacSystemFont, "Segoe UI",
+                 Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: clamp(0.9rem, 1.6vw, 1.3rem);
+    line-height: 1.68;
+    font-weight: 400;
+    color: #3b4e54;
+    letter-spacing: 0.02em;
+
+    /* —— 作为标题文案的第二行：与上一行留出一段呼吸 —— */
+    margin: 1em auto 0;
+    /* 限制行宽，长句也能稳定折成两行；窄屏时随容器收缩 */
+    max-width: 62ch;
+    text-align: center;
+    text-wrap: pretty;
+    /* 标题文案本身不可选（user-select: none），但这句里有链接，
+       允许选中，方便复制 URL */
+    user-select: text;
+}
+
+/* ============================================================
+   2. 超链接：保留正文链接格式
+   ============================================================
+   配色 / 加粗 / 下划线粗细与偏移，跟 .main-container a 一致
+   （#91ACE0、1.5px 下划线、3px 偏移、悬停加粗到 2.5px）。
+   ============================================================ */
+.title-header-wrapper .hero-hp-note a,
+.title-header-wrapper .hero-hp-note a:visited {
+    color: #91ACE0;
+    font: inherit;                 /* 先抹掉浏览器默认的蓝色小字号 */
+    font-weight: bold;
+    text-decoration: underline;
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 3px;
+    transition: text-decoration-thickness 0.15s ease;
+}
+
+.title-header-wrapper .hero-hp-note a:hover,
+.title-header-wrapper .hero-hp-note a:focus-visible {
+    text-decoration-thickness: 2.5px;
+}
+
+/* 键盘聚焦时给一个不依赖颜色的焦点框 */
+.title-header-wrapper .hero-hp-note a:focus-visible {
+    outline: 2px solid #91ACE0;
+    outline-offset: 4px;
+    border-radius: 3px;
+}
+
+/* ============================================================
+   3. 入场：跟着首屏标题一起淡入
+   ============================================================
+   只在 JS 成功接管（<html> 上有 .ihp-js）时才隐藏初始状态，
+   JS 失效时文字照常可见，不会出现“空白标题区”。
+   ============================================================ */
+html.ihp-js .title-header-wrapper .hero-hp-note {
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+html.ihp-js .title-header-wrapper .hero-hp-note.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 视口偏矮、文案会压到 SCROLL TO EXPLORE 时，IHP.js 加上 .is-compact，
+   把字号和行距收一档（仍然居中、仍然与标题文案同色） */
+html.ihp-js .title-header-wrapper .hero-hp-note.is-compact {
+    font-size: clamp(0.82rem, 1.4vw, 1.12rem);
+    line-height: 1.6;
+    margin-top: 0.7em;
+}
+
+/* 尊重“减少动态效果”的系统设置 */
+@media (prefers-reduced-motion: reduce) {
+    html.ihp-js .title-header-wrapper .hero-hp-note {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}
+
+/* ============================================================
+   4. 移动端（≤1024px，断点与 description.css / head_foot.css 一致）
+   ============================================================
+   移动端首屏只渲染整块贴图（description.css 第 8.4 节把
+   .center-description-wrapper 设为 display:none !important），
+   标题与引言都已印在贴图里。这里只放开这一句补充文案，让它接在
+   贴图下方居中排一行小字，HP 链接在手机上仍然可点；
+   同一块里的标题文案继续隐藏，避免与贴图重复。
+   ============================================================ */
+@media (max-width: 1024px) {
+    .title-header-wrapper .center-description-wrapper {
+        display: block !important;   /* 压过 description.css 的 display:none !important */
+        position: static;            /* 回到文档流：紧跟在首屏贴图之后 */
+        transform: none;
+        width: 100%;
+        max-width: none;
+        padding: 1.2rem 5% 0.6rem;
+        box-sizing: border-box;
+    }
+
+    /* 贴图里已经有 “Engineering TnpB with the World.”，这块不再重复 */
+    .title-header-wrapper .center-description-wrapper > .center-description-text:not(.hero-hp-note) {
+        display: none !important;
+    }
+
+    .title-header-wrapper .hero-hp-note {
+        margin-top: 0;
+        max-width: none;
+        font-size: 0.8125rem;
+        line-height: 1.85;
+        letter-spacing: 0.2px;
+        /* 移动端也保持居中：这句话在手机上接在首屏贴图下方，
+           与贴图里居中排的标题、引言对齐，不做左对齐的正文块 */
+        text-align: center;
+        color: #465E77;
+    }
+
+    .title-header-wrapper .hero-hp-note a,
+    .title-header-wrapper .hero-hp-note a:visited {
+        text-underline-offset: 2px;
+    }
+}
+
+/* ============================================================
+   5. 打印与强制高对比
+   ============================================================ */
+@media print {
+    /* 打印时首屏不做整页铺底，补充文案跟着标题直接排 */
+    .title-header-wrapper .hero-hp-note {
+        opacity: 1 !important;
+        transform: none !important;
+        margin-top: 0.6em;
+        color: #000;
+    }
+}
+
+@media (forced-colors: active) {
+    .title-header-wrapper .hero-hp-note {
+        color: CanvasText;
+    }
+
+    .title-header-wrapper .hero-hp-note a {
+        color: LinkText;
+    }
+}
