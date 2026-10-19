@@ -63,7 +63,7 @@ font-family: 'Helvetica Condensed', sans-serif;
 font-weight: 300;
 color: #8c9fae;
 text-decoration: none;
-font-size: 17px;
+font-size: 0.9375rem;
 letter-spacing: 1.2px;
 text-transform: uppercase;
 height: 100%;
@@ -118,7 +118,7 @@ color: #162741;
 text-decoration: none;
 font-family: 'Helvetica Condensed', sans-serif;
 font-weight: 400;
-font-size: 15px;
+font-size: 0.8125rem;
 line-height: 1.35;
 letter-spacing: 0px;
 text-transform: capitalize;
@@ -227,7 +227,7 @@ opacity: 0.9;
 color: #ffffff;
 font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 font-style: normal;
-font-size: 18px;
+font-size: 1rem;
 font-weight: 700;
 line-height: 22px;
 letter-spacing: 0.3px;
@@ -236,7 +236,7 @@ letter-spacing: 0.3px;
 /* STREAMING_CHUNK:Styling footer bottom bar... */
 .footer-copyright {
 font-family: 'DM Mono', monospace;
-font-size: 11px;
+font-size: 0.5625rem;
 font-weight: 400;
 color: #ffffff;
 letter-spacing: 0.6px;
@@ -250,7 +250,7 @@ font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 background-color: #4C6E8F;
 color: #FFFFFF;
 text-decoration: none;
-font-size: 15px;
+font-size: 0.8125rem;
 font-weight: 700;
 letter-spacing: 0.5px;
 padding: 10px 32px;
@@ -284,7 +284,7 @@ margin: 24px auto 0;
 padding: 0 24px;
 color: #fff;
 font-family: 'Inter', sans-serif;
-font-size: 12px;
+font-size: 0.625rem;
 line-height: 1.6;
 }
 
@@ -455,7 +455,7 @@ justify-content: space-between;
 width: 100%;
 height: auto;
 padding: 15px 18px;
-font-size: 16px;
+font-size: 0.875rem;
 letter-spacing: 1.4px;
 color: #cfe0f2;
 }
@@ -526,7 +526,7 @@ nav .dropdown-item {
 justify-content: flex-start;
 width: 100%;
 padding: 11px 16px 11px 26px;
-font-size: 14px;
+font-size: 0.75rem;
 line-height: 1.4;
 letter-spacing: 0.2px;
 text-align: left;
@@ -598,7 +598,7 @@ padding: 7px;
 }
 
 .footer-address {
-font-size: 15px;
+font-size: 0.8125rem;
 line-height: 1.55;
 letter-spacing: 0.2px;
 }
@@ -607,19 +607,19 @@ letter-spacing: 0.2px;
 flex-direction: column;
 align-items: center;
 gap: 8px;
-font-size: 11px;
+font-size: 0.5625rem;
 text-align: center;
 }
 
 .footer-contact-btn {
-font-size: 14px;
+font-size: 0.75rem;
 padding: 10px 26px;
 }
 
 .wiki-legal {
 margin-top: 20px;
 padding: 0 20px;
-font-size: 11px;
+font-size: 0.5625rem;
 text-align: center;
 word-break: break-word;
 }
@@ -633,11 +633,11 @@ width: min(64vw, 186px);
 max-width: 186px;
 right: 8px;
 }
-nav .nav-item > a.nav-link { padding: 13px 14px; font-size: 15px; }
-nav .dropdown-item { padding: 10px 14px 10px 22px; font-size: 13px; }
+nav .nav-item > a.nav-link { padding: 13px 14px; font-size: 0.8125rem; }
+nav .dropdown-item { padding: 10px 14px 10px 22px; font-size: 0.6875rem; }
 .footer-logo { max-height: 44px; max-width: 28%; }
 .footer-social img { width: 34px; height: 34px; padding: 6px; }
-.footer-address { font-size: 14px; }
+.footer-address { font-size: 0.75rem; }
 }
 
 /* ---------- 横屏手机：收紧悬浮弹窗的纵向留白 ---------- */

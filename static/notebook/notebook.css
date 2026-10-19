@@ -10,7 +10,10 @@
   --font-mono: 'DM Mono', Consolas, monospace;
   background: var(--bg);
   color: var(--fg);
-  padding: 112px 4vw 64px;
+  /* Side padding, also used to bleed the mobile hero image to the screen edges
+     (section 6). Mobile overrides it to 16px next to its own padding rule. */
+  --pad-x: 4vw;
+  padding: 112px var(--pad-x) 64px;
   font-family: var(--font-body);
   --bg: #f3f7f8;
   --fg: #0a1c37;
@@ -373,7 +376,8 @@
 
 @media (max-width: 700px) {
   .notebook {
-    padding: 104px 16px 40px;
+    --pad-x: 16px;
+    padding: 104px var(--pad-x) 40px;
   }
   .notebook-intro h1 span {
     display: block;
@@ -469,6 +473,45 @@
   }
   .notebook-stage {
     --paper-width: min(560px, calc(100% - 112px));
+  }
+}
+
+/* 6. Mobile hero (<= 1024px, the site-wide breakpoint used by head_foot.css).
+   Same treatment as every other page (description / safety / design / …): the
+   title block is replaced by one designed image. PC (> 1024px) is untouched —
+   the wrapper stays display: none, so the desktop title renders exactly as before.
+   The image is only requested where it is actually shown: it is display: none on
+   PC and loading="lazy", so desktop browsers never fetch it. */
+.notebook-mobile-hero {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  /* The image starts right below the fixed 62px-tall mobile header, so the
+     section's top padding only has to clear the header (was 112px / 104px). */
+  .notebook {
+    padding-top: 62px;
+  }
+
+  /* Cancel the section's side padding so the image runs edge to edge, with no
+     white bands left or right (same full-bleed look as the other pages). */
+  .notebook-mobile-hero {
+    display: block;
+    margin-left: calc(-1 * var(--pad-x));
+    margin-right: calc(-1 * var(--pad-x));
+    margin-bottom: 16px;
+    font-size: 0; /* no inline-baseline gap under the image */
+  }
+  .notebook-mobile-hero img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* The headline (and its "Lab records" note) is already drawn inside the image.
+     The line of instructions below it is not, so mobile keeps it. */
+  .notebook-intro h1 {
+    display: none;
   }
 }
 

@@ -99,7 +99,7 @@ html, body {
   left: 18%;
   color: #243A4F;
   font-family: "Kaisei Tokumin";
-  font-size: 24px;
+  font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
   line-height: 25px;
@@ -146,7 +146,7 @@ html, body {
   left: 12%;
   color: #243A4F;
   font-family: "Kaisei Tokumin";
-  font-size: 24px;
+  font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
   line-height: 25px;
@@ -193,7 +193,7 @@ html, body {
   left: 12%;
   color: #243A4F;
   font-family: "Kaisei Tokumin";
-  font-size: 24px;
+  font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
   line-height: 25px;
@@ -240,7 +240,7 @@ html, body {
   left: 12%;
   color: #243A4F;
   font-family: "Kaisei Tokumin";
-  font-size: 24px;
+  font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
   line-height: 25px;
@@ -287,7 +287,7 @@ html, body {
   left: 12%;
   color: #243A4F;
   font-family: "Kaisei Tokumin";
-  font-size: 24px;
+  font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
   line-height: 25px;
@@ -334,7 +334,7 @@ html, body {
   left: 18%;
   color: #243A4F;
   font-family: "Kaisei Tokumin";
-  font-size: 24px;
+  font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
   line-height: 25px;
@@ -381,7 +381,7 @@ html, body {
   left: 12%;
   color: #243A4F;
   font-family: "Kaisei Tokumin";
-  font-size: 24px;
+  font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
   line-height: 25px;
@@ -428,7 +428,7 @@ html, body {
   left: 18%;
   color: #243A4F;
   font-family: "Kaisei Tokumin";
-  font-size: 24px;
+  font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
   line-height: 25px;
@@ -475,7 +475,7 @@ html, body {
   left: 12%;
   color: #243A4F;
   font-family: "Kaisei Tokumin";
-  font-size: 24px;
+  font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
   line-height: 25px;
@@ -522,7 +522,7 @@ html, body {
   left: 18%;
   color: #243A4F;
   font-family: "Kaisei Tokumin";
-  font-size: 24px;
+  font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
   line-height: 25px;
@@ -569,7 +569,7 @@ html, body {
   left: 12%;
   color: #243A4F;
   font-family: "Kaisei Tokumin";
-  font-size: 24px;
+  font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
   line-height: 25px;
@@ -618,7 +618,7 @@ html, body {
   left: 18%;
   color: #243A4F;
   font-family: "Kaisei Tokumin";
-  font-size: 24px;
+  font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
   line-height: 25px;
@@ -665,7 +665,7 @@ html, body {
   left: 12%;
   color: #243A4F;
   font-family: "Kaisei Tokumin";
-  font-size: 24px;
+  font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
   line-height: 25px;
@@ -712,7 +712,7 @@ html, body {
   left: 12%;
   color: #243A4F;
   font-family: "Kaisei Tokumin";
-  font-size: 24px;
+  font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
   line-height: 25px;
@@ -759,7 +759,7 @@ html, body {
   left: 12%;
   color: #243A4F;
   font-family: "Kaisei Tokumin";
-  font-size: 24px;
+  font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
   line-height: 25px;
@@ -1201,7 +1201,7 @@ html, body {
   z-index: 2;
   color: #354453;
   font-family: "Kaisei Tokumin";
-  font-size: 72px;
+  font-size: 4.375rem;
   font-style: normal;
   font-weight: 800;
   line-height: 54.66px;
@@ -1216,7 +1216,7 @@ html, body {
   z-index: 2;
   color: rgba(60, 69, 77, 0.68);
   font-family: Inter;
-  font-size: 28px;
+  font-size: 1.625rem;
   font-style: normal;
   font-weight: 300;
   line-height: 22.1px;
@@ -1230,7 +1230,7 @@ html, body {
   z-index: 2;
   color: #323B43;
   font-family: Inter;
-  font-size: 30px;
+  font-size: 1.75rem;
   font-style: normal;
   font-weight: 300;
   line-height: 50px;
@@ -1247,7 +1247,7 @@ html, body {
   color: #354453;
   text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   font-family: "Kaisei Tokumin";
-  font-size: 56px;
+  font-size: 3.375rem;
   font-style: normal;
   font-weight: 800;
   line-height: 74px;
@@ -1265,7 +1265,7 @@ html, body {
   color: #206E63;
   text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   font-family: "Kite One", sans-serif;
-  font-size: 32px;
+  font-size: 1.875rem;
   font-style: normal;
   font-weight: 400;
   line-height: 74px;
@@ -1282,7 +1282,7 @@ html, body {
   color: #206E63;
   text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   font-family: "Kite One", sans-serif;
-  font-size: 32px;
+  font-size: 1.875rem;
   font-style: normal;
   font-weight: 400;
   line-height: 74px;
@@ -1299,7 +1299,7 @@ html, body {
   color: #206E63;
   text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   font-family: "Kite One", sans-serif;
-  font-size: 32px;
+  font-size: 1.875rem;
   font-style: normal;
   font-weight: 400;
   line-height: 74px;
@@ -1316,7 +1316,7 @@ html, body {
   color: #206E63;
   text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   font-family: "Kite One", sans-serif;
-  font-size: 32px;
+  font-size: 1.875rem;
   font-style: normal;
   font-weight: 400;
   line-height: 74px;
@@ -1333,7 +1333,7 @@ html, body {
   color: #206E63;
   text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   font-family: "Kite One", sans-serif;
-  font-size: 32px;
+  font-size: 1.875rem;
   font-style: normal;
   font-weight: 400;
   line-height: 74px;
@@ -1350,7 +1350,7 @@ html, body {
   color: #354453;
   text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   font-family: "Kaisei Tokumin";
-  font-size: 64px;
+  font-size: 3.875rem;
   font-style: normal;
   font-weight: 800;
   line-height: 74px;
@@ -1367,7 +1367,7 @@ html, body {
   color: #354453;
   text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   font-family: "Kaisei Tokumin";
-  font-size: 64px;
+  font-size: 3.875rem;
   font-style: normal;
   font-weight: 800;
   line-height: 74px;
@@ -1384,7 +1384,7 @@ html, body {
   color: #354453;
   text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   font-family: "Kaisei Tokumin";
-  font-size: 64px;
+  font-size: 3.875rem;
   font-style: normal;
   font-weight: 800;
   line-height: 74px;
@@ -1401,7 +1401,7 @@ html, body {
   color: #354453;
   text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   font-family: "Kaisei Tokumin";
-  font-size: 64px;
+  font-size: 3.875rem;
   font-style: normal;
   font-weight: 800;
   line-height: 74px;
@@ -1418,7 +1418,7 @@ html, body {
   color: #354453;
   text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
   font-family: "Kaisei Tokumin";
-  font-size: 64px;
+  font-size: 3.875rem;
   font-style: normal;
   font-weight: 800;
   line-height: 74px;

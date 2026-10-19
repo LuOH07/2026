@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}Notebook{% endblock %}
 {% block page_styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='notebook/notebook.css', v='20261018-url-2') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='notebook/notebook.css', v='20261018-url-3') }}">
 {% endblock %}
 {% block page_content %}
 {# Single source for dates, sheets and dots. Optional fields: title, paragraphs, illustration_url, illustration_alt. #}
@@ -31,6 +31,13 @@
 ] %}
 <section class="notebook" aria-labelledby="notebook-title">
   <div class="notebook-intro">
+    {# Mobile hero: like every other page (description / safety / …) the title is
+       swapped for a single designed image. Hidden on PC (> 1024px), so the desktop
+       title below stays exactly as it was — see notebook.css section 6. #}
+    <div class="notebook-mobile-hero">
+      <img src="https://static.igem.wiki/teams/6059/wiki/move/notebook.avif"
+           alt="STING — Notebook: lab records" loading="lazy" decoding="async">
+    </div>
     <h1 id="notebook-title">Notebook <span>Lab records</span></h1>
     <p>Use the previous and next buttons to explore our laboratory notebook.</p>
   </div>
