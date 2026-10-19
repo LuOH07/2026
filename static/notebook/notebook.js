@@ -126,9 +126,12 @@
   // Navigation: side buttons and blank space outside the paper.
   previousButton.addEventListener('click', () => selectEntry(active - 1));
   nextButton.addEventListener('click', () => selectEntry(active + 1));
+  dates.forEach((date, index) => {
+    date.addEventListener('click', () => selectEntry(index));
+  });
   // The whole notebook's blank side space is a paging target, not just the button column.
   notebook.addEventListener('click', event => {
-    if (event.target.closest('button, a, input, textarea, select, .notebook-intro, .notebook-timeline, .notebook-dots, .notebook-sheet')) return;
+    if (event.target.closest('button, a, input, textarea, select, .notebook-timeline, .notebook-dots, .notebook-sheet')) return;
     const paper = sheets[active].getBoundingClientRect();
     if (event.clientX < paper.left && !previousButton.disabled) previousButton.click();
     else if (event.clientX > paper.right && !nextButton.disabled) nextButton.click();
