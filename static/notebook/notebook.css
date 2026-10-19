@@ -56,7 +56,7 @@
 }
 .notebook-layout {
   display: grid;
-  grid-template-columns: 160px minmax(0, 1fr);
+  grid-template-columns: 200px minmax(0, 1fr);
   max-width: 1280px;
   margin: auto;
   gap: 24px;
@@ -180,6 +180,11 @@
   top: 10px;
   left: 50%;
   height: calc(100% - 20px);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 5% 6% 3%;
   background: var(--surface) var(--paper-image) center / 100% 100% no-repeat;
   border: 8px solid var(--surface);
   box-shadow: 0 8px 24px color-mix(in oklch, var(--fg) 9%, transparent);
@@ -221,21 +226,21 @@
   pointer-events: none;
 }
 .notebook-sheet h2 {
-  position: absolute;
-  left: 6%;
-  right: 6%;
-  top: 5%;
+  position: relative;
+  flex: 0 0 auto;
+  margin: 0 0 6%;
   font: 600 clamp(16px, 1.8vw, 22px)/1.3 var(--font-body);
   letter-spacing: -0.01em;
 }
-.notebook-writing {
-  position: absolute;
-  left: 7%;
-  right: 7%;
-  top: 23%;
-  height: 40%;
-  overflow: auto;
+.notebook-content {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
   scrollbar-width: thin;
+}
+.notebook-writing {
+  position: relative;
   font-size: 15px;
   line-height: 1.65;
   overflow-wrap: anywhere;
@@ -249,10 +254,23 @@
   margin-bottom: 12px;
   max-width: 65ch;
 }
+.notebook-illustration {
+  position: relative;
+  margin: 20px 0 0;
+}
 .notebook-illustration img {
+  display: block;
   width: 100%;
-  height: 100%;
+  max-height: 240px;
   object-fit: contain;
+}
+.notebook-illustration figcaption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+  text-align: center;
+  overflow-wrap: anywhere;
 }
 .notebook-reader:focus-visible {
   outline: 2px solid var(--fg);
@@ -397,8 +415,6 @@
     opacity: 0;
   }
   .notebook-writing {
-    left: 5%;
-    right: 5%;
     font-size: 14px;
   }
   .notebook-timeline .notebook-sword {
