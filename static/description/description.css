@@ -1,4 +1,4 @@
-/* ========================================================
+﻿/* ========================================================
 
 字体声明 (@font-face)
 ======================================================== */
@@ -325,7 +325,7 @@ z-index: 2;
 .side-container {
 position: fixed;
 left: 0;
-top: 15vh;
+top: 10vh;
 width: 15%;
 height: 60vh;
 background-color: #142F5C;
@@ -406,28 +406,7 @@ border-radius: 4px;
 background: rgba(255, 255, 255, 0.45);
 }
 
-/* ---------- 3.1 目录本体：把“被页眉劫持”的属性全部重新声明 ----------
-   本站页眉在窄屏会把页面里任何一个 <nav> 都当成右上角悬浮菜单来排版：
-   head_foot.css 的 @media (max-width: 1024px) 里有一条【裸 nav 选择器】，
-   它给 nav 设了 position: absolute / opacity: 0 / visibility: hidden /
-   transform: translateY(-10px) scale(.97) / pointer-events: none /
-   width: min(60vw, 200px) / overflow-y: auto ……
-
-   侧边目录的 #tocNav 恰好也是一个 <nav>，一旦本页的断点和页眉的断点
-   错开（曾经这里是 820px、页眉是 1024px），那条规则就会落到它头上：
-   侧边栏的深蓝底板照常显示（那是 .side-container 自己画的），里面的目录
-   文字却整块透明、不可见、也点不动 —— 就是“有 sidebar 但没有文字”。
-   1024×1162 这类竖屏平板正好落在 820~1024 这个夹缝里。
-
-   下面用 .side-container .toc-nav 提高权重（0,2,0，压过裸 nav 的 0,0,1），
-   把所有会被劫持的属性按普通流重新声明一遍。这样无论别处怎么写 nav，
-   只要侧边栏显示，目录文字就一定跟着显示。
-
-   唯一与“按普通流重置”不同的是 overflow：目录本体【就是侧边栏的滚动
-   容器】（原先滚动在 .side-container 上）。这样做的理由见 3.0 ① ——
-   侧边栏本体只留 overflow: hidden，上下沿那两条渐隐留白才钉得住。
-   顺带把上下留白也写成这里的 padding（--side-gap-y），它跟着目录一起滚，
-   所以静止时第一行离上沿 32px，滚到底时最后一行也离下沿 32px。 */
+/* ---------- 3.1 目录本体：把“被页眉劫持”的属性全部重新声明 ----------。 */
 .side-container .toc-nav {
 position: static;
 top: auto;
