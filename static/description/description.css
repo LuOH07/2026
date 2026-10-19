@@ -354,11 +354,63 @@ border-radius: 4px;
 background: rgba(255, 255, 255, 0.45);
 }
 
-.toc-nav {
+/* ---------- 3.1 目录本体：把“被页眉劫持”的属性全部重新声明 ----------
+   本站页眉在窄屏会把页面里任何一个 <nav> 都当成右上角悬浮菜单来排版：
+   head_foot.css 的 @media (max-width: 1024px) 里有一条【裸 nav 选择器】，
+   它给 nav 设了 position: absolute / opacity: 0 / visibility: hidden /
+   transform: translateY(-10px) scale(.97) / pointer-events: none /
+   width: min(60vw, 200px) / overflow-y: auto ……
+
+   侧边目录的 #tocNav 恰好也是一个 <nav>，一旦本页的断点和页眉的断点
+   错开（曾经这里是 820px、页眉是 1024px），那条规则就会落到它头上：
+   侧边栏的深蓝底板照常显示（那是 .side-container 自己画的），里面的目录
+   文字却整块透明、不可见、也点不动 —— 就是“有 sidebar 但没有文字”。
+   1024×1162 这类竖屏平板正好落在 820~1024 这个夹缝里。
+
+   下面用 .side-container .toc-nav 提高权重（0,2,0，压过裸 nav 的 0,0,1），
+   把所有会被劫持的属性按普通流重新声明一遍。这样无论别处怎么写 nav，
+   只要侧边栏显示，目录文字就一定跟着显示。 */
+.side-container .toc-nav {
+position: static;
+top: auto;
+right: auto;
+bottom: auto;
+left: auto;
 display: flex;
 flex-direction: column;
 gap: 20px;
 width: 100%;
+min-width: 0;
+max-width: none;
+height: auto;
+max-height: none;
+margin: 0;
+padding: 0;
+overflow: visible;
+background: none;
+border: 0;
+border-radius: 0;
+box-shadow: none;
+-webkit-backdrop-filter: none;
+backdrop-filter: none;
+opacity: 1;
+visibility: visible;
+pointer-events: auto;
+transform: none;
+transform-origin: center center;
+z-index: auto;
+}
+
+/* ---------- 3.2 空目录 = 整块隐藏侧边栏 ----------
+   “有 sidebar 但没有文字”这一种状态从根上不允许出现：
+   目录里一个条目都没有时（脚本没跑起来、页面没有可用标题、目录被清空…），
+   宁可整块侧边栏不显示，也不留一个空的深蓝底板。
+   第一条用 :has() 兜“脚本完全没运行、#tocNav 还是空的”这一种；
+   第二条兜不支持 :has() 的老浏览器 —— description.js 会给空目录的
+   侧边栏补上 .is-empty 类（同理，目录一有内容就把类去掉）。 */
+.side-container:has(.toc-nav:empty),
+.side-container.is-empty {
+display: none !important;
 }
 
 .toc-item {
@@ -763,17 +815,30 @@ filter: drop-shadow(0 0 6px rgba(136, 216, 177, 0.6));
 }
 
 /* ========================================================
-8. 移动端响应式（手机 / 竖屏窄屏）
-   断点 820px：以下规则只作用于窄屏，PC 端布局完全不受影响
-======================================================== */
-@media (max-width: 820px) {
+8. 移动端响应式（手机 / 竖屏窄屏 / 平板）
+   断点 1024px：与全站页眉 head_foot.css 的移动端断点【完全一致】
+========================================================
+
+   为什么断点必须是 1024px（曾经是 820px）：
+   页眉在 ≤1024px 就把导航换成右上角的汉堡悬浮菜单，而那个悬浮菜单用的是
+   一条【裸 nav 选择器】（head_foot.css 里“右上角悬浮弹窗（导航本体）”那一节）。821~1024px 这一段里，
+   本页仍在用 PC 布局显示侧边栏，于是侧边栏里的 #tocNav（也是一个 <nav>）
+   被页眉那条规则一起接管 —— 深蓝底板还在、目录文字却被设成
+   opacity: 0 / visibility: hidden，正是“有 sidebar 但没有文字”。
+   断点对齐后，≤1024px 一律走移动端布局（侧边栏整块不显示），夹缝消失；
+   只有 >1024px 才显示侧边栏，而那时页眉的移动端规则不生效，目录文字必然可见。
+
+   另外第 3.1 节还给 .toc-nav 单独加固了一遍：即使将来两边的断点又被改散，
+   也不会再出现“有侧边栏但没有文字”的情况（第 3.2 节则保证空目录时
+   整块侧边栏不显示，而不是留一个空壳）。 */
+@media (max-width: 1024px) {
 
 /* ---------- 8.0 移动端首屏：整块贴图 ----------
    移动端首屏（标题 + DNA / 蛋白装饰 + 引言文字）改用一张设计稿贴图：
        https://static.igem.wiki/teams/6059/wiki/move/description.avif
    贴图宽度铺满首屏（左右两侧贴边、无留白），高度按素材比例自适应，
    首屏高度随贴图高度变化；原先由代码拼装并逐个定位的部件在移动端全部不渲染，
-   对应的定位规则也一并删除。PC 端（>820px）布局完全不受影响。
+   对应的定位规则也一并删除。PC 端（>1024px）布局完全不受影响。
    页眉（head_foot.css：≤1024px 时高 62px）是 position: fixed 悬浮在页面顶部的，
    故移动端首屏整体下移 62px，贴图正好从页眉下沿开始、不被遮挡。 */
 
@@ -790,7 +855,9 @@ border-radius: 18px;
 }
 
 /* ---------- 8.2 侧边目录（TOC）在移动端整体隐藏 ---------- */
-/* JS 仍会写入内联 top / opacity，因此用 !important 兜底 */
+/* 断点与页眉 head_foot.css 对齐（都是 1024px），侧边栏要么“显示且有文字”，
+   要么整块不显示，不存在两者之间的夹缝。
+   JS 仍会写入内联 top / opacity / visibility，因此用 !important 兜底。 */
 .side-container {
 display: none !important;
 }
@@ -1175,9 +1242,9 @@ mark {
     border-bottom: var(--wp-table-rule-width) solid var(--wp-table-rule-color);
 }
 
-/* 窄屏：表格铺满正文容器宽度，并收一下字号与内边距，
-   避免单元格里的文字被挤成一团 */
-@media (max-width: 820px) {
+/* 窄屏（≤1024px，与第 8 节断点一致）：表格铺满正文容器宽度，
+   并收一下字号与内边距，避免单元格里的文字被挤成一团 */
+@media (max-width: 1024px) {
     .main-container table {
         width: 100%;            /* 移动端：占满正文容器宽度 */
         margin: 1.2em auto 1.5em;
@@ -1426,9 +1493,9 @@ mark {
     visibility: hidden;
 }
 
-/* 窄屏：与 .heading-3 的移动端字号（17px）看齐
+/* 窄屏（≤1024px，与第 8 节断点一致）：与 .heading-3 的移动端字号（17px）看齐
    （变量必须落在真正带胶囊样式的那个元素上，选择器与上面“胶囊本体”一致） */
-@media (max-width: 820px) {
+@media (max-width: 1024px) {
     .main-container upfold:not([data-upfold-ready]),
     .main-container .upfold:not([data-upfold-ready]),
     .main-container upfold > .upfold-label,
@@ -1628,12 +1695,12 @@ mark {
     margin-bottom: 0;
 }
 
-/* ---------- 14.5 移动端（≤820px）：与主标题的移动端字号同步缩小 ----------
+/* ---------- 14.5 移动端（≤1024px，与第 8 节断点一致）：与主标题的移动端字号同步缩小 ----------
    主标题在窄屏降到 25 / 20 / 17px（见第 8.5 节），副标题保持“比同级
    主标题小 4px”的关系（与 PC 端一致）；色带厚度仍由 --heading-sub-thick
    统一控制（默认 12px，各级一样粗，不随字号缩放）。
    若希望窄屏也固定用 32 / 26 / 22px，把这一小节整段删掉即可。 */
-@media (max-width: 820px) {
+@media (max-width: 1024px) {
     .heading-sub-row {
         margin-left: 5%;
         margin-right: 5%;

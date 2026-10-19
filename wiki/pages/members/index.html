@@ -8,6 +8,23 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='members/member-hover.css') }}">
 {% endblock %}
 {% block page_content %}
+  {#- 移动端（<= 1024px）：页眉与页脚之间的正文整体替换为这一张长图，宽度铺满
+      页面、高度按原图比例自适应（见 members/page.css）。图片地址只写在 <source>
+      的 media 条件里：PC 端条件不成立，浏览器不会选中它，也就不会请求这张图，
+      PC 端因此连网络开销都不增加；正文仍走下面的 hero + map 原始结构。 -#}
+  <div class="members-mobile-content">
+    <picture class="members-content-image">
+      <source media="(max-width: 1024px)"
+              srcset="https://static.igem.wiki/teams/6059/wiki/move/members.avif">
+      <img alt="XMU-China 2026 Members" loading="lazy" decoding="async">
+    </picture>
+    {#- 图片里的“Team Video”卡片本身点不动，这里盖一个透明热区，点它跳到
+        video.html 的独立播放页（竖屏时自动旋转成横屏）。位置按图片的百分比
+        给（见 page.css），所以任何屏幕宽度下都贴着卡片。 -#}
+    <a class="members-video-hotspot"
+       href="{{ url_for('pages', page='video') }}"
+       aria-label="Play the XMU-China team video"></a>
+  </div>
   {% include 'pages/members/hero.html' %}
   {% include 'pages/members/map.html' %}
 {% endblock %}
