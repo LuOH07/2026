@@ -576,15 +576,22 @@ document.addEventListener('DOMContentLoaded', () => {
        一条都没有 → 加 .is-empty，整块隐藏，绝不留空壳 */
     syncSidebarContent();
 
+    /* 侧边栏的滚动发生在目录本体 #tocNav 上，不在 .side-container 上
+       （description.css 第 3 节：本体 overflow: hidden，上下沿的渐隐留白才
+       钉得住）。所以目录的滚动读写、以及“居中某个条目”时量取的视口，
+       一律以 tocNav 为准；侧边栏本体只用来判断显示状态。 */
+    const tocScroller = tocNav;
+
     const centerTocItemInSidebar = (item) => {
         if (!sideContainer || !item) return;
-        const containerRect = sideContainer.getBoundingClientRect();
+        const viewportRect = tocScroller.getBoundingClientRect();
         const itemRect = item.getBoundingClientRect();
-        const itemCenterOffset = (itemRect.top - containerRect.top) + (itemRect.height / 2);
-        const containerCenter = containerRect.height / 2;
-        const targetScrollTop = sideContainer.scrollTop + (itemCenterOffset - containerCenter);
+        const itemCenterOffset = (itemRect.top - viewportRect.top) + (itemRect.height / 2);
+        // clientHeight 含目录本体的上下留白、不含滚动条，才是真正“看得到的高度”
+        const viewportCenter = tocScroller.clientHeight / 2;
+        const targetScrollTop = tocScroller.scrollTop + (itemCenterOffset - viewportCenter);
 
-        sideContainer.scrollTo({
+        tocScroller.scrollTo({
             top: Math.max(0, targetScrollTop),
             behavior: 'smooth'
         });
@@ -637,7 +644,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (!currentHeading && lastActiveId !== null) {
             lastActiveId = null;
             if (sideContainer) {
-                sideContainer.scrollTo({
+                tocScroller.scrollTo({
                     top: 0,
                     behavior: 'smooth'
                 });

@@ -334,23 +334,75 @@ box-shadow: 4px 12px 35px rgba(20, 47, 92, 0.16), 0 2px 10px rgba(0, 0, 0, 0.04)
 transition: box-shadow 0.3s ease, opacity 0.2s cubic-bezier(0.25, 1, 0.5, 1);
 will-change: top, opacity;
 z-index: 10;
-padding: 32px 16px;
+
+/* 上下沿留白的两个尺寸（见 3.0）。纵向那圈留白没有写在本体上，而是作为
+   padding 写进了目录本体 .toc-nav（见 3.1）：滚动发生在目录上，留白必须
+   跟着内容一起滚，静止时第一行、滚到底时最后一行才都离边缘这么远。 */
+--side-gap-y: 32px;
+--side-gap-x: 16px;
+
+padding: 0;
 display: flex;
 flex-direction: column;
-overflow-y: auto;
-overflow-x: hidden;
+/* 本体不再滚动：它只负责底板、圆角与裁切，滚动交给目录本体 .toc-nav。
+   这样 3.0 的两条渐隐带才能钉在底板上，不跟着目录滚走。 */
+overflow: hidden;
 }
 
-.side-container::-webkit-scrollbar {
+/* ---------- 3.0 侧边栏上下沿的渐隐留白 ----------
+   目录有二十来个条目，比侧边栏高得多；滚动时被切掉的那一行正好停在深蓝
+   底板的上/下边缘，白字像被一刀切断、直接顶在分界线上。这里在底板的上下
+   沿各压一条与底板同色的渐隐带（#142F5C → 透明），文字在碰到边缘之前先
+   淡进底色里，视觉上就是上下沿各留出了一段空白。
+
+   ① 两条带子必须“钉”在底板上，不能跟着目录滚走 —— 滚动容器里的绝对定位
+      子元素会跟着内容一起滚（这正是 sticky 存在的理由）。所以把滚动交给
+      目录本体 .toc-nav（见 3.1），侧边栏本体只保留 overflow: hidden，
+      这两个伪元素就成了不滚动的覆盖层。
+   ② 用同色渐变叠在文字【上面】，而不是给本体加 mask：底板底色、圆角和
+      投影都在 .side-container 自己身上，mask 会把它们一起淡掉；叠一层同色
+      渐变只影响文字，底板仍是完整的一块。
+   ③ 带子高度与 .toc-nav 的上下内边距共用 --side-gap-y，两者永远相等：
+      静止时带子正好只盖住那圈留白，一行字都不会被吃掉；一滚动，文字才在
+      带子里淡出。带子靠边的那一大半（55%）保持纯色 —— 贴边十几像素的
+      内容彻底看不见，分界线才是一条干净的直线，而不是被字头戳破的锯齿。
+   ④ pointer-events: none：纯装饰层，不挡目录的点击、悬停与文字拖选。 ---------- */
+
+.side-container::before,
+.side-container::after {
+content: "";
+position: absolute;
+left: 0;
+right: 0;
+height: var(--side-gap-y);
+z-index: 2;                /* 盖在目录文字上面 */
+pointer-events: none;
+}
+
+/* 上沿：从底板上边缘的实色开始，先保持一小段纯色（贴边的字彻底看不见，
+   分界线才是干净的一条直线），再往下淡到透明 */
+.side-container::before {
+top: 0;
+background-image: linear-gradient(to bottom, #142F5C 0%, #142F5C 55%, rgba(20, 47, 92, 0) 100%);
+}
+
+/* 下沿：方向相反，从下边缘的实色往上淡到透明 */
+.side-container::after {
+bottom: 0;
+background-image: linear-gradient(to top, #142F5C 0%, #142F5C 55%, rgba(20, 47, 92, 0) 100%);
+}
+
+/* 滚动条挂在真正滚动的目录本体上（原先挂在 .side-container 上） */
+.toc-nav::-webkit-scrollbar {
 width: 4px;
 }
 
-.side-container::-webkit-scrollbar-thumb {
+.toc-nav::-webkit-scrollbar-thumb {
 background: rgba(255, 255, 255, 0.25);
 border-radius: 4px;
 }
 
-.side-container::-webkit-scrollbar-thumb:hover {
+.toc-nav::-webkit-scrollbar-thumb:hover {
 background: rgba(255, 255, 255, 0.45);
 }
 
@@ -369,7 +421,13 @@ background: rgba(255, 255, 255, 0.45);
 
    下面用 .side-container .toc-nav 提高权重（0,2,0，压过裸 nav 的 0,0,1），
    把所有会被劫持的属性按普通流重新声明一遍。这样无论别处怎么写 nav，
-   只要侧边栏显示，目录文字就一定跟着显示。 */
+   只要侧边栏显示，目录文字就一定跟着显示。
+
+   唯一与“按普通流重置”不同的是 overflow：目录本体【就是侧边栏的滚动
+   容器】（原先滚动在 .side-container 上）。这样做的理由见 3.0 ① ——
+   侧边栏本体只留 overflow: hidden，上下沿那两条渐隐留白才钉得住。
+   顺带把上下留白也写成这里的 padding（--side-gap-y），它跟着目录一起滚，
+   所以静止时第一行离上沿 32px，滚到底时最后一行也离下沿 32px。 */
 .side-container .toc-nav {
 position: static;
 top: auto;
@@ -385,8 +443,14 @@ max-width: none;
 height: auto;
 max-height: none;
 margin: 0;
-padding: 0;
-overflow: visible;
+/* 上下留白见 3.0，左右留白沿用原先侧边栏本体的 16px */
+padding: var(--side-gap-y) var(--side-gap-x);
+/* 目录本体是滚动容器：撑满底板剩余高度（min-height: 0 才允许它收缩到
+   比内容矮），横向溢出裁掉，避免 hover 的 translateX 造出横向滚动条 */
+flex: 1 1 auto;
+min-height: 0;
+overflow-x: hidden;
+overflow-y: auto;
 background: none;
 border: 0;
 border-radius: 0;
