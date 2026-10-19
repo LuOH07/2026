@@ -435,7 +435,7 @@ transform: translateX(4px);
 color: #FFFFFF;
 font-family: 'Albertus Nova Bold', -apple-system, sans-serif;
 font-weight: 700;
-font-size: 1.25rem;
+font-size: 1.125rem;
 letter-spacing: 0;
 line-height: 1.6;
 text-decoration: underline;
@@ -458,10 +458,10 @@ text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
 
 .toc-circle {
 flex-shrink: 0;
-width: 22px;
-height: 22px;
+width: 1.125rem;
+height: 1.125rem;
 box-sizing: border-box;
-border: 5px solid #FFFFFF;
+border: 0.25rem solid #FFFFFF;
 border-radius: 50%;
 background-color: transparent;
 transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -474,7 +474,7 @@ transform: scale(1.12);
 .toc-item.active .toc-circle {
 border-color: #D9D250;
 background-color: rgba(217, 210, 80, 0.12);
-box-shadow: 0 0 5px rgba(217, 210, 80, 0.6), 0 0 10px rgba(217, 210, 80, 0.35), inset 0 0 3px rgba(217, 210, 80, 0.3);
+box-shadow: 0 0 0.3125rem rgba(217, 210, 80, 0.6), 0 0 0.625rem rgba(217, 210, 80, 0.35), inset 0 0 0.1875rem rgba(217, 210, 80, 0.3);
 transform: scale(1.12);
 }
 
@@ -801,7 +801,7 @@ cursor: grabbing;
 .scroll-back-to-top {
 color: #1d9695;
 font-family: 'The artist sans', -apple-system, sans-serif;
-font-size: 1rem;
+font-size: 1.2rem;
 line-height: 1.6;
 writing-mode: vertical-rl;
 user-select: none;
