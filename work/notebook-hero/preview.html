@@ -1,0 +1,2228 @@
+<!doctype html>
+<html lang="en" data-loading-plays="1">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notebook | XMU-China - iGEM 2026</title>
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/">
+  <link rel="icon" type="image/avif" href="https://static.igem.wiki/teams/6059/wiki/head-foot/favicon-6.avif">
+  
+  <style>@font-face {
+font-family: 'Helvetica Bold';
+src: url('https://static.igem.wiki/teams/6059/wiki/font/helvetica-bold.ttf') format('truetype');
+font-weight: normal;
+font-style: normal;
+font-display: swap;
+}
+
+*{ box-sizing: border-box; margin: 0; padding: 0; }
+/* overflow-x: hidden —— 移动端不出现横向滚动条（页面宽度贴合设备宽度） */
+html { overflow-x: hidden; }
+html, body { width: 100%; max-width: 100%; min-height: 100%; }
+body { background-color: #f3f7f8; overflow-x: hidden; }
+.dropdown-item[aria-disabled="true"] { cursor: default; }
+
+/* 移动端汉堡按钮 / 遮罩 / 子菜单返回按钮：桌面端默认隐藏，仅在窄屏媒体查询中启用 */
+.nav-toggle,
+.nav-toggle-btn,
+.nav-backdrop,
+.submenu-back { display: none; }
+
+/* STREAMING_CHUNK:Styling header container... */
+header {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 80px;
+background-color: #0A1C37;
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 0 3%;
+z-index: 100;
+box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+font-family: 'Helvetica Bold', sans-serif;
+}
+
+.logo {
+height: 48px;
+width: auto;
+object-fit: contain;
+margin-left: 8vw;
+}
+
+/* STREAMING_CHUNK:Styling navigation links... */
+nav {
+display: flex;
+align-items: center;
+height: 100%;
+margin-right: 15vw;
+}
+
+.nav-item {
+position: relative;
+height: 100%;
+display: flex;
+align-items: center;
+}
+
+nav a.nav-link {
+font-family: 'Helvetica Condensed', sans-serif;
+font-weight: 300;
+color: #8c9fae;
+text-decoration: none;
+font-size: 17px;
+letter-spacing: 1.2px;
+text-transform: uppercase;
+height: 100%;
+padding: 0 16px;
+display: flex;
+align-items: center;
+justify-content: center;
+background-color: transparent;
+transition: color 0.3s ease, background-color 0.3s ease;
+white-space: nowrap;
+}
+
+nav a.nav-link:hover,
+nav a.nav-link.active,
+.nav-item:hover > a.nav-link {
+color: #ffffff;
+background-color: #132D55;
+}
+
+/* STREAMING_CHUNK:Configuring dropdown menu behavior... */
+.dropdown-menu {
+position: absolute;
+top: 100%;
+left: 50%;
+transform: translateX(-50%) translateY(6px);
+min-width: 170px;
+background-color: #C7D8E9;
+border-radius: 0 0 6px 6px;
+box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+overflow: hidden;
+opacity: 0;
+visibility: hidden;
+transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s ease;
+z-index: 110;
+}
+
+.nav-item:hover .dropdown-menu {
+opacity: 1;
+visibility: visible;
+transform: translateX(-50%) translateY(0);
+}
+
+/* STREAMING_CHUNK:Styling dropdown items... */
+.dropdown-item {
+position: relative;
+display: flex;
+align-items: center;
+justify-content: center;
+text-align: center;
+padding: 12px 18px;
+color: #162741;
+text-decoration: none;
+font-family: 'Helvetica Condensed', sans-serif;
+font-weight: 400;
+font-size: 15px;
+line-height: 1.35;
+letter-spacing: 0px;
+text-transform: capitalize;
+background-color: #C7D8E9;
+transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* 例外：Proof of Concept —— "of" 是介词，首字母保持小写。
+   上面的 text-transform: capitalize 会把每个单词首字母都变成大写（Proof Of Concept），
+   因此这里单独取消该变换，由 menu.html 中的原文 "Proof of<br>Concept" 决定大小写。
+   定位方式用「包含」而不是「结尾」：app.py 的 pages 路由是 /<page>/，带结尾斜杠，
+   url_for 生成的是 /proof-of-concept/，用 href$="proof-of-concept" 会匹配不到
+   （这正是不生效的原因）。href*="proof-of-concept" 对带不带斜杠都成立。 */
+.dropdown-item[href*="proof-of-concept"] {
+text-transform: none;
+}
+
+.dropdown-item::before {
+content: "";
+position: absolute;
+top: 0;
+left: 0;
+width: 4px;
+height: 100%;
+background-color: #132D55;
+opacity: 0;
+transition: opacity 0.2s ease;
+}
+
+.dropdown-item:hover {
+background-color: #E2EBF4;
+color: #0b1c36;
+}
+
+.dropdown-item:hover::before {
+opacity: 1;
+}
+
+.nav-item:focus-within .dropdown-menu {
+opacity: 1;
+visibility: visible;
+transform: translateX(-50%);
+}
+
+/* STREAMING_CHUNK:Styling footer structure... */
+/* 页脚：左右内边距 3%（相对页面宽度）；右侧内容纵向堆叠并右对齐 */
+footer {
+position: relative;
+z-index: 40;
+clear: both;
+width: 100%;
+padding: 56px 10%;
+background-color: #0A1B37;
+display: flex;
+flex-direction: column;
+align-items: flex-end;
+gap: 22px;
+text-align: right;
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+
+.footer-logos {
+position: absolute;
+left: 8%;
+top: 40%;
+transform: translateY(-50%);
+display: flex;
+align-items: center;
+gap: 3vw;
+}
+
+.footer-logo {
+height: clamp(80px, 7vw, 130px);
+width: auto;
+object-fit: contain;
+}
+
+/* STREAMING_CHUNK:Styling footer details and icons... */
+/* 右上：五个社交图标横排 */
+.footer-social {
+display: flex;
+gap: 15px;
+}
+
+.footer-social img {
+width: 50px;
+height: 50px;
+padding: 9px;
+object-fit: contain;
+background-color: #BDD0E3;
+border: 1px solid #92AFD6;
+border-radius: 8px;
+box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.6), 0 2px 4px rgba(0, 0, 0, 0.05);
+cursor: pointer;
+transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.footer-social img:hover {
+transform: translateY(-2px);
+opacity: 0.9;
+}
+
+/* 地址 */
+.footer-address {
+color: #ffffff;
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+font-style: normal;
+font-size: 18px;
+font-weight: 700;
+line-height: 22px;
+letter-spacing: 0.3px;
+}
+
+/* STREAMING_CHUNK:Styling footer bottom bar... */
+.footer-copyright {
+font-family: 'DM Mono', monospace;
+font-size: 11px;
+font-weight: 400;
+color: #ffffff;
+letter-spacing: 0.6px;
+text-transform: capitalize;
+display: flex;
+gap: 35px;
+}
+
+.footer-contact-btn {
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+background-color: #4C6E8F;
+color: #FFFFFF;
+text-decoration: none;
+font-size: 15px;
+font-weight: 700;
+letter-spacing: 0.5px;
+padding: 10px 32px;
+border-radius: 22px;
+box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12);
+transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.footer-contact-btn:hover {
+background-color: #132437;
+transform: translateY(-1px);
+}
+
+/* 窄屏：logo 回到正常流，整体居中，避免与右侧内容重叠 */
+@media (max-width: 900px) {
+footer {
+align-items: center;
+text-align: center;
+}
+.footer-logos {
+position: static;
+transform: none;
+order: -1;
+}
+}
+
+/* STREAMING_CHUNK:Configuring legal footer text... */
+.wiki-legal {
+max-width: 1200px;
+margin: 24px auto 0;
+padding: 0 24px;
+color: #fff;
+font-family: 'Inter', sans-serif;
+font-size: 12px;
+line-height: 1.6;
+}
+
+.wiki-legal p {
+margin: 4px 0;
+}
+
+.wiki-legal a {
+color: inherit;
+text-decoration: underline;
+}
+
+/* =======================================================================
+   响应式 / 移动端（<= 1024px）
+   - 桌面端（> 1024px）保持原有横向菜单与页脚布局，完全不受影响
+   - 页眉只保留 logo + 右侧汉堡按钮（汉堡 → × 的形变动画保持不变）
+   - 右上角“悬浮弹窗”承担全部导航：
+       * 点汉堡：弹窗从右上角滑出，大标题（一级菜单）自上而下逐行排列
+       * 再点一次汉堡：整个弹窗收起
+       * 点某一行大标题：在该行下方展开它的小标题；再点这一行收起
+   - 状态源：弹窗开 / 关由 label 内的 checkbox 决定
+     （.nav-toggle:has(input:checked) ~ nav），
+     某一行的展开 / 收起由该行的 .is-expanded 类决定，二者都由 head_foot.js 维护
+   ======================================================================= */
+
+/* 窄屏：完全关闭“悬停 / 聚焦自动显示下拉菜单”，小标题一律由点击大标题触发 */
+@media (max-width: 1024px) {
+.nav-item:hover .dropdown-menu,
+.nav-item:focus-within .dropdown-menu {
+opacity: 0;
+visibility: hidden;
+transform: none;
+}
+}
+
+/* ---------- 移动端：页眉 / 右上角悬浮弹窗 ---------- */
+@media (max-width: 1024px) {
+
+/* 页眉：贴合屏幕宽度，只留 logo + 汉堡按钮
+   注意不要在这里写 position（基础样式的 position:fixed 负责让页眉常驻页面顶部） */
+header {
+height: 62px;
+padding: 0 16px;
+padding-left: max(16px, env(safe-area-inset-left));
+padding-right: max(16px, env(safe-area-inset-right));
+}
+
+/* logo：移动端固定在页眉左侧 20% 处（以自身中心对齐 20% 分位） */
+.logo {
+position: absolute;
+top: 50%;
+left: 20%;
+transform: translate(-50%, -50%);
+height: 34px;
+max-width: 46vw;
+margin-left: 0;
+}
+
+/* 汉堡按钮：固定在页眉右上角（形变动画保持原样） */
+.nav-toggle {
+position: fixed;
+top: 0;
+right: 0;
+z-index: 130;
+display: flex;
+align-items: center;
+justify-content: center;
+width: 62px;
+height: 62px;
+margin-right: env(safe-area-inset-right);
+cursor: pointer;
+}
+.nav-toggle input {
+position: absolute;
+width: 1px;
+height: 1px;
+opacity: 0;
+pointer-events: none;
+}
+.nav-toggle-btn {
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+gap: 5px;
+width: 40px;
+height: 40px;
+border-radius: 8px;
+cursor: pointer;
+}
+.nav-toggle-btn span {
+display: block;
+width: 24px;
+height: 2px;
+border-radius: 2px;
+background-color: #cfe0f2;
+transition: transform 0.3s ease, opacity 0.25s ease, background-color 0.25s ease;
+}
+.nav-toggle:hover .nav-toggle-btn span { background-color: #ffffff; }
+
+/* 展开时三层线变为关闭“X”（此动画按要求保持原样）
+   注意：checkbox 位于 .nav-toggle（label）内部，与 nav 并非兄弟节点，
+   因此状态源只能用 .nav-toggle:has(input:checked)，不能用 input ~ nav */
+.nav-toggle:has(input:checked) .nav-toggle-btn span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle:has(input:checked) .nav-toggle-btn span:nth-child(2) { opacity: 0; transform: scaleX(0.2); }
+.nav-toggle:has(input:checked) .nav-toggle-btn span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* -----------------------------------------------------------------------
+   右上角悬浮弹窗（导航本体）：贴着汉堡按钮下方垂下的一列标题
+   宽度按最长的一行文字（PROJECT / DRYLAB 等）来定，保持窄条观感
+   弹窗开 / 关：点汉堡时 checkbox 勾选 / 取消
+   ----------------------------------------------------------------------- */
+nav {
+position: absolute;
+top: calc(100% + 8px);
+right: clamp(10px, 4vw, 16px);
+left: auto;
+bottom: auto;
+display: block;
+width: min(60vw, 200px);
+min-width: 0;
+max-width: 200px;
+height: auto;
+max-height: calc(100vh - 62px - 26px - env(safe-area-inset-bottom));
+max-height: calc(100dvh - 62px - 26px - env(safe-area-inset-bottom));
+margin-right: 0;
+padding: 0;
+overflow-y: auto;
+overflow-x: hidden;
+-webkit-overflow-scrolling: touch;
+overscroll-behavior: contain;
+background-color: rgba(10, 28, 55, 0.97);
+border: 1px solid rgba(199, 216, 233, 0.22);
+border-radius: 14px;
+box-shadow: 0 18px 38px rgba(3, 10, 22, 0.45);
+-webkit-backdrop-filter: saturate(140%) blur(6px);
+backdrop-filter: saturate(140%) blur(6px);
+opacity: 0;
+visibility: hidden;
+pointer-events: none;
+transform: translateY(-10px) scale(0.97);
+transform-origin: top right;
+transition: opacity 0.28s ease, transform 0.28s ease, visibility 0.28s ease;
+z-index: 125;
+}
+
+/* 展开：由 .nav-toggle（label）内的 checkbox 触发 */
+.nav-toggle:has(input:checked) ~ nav {
+opacity: 1;
+visibility: visible;
+pointer-events: auto;
+transform: translateY(0) scale(1);
+}
+
+/* 大标题（一级菜单）：自上而下逐行排列，每行一条细分隔线 */
+nav .nav-item {
+display: block;
+width: 100%;
+height: auto;
+border-bottom: 1px solid rgba(199, 216, 233, 0.12);
+}
+nav .nav-item:last-child { border-bottom: 0; }
+
+nav .nav-item > a.nav-link {
+display: flex;
+align-items: center;
+justify-content: space-between;
+width: 100%;
+height: auto;
+padding: 15px 18px;
+font-size: 16px;
+letter-spacing: 1.4px;
+color: #cfe0f2;
+}
+nav .nav-item > a.nav-link:hover,
+nav .nav-item > a.nav-link.active {
+background-color: transparent;
+color: #ffffff;
+}
+nav .nav-item:hover > a.nav-link { color: #ffffff; background-color: transparent; }
+
+/* 只有含二级菜单的大标题才显示箭头 */
+nav .nav-item:has(.dropdown-menu) > a.nav-link::after {
+content: "";
+width: 8px;
+height: 8px;
+margin-left: 14px;
+border-right: 2px solid #7f97b3;
+border-bottom: 2px solid #7f97b3;
+transform: rotate(-45deg);
+transition: transform 0.25s ease, border-color 0.25s ease;
+}
+nav .nav-item:has(.dropdown-menu) > a.nav-link:hover::after { border-color: #ffffff; }
+
+/* 箭头：默认收起；该行被选中（.is-expanded，即点开了它的小标题）时转向下 */
+nav .nav-item.is-expanded:has(.dropdown-menu) > a.nav-link::after {
+transform: rotate(45deg);
+border-color: #ffffff;
+}
+
+/* 二级菜单（小标题）：不再整屏铺开，而是在各自大标题下方就地逐行展开 */
+nav .dropdown-menu {
+position: static;
+top: auto;
+right: auto;
+bottom: auto;
+left: auto;
+width: 100%;
+min-width: 0;
+max-height: none;
+overflow: visible;
+background-color: rgba(9, 25, 50, 0.45);
+border-radius: 0;
+box-shadow: none;
+transform: none;
+display: none;
+z-index: 1;
+}
+
+/* 点开某一行大标题（.is-expanded）后，在该行下方就地铺开它的小标题；再点该行收起 */
+.nav-toggle:has(input:checked) ~ nav .nav-item.is-expanded > .dropdown-menu {
+display: block;
+opacity: 1;
+visibility: visible;
+transform: none;
+animation: navSubmenuIn 0.24s ease;
+}
+
+@keyframes navSubmenuIn {
+from { opacity: 0; transform: translateY(-5px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+/* 弹窗内不需要“返回”按钮：再点一次汉堡即可整体收起 */
+nav .submenu-back { display: none; }
+
+/* 小标题（二级菜单项）：逐行排列，左侧留出缩进与大标题区分 */
+nav .dropdown-item {
+justify-content: flex-start;
+width: 100%;
+padding: 11px 16px 11px 26px;
+font-size: 14px;
+line-height: 1.4;
+letter-spacing: 0.2px;
+text-align: left;
+white-space: nowrap;
+color: #9fb8d0;
+background-color: transparent;
+border-bottom: 1px solid rgba(199, 216, 233, 0.06);
+}
+nav .dropdown-item:last-child { border-bottom: 0; }
+nav .dropdown-item:hover,
+nav .dropdown-item:active {
+background-color: rgba(19, 45, 85, 0.92);
+color: #ffffff;
+}
+nav .dropdown-item::before { display: none; }
+nav .dropdown-item:hover::before { opacity: 0; }
+
+/* 遮罩：整屏覆盖，点空白处同样可以收起弹窗。
+   注意 z-index 必须低于页眉（header 为 100），否则会盖住汉堡按钮，
+   第 2 / 3 次点击就会落到遮罩上而无法展开小标题或收起弹窗。 */
+body.menu-open .nav-backdrop {
+display: block;
+position: fixed;
+inset: 0;
+z-index: 90;
+background-color: rgba(4, 12, 26, 0.45);
+}
+}
+
+/* ---------- 移动端：页脚重新布局 ---------- */
+@media (max-width: 1024px) {
+footer {
+flex-direction: column;
+align-items: center;
+gap: 18px;
+width: 100%;
+padding: 36px 20px calc(36px + env(safe-area-inset-bottom));
+text-align: center;
+}
+
+/* logo 回到正常流，居中，可自动换行 */
+.footer-logos {
+position: static;
+top: auto;
+left: auto;
+transform: none;
+order: -1;
+flex-wrap: wrap;
+justify-content: center;
+gap: 18px;
+width: 100%;
+}
+.footer-logo {
+height: auto;
+width: auto;
+max-height: 56px;
+max-width: 30%;
+}
+
+.footer-social {
+flex-wrap: wrap;
+justify-content: center;
+gap: 10px;
+}
+.footer-social img {
+width: 40px;
+height: 40px;
+padding: 7px;
+}
+
+.footer-address {
+font-size: 15px;
+line-height: 1.55;
+letter-spacing: 0.2px;
+}
+
+.footer-copyright {
+flex-direction: column;
+align-items: center;
+gap: 8px;
+font-size: 11px;
+text-align: center;
+}
+
+.footer-contact-btn {
+font-size: 14px;
+padding: 10px 26px;
+}
+
+.wiki-legal {
+margin-top: 20px;
+padding: 0 20px;
+font-size: 11px;
+text-align: center;
+word-break: break-word;
+}
+}
+
+/* ---------- 超窄屏（<= 420px）进一步压缩 ---------- */
+@media (max-width: 420px) {
+.logo { height: 30px; }
+nav {
+width: min(64vw, 186px);
+max-width: 186px;
+right: 8px;
+}
+nav .nav-item > a.nav-link { padding: 13px 14px; font-size: 15px; }
+nav .dropdown-item { padding: 10px 14px 10px 22px; font-size: 13px; }
+.footer-logo { max-height: 44px; max-width: 28%; }
+.footer-social img { width: 34px; height: 34px; padding: 6px; }
+.footer-address { font-size: 14px; }
+}
+
+/* ---------- 横屏手机：收紧悬浮弹窗的纵向留白 ---------- */
+@media (max-width: 1024px) and (orientation: landscape) and (max-height: 480px) {
+nav { max-height: calc(100vh - 62px - 18px); max-height: calc(100dvh - 62px - 18px); }
+nav .nav-item > a.nav-link { padding: 11px 16px; }
+nav .dropdown-item { padding: 9px 16px 9px 26px; }
+footer { padding-top: 28px; padding-bottom: 28px; }
+}
+
+/* ---------- 触屏设备：去掉点击高亮块 ---------- */
+@media (hover: none) {
+nav a.nav-link,
+nav .dropdown-item,
+.nav-toggle { -webkit-tap-highlight-color: transparent; }
+}
+</style>
+  <script src="/static/head_foot/head_foot.js" defer></script>
+  <!-- 加载动画：样式与脚本都必须在 <head> 里同步就位，白底遮罩才会先于正文出现（见 static/loading/loading.js） -->
+  <style>/* =============================================================================
+   loading.css —— 全屏加载动画（loading.mp4）
+   -----------------------------------------------------------------------------
+   除 Home 之外的页面，进入时先白底全屏播放 loading.mp4：
+     · 视频居中，宽度 80%，高度自适应；
+     · 至少完整播一遍后淡出并移除遮罩，页面恢复浏览；
+     · Members 与 Attributions 额外等页面全部加载完：一遍播完还没加载完就继续
+       循环，播到页面加载完为止（见 loading.js 的 data-loading-wait）。
+   .loading 默认 display: none，只有 loading.js 在 <head> 中给 <html> 加上
+   .is-loading 才会显示：脚本缺失或被拦截时页面照常显示，不会白屏卡住。
+   ============================================================================= */
+
+.loading {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    opacity: 1;
+    transition: opacity 0.45s ease;
+}
+
+/* <head> 里的脚本先加 class，body 里的遮罩随后才被解析：白底遮罩先于正文出现，
+   所以不会闪一下页面内容。.is-active 让遮罩在淡出期间保持可见（此时 .is-loading
+   已移除，正文与滚动已恢复，遮罩透明过渡露出页面）。 */
+html.is-loading .loading,
+.loading.is-active {
+    display: flex;
+}
+
+/* 播放期间锁住滚动；正文整体隐藏，避免透过白底遮罩被看到或被键盘聚焦。
+   Members 的 page.css 用 !important 把 html/body 设成 overflow-y: auto，
+   这里用同等 !important 加更高特异性压住它，否则加载动画期间页面仍会滚走。
+   加载动画可能因为等页面加载完而比一遍更久，所以这条锁要一直在遮罩期间生效。 */
+html.is-loading {
+    overflow: hidden !important;
+}
+
+html.is-loading body > *:not(.loading) {
+    visibility: hidden;
+}
+
+.loading.is-fading {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading__video {
+    display: block;
+    width: 80%;
+    height: auto;
+    max-height: 100vh;
+    object-fit: contain;
+    background: #fff;
+    pointer-events: none;
+}
+
+/* 不支持 object-fit 的旧浏览器：退化为等比缩小，仍然居中且不超出一屏。 */
+@supports not (object-fit: contain) {
+    .loading__video {
+        width: auto;
+        max-width: 80%;
+    }
+}
+
+/* 用户要求减少动态效果时不做淡出（loading.js 同步跳过淡出延时）。 */
+@media (prefers-reduced-motion: reduce) {
+    .loading {
+        transition: none;
+    }
+}
+</style>
+  <script src="/static/loading/loading.js"></script>
+  
+  <style>/* 首屏标题、装饰图片与 Canvas 容器。 */
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #f3f7f8;
+  font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Heiti SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* PC 端首屏横幅容器：与 description.css 第 2 节一致（左右满幅、100vh、渐变背景）。
+   Members 页的 page.css 也按这个类名调整移动端参数（当前为 no-op）。 */
+.title-header-wrapper {
+  position: relative;
+  width: 100vw;
+  min-width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: 0;
+  padding: 0;
+  overflow: hidden;
+  z-index: 2;
+  box-sizing: border-box;
+  background: radial-gradient(circle at 50% 45%, #ffffff 0%, #f4f8f9 55%, #eaf0f2 100%);
+}
+
+/* 横幅内部容器：尺寸交给外层横幅决定，自身不再额外铺满视口。 */
+.grid-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: transparent;
+  overflow: hidden;
+}
+
+.left-dna-wrapper {
+  position: absolute;
+  left: -6vw;
+  top: calc(50% + 5vw);
+  transform: translateY(-50%) scale(2.5);
+  transform-origin: center left;
+  width: 25vw;
+  max-width: 320px;
+  height: auto;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.3;
+  pointer-events: auto;
+}
+
+.left-dna-image {
+  width: 100%;
+  height: auto;
+  max-height: 65vh;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.bottom-right-dna-wrapper {
+  position: absolute;
+  right: 5vw;
+  bottom: 0vh;
+  transform: scale(1.6);
+  transform-origin: bottom right;
+  width: 22vw;
+  max-width: 300px;
+  height: auto;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.45;
+  pointer-events: auto;
+}
+
+.bottom-right-dna-image {
+  width: 100%;
+  height: auto;
+  max-height: 60vh;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.right-protein-wrapper {
+  position: absolute;
+  right: 3vw;
+  top: 9vh;
+  width: 20vw;
+  max-width: 260px;
+  min-width: 140px;
+  height: auto;
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: auto;
+  transition: transform 0.3s ease;
+}
+
+.right-protein-image {
+  width: 100%;
+  height: auto;
+  max-height: 35vh;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.06));
+}
+
+#gridCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.center-image-wrapper {
+  position: absolute;
+  top: calc(42% - 15vw + 18vh);
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1.155);
+  transform-origin: center center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 99;
+  max-width: 50.8vw;
+  max-height: 46.2vh;
+  pointer-events: auto;
+}
+
+.title-image {
+  width: 100%;
+  height: auto;
+  max-height: 44vh;
+  object-fit: contain;
+  display: block;
+}
+
+.ambient-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 70%);
+  z-index: 3;
+}
+
+.center-description-wrapper {
+  position: absolute;
+  top: calc(52% + 5.5vh);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 880px;
+  text-align: center;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.center-description-text {
+  font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Heiti SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(1.15rem, 1.6vw, 1.55rem);
+  line-height: 1.68;
+  font-weight: 400;
+  color: #3b4e54;
+  letter-spacing: 0.02em;
+  margin: 0 auto;
+  user-select: none;
+}
+
+.scroll-explore-wrapper {
+  position: absolute;
+  bottom: 6vh;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  z-index: 10;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.scroll-line {
+  display: inline-block;
+  width: clamp(30px, 3.5vw, 52px);
+  height: 1.5px;
+  background-color: #8da2a6;
+  border-radius: 1px;
+}
+
+.scroll-text {
+  font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Heiti SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: clamp(0.75rem, 0.95vw, 0.98rem);
+  letter-spacing: 0.32em;
+  color: #33484f;
+  font-weight: 500;
+  text-transform: uppercase;
+  padding-left: 0.32em;
+  white-space: nowrap;
+}
+
+.bottom-dots-decor {
+  position: absolute;
+  bottom: 12px;
+  left: 0;
+  width: 100%;
+  height: 24px;
+  background-image: radial-gradient(circle at center, #9db3b8 5px, transparent 5.5px);
+  background-size: 38px 24px;
+  background-repeat: repeat-x;
+  background-position: center center;
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: 2;
+}
+</style>
+  <style>/* Hero: shared Members layout, followed by Notebook-specific typography. */
+html, body {
+  height: auto;
+  min-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Match the Members title artwork box; all surrounding hero styles are shared. */
+.notebook-hero-title {
+  margin: 0;
+  width: 50.8vw;
+  line-height: 0;
+}
+
+/* Notebook: base styles, responsive overrides, then reduced motion. */
+
+/* 1. Theme and page layout. */
+.notebook {
+  --surface: oklch(100% 0 0);
+  --muted: oklch(46% 0.035 258);
+  --border: oklch(82% 0.02 258);
+  --font-display: 'Kaisei Tokumin', Georgia, 'Songti SC', serif;
+  --font-body: 'Inter', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'DM Mono', Consolas, monospace;
+  background: var(--bg);
+  color: var(--fg);
+  padding: 112px 4vw 64px;
+  font-family: var(--font-body);
+  --bg: #f3f7f8;
+  --fg: #0a1c37;
+  cursor: pointer;
+}
+.notebook-intro {
+  max-width: 1280px;
+  margin: 0 auto 28px;
+  cursor: auto;
+}
+.notebook-intro p {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.notebook-layout {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  max-width: 1280px;
+  margin: auto;
+  gap: 24px;
+}
+.notebook button {
+  font-family: var(--font-mono);
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  color: var(--fg);
+}
+
+/* 2. Dates and sword (desktop scroll reel). */
+.notebook-timeline {
+  position: relative;
+  left: calc(16px - max(4vw, (100vw - 1280px) / 2));
+  cursor: auto;
+  align-self: start;
+  min-width: 0;
+  padding: 0;
+}
+.notebook-timeline ol {
+  list-style: none;
+  border-left: 2px solid var(--fg);
+  margin-left: 12px;
+  display: grid;
+  gap: 12px;
+  padding-block: 36px;
+}
+.notebook-date {
+  position: relative;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  width: 100%;
+  min-height: 54px;
+  padding: 8px 8px 8px 28px;
+  font-size: 18px;
+  display: block;
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+  cursor: default;
+}
+.notebook-date::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 12px;
+  height: 2px;
+  background: var(--fg);
+}
+.notebook-date[aria-current] {
+  padding-left: 28px;
+  font-weight: 600;
+}
+.notebook-date time {
+  display: inline-block;
+  transition: transform 400ms ease;
+}
+.notebook-date[aria-current] time {
+  transform: translateX(50px);
+}
+.notebook-sword {
+  display: block;
+  width: 110px;
+  height: 48px;
+  position: absolute;
+  pointer-events: none;
+  z-index: 2;
+  transform: translate(0px, -50%);
+  overflow: hidden;
+  transform-origin: 82% 50%;
+}
+.notebook-sword img {
+  position: absolute;
+  width: 90px;
+  height: 135px;
+  left: 10px;
+  top: -43px;
+  object-fit: contain;
+  transform: rotate(90deg);
+}
+.notebook-timeline li {
+  min-width: 0;
+}
+.notebook-date-viewport {
+  height: min(360px, 60svh);
+  min-height: 220px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+  mask-image: linear-gradient(to bottom, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 28px, #000 calc(100% - 28px), transparent);
+}
+.notebook-date-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+/* 3. Paper stack and record content. */
+.notebook-reader {
+  min-width: 0;
+  outline-offset: 6px;
+}
+.notebook-stage {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  height: clamp(360px, calc(100svh - 196px), 960px);
+  --paper-width: min(560px, 76%);
+}
+.notebook-sheet {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  height: calc(100% - 20px);
+  background: var(--surface) var(--paper-image) center / 100% 100% no-repeat;
+  border: 8px solid var(--surface);
+  box-shadow: 0 8px 24px color-mix(in oklch, var(--fg) 9%, transparent);
+  transform: translateX(-50%);
+  transition: transform 400ms cubic-bezier(0.23, 1, 0.32, 1), opacity 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  width: var(--paper-width);
+  cursor: auto;
+}
+.notebook-sheet[data-position="0"] {
+  opacity: 1;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+.notebook-sheet[data-position="-1"] {
+  opacity: 0.28;
+  transform: translateX(-85%) scale(0.91);
+}
+.notebook-sheet[data-position="1"] {
+  opacity: 0.28;
+  transform: translateX(-15%) scale(0.91);
+}
+.notebook-sheet[data-position="-2"] {
+  opacity: 0.12;
+  transform: translateX(-115%) scale(0.83);
+}
+.notebook-sheet[data-position="2"] {
+  opacity: 0.12;
+  transform: translateX(15%) scale(0.83);
+}
+.notebook-sheet[data-position="-3"] {
+  opacity: 0;
+  pointer-events: none;
+}
+.notebook-sheet[data-position="3"] {
+  opacity: 0;
+  pointer-events: none;
+}
+.notebook-sheet[aria-hidden="true"] {
+  pointer-events: none;
+}
+.notebook-sheet h2 {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 5%;
+  font: 600 clamp(16px, 1.8vw, 22px)/1.3 var(--font-body);
+  letter-spacing: -0.01em;
+}
+.notebook-writing {
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  top: 23%;
+  height: 40%;
+  overflow: auto;
+  scrollbar-width: thin;
+  font-size: 15px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.notebook-writing h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.notebook-writing p {
+  margin-bottom: 12px;
+  max-width: 65ch;
+}
+.notebook-illustration {
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  top: 67%;
+  bottom: 7%;
+  background: var(--surface);
+  border-radius: 26px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+.notebook-illustration p {
+  padding: 16px;
+  font-size: 14px;
+  text-align: center;
+  color: var(--muted);
+}
+.notebook-illustration img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.notebook-reader:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
+}
+.notebook-writing:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
+}
+
+/* 4. Side click areas and button images. */
+.notebook-page-buttons {
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  position: absolute;
+  inset: 0;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  display: block;
+  pointer-events: none;
+  z-index: 20;
+}
+.notebook-page-buttons button {
+  border: 0;
+  background: transparent;
+  transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1), opacity 140ms cubic-bezier(0.23, 1, 0.32, 1);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: calc((100% - var(--paper-width)) / 2);
+  height: 100%;
+  min-height: 44px;
+  pointer-events: auto;
+  display: grid;
+  place-items: center;
+  transform: none;
+  padding: 0;
+}
+.notebook-page-buttons img {
+  display: block;
+  max-height: 100px;
+  object-fit: contain;
+  pointer-events: none;
+  transition: none;
+  position: absolute;
+  width: clamp(72px, 12vw, 140px);
+  max-width: none;
+  height: 100px;
+  /* Move 420px below center, but keep the 100px image inside the stage. */
+  top: clamp(0px, calc(50% + 420px - 50px), calc(100% - 100px));
+}
+.notebook-page-buttons button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.notebook-page-buttons .notebook-prev {
+  left: 0;
+  justify-items: start;
+}
+.notebook-page-buttons .notebook-next {
+  right: 0;
+  justify-items: end;
+}
+.notebook-page-buttons .notebook-prev img {
+  left: 0;
+  transform: none;
+}
+.notebook-page-buttons .notebook-next img {
+  right: 0;
+  transform: none;
+}
+
+/* 5. Page indicators and accessible focus/status. */
+.notebook button:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
+}
+.notebook-dots {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 4px;
+  cursor: auto;
+}
+.notebook-dots span {
+  width: 44px;
+  height: 44px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  display: grid;
+  place-items: center;
+}
+.notebook-dots span::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  transform: scale(1);
+  transition: transform 400ms cubic-bezier(0.23, 1, 0.32, 1), background-color 400ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+.notebook-dots span[aria-current="page"]::after {
+  transform: scale(1.8);
+  background: var(--fg);
+}
+.notebook-page-buttons button:focus-visible {
+  outline-offset: -3px;
+}
+.notebook-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .notebook {
+    padding: 104px 16px 40px;
+  }
+  .notebook-intro h1 span {
+    display: block;
+    margin: 10px 0 0;
+  }
+  .notebook-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .notebook-timeline {
+    left: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+  .notebook-timeline ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    padding: 0;
+    border-left: 0;
+    border-bottom: 1px solid var(--border);
+    margin: 0;
+  }
+  .notebook-timeline li {
+    flex: 0 0 25%;
+  }
+  .notebook-date {
+    font-size: 14px;
+    text-align: center;
+    padding: 10px 4px;
+    min-height: 44px;
+  }
+  .notebook-date[aria-current] {
+    font-size: 14px;
+    text-align: center;
+    padding: 10px 4px;
+    min-height: 44px;
+    background: var(--fg);
+    color: var(--surface);
+  }
+  .notebook-date::before {
+    display: none;
+  }
+  .notebook-sword {
+    display: none;
+  }
+  .notebook-date[aria-current] time {
+    transform: none;
+  }
+  .notebook-stage {
+    height: clamp(540px, 80svh, 740px);
+    --paper-width: min(560px, calc(100% - 88px));
+  }
+  .notebook-sheet h2 {
+    font-size: clamp(13px, 3.6vw, 20px);
+  }
+  .notebook-sheet[data-position="-1"] {
+    transform: translateX(-62%) scale(0.94);
+    opacity: 0.16;
+  }
+  .notebook-sheet[data-position="1"] {
+    transform: translateX(-38%) scale(0.94);
+    opacity: 0.16;
+  }
+  .notebook-sheet[data-position="-2"] {
+    opacity: 0;
+  }
+  .notebook-sheet[data-position="2"] {
+    opacity: 0;
+  }
+  .notebook-writing {
+    left: 5%;
+    right: 5%;
+    font-size: 14px;
+  }
+  .notebook-timeline .notebook-sword {
+    display: none;
+  }
+  .notebook-date-viewport {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 1024px) {
+  .notebook-layout {
+    grid-template-columns: 128px minmax(0, 1fr);
+    gap: 12px;
+  }
+  .notebook-stage {
+    --paper-width: min(560px, calc(100% - 112px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notebook-dots span::after {
+    transition: none;
+  }
+  .notebook-sheet {
+    transition: none;
+  }
+  .notebook-page-buttons button {
+    transition: none;
+  }
+  .notebook-page-buttons img {
+    transition: none;
+  }
+  .notebook-date time {
+    transition: none;
+  }
+}
+</style>
+
+</head>
+<body>
+  
+  <!-- 全屏白底加载动画：视频居中、宽度 80%；至少播一遍，Members/Attributions
+       会一直播到页面全部加载完才消失 -->
+  <div class="loading" id="loading" aria-hidden="true">
+    <video class="loading__video" id="loading-video"
+           src="/static/loading/loading.mp4"
+           preload="auto" muted playsinline webkit-playsinline
+           disablepictureinpicture aria-hidden="true"></video>
+  </div>
+  
+  <header class="site-header">
+        <img src="https://static.igem.wiki/teams/6059/wiki/head-foot/sting.svg" alt="STING Logo" class="logo">
+
+        <!-- 移动端：右侧三层叠放按钮。勾选状态同时作为弹窗展开的 CSS 状态源（由 head_foot.js 维护） -->
+        <label class="nav-toggle" aria-label="Menu">
+            <input type="checkbox" id="nav-toggle" aria-label="Open menu">
+            <span class="nav-toggle-btn" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+        </label>
+
+        <nav id="site-nav">
+            <!-- 1. HOME -->
+            <div class="nav-item">
+                <a href="/" class="nav-link">HOME</a>
+            </div>
+            
+            <!-- 2. TEAM -->
+            <div class="nav-item">
+                <a href="#" class="nav-link">TEAM</a>
+                <div class="dropdown-menu">
+                    <a href="/members" class="dropdown-item">Members</a>
+                    <a href="/attributions" class="dropdown-item">Attributions</a>
+                    <a href="/notebook" class="dropdown-item" aria-current="page">Notebook</a>
+                    <a href="/experiments" class="dropdown-item">Experiments</a>
+                    <a href="/safety" class="dropdown-item">Safety</a>
+                </div>
+            </div>
+
+            <!-- 3. PROJECT -->
+            <div class="nav-item">
+                <a href="#" class="nav-link">PROJECT</a>
+                <div class="dropdown-menu">
+                    <a href="/description" class="dropdown-item">Description</a>
+                    <a href="/design" class="dropdown-item">Design</a>
+                    <a href="/engineering" class="dropdown-item">Engineering<br>Success</a>
+                    <a href="/results" class="dropdown-item">Results</a>
+                    <a href="/proof-of-concept" class="dropdown-item">Proof of<br>Concept</a>
+                    <a href="/proposed-implementation" class="dropdown-item">Proposed<br>Implementation</a>
+                </div>
+            </div>
+
+            <!-- 4. DRYLAB -->
+            <div class="nav-item">
+                <a href="#" class="nav-link">DRYLAB</a>
+                <div class="dropdown-menu">
+                    <a href="/model" class="dropdown-item">Model</a>
+                </div>
+            </div>
+
+            <!-- 5. PARTS -->
+            <div class="nav-item">
+                <a href="#" class="nav-link">PARTS</a>
+                <div class="dropdown-menu">
+                    <a href="/parts" class="dropdown-item">Parts</a>
+                    <a href="/contribution" class="dropdown-item">Contribution</a>
+                    <a href="/part-collection" class="dropdown-item">Part<br>Collection</a>
+                </div>
+            </div>
+
+            <!-- 6. HP -->
+            <div class="nav-item">
+                <a href="#" class="nav-link">HP</a>
+                <div class="dropdown-menu">
+                    <a href="/human-practices" class="dropdown-item">Human<br>Practices</a>
+                    <a href="/integrated-human-practices" class="dropdown-item">Integrated<br>Human Practices</a>
+                </div>
+            </div>
+
+        </nav>
+    </header>
+
+    <!-- 移动端动效（汉堡开关弹窗、点大标题展开小标题等）已移至
+         static/head_foot/head_foot.js，由 wiki/layout.html 统一引入，此处不再内联脚本 -->
+  <main id="main-content">
+  
+    <header class="title-header-wrapper" id="heroWrapper">
+<div class="grid-container">
+  <canvas id="gridCanvas" aria-hidden="true"></canvas>
+  <div class="left-dna-wrapper">
+    <img src="https://static.igem.wiki/teams/6059/wiki/members/title/dna-1.avif" alt="DNA Structure Left" class="left-dna-image">
+  </div>
+  <div class="bottom-right-dna-wrapper">
+    <img src="https://static.igem.wiki/teams/6059/wiki/members/title/dna-2.avif" alt="DNA Structure Bottom Right" class="bottom-right-dna-image">
+  </div>
+  <div class="right-protein-wrapper">
+    <img src="https://static.igem.wiki/teams/6059/wiki/members/title/protein.avif" alt="Protein Structure Right" class="right-protein-image">
+  </div>
+  <div class="center-image-wrapper">
+    
+    <h1 class="notebook-hero-title" id="notebook-title">
+      <svg class="title-image" viewBox="0 0 2250 824" role="img" aria-labelledby="notebook-hero-label" xmlns="http://www.w3.org/2000/svg">
+        <title id="notebook-hero-label">STING — Notebook</title>
+        <defs>
+          <linearGradient id="notebook-title-gradient" x1="0" y1="0" x2="0.25" y2="1">
+            <stop offset="0" stop-color="#172d3e" />
+            <stop offset="0.48" stop-color="#416d8d" />
+            <stop offset="0.5" stop-color="#143951" />
+            <stop offset="1" stop-color="#274c67" />
+          </linearGradient>
+          <clipPath id="notebook-title-top"><path d="M0 0H2250V430H0Z M0 765H2250V824H0Z" /></clipPath>
+          <clipPath id="notebook-title-proteins"><path d="M0 430H850V765H0Z M1400 430H2250V765H1400Z" /></clipPath>
+          <filter id="notebook-title-shadow" x="-10%" y="-20%" width="120%" height="150%">
+            <feDropShadow dx="0" dy="12" stdDeviation="8" flood-color="#071521" flood-opacity="0.65" />
+          </filter>
+        </defs>
+        <g clip-path="url(#notebook-title-proteins)">
+          <image href="https://static.igem.wiki/teams/6059/wiki/members/title/title.avif" width="2250" height="824" transform="translate(0 860) scale(1 -1)" />
+        </g>
+        <image href="https://static.igem.wiki/teams/6059/wiki/members/title/title.avif" width="2250" height="824" clip-path="url(#notebook-title-top)" />
+        <text x="1125" y="680" text-anchor="middle" textLength="1660" lengthAdjust="spacingAndGlyphs"
+          font-family="Georgia, 'Times New Roman', serif" font-size="294" font-weight="700"
+          fill="url(#notebook-title-gradient)" filter="url(#notebook-title-shadow)">NOTEBOOK</text>
+      </svg>
+    </h1>
+    
+  </div>
+  <div class="center-description-wrapper">
+    <p class="center-description-text">Explore our laboratory notebook and follow the experiments, observations and progress of our STING journey.</p>
+  </div>
+  <div class="scroll-explore-wrapper">
+    <span class="scroll-line"></span>
+    <span class="scroll-text">SCROLL  TO  EXPLORE</span>
+    <span class="scroll-line"></span>
+  </div>
+  <div class="bottom-dots-decor"></div>
+</div>
+</header>
+  
+
+
+<section class="notebook" aria-labelledby="notebook-title">
+  <div class="notebook-intro">
+    <p>Use the previous and next buttons to explore our laboratory notebook.</p>
+  </div>
+  <div class="notebook-layout">
+    
+    <aside class="notebook-timeline" aria-label="Record dates">
+      <div class="notebook-date-viewport" tabindex="0" aria-label="Scroll record dates">
+        <ol>
+          
+          <li>
+            <span class="notebook-date" aria-current="date" >
+              <time datetime="2026-04-10">4.10</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-04-20">4.20</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-01">5.1</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-03">5.3</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-04">5.4</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-07">5.7</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-10">5.10</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-11">5.11</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-12">5.12</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-13">5.13</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-14">5.14</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-15">5.15</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-16">5.16</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-17">5.17</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-18">5.18</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-19">5.19</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-20">5.20</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-21">5.21</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-22">5.22</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-23">5.23</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-24">5.24</time>
+            </span>
+          </li>
+          
+          <li>
+            <span class="notebook-date" >
+              <time datetime="2026-05-25">5.25</time>
+            </span>
+          </li>
+          
+        </ol>
+      </div>
+      <span class="notebook-sword" aria-hidden="true"><img src="https://static.igem.wiki/teams/6059/wiki/notebook/sword.svg" alt=""></span>
+    </aside>
+    <div id="mainContainer" class="notebook-reader" tabindex="0" role="region"
+      aria-label="Notebook pages. Use the previous and next buttons to change pages.">
+      <div class="notebook-stage">
+        
+        
+        <article id="notebook-entry-1" class="notebook-sheet" data-sheet="0"
+          data-position="0"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" >
+          <h2><time datetime="2026-04-10">2026 / 04 / 10</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-2" class="notebook-sheet" data-sheet="1"
+          data-position="1"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-04-20">2026 / 04 / 20</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-3" class="notebook-sheet" data-sheet="2"
+          data-position="2"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-01">2026 / 05 / 01</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-4" class="notebook-sheet" data-sheet="3"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-03">2026 / 05 / 03</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-5" class="notebook-sheet" data-sheet="4"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-04">2026 / 05 / 04</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-6" class="notebook-sheet" data-sheet="5"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-07">2026 / 05 / 07</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-7" class="notebook-sheet" data-sheet="6"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-10">2026 / 05 / 10</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-8" class="notebook-sheet" data-sheet="7"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-11">2026 / 05 / 11</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-9" class="notebook-sheet" data-sheet="8"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-12">2026 / 05 / 12</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-10" class="notebook-sheet" data-sheet="9"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-13">2026 / 05 / 13</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-11" class="notebook-sheet" data-sheet="10"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-14">2026 / 05 / 14</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-12" class="notebook-sheet" data-sheet="11"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-15">2026 / 05 / 15</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-13" class="notebook-sheet" data-sheet="12"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-16">2026 / 05 / 16</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-14" class="notebook-sheet" data-sheet="13"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-17">2026 / 05 / 17</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-15" class="notebook-sheet" data-sheet="14"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-18">2026 / 05 / 18</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-16" class="notebook-sheet" data-sheet="15"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-19">2026 / 05 / 19</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-17" class="notebook-sheet" data-sheet="16"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-20">2026 / 05 / 20</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-18" class="notebook-sheet" data-sheet="17"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-21">2026 / 05 / 21</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-19" class="notebook-sheet" data-sheet="18"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-22">2026 / 05 / 22</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-20" class="notebook-sheet" data-sheet="19"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-23">2026 / 05 / 23</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-21" class="notebook-sheet" data-sheet="20"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-24">2026 / 05 / 24</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        <article id="notebook-entry-22" class="notebook-sheet" data-sheet="21"
+          data-position="3"
+          style="--paper-image: url('https://static.igem.wiki/teams/6059/wiki/notebook/notebook.avif')" aria-hidden="true" inert>
+          <h2><time datetime="2026-05-25">2026 / 05 / 25</time></h2>
+          <div class="notebook-writing" tabindex="0" aria-label="Record text">
+            <h3>Record pending</h3>
+            
+            <p>The verified laboratory record for this date will be added
+            here.</p>
+            
+          </div>
+          <figure class="notebook-illustration">
+            
+            <p>Illustration pending</p>
+            
+          </figure>
+        </article>
+        
+        
+        <div class="notebook-page-buttons" role="group" aria-label="Turn notebook pages">
+          <button type="button" class="notebook-prev" aria-label="Previous page" disabled>
+            <img src="https://static.igem.wiki/teams/6059/wiki/notebook/page-prev.avif" alt="">
+          </button>
+          <button type="button" class="notebook-next" aria-label="Next page">
+            <img src="https://static.igem.wiki/teams/6059/wiki/notebook/page-next.avif" alt="">
+          </button>
+        </div>
+      </div>
+
+      <div class="notebook-dots" role="group" aria-label="Notebook page indicators">
+        <span aria-label="Page 1, 2026-04-10" aria-current="page" ></span><span aria-label="Page 2, 2026-04-20" ></span><span aria-label="Page 3, 2026-05-01" ></span><span aria-label="Page 4, 2026-05-03" ></span><span aria-label="Page 5, 2026-05-04" ></span><span aria-label="Page 6, 2026-05-07" ></span><span aria-label="Page 7, 2026-05-10" ></span><span aria-label="Page 8, 2026-05-11" ></span><span aria-label="Page 9, 2026-05-12" ></span><span aria-label="Page 10, 2026-05-13" ></span><span aria-label="Page 11, 2026-05-14" ></span><span aria-label="Page 12, 2026-05-15" ></span><span aria-label="Page 13, 2026-05-16" ></span><span aria-label="Page 14, 2026-05-17" ></span><span aria-label="Page 15, 2026-05-18" ></span><span aria-label="Page 16, 2026-05-19" ></span><span aria-label="Page 17, 2026-05-20" ></span><span aria-label="Page 18, 2026-05-21" ></span><span aria-label="Page 19, 2026-05-22" ></span><span aria-label="Page 20, 2026-05-23" ></span><span aria-label="Page 21, 2026-05-24" ></span><span aria-label="Page 22, 2026-05-25" ></span>
+      </div>
+      <p class="notebook-status" role="status" aria-live="polite" aria-atomic="true">Page 1 of 22
+      </p>
+    </div>
+  </div>
+</section>
+</main>
+  <footer>
+    <!-- 左侧：三个 logo，垂直中心位于页脚 60% 处 -->
+    <div class="footer-logos">
+        <img src="https://static.igem.wiki/teams/6059/wiki/head-foot/xmu.svg" alt="XMU Logo" class="footer-logo">
+        <img src="https://static.igem.wiki/teams/6059/wiki/head-foot/xmu-china.svg" alt="XMU China Logo" class="footer-logo">
+        <img src="https://static.igem.wiki/teams/6059/wiki/head-foot/sting.svg" alt="STING Logo" class="footer-logo">
+    </div>
+
+    <!-- 右侧从上到下：社交图标 → 地址 → Contact Us，全部右对齐 -->
+    <div class="footer-social">
+        <img src="https://static.igem.wiki/teams/6059/wiki/head-foot/1.avif" alt="Social 1">
+        <img src="https://static.igem.wiki/teams/6059/wiki/head-foot/2.avif" alt="Social 2">
+        <img src="https://static.igem.wiki/teams/6059/wiki/head-foot/3.avif" alt="Social 3">
+        <img src="https://static.igem.wiki/teams/6059/wiki/head-foot/4.avif" alt="Social 4">
+        <img src="https://static.igem.wiki/teams/6059/wiki/head-foot/5.avif" alt="Social 5">
+    </div>
+
+    <address class="footer-address" id="contact">
+        <p>Xiamen University, Fujian, China</p>
+        <p>No.422, Siming South Road, Fujian,</p>
+        <p>P.R.China 361005</p>
+    </address>
+
+    <a href="#contact" class="footer-contact-btn">Contact Us</a>
+</footer>
+  
+  <script src="/static/members/title/title.js" defer></script>
+  <script src="/static/notebook/notebook.js?v=20261018-url-2" defer></script>
+
+</body>
+</html>

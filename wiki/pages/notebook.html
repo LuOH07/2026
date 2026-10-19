@@ -1,9 +1,63 @@
 {% extends "layout.html" %}
+
 {% block title %}Notebook{% endblock %}
+
 {% block page_styles %}
+<<<<<<< HEAD
 <link rel="stylesheet" href="{{ url_for('static', filename='notebook/notebook.css', v='20261018-url-3') }}">
+=======
+<link rel="stylesheet" href="{{ url_for('static', filename='description/description.css') }}">
+<link rel="stylesheet"
+  href="{{ url_for('static', filename='notebook/notebook.css', v='20261019-notebook-controls-5') }}">
+>>>>>>> 83de992db2f514799ac734340df38319bdb92d9b
 {% endblock %}
+
 {% block page_content %}
+<header class="title-header-wrapper" id="heroWrapper" data-notebook-hero>
+  <div class="grid-container" id="heroGridContainer">
+    <canvas id="gridCanvas"></canvas>
+
+    <!-- 左侧装饰 DNA (通过 asset-map.json 解析) -->
+    <div class="left-dna-wrapper">
+      <img src="{{ asset_url('title/DNA_1.png') }}" alt="DNA Structure Left" class="left-dna-image">
+    </div>
+
+    <!-- 右侧装饰蛋白结构 -->
+    <div class="right-protein-wrapper">
+      <img src="{{ asset_url('title/protein.png') }}" alt="Protein Structure Right" class="right-protein-image">
+    </div>
+
+    <!-- 右下装饰 DNA -->
+    <div class="bottom-right-dna-wrapper">
+      <img src="{{ asset_url('title/DNA_2.png') }}" alt="DNA Structure Bottom Right" class="bottom-right-dna-image">
+    </div>
+
+    <!-- 中央大标题图片 -->
+    <div class="center-image-wrapper">
+      <img src="https://static.igem.wiki/teams/6059/wiki/title/notebook.avif" alt="Notebook" class="title-image"
+        id="notebook-title">
+    </div>
+
+    <!-- 中央引言文案 -->
+    <div class="center-description-wrapper">
+      <p class="center-description-text">
+        We are an international team of students, researchers,<br>
+        and innovators exploring the frontiers of bacterial<br>
+        genome engineering through the power of STING.
+      </p>
+    </div>
+
+    <!-- 底部滑动探索指引 -->
+    <div class="scroll-explore-wrapper">
+      <span class="scroll-line"></span>
+      <span class="scroll-text">SCROLL TO EXPLORE</span>
+      <span class="scroll-line"></span>
+    </div>
+
+    <div class="bottom-dots-decor"></div>
+  </div>
+</header>
+
 {# Single source for dates, sheets and dots. Optional fields: title, paragraphs, illustration_url, illustration_alt. #}
 {% set entries = [
 {'date': '2026-04-10', 'label': '4.10'},
@@ -30,6 +84,7 @@
 {'date': '2026-05-25', 'label': '5.25'},
 ] %}
 <section class="notebook" aria-labelledby="notebook-title">
+<<<<<<< HEAD
   <div class="notebook-intro">
     {# Mobile hero: like every other page (description / safety / …) the title is
        swapped for a single designed image. Hidden on PC (> 1024px), so the desktop
@@ -41,6 +96,8 @@
     <h1 id="notebook-title">Notebook <span>Lab records</span></h1>
     <p>Use the previous and next buttons to explore our laboratory notebook.</p>
   </div>
+=======
+>>>>>>> 83de992db2f514799ac734340df38319bdb92d9b
   <div class="notebook-layout">
     {# Desktop: scrollable dates and sword. Mobile: four dates per row. #}
     <aside class="notebook-timeline" aria-label="Record dates">
@@ -48,17 +105,17 @@
         <ol>
           {% for entry in entries %}
           <li>
-            <span class="notebook-date" {% if loop.first %}aria-current="date" {% endif %}>
+            <button type="button" class="notebook-date" {% if loop.first %}aria-current="date" {% endif %}
+              aria-label="Open notebook record for {{ entry.date }}">
               <time datetime="{{ entry.date }}">{{ entry.label }}</time>
-            </span>
+            </button>
           </li>
           {% endfor %}
         </ol>
       </div>
       <span class="notebook-sword" aria-hidden="true"><img src="{{ asset_url('notebook/sword.svg') }}" alt=""></span>
     </aside>
-    <div id="mainContainer" class="notebook-reader" tabindex="0" role="region"
-      aria-label="Notebook pages. Use the previous and next buttons to change pages.">
+    <div id="mainContainer" class="notebook-reader" tabindex="0" role="region" aria-label="Notebook pages">
       <div class="notebook-stage">
         {# One sheet per entry; only the selected sheet accepts focus and pointer input. #}
         {% for entry in entries %}
@@ -78,13 +135,10 @@
             {% if entry.illustration_url | default('') %}
             <img src="{{ entry.illustration_url }}"
               alt="{{ entry.illustration_alt | default('Laboratory illustration') }}" loading="lazy">
-            {% else %}
-            <p>Illustration pending</p>
             {% endif %}
           </figure>
         </article>
         {% endfor %}
-        {# Full-height side hit areas; image size/position is controlled independently in CSS. #}
         <div class="notebook-page-buttons" role="group" aria-label="Turn notebook pages">
           <button type="button" class="notebook-prev" aria-label="Previous page" disabled>
             <img src="{{ asset_url('notebook/page-prev.png') }}" alt="">
@@ -105,6 +159,8 @@
   </div>
 </section>
 {% endblock %}
+
 {% block page_scripts %}
-<script src="{{ url_for('static', filename='notebook/notebook.js', v='20261018-url-2') }}" defer></script>
+<script src="{{ url_for('static', filename='description/description.js') }}" defer></script>
+<script src="{{ url_for('static', filename='notebook/notebook.js', v='20261019-date-navigation-1') }}" defer></script>
 {% endblock %}

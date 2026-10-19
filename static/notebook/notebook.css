@@ -10,38 +10,49 @@
   --font-mono: 'DM Mono', Consolas, monospace;
   background: var(--bg);
   color: var(--fg);
-  /* Side padding, also used to bleed the mobile hero image to the screen edges
-     (section 6). Mobile overrides it to 16px next to its own padding rule. */
-  --pad-x: 4vw;
-  padding: 112px var(--pad-x) 64px;
+  padding: 80px 4vw 64px;
   font-family: var(--font-body);
   --bg: #f3f7f8;
   --fg: #0a1c37;
   cursor: pointer;
 }
-.notebook-intro {
-  max-width: 1280px;
-  margin: 0 auto 28px;
-  cursor: auto;
+.notebook-page-buttons {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+  z-index: 20;
 }
-.notebook-intro h1 {
-  font-family: var(--font-display);
-  font-size: clamp(28px, 3vw, 40px);
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  font-weight: 800;
+.notebook-page-buttons button {
+  position: absolute;
+  bottom: clamp(16px, 8vh, 96px);
+  display: grid;
+  place-items: center;
+  width: clamp(44px, 8vw, 112px);
+  height: 100px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  pointer-events: auto;
+  transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1), opacity 140ms cubic-bezier(0.23, 1, 0.32, 1);
 }
-.notebook-intro h1 span {
-  font-family: var(--font-body);
-  font-size: 16px;
-  font-weight: 400;
-  margin-left: 16px;
+.notebook-page-buttons img {
+  display: block;
+  width: clamp(36px, 7vw, 96px);
+  max-height: 100px;
+  object-fit: contain;
+  pointer-events: none;
 }
-.notebook-intro p {
-  margin-top: 12px;
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.6;
+.notebook-page-buttons .notebook-prev {
+  left: 0;
+}
+.notebook-page-buttons .notebook-next {
+  right: 0;
+}
+.notebook-page-buttons button:disabled {
+  opacity: 0.3;
+  cursor: default;
 }
 .notebook-layout {
   display: grid;
@@ -86,7 +97,14 @@
   display: block;
   font-family: var(--font-mono);
   letter-spacing: 0.02em;
-  cursor: default;
+  cursor: pointer;
+}
+.notebook-date:hover {
+  color: var(--fg);
+}
+.notebook-date:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: -2px;
 }
 .notebook-date::before {
   content: '';
@@ -231,24 +249,6 @@
   margin-bottom: 12px;
   max-width: 65ch;
 }
-.notebook-illustration {
-  position: absolute;
-  left: 7%;
-  right: 7%;
-  top: 67%;
-  bottom: 7%;
-  background: var(--surface);
-  border-radius: 26px;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-}
-.notebook-illustration p {
-  padding: 16px;
-  font-size: 14px;
-  text-align: center;
-  color: var(--muted);
-}
 .notebook-illustration img {
   width: 100%;
   height: 100%;
@@ -263,70 +263,6 @@
   outline-offset: 3px;
 }
 
-/* 4. Side click areas and button images. */
-.notebook-page-buttons {
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  position: absolute;
-  inset: 0;
-  height: auto;
-  margin: 0;
-  padding: 0;
-  display: block;
-  pointer-events: none;
-  z-index: 20;
-}
-.notebook-page-buttons button {
-  border: 0;
-  background: transparent;
-  transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1), opacity 140ms cubic-bezier(0.23, 1, 0.32, 1);
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: calc((100% - var(--paper-width)) / 2);
-  height: 100%;
-  min-height: 44px;
-  pointer-events: auto;
-  display: grid;
-  place-items: center;
-  transform: none;
-  padding: 0;
-}
-.notebook-page-buttons img {
-  display: block;
-  max-height: 100px;
-  object-fit: contain;
-  pointer-events: none;
-  transition: none;
-  position: absolute;
-  width: clamp(72px, 12vw, 140px);
-  max-width: none;
-  height: 100px;
-  /* Move 420px below center, but keep the 100px image inside the stage. */
-  top: clamp(0px, calc(50% + 420px - 50px), calc(100% - 100px));
-}
-.notebook-page-buttons button:disabled {
-  opacity: 0.3;
-  cursor: default;
-}
-.notebook-page-buttons .notebook-prev {
-  left: 0;
-  justify-items: start;
-}
-.notebook-page-buttons .notebook-next {
-  right: 0;
-  justify-items: end;
-}
-.notebook-page-buttons .notebook-prev img {
-  left: 0;
-  transform: none;
-}
-.notebook-page-buttons .notebook-next img {
-  right: 0;
-  transform: none;
-}
-
 /* 5. Page indicators and accessible focus/status. */
 .notebook button:focus-visible {
   outline: 2px solid var(--fg);
@@ -336,7 +272,7 @@
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 4px;
+  margin-top: 0;
   cursor: auto;
 }
 .notebook-dots span {
@@ -376,12 +312,7 @@
 
 @media (max-width: 700px) {
   .notebook {
-    --pad-x: 16px;
-    padding: 104px var(--pad-x) 40px;
-  }
-  .notebook-intro h1 span {
-    display: block;
-    margin: 10px 0 0;
+    padding: 70px 16px 40px;
   }
   .notebook-layout {
     display: flex;
@@ -419,6 +350,15 @@
     background: var(--fg);
     color: var(--surface);
   }
+  .notebook-date:hover {
+    background: color-mix(in oklch, var(--fg) 8%, transparent);
+  }
+  .notebook-date[aria-current]:hover {
+    background: var(--fg);
+  }
+  .notebook-date:focus-visible {
+    outline-offset: -4px;
+  }
   .notebook-date::before {
     display: none;
   }
@@ -429,8 +369,15 @@
     transform: none;
   }
   .notebook-stage {
-    height: clamp(540px, 80svh, 740px);
+    height: clamp(250px, calc(100svh - 420px), 440px);
     --paper-width: min(560px, calc(100% - 88px));
+  }
+  .notebook-page-buttons button {
+    bottom: clamp(12px, 5vh, 40px);
+  }
+  .notebook-dots span {
+    width: 28px;
+    height: 28px;
   }
   .notebook-sheet h2 {
     font-size: clamp(13px, 3.6vw, 20px);
@@ -472,7 +419,7 @@
     gap: 12px;
   }
   .notebook-stage {
-    --paper-width: min(560px, calc(100% - 112px));
+    --paper-width: min(560px, calc(100% - 144px));
   }
 }
 
@@ -530,5 +477,30 @@
   }
   .notebook-date time {
     transition: none;
+  }
+}
+/* The Notebook hero reuses the assembled title layout on small screens. */
+@media (max-width: 820px) {
+  [data-notebook-hero] {
+    height: 100vh;
+    min-height: 100vh;
+    margin-top: 0;
+  }
+  [data-notebook-hero] .grid-container {
+    display: flex;
+    height: 100%;
+  }
+  [data-notebook-hero] #gridCanvas,
+  [data-notebook-hero] .left-dna-wrapper,
+  [data-notebook-hero] .right-protein-wrapper,
+  [data-notebook-hero] .bottom-right-dna-wrapper,
+  [data-notebook-hero] .center-image-wrapper,
+  [data-notebook-hero] .center-description-wrapper,
+  [data-notebook-hero] .scroll-explore-wrapper,
+  [data-notebook-hero] .bottom-dots-decor {
+    display: block !important;
+  }
+  [data-notebook-hero] .scroll-explore-wrapper {
+    display: flex !important;
   }
 }
