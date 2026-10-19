@@ -192,12 +192,16 @@ position: relative;
 z-index: 40;
 clear: both;
 width: 100%;
-padding: 3.5rem 10%;
+/* 竖直方向缩放系数：0.8 = 页脚上下留白与行间距缩短 20%，
+   横向内边距、文字字号、图标尺寸、对齐方式与元素顺序均保持不变（布局不变）。
+   下面的 padding-block 与 gap 都按它换算；想微调只改这一个数字即可。 */
+--footer-scale-y: 0.8;
+padding: calc(3.5rem * var(--footer-scale-y)) 10%;
 background-color: #0A1B37;
 display: flex;
 flex-direction: column;
 align-items: flex-end;
-gap: 1.375rem;
+gap: calc(1.375rem * var(--footer-scale-y));
 text-align: right;
 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
@@ -583,9 +587,9 @@ background-color: rgba(4, 12, 26, 0.45);
 footer {
 flex-direction: column;
 align-items: center;
-gap: 1.125rem;
+gap: calc(1.125rem * var(--footer-scale-y));
 width: 100%;
-padding: 2.25rem 1.25rem calc(2.25rem + env(safe-area-inset-bottom));
+padding: calc(2.25rem * var(--footer-scale-y)) 1.25rem calc(2.25rem * var(--footer-scale-y) + env(safe-area-inset-bottom));
 text-align: center;
 }
 
@@ -667,7 +671,7 @@ nav .dropdown-item { padding: 0.625rem 0.875rem 0.625rem 1.375rem; font-size: 0.
 nav { max-height: calc(100vh - 3.1rem - 1.125rem); max-height: calc(100dvh - 3.1rem - 1.125rem); }
 nav .nav-item > a.nav-link { padding: 0.6875rem 1rem; }
 nav .dropdown-item { padding: 0.5625rem 1rem 0.5625rem 1.625rem; }
-footer { padding-top: 1.75rem; padding-bottom: 1.75rem; }
+footer { padding-top: calc(1.75rem * var(--footer-scale-y)); padding-bottom: calc(1.75rem * var(--footer-scale-y)); }
 }
 
 /* ---------- 触屏设备：去掉点击高亮块 ---------- */
