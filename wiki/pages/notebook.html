@@ -5,7 +5,7 @@
 {% block page_styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='description/description.css') }}">
 <link rel="stylesheet"
-  href="{{ url_for('static', filename='notebook/notebook.css', v='20261019-notebook-controls-5') }}">
+  href="{{ url_for('static', filename='notebook/notebook.css', v='20261019-notebook-flow-1') }}">
 {% endblock %}
 
 {% block page_content %}
@@ -56,28 +56,38 @@
 
 {# Single source for dates, sheets and dots. Optional fields: title, paragraphs, illustration_url, illustration_alt. #}
 {% set entries = [
-{'date': '2026-04-10', 'label': '4.10'},
-{'date': '2026-04-20', 'label': '4.20'},
-{'date': '2026-05-01', 'label': '5.1'},
-{'date': '2026-05-03', 'label': '5.3'},
-{'date': '2026-05-04', 'label': '5.4'},
-{'date': '2026-05-07', 'label': '5.7'},
-{'date': '2026-05-10', 'label': '5.10'},
-{'date': '2026-05-11', 'label': '5.11'},
-{'date': '2026-05-12', 'label': '5.12'},
-{'date': '2026-05-13', 'label': '5.13'},
-{'date': '2026-05-14', 'label': '5.14'},
-{'date': '2026-05-15', 'label': '5.15'},
-{'date': '2026-05-16', 'label': '5.16'},
-{'date': '2026-05-17', 'label': '5.17'},
-{'date': '2026-05-18', 'label': '5.18'},
-{'date': '2026-05-19', 'label': '5.19'},
-{'date': '2026-05-20', 'label': '5.20'},
-{'date': '2026-05-21', 'label': '5.21'},
-{'date': '2026-05-22', 'label': '5.22'},
-{'date': '2026-05-23', 'label': '5.23'},
-{'date': '2026-05-24', 'label': '5.24'},
-{'date': '2026-05-25', 'label': '5.25'},
+{'date': 'November, 2025-January, 2026', 'label': 'Nov-Jan'},
+{'date': 'January-February, 2026', 'label': 'Jan-Feb'},
+{'date': 'March 6, 2026 ', 'label': '3.6', 'title': '实验标题', 'paragraphs': ['这里填写第一段文案。', '这里填写第二段文案。'], 'illustration_url': '"D:\WebLearning\26web-lyz\2026\data\example1.jpg"', 'illustration_alt': '图片内容简述'},
+{'date': 'April 4, 2026', 'label': '4.4'},
+{'date': 'April 6, 2026', 'label': '4.6'},
+{'date': 'May 1, 2026', 'label': '5.1'},
+{'date': 'May 18, 2026', 'label': '5.18'},
+{'date': 'June 10, 2026', 'label': '6.10'},
+{'date': 'July 16, 2026', 'label': '7.16'},
+{'date': 'July 18, 2026', 'label': '7.18'},
+{'date': 'July 20, 2026', 'label': '7.20'},
+{'date': 'July 23, 2026', 'label': '7.23'},
+{'date': 'July 27, 2026', 'label': '7.27'},
+{'date': 'July 29, 2026', 'label': '7.29'},
+{'date': 'July 30, 2026', 'label': '7.30'},
+{'date': 'August 3, 2026', 'label': '8.3'},
+{'date': 'August 4, 2026', 'label': '8.4'},
+{'date': 'August 8, 2026', 'label': '8.8'},
+{'date': 'August 12, 2026', 'label': '8.12'},
+{'date': 'August 12, 2026', 'label': '8.12'},
+{'date': 'August 16, 2026', 'label': '8.16'},
+{'date': 'August 17, 2026', 'label': '8.17'},
+{'date': 'August 20, 2026', 'label': '8.20'},
+{'date': 'August 22, 2026', 'label': '8.22'},
+{'date': 'August 26, 2026', 'label': '8.26'},
+{'date': 'August 28, 2026', 'label': '8.28'},
+{'date': 'August 30, 2026', 'label': '8.30'},
+{'date': 'August 30, 2026', 'label': '8.30'},
+{'date': 'September 1, 2026', 'label': '9.1'},
+{'date': 'September 2-5, 2026', 'label': '9.2-9.5'},
+{'date': 'September 25, 2026', 'label': '9.25'},
+{'date': 'October 1-7, 2026', 'label': '10.1-10.7'},
 ] %}
 <section class="notebook" aria-labelledby="notebook-title">
   <div class="notebook-layout">
@@ -106,19 +116,22 @@
           style="--paper-image: url('{{ asset_url('notebook/notebook.png') }}')" {% if not loop.first
           %}aria-hidden="true" inert{% endif %}>
           <h2><time datetime="{{ entry.date }}">{{ entry.date | replace('-', ' / ') }}</time></h2>
-          <div class="notebook-writing" tabindex="0" aria-label="Record text">
-            <h3>{{ entry.title | default('Record pending') }}</h3>
-            {% for paragraph in entry.paragraphs | default(['The verified laboratory record for this date will be added
-            here.']) %}
-            <p>{{ paragraph }}</p>
-            {% endfor %}
-          </div>
-          <figure class="notebook-illustration">
+          <div class="notebook-content">
+            <div class="notebook-writing" tabindex="0" aria-label="Record text">
+              <h3>{{ entry.title | default('Record pending') }}</h3>
+              {% for paragraph in entry.paragraphs | default(['The verified laboratory record for this date will be added
+              here.']) %}
+              <p>{{ paragraph }}</p>
+              {% endfor %}
+            </div>
             {% if entry.illustration_url | default('') %}
-            <img src="{{ entry.illustration_url }}"
-              alt="{{ entry.illustration_alt | default('Laboratory illustration') }}" loading="lazy">
+            <figure class="notebook-illustration">
+              <img src="{{ entry.illustration_url }}"
+                alt="{{ entry.illustration_alt | default('Laboratory illustration') }}" loading="lazy">
+              <figcaption aria-hidden="true">{{ entry.illustration_alt | default('Laboratory illustration') }}</figcaption>
+            </figure>
             {% endif %}
-          </figure>
+          </div>
         </article>
         {% endfor %}
         <div class="notebook-page-buttons" role="group" aria-label="Turn notebook pages">
