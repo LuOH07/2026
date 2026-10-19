@@ -3,13 +3,9 @@
 {% block title %}Notebook{% endblock %}
 
 {% block page_styles %}
-<<<<<<< HEAD
-<link rel="stylesheet" href="{{ url_for('static', filename='notebook/notebook.css', v='20261018-url-3') }}">
-=======
 <link rel="stylesheet" href="{{ url_for('static', filename='description/description.css') }}">
 <link rel="stylesheet"
   href="{{ url_for('static', filename='notebook/notebook.css', v='20261019-notebook-controls-5') }}">
->>>>>>> 83de992db2f514799ac734340df38319bdb92d9b
 {% endblock %}
 
 {% block page_content %}
@@ -84,20 +80,6 @@
 {'date': '2026-05-25', 'label': '5.25'},
 ] %}
 <section class="notebook" aria-labelledby="notebook-title">
-<<<<<<< HEAD
-  <div class="notebook-intro">
-    {# Mobile hero: like every other page (description / safety / …) the title is
-       swapped for a single designed image. Hidden on PC (> 1024px), so the desktop
-       title below stays exactly as it was — see notebook.css section 6. #}
-    <div class="notebook-mobile-hero">
-      <img src="https://static.igem.wiki/teams/6059/wiki/move/notebook.avif"
-           alt="STING — Notebook: lab records" loading="lazy" decoding="async">
-    </div>
-    <h1 id="notebook-title">Notebook <span>Lab records</span></h1>
-    <p>Use the previous and next buttons to explore our laboratory notebook.</p>
-  </div>
-=======
->>>>>>> 83de992db2f514799ac734340df38319bdb92d9b
   <div class="notebook-layout">
     {# Desktop: scrollable dates and sword. Mobile: four dates per row. #}
     <aside class="notebook-timeline" aria-label="Record dates">
