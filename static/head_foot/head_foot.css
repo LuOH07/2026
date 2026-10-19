@@ -186,22 +186,21 @@ transform: translateX(-50%);
 }
 
 /* STREAMING_CHUNK:Styling footer structure... */
-/* 页脚：左右内边距 3%（相对页面宽度）；右侧内容纵向堆叠并右对齐 */
+/* 页脚：底色 + 右侧内容右对齐的基线样式。
+   具体的「高度 / 内部元素大小与位置」见下：
+   - 桌面端（>= 1025px）：高度相对页面高度（vh），内部全部相对页脚容器（cqw / cqh）
+   - 移动端（<= 1024px）：纵向堆叠，上下留白相对页面高度（vh） */
 footer {
 position: relative;
 z-index: 40;
 clear: both;
 width: 100%;
-/* 竖直方向缩放系数：0.8 = 页脚上下留白与行间距缩短 20%，
-   横向内边距、文字字号、图标尺寸、对齐方式与元素顺序均保持不变（布局不变）。
-   下面的 padding-block 与 gap 都按它换算；想微调只改这一个数字即可。 */
---footer-scale-y: 0.8;
-padding: calc(3.5rem * var(--footer-scale-y)) 10%;
+padding: 2.8rem 10%;
 background-color: #0A1B37;
 display: flex;
 flex-direction: column;
 align-items: flex-end;
-gap: calc(1.375rem * var(--footer-scale-y));
+gap: 1.1rem;
 text-align: right;
 font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
@@ -288,6 +287,112 @@ transition: background-color 0.2s ease, transform 0.2s ease;
 .footer-contact-btn:hover {
 background-color: #132437;
 transform: translateY(-0.0625rem);
+}
+
+/* =======================================================================
+   桌面端（>= 1025px）：页脚「相对页面高度」，内部「全部相对页脚容器」
+   -----------------------------------------------------------------------
+   · 页脚高度 = 页面高度的 30%（30vh），再限制在 11rem ~ 24rem；
+     另加 min(30vh, 19vw) 兜底：「窄而高」的窗口不会把页脚撑得比宽度还夸张
+   · footer 声明为「尺寸容器」（container-type: size），于是 footer 内部：
+       cqh = 页脚容器高度的 1%          cqw = 页脚容器宽度的 1%
+     元素的大小、位置全部用这两个单位书写 —— 即「相对页脚容器的高度 / 宽度」
+     该元素的尺寸与坐标，不再依赖页面宽度、rem 或 vh
+   · 内部四块的位置（相对页脚容器）：
+       左侧 3 个 logo      left 8cqw，垂直中心在 40cqh
+       右上 社交图标       top 17cqh，right 10cqw
+       右中 地址           top 38.8cqh，right 10cqw
+       右下 Contact Us     top 70.5cqh，right 10cqw
+     横向位置用 cqw（相对容器宽度），纵向位置与高度用 cqh（相对容器高度），
+     因此整个页脚像一张按比例缩放的画布：窗口变高，页脚整体等比变高变宽。
+   · 移动端（<= 1024px）仍走下面的纵向堆叠布局，不受本段影响
+   ======================================================================= */
+@media (min-width: 1025px) {
+
+footer {
+/* 高度相对页面高度（30vh）；min(30vh, 19vw) 让「窄而高」的窗口把整条页脚
+   一并缩小，避免左右两栏在窄屏上相撞；clamp 再限制绝对上下限 */
+height: clamp(11rem, min(30vh, 19vw), 24rem);
+/* 内边距归零：内部元素改用 cqw / cqh + % 定位，位置全部相对页脚容器 */
+padding: 0;
+gap: 0;
+display: block;
+overflow: hidden;
+/* 关键：把 footer 变成尺寸容器，自身宽高即内部 cq 单位的基准 */
+container-type: size;
+container-name: footer;
+}
+
+/* ---------- 左侧：三个 logo（大小与位置都相对页脚容器） ---------- */
+.footer-logos {
+position: absolute;
+top: 40%;                 /* 容器高度的 40% */
+left: 8cqw;               /* 容器宽度的 8% */
+transform: translateY(-50%);
+display: flex;
+align-items: center;
+gap: 3cqw;                /* logo 间距 = 容器宽度的 3% */
+height: 38cqh;            /* logo 高度 = 容器高度的 38% */
+}
+
+.footer-logo {
+height: 100%;             /* 相对 .footer-logos（即容器的 38cqh） */
+width: auto;
+max-width: 28cqw;
+object-fit: contain;
+}
+
+/* ---------- 右侧竖排三段，自上而下，全部相对页脚容器 ---------- */
+.footer-social {
+position: absolute;
+top: 17cqh;               /* 容器高度的 17% */
+right: 10cqw;             /* 距容器右边缘 = 容器宽度的 10% */
+display: flex;
+align-items: center;
+gap: 4.5cqh;
+}
+
+.footer-social img {
+width: 15cqh;
+height: 15cqh;
+padding: 2.7cqh;
+border: 0.38cqh solid #92AFD6;
+border-radius: 3cqh;
+box-shadow: inset 0 0.38cqh 0.38cqh rgba(255, 255, 255, 0.6), 0 0.8cqh 1.5cqh rgba(0, 0, 0, 0.05);
+}
+
+.footer-social img:hover {
+transform: translateY(-0.8cqh);
+}
+
+.footer-address {
+position: absolute;
+top: 38.8cqh;             /* 容器高度的 38.8% */
+right: 10cqw;
+font-size: 5.3cqh;        /* 字号也相对容器高度 */
+line-height: 8.3cqh;
+letter-spacing: 0.11cqh;
+}
+
+.footer-address p {
+margin: 0;
+}
+
+.footer-contact-btn {
+position: absolute;
+top: 70.5cqh;             /* 容器高度的 70.5% */
+right: 10cqw;
+font-size: 4.2cqh;
+line-height: 1;
+padding: 3.8cqh 12cqh;    /* 药丸形按钮的内边距同样相对容器 */
+border-radius: 8.3cqh;
+box-shadow: 0 0.7cqh 1.4cqh rgba(0, 0, 0, 0.12);
+}
+
+.footer-contact-btn:hover {
+transform: translateY(-0.35cqh);
+}
+
 }
 
 /* 窄屏：logo 回到正常流，整体居中，避免与右侧内容重叠 */
@@ -584,12 +689,14 @@ background-color: rgba(4, 12, 26, 0.45);
 
 /* ---------- 移动端：页脚重新布局 ---------- */
 @media (max-width: 1024px) {
+/* 移动端：纵向堆叠，上下留白与行间距改为相对页面高度（vh），
+   横向留白仍相对页面宽度；元素尺寸保持不变，只换基准 */
 footer {
 flex-direction: column;
 align-items: center;
-gap: calc(1.125rem * var(--footer-scale-y));
+gap: 1.8vh;
 width: 100%;
-padding: calc(2.25rem * var(--footer-scale-y)) 1.25rem calc(2.25rem * var(--footer-scale-y) + env(safe-area-inset-bottom));
+padding: 3.6vh 1.25rem calc(3.6vh + env(safe-area-inset-bottom));
 text-align: center;
 }
 
@@ -671,7 +778,7 @@ nav .dropdown-item { padding: 0.625rem 0.875rem 0.625rem 1.375rem; font-size: 0.
 nav { max-height: calc(100vh - 3.1rem - 1.125rem); max-height: calc(100dvh - 3.1rem - 1.125rem); }
 nav .nav-item > a.nav-link { padding: 0.6875rem 1rem; }
 nav .dropdown-item { padding: 0.5625rem 1rem 0.5625rem 1.625rem; }
-footer { padding-top: calc(1.75rem * var(--footer-scale-y)); padding-bottom: calc(1.75rem * var(--footer-scale-y)); }
+footer { padding-top: 4.7vh; padding-bottom: 4.7vh; }
 }
 
 /* ---------- 触屏设备：去掉点击高亮块 ---------- */
