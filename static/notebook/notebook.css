@@ -479,28 +479,13 @@
     transition: none;
   }
 }
-/* The Notebook hero reuses the assembled title layout on small screens. */
-@media (max-width: 820px) {
-  [data-notebook-hero] {
-    height: 100vh;
-    min-height: 100vh;
-    margin-top: 0;
-  }
-  [data-notebook-hero] .grid-container {
-    display: flex;
-    height: 100%;
-  }
-  [data-notebook-hero] #gridCanvas,
-  [data-notebook-hero] .left-dna-wrapper,
-  [data-notebook-hero] .right-protein-wrapper,
-  [data-notebook-hero] .bottom-right-dna-wrapper,
-  [data-notebook-hero] .center-image-wrapper,
-  [data-notebook-hero] .center-description-wrapper,
-  [data-notebook-hero] .scroll-explore-wrapper,
-  [data-notebook-hero] .bottom-dots-decor {
-    display: block !important;
-  }
-  [data-notebook-hero] .scroll-explore-wrapper {
-    display: flex !important;
-  }
-}
+/* 7. Mobile hero: shared designed image, not the assembled title layout.
+   The Notebook hero keeps the same treatment as every other page (description /
+   safety / design / …). That behaviour lives entirely in description.css's
+   <=1024px block — `.mobile-hero-image` is shown full-bleed and the assembled
+   pieces (canvas / DNA / protein / title / intro / scroll cue / dots) are hidden.
+   This file used to force those pieces back on <=820px, which left both the
+   821–1024px band with an empty hero and mobile with a squeezed PC layout;
+   those overrides are gone, so the shared rule is the only source of truth.
+   PC (> 1024px) is untouched: `.mobile-hero-image` stays display: none and the
+   assembled desktop title renders exactly as before. */
