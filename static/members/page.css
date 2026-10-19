@@ -51,10 +51,10 @@ html, body {
     display: none !important;
   }
 
-  /* 页眉是 position: fixed（移动端高 62px，见 head_foot.css），
+  /* 页眉是 position: fixed（移动端高 3.1rem，见 head_foot.css），
      给正文留出等高的顶部空间，图片不会被页眉压住 */
   #main-content {
-    padding-top: 62px;
+    padding-top: 3.1rem;
   }
 
   /* 移动端长图：宽度占满整个页面，长度按原图比例自适应 */
