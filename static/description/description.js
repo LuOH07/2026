@@ -1984,3 +1984,508 @@ document.addEventListener('DOMContentLoaded', () => {
        （例如页面里动态插入了新的标题）。已搬过的标题不会被重复处理。 */
     window.__HEADING_SUB__ = { refresh: initHeadingSubs };
 })();
+
+/* ========================================================
+   9. 侧边栏下方的 Kill Switch 组件（视频 + 开关 + 配套动效）
+   ========================================================
+   配合 description.css 第 15 节。作品挂在侧边栏下方那片空白里：
+   一段细菌“被杀”的竖版视频（suicide.webm）+ 右边一枚开关（绿 = 开 /
+   灰 = 关），开关上方一行 "Kill Switch"。开 → 正放（细菌一点点变灰死掉），
+   关 → 倒放（细菌变回彩色），不点的时候停在对应那一帧 —— 与参考页
+   （home_11(move) 的 3.js / 3.css）里的 suicide 组件是同一套行为。
+
+   一、它长在哪儿（与侧边栏绑定的部分）
+   ------------------------------------------------------
+   组件【不是】侧边栏的子元素：.side-container 是 overflow: hidden 的深蓝
+   底板（第 3 / 3.0 节要的就是这个裁切），塞进去会被裁掉。它是一层独立的
+   fixed 图层，坐标由下面 9.6 节的 sync() 按侧边栏的【实时位置】算出来：
+
+       left   = 0
+       width  = 正文白卡片的左边缘（第 4 节 .main-container 的 margin-left），
+                也就是左侧那条空白带的宽度
+       top    = 侧边栏当前的下沿 + 一点空隙
+       height = 视口底部减去 top
+
+   所以侧边栏挪到哪儿、滑到哪儿，组件就贴在它的下沿跟到哪儿；正文白卡片
+   的左右边界以后改了（比如 des.css 覆盖了 margin），组件也跟着改。
+
+   二、什么时候出现（与侧边栏状态绑定的部分）
+   ------------------------------------------------------
+   第 2 节把侧边栏的滚动分成三段，组件逐段对应：
+
+       ① 滑入段（mainRect.top > 15vh）：侧边栏的顶边还在 15vh 下面，正跟着
+          正文往上走 —— 侧边栏都还没到位，组件也不出现；
+       ② 正常段（固定在视口 15%）：侧边栏到位，组件淡入，贴在它下沿；
+       ③ 收尾段（底边贴齐正文底边、再往下滚就淡出）：侧边栏的 opacity
+          从 1 淡到 0，组件用【同一个透明度】一起淡出。
+
+   判断依据一律取侧边栏【此刻的真实状态】（computed 的 display /
+   visibility + 内联 opacity + getBoundingClientRect），而不是把第 2 节那
+   套公式再抄一遍：以后第 2 节的算法怎么改，这里都不用跟着改，两边天然
+   永远是同一件事。
+
+   三、开关怎么工作（移植自参考页 3.js 的 toggleSwitch / switchAnimate）
+   ------------------------------------------------------
+       关（灰）──正放 0 → 最后一帧──▶ 开（绿）    开 = 灰 / 停在最后一帧
+       开（绿）──倒放 最后一帧 → 0──▶ 关（灰）    关 = 彩 / 停在第一帧
+
+   · 正放直接 play()，另配一个 rAF 盯着“画面走到 VIDEO_END 没有”，走到就
+     踩刹车 —— 这个素材的容器时长比画面长（后面是一段静音尾巴），不管的话
+     会在最后一帧上白等那一段；
+   · 倒放只能自己写：浏览器的 playbackRate 不接受负数，所以用一个 rAF 循环
+     把 currentTime 一点点往回拨（约 1 倍速）；
+   · 组件淡出 / 滚出视口时把画面钉回静止帧（看不见的时候不烧 CPU），再滚
+     回来一露脸就是该有的那一帧。
+   ======================================================== */
+(function () {
+    'use strict';
+
+    /* ------------------------------------------------------
+       9.1 可调参数
+       ------------------------------------------------------ */
+    /* 视频文件：与 description.js 放在同一个目录（static/description/）。
+       路径解析见 9.2 —— JS 里的相对路径是相对【页面】的，不能直接写文件名。 */
+    var VIDEO_FILE = 'suicide.webm';
+
+    /* 画面真正结束的时刻（秒）。这个 webm 的容器时长比画面长，最后一段是
+       静音的尾巴；正放 / 倒放的终点都以它为准。
+       ★ 换素材后必须重新量一次，否则正放会在中途停住（看起来“只播了一半”）：
+         量法：ffmpeg -hide_banner -i suicide.webm -map 0:v:0 -f null -
+         看最后一行 time=…，或看 showinfo 里最后一帧的 pts_time。
+         写成 0 = 用容器时长（video.duration）：动画一定放得完，只是最后会在
+         静止的最后一帧上多等一小会儿，倒放时也会先空转一段。 */
+    var VIDEO_END = 1.55;
+
+    /* 开关上方那行字（纯装饰，读屏器跳过）；按钮自己的无障碍名见下面 */
+    var LABEL_TEXT = 'Kill Switch';
+    var TOGGLE_ARIA = 'Kill Switch';
+
+    /* 断点与视口比例：必须与 description.css 第 8 节、第 2 节的取值一致 */
+    var MOBILE_MAX = 1024;          /* ≤ 它就是窄屏：侧边栏整块隐藏，组件也不显示 */
+    var NORMAL_TOP_RATIO = 0.15;    /* 侧边栏的“正常位置” = 视口高度的 15%（第 2 节） */
+    var GAP_RATIO = 0.035;          /* 组件与侧边栏下沿之间的空隙（视口高度比例） */
+    var BOTTOM_RATIO = 0.02;        /* 组件底边距视口底部的留白（视口高度比例） */
+    var MIN_HEIGHT = 96;            /* 算出来的高度比它还小就不显示（窗口太矮时） */
+    var FADE_EPS = 0.02;            /* 透明度低于它就算“已经看不见”（与第 2 节判据一致） */
+
+    /* ------------------------------------------------------
+       9.2 视频地址
+       ------------------------------------------------------
+       VIDEO_FILE 写的是相对路径（视频和本脚本在同一个目录里）。但 JS 里的
+       相对路径是按【页面地址】解析的，不是按脚本地址：直接 <video src=
+       "suicide.webm"> 会去 /description/suicide.webm 找，404。
+
+       所以这里先取本脚本自己的地址（document.currentScript —— 本段代码就在
+       脚本执行的那一刻跑，defer 脚本也一样能取到），再相对它拼出视频地址，
+       得到的就是 …/static/description/suicide.webm。
+       取不到（脚本被内联、被别的方式注入等）就退回到按 <script src> 里以
+       description.js 结尾的那一个去找；再不行就用静态目录的绝对路径兜底。 */
+    var SCRIPT_DIR = (function () {
+        var script = document.currentScript;
+
+        if (!script || !script.src) {
+            var tags = document.getElementsByTagName('script');
+            for (var i = tags.length - 1; i >= 0; i--) {
+                if (/(^|\/)description\.js(\?|#|$)/.test(tags[i].src || '')) {
+                    script = tags[i];
+                    break;
+                }
+            }
+        }
+
+        var url = (script && script.src) ? script.src : '';
+        if (!url) return '/static/description/';
+
+        url = url.replace(/[?#].*$/, '');
+        return url.slice(0, url.lastIndexOf('/') + 1);
+    })();
+
+    var VIDEO_SRC = SCRIPT_DIR + VIDEO_FILE;
+
+    /* ------------------------------------------------------
+       9.3 运行时状态
+       ------------------------------------------------------ */
+    var side = null;        /* #sideContainer：位置与透明度的来源 */
+    var main = null;        /* #mainContainer：只用来量左侧空白带的宽度 */
+    var el = null;          /* 组件外壳 .kill-switch */
+    var video = null;       /* <video> */
+    var toggle = null;      /* 开关按钮 */
+    var gutter = 0;         /* 左侧空白带的宽度（px），随窗口尺寸重算 */
+    var broken = false;     /* 视频加载 / 解码不出来：整块收起来，不留空壳 */
+
+    /* 开关 / 正放 / 倒放的状态机（9.4） */
+    var on = false;         /* false = 关（灰）· true = 开（绿） */
+    var anim = 0;           /* 0 = 静止 · 1 = 正放中 · -1 = 倒放中 */
+    var animRaf = null;     /* 正在跑的正放监视 / 倒放循环 */
+    var live = false;       /* 上一帧组件是不是“在场”（用来判断刚淡入 / 刚淡出） */
+    var ready = false;      /* 静止帧有没有摆过（metadata 到位后才摆得动） */
+
+    /* ------------------------------------------------------
+       9.4 开关与视频
+       ------------------------------------------------------ */
+
+    /* 画面真正结束的时刻：VIDEO_END 优先（它比容器时长短），拿不到就用容器时长 */
+    function endTime() {
+        var dur = (video && isFinite(video.duration) && video.duration > 0) ? video.duration : 0;
+        if (VIDEO_END > 0) return dur > 0 ? Math.min(VIDEO_END, dur) : VIDEO_END;
+        return Math.max(0, dur - 0.001);
+    }
+
+    /* 这条状态该停在哪一帧：关 = 第一帧（彩色），开 = 最后一帧（灰色） */
+    function restTime() {
+        return on ? Math.max(0, endTime() - 0.001) : 0;
+    }
+
+    /* 停掉正在跑的正放 / 倒放（不改变画面位置） */
+    function stopAnim() {
+        if (animRaf !== null) {
+            cancelAnimationFrame(animRaf);
+            animRaf = null;
+        }
+        anim = 0;
+        if (video) {
+            try { video.pause(); } catch (err) { /* metadata 还没到，忽略 */ }
+        }
+    }
+
+    /* 把画面钉在“这条状态该有的那一帧”上，并停下一切播放 */
+    function rest() {
+        stopAnim();
+        if (!video) return;
+
+        var t = restTime();
+        try {
+            /* 差得远才写 currentTime：同值写入在部分浏览器上会触发一次没必要的 seek */
+            if (Math.abs(video.currentTime - t) > 0.001) video.currentTime = t;
+            ready = true;
+        } catch (err) {
+            ready = false;      /* metadata 还没到：下一次再试 */
+        }
+    }
+
+    /* 把开关画成绿 / 灰（CSS 只看 .is-on 这个类） */
+    function paintToggle() {
+        if (!toggle) return;
+        toggle.classList.toggle('is-on', !!on);
+        toggle.setAttribute('aria-checked', on ? 'true' : 'false');
+    }
+
+    /* 从当前位置开始往一个方向演到那一端：
+       forward = true  → 正放（→ 最后一帧），演完停在“开”的静止帧；
+       forward = false → 倒放（→ 第一帧），演完停在“关”的静止帧。
+       ★ 起点取“现在实际在哪”，所以连点两下不会先跳回某一端再走。 */
+    function animate(forward) {
+        if (!video) return;
+        stopAnim();
+
+        var end = endTime();
+        if (end <= 0) return;               /* 时长还没读到，等 metadata */
+
+        var now = video.currentTime || 0;
+        var atEnd = now >= end - 0.02;
+
+        if (forward) {
+            /* 已经在末尾就从头演一遍（和参考页一致） */
+            var from = atEnd ? 0 : Math.max(0, Math.min(now, end));
+            try { video.currentTime = from; } catch (err) { return; }
+
+            anim = 1;
+            var p = video.play();
+            if (p && typeof p.catch === 'function') p.catch(function () {});
+
+            /* 看住它：走到 end（画面真正的最后一帧）就踩刹车，别播静音尾巴 */
+            var watch = function () {
+                if (anim !== 1) return;
+                if (!isFinite(video.currentTime)) { animRaf = requestAnimationFrame(watch); return; }
+                if (video.currentTime >= end - 0.005) { rest(); return; }
+                animRaf = requestAnimationFrame(watch);
+            };
+            animRaf = requestAnimationFrame(watch);
+        } else {
+            var t = atEnd ? end : Math.min(now, end);
+            if (now <= 0.02) t = end;       /* 已经在开头：先把画面摆到末尾再倒着走 */
+            try { video.currentTime = t; } catch (err) { return; }
+
+            anim = -1;
+
+            var last = 0;
+            var back = function (nowTs) {
+                if (anim !== -1) return;
+                var dt = last ? Math.min(0.05, (nowTs - last) / 1000) : 1 / 60;
+                last = nowTs;
+                t = Math.max(0, t - dt);
+                try { video.currentTime = t; } catch (err) { /* 忽略 */ }
+                if (t <= 0.002) { rest(); return; }
+                animRaf = requestAnimationFrame(back);
+            };
+            animRaf = requestAnimationFrame(back);
+        }
+    }
+
+    /* 点击：翻状态 → 重画开关 → 往对应的方向演 */
+    function flip() {
+        if (!video || broken) return;
+        on = !on;
+        paintToggle();
+        animate(on);                        /* 关 → 开 正放；开 → 关 倒放 */
+        syncPlayback(true);                 /* 按钮能点就说明组件在场，顺手把状态机对齐 */
+    }
+
+    /* 每帧（每次 sync）调：
+       · 组件刚淡出 / 滚出视口 → 把画面钉回静止帧，停掉一切 rAF（省 CPU）；
+       · 组件刚淡入 → 先把静止帧摆好，露脸就是该有的那一帧；
+       · 一直亮着但静止帧还没摆成功（metadata 是后来才到的）→ 补一次。 */
+    function syncPlayback(visible) {
+        if (!video) return;
+        var v = !!visible;
+
+        if (v !== live) {
+            live = v;
+            if (!v) {
+                rest();                     /* 看不见了：收工 */
+                return;
+            }
+            if (anim === 0) rest();         /* 刚露脸：先把静止帧摆好 */
+            return;
+        }
+
+        if (v && !ready && anim === 0) rest();
+    }
+
+    /* metadata 到位（duration 这时才准）：把静止帧补摆一次 */
+    function onMetadata() {
+        ready = false;
+        if (anim === 0) rest();
+    }
+
+    /* 视频加载 / 解码不出来（路径不对、编码不支持…）：整块收起来，不留空壳 */
+    function onVideoError() {
+        broken = true;
+        hideComponent();
+    }
+
+    /* ------------------------------------------------------
+       9.5 造 DOM
+       ------------------------------------------------------
+       外壳 → 视频 + 右侧一列（"Kill Switch" 文字 + 开关）。
+       全部由脚本建，页面 HTML 里一个字都不用写（见 CSS 第 15 节开头的说明）。
+       视频是纯装饰，读屏器跳过；开关是 <button role="switch">，键盘可达。 */
+    function build() {
+        if (el) return;
+
+        el = document.createElement('div');
+        el.className = 'kill-switch';
+        el.id = 'killSwitch';
+
+        video = document.createElement('video');
+        video.className = 'kill-switch__video';
+        video.src = VIDEO_SRC;
+        video.muted = true;
+        video.defaultMuted = true;
+        video.playsInline = true;
+        video.setAttribute('muted', '');
+        video.setAttribute('playsinline', '');
+        video.setAttribute('webkit-playsinline', '');
+        video.setAttribute('preload', 'auto');       /* 进页面就开始缓冲，点开关立刻有画面 */
+        video.setAttribute('disablepictureinpicture', '');
+        video.setAttribute('tabindex', '-1');
+        video.setAttribute('aria-hidden', 'true');
+        video.addEventListener('loadedmetadata', onMetadata);
+        video.addEventListener('error', onVideoError);
+
+        var controls = document.createElement('div');
+        controls.className = 'kill-switch__controls';
+
+        var label = document.createElement('span');
+        label.className = 'kill-switch__label';
+        label.textContent = LABEL_TEXT;
+        label.setAttribute('aria-hidden', 'true');  /* 只是说明文字，不参与按钮名 */
+
+        toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'kill-switch__toggle';
+        toggle.setAttribute('role', 'switch');
+        toggle.setAttribute('aria-checked', 'false');
+        toggle.setAttribute('aria-label', TOGGLE_ARIA);
+        /* <button> 自己会把 空格 / 回车 转成 click，所以只监听 click 就够了 */
+        toggle.addEventListener('click', flip);
+
+        controls.appendChild(label);
+        controls.appendChild(toggle);
+
+        el.appendChild(video);
+        el.appendChild(controls);
+        document.body.appendChild(el);
+    }
+
+    /* ------------------------------------------------------
+       9.6 位置与透明度：与侧边栏的三段滚动对齐
+       ------------------------------------------------------
+       全部从侧边栏【此刻的真实状态】推出来（见本节开头“二”），组件自己不
+       再重算一套公式：
+
+         · 窄屏 / 视频坏了                → 不显示；
+         · 侧边栏 display: none 或不可见  → 不显示（例如目录为空时的 .is-empty）；
+         · 侧边栏顶边还在 15vh 下面       → ① 滑入段，不显示；
+         · 侧边栏 opacity ≤ 0.02          → ③ 收尾段末尾，不显示；
+         · 其余（② 正常段 / ③ 收尾段）    → 显示，贴在侧边栏下沿，
+                                            透明度跟侧边栏的内联 opacity 走。
+
+       抖动 / 高度不够（窗口太矮）也一并按“不显示”处理，绝不半截露在外面。 */
+    function sync() {
+        if (!el) return;
+
+        if (window.innerWidth <= MOBILE_MAX || broken) { hideComponent(); return; }
+
+        var cs = window.getComputedStyle(side);
+        if (cs.display === 'none' || cs.visibility !== 'visible') { hideComponent(); return; }
+
+        var rect = side.getBoundingClientRect();
+        var vh = window.innerHeight;
+        var normalTop = vh * NORMAL_TOP_RATIO;
+
+        /* ① 滑入段：侧边栏还没滑到正常位置 —— 组件也不出现 */
+        if (rect.top > normalTop + 1) { hideComponent(); return; }
+
+        /* ③ 收尾段：侧边栏被第 2 节写成越来越透明，已经看不见了就不必再放它 */
+        var opacity = parseFloat(side.style.opacity);
+        if (isNaN(opacity)) opacity = 1;
+        if (opacity <= FADE_EPS) { hideComponent(); return; }
+
+        /* 位置：紧贴侧边栏下沿，向下铺满到视口底部（留一点空隙） */
+        var top = rect.bottom + vh * GAP_RATIO;
+        var height = (vh - vh * BOTTOM_RATIO) - top;
+        if (height < MIN_HEIGHT) { hideComponent(); return; }
+
+        el.style.left = '0px';
+        el.style.width = gutter + 'px';
+        el.style.top = Math.round(top) + 'px';
+        el.style.height = Math.round(height) + 'px';
+
+        el.classList.add('is-visible');
+        /* ② 正常段：清掉内联值 → 用 CSS 的 opacity: 1（走淡入过渡）；
+           ③ 收尾段：直接跟侧边栏的透明度，两边同时、同一条曲线往下走 */
+        el.style.opacity = opacity >= 0.999 ? '' : String(Math.round(opacity * 1000) / 1000);
+
+        syncPlayback(true);
+    }
+
+    /* 收起来：摘掉 .is-visible（CSS 回到 opacity: 0 并延迟隐藏），
+       同时让视频收工（见 9.4 的 syncPlayback） */
+    function hideComponent() {
+        if (!el) return;
+        el.classList.remove('is-visible');
+        el.style.opacity = '';
+        syncPlayback(false);
+    }
+
+    /* 左侧空白带的宽度 = 正文白卡片的左边缘（第 4 节 .main-container 的
+       margin-left）。它只在窗口尺寸变化时变，所以单独量一次缓存起来，
+       滚动时不再读。量不出来（布局还没好）就按桌面档的 17% 兜底。 */
+    function measure() {
+        gutter = 0;
+
+        if (main) {
+            var r = main.getBoundingClientRect();
+            if (r.left > 0) gutter = Math.round(r.left);
+        }
+
+        if (gutter < 40) gutter = Math.round(window.innerWidth * 0.17);
+    }
+
+    /* 滚动 / 缩放都合并到一帧里算：第 2 节先写好侧边栏的内联样式，本节在
+       同一个 rAF 里读它的结果并写组件的位置，画到屏幕上时两边是同一帧。 */
+    var rafId = null;
+
+    function schedule() {
+        if (rafId !== null) return;
+        rafId = requestAnimationFrame(function () {
+            rafId = null;
+            sync();
+        });
+    }
+
+    /* ------------------------------------------------------
+       9.7 启动
+       ------------------------------------------------------
+       ★ 必须等 DOMContentLoaded 之后再跑，不能像第 4~8 节那样“readyState
+         不是 loading 就立刻跑”：defer 脚本执行时 readyState 是 interactive，
+         而【目录】与【侧边栏的内联 top / opacity】都是第 2 节在它自己的
+         DOMContentLoaded 回调里才建好 / 写上的。消息抢在前面跑的话：
+
+           · #tocNav 还是空的 → 第 3.2 节的 .side-container:has(.toc-nav:empty)
+             让侧边栏 display: none；
+           · 本节 sync() 一看“侧边栏不显示”就把组件收起来；
+           · 而后面再没有滚动 / 缩放事件来唤醒它 → 组件永远不出现。
+
+         所以这里（连同下面 load 上的一次兜底重算）都统一排到那两个事件
+         之后：定时器 / 事件回调注册的先后顺序保证了第 2 节的回调一定先
+         执行完（它在文件开头就注册了）。 */
+    function start() {
+        side = document.getElementById('sideContainer');
+        main = document.getElementById('mainContainer') ||
+               document.querySelector('.main-container');
+
+        /* 没有侧边栏的页面（页面上没有 <aside class="side-container">）什么都不做 */
+        if (!side || !main) return;
+
+        /* 脚本被重复加载时只建一次 */
+        if (document.getElementById('killSwitch')) return;
+
+        build();
+        measure();
+        paintToggle();
+        sync();
+
+        /* 目录被清空 → 侧边栏整块隐藏（第 3.2 节的 .is-empty）：组件跟着消失 */
+        if (typeof MutationObserver === 'function') {
+            new MutationObserver(schedule).observe(side, {
+                attributes: true,
+                attributeFilter: ['class']
+            });
+        }
+    }
+
+    if (document.readyState === 'loading' || document.readyState === 'interactive') {
+        document.addEventListener('DOMContentLoaded', start);
+    } else {
+        start();
+        /* 脚本比 DOMContentLoaded 还晚到（被动态注入等）：这时第 2 节的
+           回调早就跑完了，直接算一遍即可；再补一帧防止样式还没上屏。 */
+        schedule();
+    }
+
+    /* 图片 / 字体 / 视频都就位之后再算一次：布局高度定下来，位置才是最终值 */
+    window.addEventListener('load', function () {
+        measure();
+        schedule();
+    }, { passive: true });
+
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', function () {
+        measure();
+        schedule();
+    }, { passive: true });
+
+    /* 只读调试接口：
+       __KILL_SWITCH__.sync()  立刻重算一次位置 / 透明度；
+       __KILL_SWITCH__.state() 看当前的状态机（开关 / 正在正放还是倒放）。 */
+    window.__KILL_SWITCH__ = {
+        sync: function () {
+            measure();
+            sync();
+            return el ? el.className : null;
+        },
+        state: function () {
+            return {
+                on: on,
+                anim: anim,
+                live: live,
+                ready: ready,
+                end: endTime(),
+                currentTime: video ? video.currentTime : null,
+                visible: !!(el && el.classList.contains('is-visible'))
+            };
+        }
+    };
+})();

@@ -1,4 +1,4 @@
-﻿/* ========================================================
+/* ========================================================
 
 字体声明 (@font-face)
 ======================================================== */
@@ -1773,5 +1773,202 @@ mark {
     .heading-reference + .heading-sub-row,
     .heading-reference > .heading-sub {
         font-size: 1.0625rem;
+    }
+}
+
+/* ========================================================
+   15. 侧边栏下方的 Kill Switch 组件（视频 + 开关 + 配套动效）
+   ========================================================
+   位置：侧边栏 .side-container 下方那片空白（左侧栏带）里，紧贴侧边栏
+   的下沿。它不属于侧边栏内部 —— 侧边栏本体是 overflow: hidden 的深蓝
+   底板，塞进去会被裁掉；它是一层独立的 fixed 图层，坐标由
+   description.js 第 9 节按侧边栏的【实时位置】算好后写成内联样式：
+
+        left   = 0（与侧边栏同一条左边界）
+        width  = 正文白卡片的左边缘（= 左侧空白带的宽度）
+        top    = 侧边栏当前的下沿 + 一点空隙
+        height = 视口底部减去 top
+
+   三种状态（判断在 description.js 第 9.6 节，与第 2 节侧边栏的三段滚动
+   一一对应）：
+
+       ① 侧边栏还在从首屏往下滑、没到正常位置 → 组件 opacity: 0（不出现）；
+       ② 侧边栏到了正常位置（视口 15%）      → 组件淡入（.is-visible）；
+       ③ 滚到页脚、侧边栏开始淡出            → 组件用同一个透明度一起淡出。
+
+   元素本身由 description.js 第 9 节创建，页面 HTML 里不需要写任何东西
+   （与第 7 节的宝剑 / 剑鞘不同：那三件在二十来个页面的 HTML 里早就有了，
+   这一件是新加的，统一由脚本注入，页面多一个少一个都不用改 HTML）。
+
+   结构（脚本建出来的）：
+       .kill-switch                 外壳：fixed 定位 + 淡入淡出
+         ├ video.kill-switch__video 视频（suicide.webm，与脚本同目录）
+         └ .kill-switch__controls   右侧一列
+              ├ .kill-switch__label            “Kill Switch”
+              └ button.kill-switch__toggle     开关（绿 = 开 / 灰 = 关）
+
+   开合逻辑（正放 / 倒放、停在第一帧还是最后一帧）全在 description.js
+   第 9 节，本文件只负责外观：视频按高度撑满、开关的颜色与圆点过渡、
+   外壳的淡入淡出。
+   ======================================================== */
+
+.kill-switch {
+    /* ---- 可调的尺寸：只改这几行，视频 / 开关 / 文字会一起等比缩放 ---- */
+    --ks-gap: clamp(8px, 0.85vw, 16px);              /* 视频与开关之间的空隙 */
+    --ks-toggle-w: clamp(38px, 3.4vw, 68px);         /* 开关宽度（夹在“点得准”与“不抢眼”之间） */
+    --ks-toggle-h: calc(var(--ks-toggle-w) * 0.5135);/* 高 ≈ 宽的 51%（与原组件一致） */
+    --ks-toggle-pad: 3px;                            /* 圆点与开关边缘的距离 */
+    --ks-knob: calc(var(--ks-toggle-h) - var(--ks-toggle-pad) * 2);   /* 圆点直径 */
+    --ks-travel: calc(var(--ks-toggle-w) - var(--ks-toggle-pad) * 2 - var(--ks-knob));  /* 圆点行程 */
+
+    /* 坐标由脚本写内联样式；这里的 left / width / height 只是脚本没跑起来
+       时的兜底值 —— 那种情况下整块本来就不显示（opacity: 0） */
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 17%;
+    height: 0;
+    z-index: 9;                   /* 低于侧边栏（10），高于正文白卡片 */
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ks-gap);
+
+    /* 默认不可见、不可交互 */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    pointer-events: none;
+
+    /* 淡出这条曲线与侧边栏（第 3 节 opacity 0.2s cubic-bezier(0.25, 1, 0.5, 1)）
+       完全一致：第 ③ 段里两边写的是同一个透明度，曲线再一样，看起来就是
+       “一起”淡下去的。visibility 延迟 0.2s，淡出过程才看得见。 */
+    transition: opacity 0.2s cubic-bezier(0.25, 1, 0.5, 1),
+                transform 0.32s cubic-bezier(0.25, 1, 0.5, 1),
+                visibility 0s linear 0.2s;
+    will-change: top, opacity;
+}
+
+/* 第 ② 段（正常位置）：淡入。脚本在淡出过程中会直接写内联 opacity，
+   所以这里只给 1，与内联值不打架。 */
+.kill-switch.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    pointer-events: auto;
+    transition: opacity 0.28s cubic-bezier(0.25, 1, 0.5, 1),
+                transform 0.32s cubic-bezier(0.25, 1, 0.5, 1),
+                visibility 0s linear 0s;
+}
+
+/* ---------- 15.1 视频本体 ----------
+   高度撑满外壳（高度由脚本按“侧边栏下沿 → 视口底部”算好），宽度按素材
+   自身比例自动。左侧空白带太窄时由 max-width 卡住：box 变窄，object-fit:
+   contain 让画面等比缩进去 —— 不会压扁，也不会顶到正文白卡片上。 */
+.kill-switch__video {
+    display: block;
+    flex: 0 1 auto;
+    height: 100%;
+    width: auto;
+    max-width: calc(100% - var(--ks-toggle-w) - var(--ks-gap));
+    object-fit: contain;
+    background: transparent;
+    filter: drop-shadow(0 6px 16px rgba(20, 47, 92, 0.10));  /* 与第 2 节蛋白图一致的轻投影 */
+    pointer-events: none;         /* 纯装饰：点击只交给开关 */
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* ---------- 15.2 右侧一列：开关上方那行字 ----------
+   文字压在开关上方（与原组件一致），整体在视频右侧竖直居中。 */
+.kill-switch__controls {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(6px, 0.55vw, 12px);
+}
+
+.kill-switch__label {
+    font-family: 'Albertus Nova Bold', -apple-system, sans-serif;
+    font-size: clamp(0.62rem, 0.78vw, 0.9rem);
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    color: #142F5C;               /* 与侧边栏底板同色，一眼看出两者是一套 */
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* ---------- 15.3 开关本体：绿 = 开 / 灰 = 关 ----------
+   用 <button role="switch">：键盘 Tab 能聚焦、空格 / 回车能按，读屏器念
+   “开 / 关”（aria-checked 由脚本同步）。颜色与圆点的过渡是“配套动效”的
+   一半，另一半（视频正放 / 倒放）在 description.js 第 9.4 节。 */
+.kill-switch__toggle {
+    position: relative;
+    flex: 0 0 auto;
+    width: var(--ks-toggle-w);
+    height: var(--ks-toggle-h);
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: #C9D2DC;          /* 关：灰 */
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+    cursor: pointer;
+    transition: background-color 0.25s ease, opacity 0.25s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* 白色圆点（尺寸同样由 --ks-toggle-w 算出来） */
+.kill-switch__toggle::after {
+    content: "";
+    position: absolute;
+    left: var(--ks-toggle-pad);
+    top: var(--ks-toggle-pad);
+    width: var(--ks-knob);
+    height: var(--ks-knob);
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+    transition: transform 0.25s ease;
+}
+
+/* 开：变绿 + 圆点滑到右边 */
+.kill-switch__toggle.is-on {
+    background: #34C759;
+}
+
+.kill-switch__toggle.is-on::after {
+    transform: translateX(var(--ks-travel));
+}
+
+/* 键盘聚焦时给个框，鼠标点击不显示（:focus-visible） */
+.kill-switch__toggle:focus-visible {
+    outline: 2px solid #465E77;
+    outline-offset: 3px;
+}
+
+/* ---------- 15.4 窄屏（≤1024px，与第 8 节断点一致）：整块不显示 ----------
+   侧边栏在这一档已经被第 8.2 节整块隐藏了，它下面的组件自然也不该留下。
+   JS 那边同样会跳过（见第 9.6 节），这里是兜底：内联样式压不过
+   !important，所以即使脚本还没反应过来，手机上也不会冒出来。 */
+@media (max-width: 1024px) {
+    .kill-switch {
+        display: none !important;
+    }
+}
+
+/* ---------- 15.5 系统开了“减少动态效果”：只保留淡入淡出，不做位移 ---------- */
+@media (prefers-reduced-motion: reduce) {
+    .kill-switch,
+    .kill-switch.is-visible {
+        transform: none;
+        transition: opacity 0.2s linear, visibility 0s linear 0s;
     }
 }
