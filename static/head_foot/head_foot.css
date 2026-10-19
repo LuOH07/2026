@@ -58,6 +58,14 @@ display: flex;
 align-items: center;
 }
 
+/* 导航大标题（一级菜单）之间的间距：
+   每个大标题左右各留 --nav-title-gap，两个相邻标题之间的实际间距是它的 2 倍。
+   默认 1rem（改造前的原值）；宽屏（>= 1200px）下放大到原来的 1.5 倍，
+   并且改用 vw（相对页面宽度）让间距随页面一起变宽，再用 clamp 限制过大 / 过小。 */
+:root {
+--nav-title-gap: 1rem;
+}
+
 nav a.nav-link {
 font-family: 'Helvetica Condensed', sans-serif;
 font-weight: 300;
@@ -67,7 +75,7 @@ font-size: 0.9375rem;
 letter-spacing: 0.075rem;
 text-transform: uppercase;
 height: 100%;
-padding: 0 1rem;
+padding: 0 var(--nav-title-gap);
 display: flex;
 align-items: center;
 justify-content: center;
@@ -81,6 +89,20 @@ nav a.nav-link.active,
 .nav-item:hover > a.nav-link {
 color: #ffffff;
 background-color: #132D55;
+}
+
+/* 宽屏（>= 1200px）：大标题间距放大到原来的 1.5 倍，并继续按页面宽度等比放大。
+   - 原值：左右各 1rem（相邻两标题之间 2rem = 32px）
+   - 放大后：左右各 1.5rem（相邻两标题之间 3rem = 48px），即 1.5 倍
+   - 页面变宽时用 1.25vw 继续放大（1920px 宽时 1.25vw = 24px = 1.5rem），
+     下限 1.5rem 保证 1200~1920px 稳定为 1.5 倍，上限 2.75rem 防止超宽屏间距过大。
+   - 1025~1199px 仍用上面的 1rem，避免窄桌面下 6 个大标题挤不下。
+   注意：移动端（<= 1024px）的悬浮弹窗里大标题是纵向排列，由后面的
+   nav .nav-item > a.nav-link 覆盖 padding，不受这里影响。 */
+@media (min-width: 1200px) {
+:root {
+--nav-title-gap: clamp(1.5rem, 1.25vw, 2.75rem);
+}
 }
 
 /* STREAMING_CHUNK:Configuring dropdown menu behavior... */
