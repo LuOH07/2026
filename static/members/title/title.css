@@ -184,7 +184,7 @@ html, body {
 
 .center-description-text {
   font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Heiti SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: clamp(1.025rem, 1.6vw, 1.425rem);
+  font-size: clamp(0.9rem, 1.6vw, 1.3rem);
   line-height: 1.68;
   font-weight: 400;
   color: #3b4e54;
@@ -217,7 +217,7 @@ html, body {
 
 .scroll-text {
   font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Heiti SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: clamp(0.625rem, 0.95vw, 0.855rem);
+  font-size: clamp(0.5rem, 0.95vw, 0.73rem);
   letter-spacing: 0.32em;
   color: #33484f;
   font-weight: 500;

@@ -261,7 +261,7 @@ pointer-events: auto;
 
 .center-description-text {
 font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Heiti SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-font-size: clamp(1.025rem, 1.6vw, 1.425rem);
+font-size: clamp(0.9rem, 1.6vw, 1.3rem);
 line-height: 1.68;
 font-weight: 400;
 color: #3b4e54;
@@ -295,7 +295,7 @@ border-radius: 1px;
 
 .scroll-text {
 font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Heiti SC", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-font-size: clamp(0.625rem, 0.95vw, 0.855rem);
+font-size: clamp(0.5rem, 0.95vw, 0.73rem);
 letter-spacing: 0.32em;
 color: #33484f;
 font-weight: 500;
@@ -435,7 +435,7 @@ transform: translateX(4px);
 color: #FFFFFF;
 font-family: 'Albertus Nova Bold', -apple-system, sans-serif;
 font-weight: 700;
-font-size: 1.375rem;
+font-size: 1.25rem;
 letter-spacing: 0;
 line-height: 1.6;
 text-decoration: underline;
@@ -482,7 +482,7 @@ transform: scale(1.12);
 .toc-item-h2 .toc-text {
 color: #FFFFFF;
 font-family: 'Albertus Nova', -apple-system, sans-serif;
-font-size: 1.125rem;
+font-size: 1rem;
 font-weight: normal;
 letter-spacing: 0;
 line-height: 1.6;
@@ -511,7 +511,7 @@ display: block;
 .toc-item-h3 .toc-text {
 color: #72819A;
 font-family: 'Albertus Nova', -apple-system, sans-serif;
-font-size: 1rem;
+font-size: 0.875rem;
 font-weight: normal;
 letter-spacing: 0;
 line-height: 1.6;
@@ -558,7 +558,7 @@ scroll-margin-top: 12vh;
 }
 
 .heading-1 {
-font-size: 2.125rem;
+font-size: 2rem;
 font-family: 'Albertus Nova Black', -apple-system, sans-serif;
 line-height: 1;
 color: #148A8D;
@@ -571,7 +571,7 @@ margin-top: 0;
 }
 
 .heading-2 {
-font-size: 1.75rem;
+font-size: 1.625rem;
 font-family: 'Albertus Nova Bold', -apple-system, sans-serif;
 line-height: 1.6;
 color: #387CC1;
@@ -579,7 +579,7 @@ margin-bottom: 1em;
 }
 
 .heading-3 {
-font-size: 1.5rem;
+font-size: 1.375rem;
 font-family: 'Albertus Nova Bold', -apple-system, sans-serif;
 line-height: 1.6;
 color: #9177DC;
@@ -587,7 +587,7 @@ margin-bottom: 1em;
 }
 
 .heading-reference {
-font-size: 2.125rem;
+font-size: 2rem;
 line-height: 1;
 color: #455D77;
 margin-top: 1.5em;
@@ -684,7 +684,7 @@ clip-path: polygon(
 .body-text {
 font-family: 'harding-text-web-regular-regular', -apple-system, sans-serif;
 font-stretch: semi-condensed;
-font-size: 1.25rem;
+font-size: 1.125rem;
 letter-spacing: 0.5px;
 line-height: 2;
 color: #465E77;
@@ -717,7 +717,7 @@ font-style: italic;
 .body-text strong {
     font-weight: bold;
     color: #000000;
-    font-size: 1.25rem;
+    font-size: 1.125rem;
 }
 
 /* ========================================================
@@ -747,7 +747,7 @@ width: 100%;
 
 .figure-caption {
     font-family: 'harding-text-web-regular-regular', -apple-system, sans-serif;
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: bold;          
     line-height: 1.5;           
     letter-spacing: 0.5px;     
@@ -801,7 +801,7 @@ cursor: grabbing;
 .scroll-back-to-top {
 color: #1d9695;
 font-family: 'The artist sans', -apple-system, sans-serif;
-font-size: 2.375rem;
+font-size: 2.25rem;
 line-height: 1.6;
 writing-mode: vertical-rl;
 user-select: none;
@@ -932,26 +932,26 @@ height: 4.2vh;
 .heading-reference::before { width: 10.5vw; }
 
 .heading-1 {
-font-size: 1.4375rem;
+font-size: 1.3125rem;
 line-height: 1.25;
 margin-top: 1.2em;
 margin-bottom: 0.7em;
 }
 
 .heading-2 {
-font-size: 1.125rem;
+font-size: 1rem;
 line-height: 1.45;
 margin-bottom: 0.7em;
 }
 
 .heading-3 {
-font-size: 0.9375rem;
+font-size: 0.8125rem;
 line-height: 1.45;
 margin-bottom: 0.7em;
 }
 
 .heading-reference {
-font-size: 1.4375rem;
+font-size: 1.3125rem;
 line-height: 1.25;
 margin-top: 1.2em;
 margin-bottom: 0.7em;
@@ -959,7 +959,7 @@ margin-bottom: 0.7em;
 
 /* ---------- 8.6 正文段落与插图 ---------- */
 .body-text {
-font-size: 0.875rem;
+font-size: 0.75rem;
 line-height: 1.85;
 letter-spacing: 0.2px;
 text-align: left;        
@@ -974,7 +974,7 @@ margin-top: 1em;
 }
 
 .figure-caption {
-font-size: 0.8125rem;
+font-size: 0.6875rem;
 line-height: 1.5;
 margin-left: 5%;
 margin-right: 5%;
@@ -1248,7 +1248,7 @@ mark {
     .main-container table {
         width: 100%;            /* 移动端：占满正文容器宽度 */
         margin: 1.2em auto 1.5em;
-        font-size: 0.875rem;
+        font-size: 0.75rem;
         line-height: 1.7;
     }
 
@@ -1276,7 +1276,7 @@ mark {
    <p> 不能嵌套 <p>，浏览器会把外层段落就地截断，结构就乱了。
 
    收起：标签是一枚 #53DEB7 的圆角胶囊，白字，宽度随标签文字伸缩，
-        字号 24px（与 .heading-3 同级）。
+        字号 22px（与 .heading-3 同级）。
    展开：胶囊换底色与文字颜色（--upfold-open-bg / --upfold-open-color）；
         隐藏文字出现在胶囊【下方】，与正文同样排版，没有底色也没有边框。
    开合行为在 description.js 第 6 节。
@@ -1339,7 +1339,7 @@ mark {
     --upfold-color: #FFFFFF;      /* 收起时的文字颜色 */
     --upfold-open-color: #ffffff; /* 展开后的文字颜色：与正文 .body-text 一致 */
     --upfold-radius: 20px;        /* 圆角大小；写成 999px 会变成胶囊形 */
-    --upfold-font-size: 1.5rem;     /* 与 .heading-3 一致 */
+    --upfold-font-size: 1.375rem;     /* 与 .heading-3 一致 */
 
     position: relative;           /* 给 JS 注入的装饰元素当参照 */
     display: inline-block;        /* 随文字伸缩，并且能与正文排在同一行 */
@@ -1493,14 +1493,14 @@ mark {
     visibility: hidden;
 }
 
-/* 窄屏（≤1024px，与第 8 节断点一致）：与 .heading-3 的移动端字号（15px）看齐
+/* 窄屏（≤1024px，与第 8 节断点一致）：与 .heading-3 的移动端字号（13px）看齐
    （变量必须落在真正带胶囊样式的那个元素上，选择器与上面“胶囊本体”一致） */
 @media (max-width: 1024px) {
     .main-container upfold:not([data-upfold-ready]),
     .main-container .upfold:not([data-upfold-ready]),
     .main-container upfold > .upfold-label,
     .main-container .upfold > .upfold-label {
-        --upfold-font-size: 0.9375rem;
+        --upfold-font-size: 0.8125rem;
     }
 }
 
@@ -1567,9 +1567,9 @@ mark {
     margin-right: 8%;
     margin-top: 0.1em;           /* 与主标题之间的窄空档；em 以本行的副标题字号为准 */
     margin-bottom: 1em;          /* 与下一段正文之间的空档，相当于原主标题的 margin-bottom */
-    /* 缺省按一级副标题给：30px + Albertus Nova Black（二 / 三级由 14.3 覆盖）。
+    /* 缺省按一级副标题给：28px + Albertus Nova Black（二 / 三级由 14.3 覆盖）。
        本行的字号既是 14.1 里所有 em 的基准，也是 .heading-sub 继承的字号。 */
-    font-size: 1.875rem;
+    font-size: 1.75rem;
     font-family: 'Albertus Nova Black', -apple-system, sans-serif;
     font-weight: 700;
     line-height: 1;              /* 行高由 .heading-sub 自己给，容器不额外撑高每一行 */
@@ -1628,8 +1628,8 @@ mark {
     /* 行高必须大于“文字自身高度 + 色带厚度”，换行后两行色带之间才会留出
        那条窄空白：文字框高 ≈ 1.44em（Albertus Nova 的 hhea/win 度量：
        ascent 1.103em + descent 0.339em，与 line-height 无关），
-       行高 1.5em → 行间空白 ≈ 1.5 − 1.44 ≈ 0.06em（20 / 24 / 30px 时约
-       1.2 / 1.4 / 1.8px），加上色带本身上下各让出的那点空间，两行色带之间
+       行高 1.5em → 行间空白 ≈ 1.5 − 1.44 ≈ 0.06em（18 / 22 / 28px 时约
+       1.1 / 1.3 / 1.7px），加上色带本身上下各让出的那点空间，两行色带之间
        保留一条极窄的白缝（与主标题的紧凑观感一致）——色带越细这道缝越宽，
        7px 时约 5~7px，仍是一条窄缝而不是一行空隙。
        要把间隔拉大 / 收窄，只改这一个数。 */
@@ -1647,7 +1647,7 @@ mark {
 .heading-1 + .heading-sub-row,
 .heading-1 > .heading-sub {
     --heading-sub-bar: #9CDCDD;  /* = .heading-1::before 的 #9CDCDD */
-    font-size: 1.625rem;
+    font-size: 1.5rem;
     font-family: 'Albertus Nova', -apple-system, sans-serif;
 }
 
@@ -1655,7 +1655,7 @@ mark {
 .heading-2 + .heading-sub-row,
 .heading-2 > .heading-sub {
     --heading-sub-bar: #95C3F1;  /* = .heading-2::before 的 #95C3F1 */
-    font-size: 1.375rem;
+    font-size: 1.25rem;
     font-family: 'Albertus Nova', -apple-system, sans-serif;
 }
 
@@ -1663,7 +1663,7 @@ mark {
 .heading-3 + .heading-sub-row,
 .heading-3 > .heading-sub {
     --heading-sub-bar: #C7C6F2;  /* = .heading-3::before 的 #C7C6F2 */
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-family: 'Albertus Nova', -apple-system, sans-serif;
 }
 
@@ -1674,7 +1674,7 @@ mark {
 .heading-reference + .heading-sub-row,
 .heading-reference > .heading-sub {
     --heading-sub-bar: #B9C7D1;  /* = .heading-reference::before 的 #B9C7D1 */
-    font-size: 1.875rem;
+    font-size: 1.75rem;
     font-family: 'Albertus Nova', -apple-system, sans-serif;
 }
 
@@ -1696,10 +1696,10 @@ mark {
 }
 
 /* ---------- 14.5 移动端（≤1024px，与第 8 节断点一致）：与主标题的移动端字号同步缩小 ----------
-   主标题在窄屏降到 23 / 18 / 15px（见第 8.5 节），副标题保持“比同级
+   主标题在窄屏降到 21 / 16 / 13px（见第 8.5 节），副标题保持“比同级
    主标题小 4px”的关系（与 PC 端一致）；色带厚度仍由 --heading-sub-thick
    统一控制（默认 12px，各级一样粗，不随字号缩放）。
-   若希望窄屏也固定用 30 / 24 / 20px，把这一小节整段删掉即可。 */
+   若希望窄屏也固定用 28 / 22 / 18px，把这一小节整段删掉即可。 */
 @media (max-width: 1024px) {
     .heading-sub-row {
         margin-left: 5%;
@@ -1711,24 +1711,24 @@ mark {
     .heading-sub-row.heading-sub-h1,
     .heading-1 + .heading-sub-row,
     .heading-1 > .heading-sub {
-        font-size: 1.1875rem;
+        font-size: 1.0625rem;
     }
 
     .heading-sub-row.heading-sub-h2,
     .heading-2 + .heading-sub-row,
     .heading-2 > .heading-sub {
-        font-size: 0.875rem;
+        font-size: 0.75rem;
     }
 
     .heading-sub-row.heading-sub-h3,
     .heading-3 + .heading-sub-row,
     .heading-3 > .heading-sub {
-        font-size: 0.6875rem;
+        font-size: 0.5625rem;
     }
 
     .heading-sub-row.heading-sub-reference,
     .heading-reference + .heading-sub-row,
     .heading-reference > .heading-sub {
-        font-size: 1.1875rem;
+        font-size: 1.0625rem;
     }
 }
