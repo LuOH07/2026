@@ -1,14 +1,18 @@
 /* ============================================================
    IHP.css —— human-practices.html（IHP 页面）专属样式
    ============================================================
-   只处理一件事：首屏标题区里那句 HP 补充文案 .hero-hp-note。
+   只处理首屏标题区里的两行文案（都在 .center-description-wrapper 里）：
 
-   这一段文字原先躺在 .main-container 里当正文段落（.body-text），
+   1) 第一句（“Engineering TnpB with the World.”）：加大字号，作为
+      标题的主行，仍居中；
+   2) 第二句 .hero-hp-note（HP 补充文案）：左对齐。
+
+   这段补充文字原先躺在 .main-container 里当正文段落（.body-text），
    现在直接写进标题文案（.center-description-wrapper）中，作为
    “Engineering TnpB with the World.” 的第二行。因此它不再是正文：
-   字号、行高、字距、颜色、字体族都与标题文案逐项对齐，视觉上属于
-   标题块；唯一保留的“正文元素”是里面的 <a> 超链接，配色与下划线
-   沿用 description.css 第 11 节（正文超链接）的规则，站内观感统一。
+   字体族、颜色、字距仍与标题文案对齐，视觉上属于标题块；唯一保留的
+   “正文元素”是里面的 <a> 超链接，配色与下划线沿用 description.css
+   第 11 节（正文超链接）的规则，站内观感统一。
 
    加载顺序：本文件在 layout.html 的 page_styles 块中排在
    description.css 之后，选择器优先级也更高（多带了
@@ -18,7 +22,23 @@
    ============================================================ */
 
 /* ============================================================
-   1. 补充文案的排版：对齐标题文案
+   1. 第一句：加大，作为标题的主行
+   ============================================================
+   选择器带 :not(.hero-hp-note)，只命中第一句，不碰下面的补充文案
+   （两行在 description.css 里共用 .center-description-text）。
+   字号比原值 clamp(0.9rem, 1.6vw, 1.3rem) 大一档；行高随之收紧，
+   否则大字号配 1.68 会显得松散。
+   ============================================================ */
+.title-header-wrapper .center-description-wrapper > .center-description-text:not(.hero-hp-note) {
+    font-size: clamp(1.2rem, 2.3vw, 1.8rem);
+    line-height: 1.35;
+    letter-spacing: 0.01em;
+    /* 与第二句的间距交给第二句的 margin-top，这里不再额外撑开 */
+    margin-bottom: 0;
+}
+
+/* ============================================================
+   2. 第二句（补充文案）：左对齐
    ============================================================ */
 .title-header-wrapper .hero-hp-note {
     /* —— 以下六项与 description.css 的 .center-description-text 完全一致 —— */
@@ -31,11 +51,14 @@
     color: #3b4e54;
     letter-spacing: 0.02em;
 
-    /* —— 作为标题文案的第二行：与上一行留出一段呼吸 —— */
-    margin: 1em auto 0;
+    /* —— 左对齐：两行文字左齐，整块也贴住标题块的左沿 ——
+       父级 .center-description-wrapper 是 text-align:center，
+       这里同时改文字对齐和块的横向位置（margin 左右都为 0，
+       配合 max-width 让段落从标题块左侧起排）。 */
+    margin: 1em 0 0;
     /* 限制行宽，长句也能稳定折成两行；窄屏时随容器收缩 */
     max-width: 62ch;
-    text-align: center;
+    text-align: left;
     text-wrap: pretty;
     /* 标题文案本身不可选（user-select: none），但这句里有链接，
        允许选中，方便复制 URL */
@@ -43,7 +66,7 @@
 }
 
 /* ============================================================
-   2. 超链接：保留正文链接格式
+   3. 超链接：保留正文链接格式
    ============================================================
    配色 / 加粗 / 下划线粗细与偏移，跟 .main-container a 一致
    （#91ACE0、1.5px 下划线、3px 偏移、悬停加粗到 2.5px）。
@@ -72,7 +95,7 @@
 }
 
 /* ============================================================
-   3. 入场：跟着首屏标题一起淡入
+   4. 入场：跟着首屏标题一起淡入
    ============================================================
    只在 JS 成功接管（<html> 上有 .ihp-js）时才隐藏初始状态，
    JS 失效时文字照常可见，不会出现“空白标题区”。
@@ -89,7 +112,7 @@ html.ihp-js .title-header-wrapper .hero-hp-note.is-revealed {
 }
 
 /* 视口偏矮、文案会压到 SCROLL TO EXPLORE 时，IHP.js 加上 .is-compact，
-   把字号和行距收一档（仍然居中、仍然与标题文案同色） */
+   把字号和行距收一档（仍然左对齐、仍然与标题文案同色） */
 html.ihp-js .title-header-wrapper .hero-hp-note.is-compact {
     font-size: clamp(0.82rem, 1.4vw, 1.12rem);
     line-height: 1.6;
@@ -106,13 +129,14 @@ html.ihp-js .title-header-wrapper .hero-hp-note.is-compact {
 }
 
 /* ============================================================
-   4. 移动端（≤1024px，断点与 description.css / head_foot.css 一致）
+   5. 移动端（≤1024px，断点与 description.css / head_foot.css 一致）
    ============================================================
    移动端首屏只渲染整块贴图（description.css 第 8.4 节把
    .center-description-wrapper 设为 display:none !important），
    标题与引言都已印在贴图里。这里只放开这一句补充文案，让它接在
-   贴图下方居中排一行小字，HP 链接在手机上仍然可点；
+   贴图下方排一行小字，HP 链接在手机上仍然可点；
    同一块里的标题文案继续隐藏，避免与贴图重复。
+   桌面端已把这句改为左对齐，移动端跟着一致，不再单独居中。
    ============================================================ */
 @media (max-width: 1024px) {
     .title-header-wrapper .center-description-wrapper {
@@ -136,9 +160,9 @@ html.ihp-js .title-header-wrapper .hero-hp-note.is-compact {
         font-size: 0.8125rem;
         line-height: 1.85;
         letter-spacing: 0.2px;
-        /* 移动端也保持居中：这句话在手机上接在首屏贴图下方，
-           与贴图里居中排的标题、引言对齐，不做左对齐的正文块 */
-        text-align: center;
+        /* 靠左排：文本左齐，起点落在容器的 5% 内边距上 */
+        text-align: left;
+        text-wrap: pretty;
         color: #465E77;
     }
 
@@ -149,7 +173,7 @@ html.ihp-js .title-header-wrapper .hero-hp-note.is-compact {
 }
 
 /* ============================================================
-   5. 打印与强制高对比
+   6. 打印与强制高对比
    ============================================================ */
 @media print {
     /* 打印时首屏不做整页铺底，补充文案跟着标题直接排 */
