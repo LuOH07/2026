@@ -12,32 +12,36 @@
      2. description.js 同理保持原样：本文件只处理样式，不动动效与定位参数。
 
    ==== 本文件现有内容 ====
-   1. Figure 2：容器内宽度 60% -> 50%
+   1. Figure 2：正文容器内宽度（width 30% / max-width 50%）
+   2. Figure 4：正文容器内宽度 60% -> 50%
    ========================================================= */
 
 
 /* =========================================================
-   1. Figure 2 在正文容器中的宽度改为 50%
+   1. Figure 2 在正文容器中的宽度
    =========================================================
 
    description.css 第 6 节里 .figure-image 的 max-width 是 60%，
-   第 8 节（<=1024px）里是 100%。本页只把【第 2 张插图】
-   （fig-2-new.avif，即“2. TnpB …”一节末尾那张）收窄到 50%，
+   第 8 节（<=1024px）里是 100%。本页把【第 2 张插图】
+   （fig-2-new.avif，即“2. TnpB …”一节末尾那张）单独收窄，
    其余插图仍保持原来的 60%。
+
+   当前值：width: 30%，max-width: 50%（按需单独调整过）。
 
    选中方式：正文里的插图都是 <main class="main-container"> 的直接子元素
    <img class="figure-image">（页面里没有别的 <img> 子元素），
-   所以 :nth-of-type(2) 正好点名第 2 张图，不必在 HTML 里新增类名。
-
-   为什么限定 >1024px：与 description.css 第 8 节的移动端断点一致
-   （该断点已从 820px 上调到 1024px 以对齐全站页眉）。移动端所有插图
-   都是 100% 满宽，图 2 若单独缩到 50% 会过小、也与相邻插图不齐；
-   若以后确实要在窄屏也收窄，把这条规则复制进 max-width: 1024px 的
-   @media 里即可。 */
+   所以 :nth-of-type(n) 正好按出现顺序点名第 n 张图，不必在 HTML 里新增类名。 */
 
 @media (min-width: 1025px) {
     .main-container > img.figure-image:nth-of-type(2) {
         width: 30%;
+        max-width: 50%;
+    }
+}
+
+@media (min-width: 1025px) {
+    .main-container > img.figure-image:nth-of-type(4) {
+        width: 50%;
         max-width: 50%;
     }
 }
