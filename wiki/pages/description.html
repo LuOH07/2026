@@ -3,7 +3,9 @@
 {% block title %}Description{% endblock %}
 
 {% block page_styles %}
+{# description.css 为共享基础样式，des.css 只放本页的覆盖规则，必须排在后面加载 #}
 <link rel="stylesheet" href="{{ url_for('static', filename='description/description.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='description/des.css') }}">
 {% endblock %}
 
 {% block page_content %}
