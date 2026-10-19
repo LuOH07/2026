@@ -64,8 +64,8 @@
             <div class="nav-item">
                 <a href="#" class="nav-link">HP</a>
                 <div class="dropdown-menu">
-                    <a href="{{ url_for('pages', page='human-practices') }}" class="dropdown-item"{% if request.endpoint == "pages" and request.view_args.get("page") == "human-practices" %} aria-current="page"{% endif %}>Human<br>Practices</a>
-                    <a href="{{ url_for('pages', page='integrated-human-practices') }}" class="dropdown-item"{% if request.endpoint == "pages" and request.view_args.get("page") == "integrated-human-practices" %} aria-current="page"{% endif %}>Integrated<br>Human Practices</a>
+                    <a href="{{ url_for('pages', page='hp') }}" class="dropdown-item"{% if request.endpoint == "pages" and request.view_args.get("page") == "hp" %} aria-current="page"{% endif %}>Human<br>Practices</a>
+                    <a href="{{ url_for('pages', page='human-practices') }}" class="dropdown-item"{% if request.endpoint == "pages" and request.view_args.get("page") == "human-practices" %} aria-current="page"{% endif %}>Integrated<br>Human Practices</a>
                 </div>
             </div>
 

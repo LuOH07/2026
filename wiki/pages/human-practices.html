@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 
-{% block title %}Human-Practices{% endblock %}
+{% block title %}IHP{% endblock %}
 
 {% block page_styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='description/description.css') }}">
@@ -10,6 +10,12 @@
 <header class="title-header-wrapper" id="heroWrapper">
     <div class="grid-container" id="heroGridContainer">
         <canvas id="gridCanvas"></canvas>
+
+        <!-- 移动端整块首屏贴图（标题 + DNA / 蛋白装饰 + 引言文字一体）：移动端只渲染它，
+             PC 端由 description.css 隐藏，见该文件第 8.0 / 8.4 节 -->
+        <img class="mobile-hero-image"
+             src="https://static.igem.wiki/teams/6059/wiki/move/ihp.avif"
+             alt="Integrated Human Practices — STING: an international team of students, researchers, and innovators exploring the frontiers of bacterial genome engineering.">
         
         <!-- 左侧装饰 DNA (通过 asset-map.json 解析) -->
         <div class="left-dna-wrapper">
@@ -28,13 +34,15 @@
 
         <!-- 中央大标题图片 -->
         <div class="center-image-wrapper">
-            <img src="https://static.igem.wiki/teams/6059/wiki/title/human-practices.avif" alt="Description" class="title-image">
+            <img src="https://static.igem.wiki/teams/6059/wiki/title/integrated-human-practices.avif" alt="Description" class="title-image">
         </div>
 
         <!-- 中央引言文案 -->
         <div class="center-description-wrapper">
             <p class="center-description-text">
-                Engineering TnpB with the World. 
+                We are an international team of students, researchers,<br>
+                and innovators exploring the frontiers of bacterial<br>
+                genome engineering through the power of STING.
             </p>
         </div>
 
@@ -56,319 +64,143 @@
 
 <!-- 正文主体容器 -->
 <main class="main-container" id="mainContainer">
-
-    <h1 class="heading-1">Engineering TnpB with the World</h1>
-    <h2 class="heading-2">Core idea</h2>   
-    <p class="body-text">Our Human Practices did not sit beside the engineering cycle. It repeatedly changed the question entering the next cycle — from <b>small</b> to <b>usable</b>, from <b>active</b> to <b>targetable</b>, from <b>a bright signal</b> to <b>convincing evidence</b>, and from <b>useful</b> to <b>responsible</b>.</p>
-    <p class="body-text">On the Integrated Human Practices page, these interactions are condensed into decision gates so a reader can see the project-changing logic quickly. This Human Practices page provides the detailed context behind those gates: why we approached each stakeholder, what we asked, what we learned, what changed in the project, and where the resulting decision was tested. </p>
-
-    <p class="figure-caption"><b>Table</b><b>  1</b>  Mapping IHP Decision Gates to Stakeholder Engagements and Project Outcomes</p>   
-    <table>
-        <tr><th>From the IHP page</th><th>Detailed record on this HP page</th><th>Main project consequence</th></tr>
-        <tr><td>2.1 From “small” to “usable”</td><td>Dr. Lin Xiaofeng — defining a usable editor</td><td>Expanded evaluation criteria beyond size and editing efficiency</td></tr>
-        <tr><td>2.2 Why ISHahl1 TnpB?</td><td>Dr. Lin Xiaofeng — challenging our candidate choice</td><td>ISHahl1 selected as a strong engineering starting point</td></tr>
-        <tr><td>2.3 Why broaden TAM?</td><td>Prof. Wang Kaifeng — targetability</td><td>TAM expansion became the central optimization objective</td></tr>
-        <tr><td>2.4 How should we engineer TAM?</td><td>Dr. Liao Langxing — structure-informed evolution</td><td>Structure-informed directed evolution replaced simple mutation logic</td></tr>
-        <tr><td>2.5 What counts as success?</td><td>Prof. Zhang Yonghui — activity vs specificity</td><td>Multi-stage validation replaced a single fluorescence readout</td></tr>
-        <tr><td>2.6 From Structure and Observation to Mechanism</td><td>Prof. Wang Binju — Mechanism elucidation based on molecular dynamics<br>PhD Student Hou Xiaoxiao — Construction of the MCPB force field<br>Research Assistant Jiang Zhihui — Technical discussion on molecular dynamics</td><td>Analysis of the interaction mechanism of TAM sequence broadening using molecular dynamics</td></tr>
-        <tr><td>3.1 / 3.3 Industry and responsibility</td><td>Dr. Duan Ran / Kingdomway</td><td>Industrial usability criteria and TnpB-based biocontainment</td></tr>
-        <tr><td>3.2 Application case</td><td>Engineer / Fuhaichuang + Prof. Wei Guangshan</td><td>Alkane-degrading non-model microorganisms as a concrete potential use case</td></tr>
-        <tr><td>4 Public education</td><td>Primary school + science museum + high school + peer exchange</td><td>Audience-specific science communication</td></tr>
-    </table>
-
-    <h2 class="heading-2">How we approached Human Practices</h2>   
-    <p class="body-text">We organized our Human Practices around a recurring cycle: <b>ASK → ENGAGE → INTEGRATE → TEST → REFLECT</b>. The important unit was not an interview itself, but the decision that followed from it. Researchers and protein-engineering experts challenged technical assumptions; industry and application-oriented stakeholders tested whether our priorities mattered outside the laboratory; peer teams helped us compare approaches; and public audiences forced us to redesign how we communicated synthetic biology.</p>
-    <p class="body-text">Not every experiment in our project came from a stakeholder suggestion. Reporter construction, host comparison, molecular modelling, and other technical extensions also depended on literature, internal reasoning, and experimental evidence. We therefore distinguish <b>HP-driven changes</b> from <b>science-driven decisions</b> rather than attributing every experimental step to Human Practices.</p>
-
-    <p class="figure-caption"><b>Table</b><b>  2</b>  Stakeholder Groups, Engagement Objectives, and Contributions to the Project</p>  
-    <table>
-        <tr><th>Stakeholder group</th><th>Why we engaged them</th><th>What they changed or tested</th></tr>
-        <tr><td>Genome-editing researchers</td><td>Challenge our definition of a “good editor” and our target-selection logic</td><td>Usability criteria<br>Targetability as an engineering objective</td></tr>
-        <tr><td>Protein-engineering expertise</td><td>Stress-test the TAM-engineering and validation strategy</td><td>Structure-informed directed evolution<br>Multi-stage validation</td></tr>
-        <tr><td>Industrial biotechnology</td><td>Define real constraints beyond laboratory editing</td><td>Stability<br>Deployability<br>Biosafety<br>Commercialization boundaries</td></tr>
-        <tr><td>Environmental/application expertise</td><td>Test whether a concrete use case contains a genuine engineering need</td><td>Non-model microbial engineering as a potential application context</td></tr>
-        <tr><td>Research infrastructure / peer teams</td><td>Understand implementation resources and compare project-building experience</td><td>Future scaling options<br>Iterative testing<br>Project reflection</td></tr>
-        <tr><td>Students and public audiences</td><td>Test how complex science can be made meaningful to different audiences</td><td>Audience-specific communication from curiosity to scientific reasoning</td></tr>
-    </table>
-
-    <h1 class="heading-1"><e>1 </e>Research and Engineering<span class="heading-sub">How stakeholder input changed the scientific questions we asked</span></h1>
-    <h2 class="heading-2" id="hp-1"><e>1.1 </e>From “small” to “usable”</h2>
-    <h3 class="heading-3">Initial assumption</h3>
-    <p class="body-text">TnpB first attracted us because of its compact size. Our initial intuition was that a smaller editor should be easier to use in difficult or non-model hosts because it can reduce genetic cargo and may ease delivery and expression burdens. But this assumption risked reducing “usability” to only two factors: protein size and editing efficiency. We therefore discussed the problem with <b>Dr. Lin Xiaofeng</b>, asking a more practical question: <b>what determines whether a compact genome editor works in a particular host?</b></p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure1.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  1</b>Dr. Lin Xiaofeng main research directions.</p>
-    <h3 class="heading-3">What we learned</h3>
-    <p class="body-text">Dr. Lin made the evaluation criteria substantially more demanding. He emphasized that editing efficiency and protein size are only part of the picture. A useful TnpB system also depends on <b>TnpB expression, ωRNA transcription and stability, RNP assembly, DNA binding and cleavage, and host toxicity</b>. A compact editor can still fail if the RNA is unstable, the ribonucleoprotein complex does not assemble effectively, the protein is toxic, or the host does not support the system.</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure2.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  2</b>XMU-China 2026 members in conversation with Dr. Lin Xiaofeng.</p>
-    <h3 class="heading-3">What changed?</h3>
-    <p class="body-text">Our definition of a “good genome editor” changed from <b>small + efficient</b> to a multi-dimensional concept of usability: <b>compactness + activity + expression + RNA stability + RNP assembly + host compatibility + low toxicity + engineering feasibility</b>.</p>
-    <h3 class="heading-3">How this entered the project</h3>
-    <p class="body-text">This broader definition shaped how we interpreted our experimental platform. We did not want the project to stop at showing that TnpB is compact. In Results Section 1, we developed the <b>pEcTnpB/preRNA dual-plasmid system</b> and evaluated the editor in bacterial contexts including <i>E. coli</i> and <i>Pseudomonas putida</i> KT2440. Interference and base-editing modules further tested whether the platform could support functions beyond a single cleavage demonstration.</p>
-    <h3 class="heading-3">Reflection</h3>
-    <p class="body-text">This interaction did not prove that TnpB is universally suitable for non-model hosts. Instead, it changed the standard by which we judged the tool. <b>Compactness became an advantage, not a conclusion.</b></p>
-
-    <h2 class="heading-2" id="hp-2"><e>1.2 </e>From criteria to the ISHahl1 starting point</h2>
-    <h3 class="heading-3">The decision we needed to make</h3>
-    <p class="body-text">Once we had decided to work with the TnpB family, we still had to choose a specific homolog. Literature research gave us multiple candidates, and our own team compared reported nuclease activity, structural information, and the potential for further engineering. Through this process, <b>ISHahl1 TnpB</b> emerged as a promising candidate because it combined compactness, reported high cleavage activity, and an engineerable structural context.</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure3.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  3</b>XMU-China 2026 members brainstorming.</p>
-    <h3 class="heading-3">Why the expert discussion mattered</h3>
-    <p class="body-text">Before committing to the choice, we returned to Dr. Lin to challenge our own reasoning. He reinforced the principle that a candidate for further development should not be selected by size alone. <b>Intrinsic nuclease activity and the feasibility of subsequent engineering</b> are equally important, because an editor with weak baseline function leaves little room for meaningful optimization.</p>
-    <p class="body-text">Importantly, the discussion <b>reinforced rather than initiated</b> our choice. Literature and team analysis identified ISHahl1 as a strong candidate; expert feedback helped us test whether our selection criteria were scientifically and practically defensible. </p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure4.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  4</b>XMU-China 2026 members posing with Dr. Lin Xiaofeng.</p>
-    <h3 class="heading-3">Decision</h3>
-    <p class="body-text">We selected <b>ISHahl1 TnpB</b> as the starting nuclease because it offered a useful combination of <b>compactness, strong baseline activity, structural information, and engineering potential.</b></p>
-    <h3 class="heading-3">New question created by this decision</h3>
-    <p class="body-text">Choosing an active starting nuclease exposed the next problem: <b>if ISHahl1 is already active, what most strongly limits where it can be used?</b> That question led us to the strict 5'-CTAC-3' TAM.</p>
-
-    <h2 class="heading-2" id="hp-3"><e>1.3 </e>From TAM specificity to targetability</h2>
-    <h3 class="heading-3">Initial assumption</h3>
-    <p class="body-text">ISHahl1 TnpB has relatively strong plasmid-cleavage activity, but it strongly prefers the <b>5'-CTAC-3' TAM</b>. A single-base change can substantially reduce or abolish binding and cleavage. At first, we treated this mainly as a biochemical characteristic of the nuclease.</p>
-    <h3 class="heading-3">Question</h3>
-    <p class="body-text">We wanted to know whether this molecular constraint matters in real genome engineering. We therefore discussed target selection with <b>Prof. Wang Kaifeng</b>: when researchers need to edit a defined locus or several loci, how much does a narrow TAM constrain what they can do?</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure5.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  5</b>Prof. Wang Kaifeng main research directions.</p>
-    <h3 class="heading-3">Insight</h3>
-    <p class="body-text">Prof. Wang highlighted that a narrow TAM does more than reduce the number of theoretically recognizable sequences. It can <b>directly restrict the choice of editing sites</b>, especially when engineering requires access to a particular genomic region or multiple sites at once. This reframed the problem for us. The relevant question was no longer only <b>“Can ISHahl1 TnpB cut efficiently?”</b> but <b>“Can ISHahl1 TnpB reach enough meaningful targets?”</b></p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure6.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  6</b>Online discussion and group photo with Prof. Wang Kaifeng.</p>
-    <h3 class="heading-3">What changed?</h3>
-    <p class="body-text">We stopped treating TAM as an isolated biochemical detail and began treating it as a <b>targetability constraint</b>. Our optimization goal shifted from simply making TnpB cut better to <b>expanding the TAM recognition range while preserving useful nuclease activity.</b></p>
-    <h3 class="heading-3">How we tested the idea</h3>
-    <p class="body-text">We then converted the stakeholder insight into a measurable question. Instead of leaving the claim at “broader TAM should provide more targets,” we quantified the genomic target space accessible to wild-type ISHahl1 TnpB and compared it with the space accessible to experimentally validated TAM-expanded variants. This allowed us to ask: <b>how much additional targetable sequence space did TAM engineering create?</b></p>
-    <p class="body-text">This bridge between Human Practices, Dry Lab, and wet-lab validation was important because it connected a real genome-engineering constraint to a property we could both engineer and measure.</p>
-
-    <h2 class="heading-2" id="hp-4"><e>1.4 </e>From mutation to structure-informed directed evolution</h2>
-    <h3 class="heading-3">Initial idea</h3>
-    <p class="body-text">After TAM expansion became our main optimization objective, the next question was how to alter recognition without destroying the baseline activity that made ISHahl1 attractive. Work on other TnpB homologs, especially ISDra2, suggested that TAM preference could be altered by mutating residues associated with recognition. Our first idea was therefore straightforward: use reported TAM-associated residues as references, identify corresponding positions in ISHahl1, and test mutations.</p>
-    <h3 class="heading-3">The challenge</h3>
-    <p class="body-text">In discussion with <b>Dr. Liao Langxing</b>, we confronted two problems with this approach. First, ISHahl1 and ISDra2 differ in sequence and structural context, so a mutation that works at one residue number in ISDra2 cannot simply be copied into ISHahl1 and assumed to have the same effect. Second, TAM recognition is coupled to DNA recognition, ωRNA-associated conformational changes, and nuclease activation. Blind mutation could change recognition while simultaneously damaging activity.</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure7.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  7</b>XMU-China 2026 members discussing with Dr. Liao Langxing.</p>
-    <h3 class="heading-3">A better question</h3>
-    <p class="body-text">The discussion shifted our reasoning from <b>“Which residue number should we copy?”</b> to <b>“Which residues in ISHahl1 are structurally or functionally equivalent to known TAM-interacting regions in other TnpB homologs?”</b> This moved our attention from sequence position alone to <b>structure–function relationships.</b>
-    <p class="body-text">Structural and homologous comparison could narrow the search space, but we also recognized the opposite limitation: rational design cannot predict every amino-acid substitution capable of creating a useful new TAM preference. Therefore, neither blind random mutagenesis nor a few rationally selected mutations were sufficient on their own.</p>
-    <h3 class="heading-3">What changed?</h3>
-    <p class="body-text">We developed a <b>structure-informed directed-evolution strategy:</b> use literature and structural comparison to focus the search space, construct libraries around biologically informed candidate regions, screen for activity toward alternative TAMs, and then validate whether selected variants truly changed TAM recognition while retaining functional nuclease activity.</p>
-    <h3 class="heading-3">Engineering workflow</h3>
-    <p class="body-text"><b>·Understand</b> — use characterized TnpB systems to identify known TAM-recognition mechanisms.<br>
-    <b>·Map</b> — compare sequence and structural context between known TnpB homologs and ISHahl1.<br>
-    <b>·Focus</b> — define candidate TAM-associated regions instead of mutating the entire protein blindly.<br>
-    <b>·Explore</b> — use directed evolution and high-throughput screening to discover solutions not predictable in advance.<br>
-    <b>·Validate</b> — determine whether the variants changed the intended property rather than merely increasing general activity.</p>
-    <h3 class="heading-3">Connection to experiments</h3>
-    <p class="body-text">This logic is implemented in Results Section 2 through structural analysis, candidate residue or region selection, mutant library construction, eYFP-based high-throughput screening, and downstream validation. The output of this strategy created the next Human Practices question: <b>does a positive fluorescence signal actually prove that TAM recognition broadened?</b></p>
-
-    <h2 class="heading-2" id="hp-5"><e>1.5 </e>From a bright signal to convincing evidence</h2>
-    <h3 class="heading-3">The interpretation problem</h3>
-    <p class="body-text">A fluorescence-positive variant can look promising for more than one reason. The signal may reflect broader TAM recognition, but it could also arise from higher overall nuclease activity, altered expression, or another change unrelated to specificity. In other words, <b>a brighter fluorescence signal does not necessarily mean broader TAM recognition</b>.</p>
-    <h3 class="heading-3">Stakeholder challenge</h3>
-    <p class="body-text">When we discussed the screening results, Prof. Zhang Yonghui pointed out that a positive mutant might simply be a stronger nuclease. Our original screening concept risked conflating two different properties: <b>overall activity</b> and <b>TAM specificity</b>.</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure8.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  8</b>XMU-China 2026 members discussing with Prof. Zhang Yonghui.</p>
-    <h3 class="heading-3">What changed?</h3>
-    <p class="body-text">Human Practices changed our definition of success. A successful evolved variant could no longer be defined by fluorescence alone. It had to show evidence of altered/new TAM recognition while retaining useful nuclease and genome-editing activity.</p>
-    <h3 class="heading-3">The revised evidence chain</h3>
-    <p class="body-text"><b>·Fluorescence screening</b> identifies candidate variants efficiently.<br>
-    <b>·TAM specificity profiling</b> asks whether recognition preference actually changed.<br>
-    <b>·Plasmid interference</b> tests intracellular DNA cleavage under defined TAM conditions.<br>
-    <b>·Genome-editing assays</b> determine whether the evolved variant remains useful as an editor.<br>
-    <b>·Molecular analysis</b> can help explain why a validated variant behaves differently.</p>
-
-    <h2 class="heading-2" id="hp-6"><e>1.6 </e>From Structure and Observation to Mechanism</h2>
-    <h3 class="heading-3">Initial assumption</h3>
-    <p class="body-text">Although we obtained evidence for the success of TnpB TAM expansion variants in plasmid interference assays and genome editing experiments (see <a href="{{ url_for('pages', page='results') }}">Results</a> for details), the reasons why the mutations affect TAM recognition remain unclear, making it difficult to provide guidance for future iterations. <b>We hope to further elucidate the molecular mechanism of TAM expansion from the structural and dynamic changes of the protein-DNA complex, thereby summarizing design principles.</b></p>
-    <h3 class="heading-3">Question</h3>
-    <p class="body-text">Currently, the most time-efficient and cost-effective method for long-timescale dynamic observation of protein-DNA-RNA complexes is to employ computational assistance and carry out molecular dynamics simulations. To this end, we visited Professor Wang Binju to explore <b>how molecular dynamics simulations can provide explanations and iterative guidance for broadening the TAM site</b>.</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure9.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  9</b>Prof. Wang Binju main research directions.</p>
-    <h3 class="heading-3">Insight</h3>
-    <p class="body-text">We shared with Professor Wang our preliminary molecular dynamics results for the wild-type IsHahl1 TnpB-DNA-RNA ternary complex, and presented the corresponding RMSD, RMSF, and structural clustering results. Professor Wang believed that our molecular dynamics analysis should be more closely integrated with the mechanistic dissection of TAM site broadening. We could <b>start with the effective TAM-broadening variants and, from the perspectives of non-covalent interactions such as hydrogen bonds and salt bridges as well as the associated motions, identify the key mutation sites or interaction mechanisms responsible,</b> thereby summarizing rational guidance for further optimization.</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure10.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  10</b>Offline discussion with Professor Wang Binju.</p>
-    <h3 class="heading-3">What changed?</h3>
-    <p class="body-text">After the discussion with Professor Wang, we incorporated interfacial analysis of non-covalent interactions such as hydrogen bonds and analysis of relative motion features into the overall structural analysis, in order to identify key mutation sites. This formed an overall analytical framework of <b>"static structure analysis + protein dynamic features + interfacial interaction analysis."</b></p>
-    <h3 class="heading-3">Discussion of computational details</h3>
-    <p class="body-text">PhD student Hou Xiaoxiao and research assistant Jiang Zhihui discussed the computational details of the molecular dynamics simulations with us.</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure11.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  11</b>Hou Xiaoxiao main research directions.</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure12.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  12</b>Jiang Zhihui main research directions.</p>
-    <p class="body-text">During <b>structural alignment</b>, research assistant Jiang Zhihui recommended the TM-align program to us. Faced with the difficulty of accurately predicting the structure of the TnpB-DNA-RNA ternary complex, he suggested that we use <b>Protenix, whose 2025 model may have a training dataset that includes the IsDra2 TnpB structure,</b> which could increase the prediction success rate.</p>
-    <p class="body-text">PhD Student Hou Xiaoxiao suggested that we <b>use MCPB to construct the force field around the metal ions</b>, and discussed with us some methods for using Gaussian calculations to determine the geometric parameters and electric field around the metal, thereby improving the accuracy with which we characterize the zinc finger domain.</p>
-    <p class="body-text">Our Gaussian calculation work was carried out on Professor Wang Binju's platform.</p>
-    <h3 class="heading-3">The revised evidence chain</h3>
-    <p class="body-text"><b>·Static structure analysis</b>: structural alignment and preliminary identification of interactions<br>
-    <b>·Protein dynamic features</b>: overall stability, flexibility, and clustering<br>
-    <b>·Interfacial interaction analysis</b>: non-covalent interaction analysis and analysis of the relative motion between mutation regions and directly contacting residues</p>
-    <p class="body-text">This became one of the clearest examples of Human Practices changing not only what we built, but what evidence we accepted as proof that the engineering had worked.</p>
-
-        <p class="figure-caption"><b>Table</b><b>  3</b>  Tracing Project Decisions: Human Practices, Scientific Reasoning, and Their Integration</p>   
-    <table>
-        <tr><th>Decision type</th><th>Examples in our project</th><th>Primary driver</th></tr>
-        <tr><td>HP-shaped</td><td>·Usability criteria<br>·Targetability priority<br>·Structure-informed strategy<br>·Validation standard<br>·Industrial responsibility</td><td>Stakeholder insight integrated with team reasoning</td></tr>
-        <tr><td>Science-driven</td><td>·Reporter construction details<br>·Host comparison<br>·Molecular modelling<br>·Technical troubleshooting</td><td>·Literature<br>·Modelling<br>·Experimental evidence<br>·Team decisions</td></tr>
-        <tr><td>Integrated</td><td>·TAM coverage analysis<br>·Directed-evolution workflow<br>·Multi-stage validation<br>·Biocontainment</td><td>A real-world question translated into a testable engineering response</td></tr>
-    </table>
-
-    <h1 class="heading-1"><e>2 </e>Industry, Application, and Translation<span class="heading-sub">How real-world constraints changed our definition of usefulness</span></h1>
-    <h2 class="heading-2" id="hp-7"><e>2.1 </e>What does “usable” mean in industry?</h2>
-    <h3 class="heading-3">Why this stakeholder mattered</h3>
-    <p class="body-text">Laboratory editing performance does not tell us whether a genome-editing system can survive the transition to industrial strain development. We therefore engaged <b>Dr. Duan Ran</b> in the Company of Kingdomway to understand how an industrial user evaluates an editing tool once the questions move from proof-of-concept to strain stability, fermentation, biosafety, and technology transfer.</p>
-    <h3 class="heading-3">From editing performance to strain engineering</h3>
-    <p class="body-text">The first lesson was that <b>editing efficiency is only the beginning</b>. Industrial strain development also requires practical operation, host compatibility, genetic stability, and production reliability. The discussion encouraged us to separate two concepts that are easy to conflate: <b>Tool stability ≠ production stability</b>. A genome editor may reliably create the intended genetic modification, while the <b>engineered strain</b> may still lose the desired genotype or phenotype during repeated cultivation and fermentation. A tool that works once in the laboratory is therefore not automatically ready for production.</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure13.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  13</b>Introduction to Xiamen Kingdomway Ltd.</p>
-    <p class="body-text">Dr. Duan emphasized the value of validating tools in mature industrial chassis and, for production strains, favoring strategies that can support stable genome integration rather than relying only on unstable extrachromosomal systems. This did not directly prove the industrial performance of our TnpB platform, but it changed how we framed the translation gap between genome editing and manufacturing.</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure14.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  14</b>XMU-China 2026 members introducing the project and taking a group photo with Kingdomway.</p>
-    <h3 class="heading-3">Tam breadth from an industrial perspective</h3>
-    <p class="body-text">The discussion also returned us to the central engineering objective of our project. Even a stable and active TnpB may be practically limited if a required genomic region does not contain a compatible TAM. From an industrial perspective, <b>broader targetability means greater freedom to modify the loci that actually matter for strain improvement</b>. This independently reinforced the importance of TAM expansion.</p>
-    <h3 class="heading-3">Scale-up and process constraints</h3>
-    <p class="body-text">Our conversation moved beyond the editor itself to the operating conditions under which an engineered strain would eventually be used. Fermentation scale-up introduces variables such as pH, temperature, fluid dynamics, fermenter configuration, and flow patterns. These factors reminded us that “usable in a flask” and “usable in a production process” are different standards.</p>
-    <h3 class="heading-3">Commercialization and intellectual property</h3>
-    <p class="body-text">We also discussed how a genome-editing technology might be translated without reducing the project to a single plasmid product. The industrial perspective highlighted the importance of <b>patent strategy, publication and intellectual-property protection</b>, as well as multiple translation pathways such as customized editing services, target-specific TnpB solutions, formulation or transformation products, and service-based development models. These discussions did not change the core wet-lab design, but they made our future translation pathway more realistic.</p>
-    <h3 class="heading-3">What changed?</h3>
-    <p class="body-text">Industry expanded our definition of a useful editor from <b>active + targetable to stable + practical + deployable + responsible</b>. It also taught us to state our evidence carefully: <b>successful genome editing does not demonstrate successful industrial deployment</b>.</p>
-
-    <h2 class="heading-2" id="hp-8"><e>2.2 </e>From industrial biosafety concerns to engineering biocontainment</h2>
-    <h3 class="heading-3">The concern</h3>
-    <p class="body-text">When discussing the eventual use of engineered microorganisms, Dr. Duan emphasized that productivity and genetic stability are not enough. <b>Biosafety must be considered alongside performance.</b> We discussed concerns associated with accidental escape and horizontal gene transfer (HGT), as well as practical controls including auxotrophic strategies, monitoring approaches, genomic verification, and standardized inactivation procedures.</p>
-    <h3 class="heading-3">The question this created</h3>
-    <p class="body-text">Until this point, most of our engineering questions had asked whether TnpB could edit efficiently or access more genomic targets. Industrial feedback introduced a different question: <b>a genome-editing system can help us engineer microorganisms — but can we also control the organisms we engineer?</b></p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure15.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  15</b>Visiting Kingdomway and conducting interviews.</p>
-    <h3 class="heading-3">What changed?</h3>
-    <p class="body-text">Rather than leaving biosafety as a paragraph for future deployment, we translated it into an engineering objective. This <b>directly motivated</b> us to explore whether TnpB itself could be repurposed as part of a genetic containment system.</p>
-    <h3 class="heading-3">Engineering response</h3>
-    <p class="body-text">We therefore developed a <b>TnpB-based biocontainment strategy</b> and experimentally evaluated its killing efficiency, forming Results Section 3. This created a direct Human Practices-engineering loop: <b>industrial biosafety concern → escape/HGT risk → need for containment → TnpB-based kill switch → experimental validation</b>.</p>
-    <h3 class="heading-3">Boundary</h3>
-    <p class="body-text">Our current system does not resolve every requirement for environmental or industrial deployment. Containment performance in different hosts, long-term stability, escape frequency, monitoring, regulation, and process integration remain further questions. What changed was the position of biosafety within the project: <b>biocontainment was no longer something to discuss after engineering — it became something we could engineer</b>.</p>
-
-    <h2 class="heading-2" id="hp-9"><e>2.3 </e>From a real need to an application direction</h2>
-    <h3 class="heading-3">Why we visited</h3>
-    <p class="body-text">After industry had expanded our definition of usability, we wanted a concrete scenario in which the properties we were engineering — especially compactness and broader targetability — might matter. We therefore visited the engineers in <b>Fujian Fuhaichuang Petrochemical Co., Ltd.</b> to understand practical constraints in petrochemical pollution treatment rather than inventing an application only from the laboratory.</p>
-    <h3 class="heading-3">What we discussed</h3>
-    <p class="body-text">The company described current treatment conditions and the practical difficulties that can arise in biological treatment, including operating cost, environmental control, treatment stability, and biosafety. From the perspective of petrochemical pollution control, the discussion led them to suggest <b>alkane degradation</b> as a potential direction worth examining.</p>
-    <h3 class="heading-3">How this changed our human practices</h3>
-    <p class="body-text">Our Human Practices moved from the genome-editing tool itself toward a specific environmental-remediation context: <b>does alkane degradation contain a genuine genome-engineering need, and could a compact editor such as TnpB provide new possibilities for the microorganisms involved? </b></p>
-
-    <h2 class="heading-2" id="hp-10"><e>2.4 </e>Testing the alkane-degradation hypothesis</h2>
-    <h3 class="heading-3">Why we reached out</h3>
-    <p class="body-text">Following the direction suggested by engineers from Fuhaichuang, we consulted <b>Dr. Wei Guangshan</b> to ask whether alkane degradation actually involves a genome-engineering challenge and whether TnpB has relevant properties for that challenge. We wanted the application direction to survive expert scrutiny before treating it as meaningful.</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure16.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  16</b>Dr. Wei Guangshan main research directions.</p>
-    <h3 class="heading-3">What we learned</h3>
-    <p class="body-text">Dr. Wei highlighted that alkane-degradation research can involve <b>non-model microbial chassis</b>, for which genetic manipulation remains more difficult than in standard laboratory organisms. In this context, the compact size of TnpB could offer a useful starting point for developing alternative genetic tools.</p>
-    <p class="body-text">However, compactness alone would not solve the problem. Prof. Wei also emphasized that a <b>narrow TAM preference can restrict the selection of key genomic loci and multi-gene targets</b>, limiting the flexibility needed for further strain engineering. In our broader discussion, we also examined practical questions such as chassis physiology, experimental handling, biosafety for alkane-related work, and potential engineering priorities including the <b>AlkL/AlkB</b> modules.</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure17.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  17</b>Online discussion and group photo with Dr. Wei Guangshan.</p>
-    <h3 class="heading-3">What changed?</h3>
-    <p class="body-text">The application discussion returned us to the project's core logic: for non-model microorganisms, a compact editor provides an opportunity — but broader TAM recognition may determine how much of that opportunity can actually be used.</p>
-    <h3 class="heading-3">How we frame this application</h3>
-    <p class="body-text">We therefore treat alkane-degrading microorganisms as a <b>meaningful potential application context</b>. By retaining TnpB compactness while expanding TAM recognition, we may increase the genomic target space available for engineering non-model microorganisms. Further validation in relevant non-model hosts would still be required to determine whether this molecular advantage translates into practical environmental biotechnology.</p>
-
-    <h2 class="heading-2" id="hp-11"><e>2.5 </e>Potential Application I — Genome editing in non-model microorganisms</h2>
-    <p class="body-text">Taken together, our industrial and environmental engagements suggest one direct potential application of the engineered TnpB platform: <b>genome editing in non-model microorganisms</b>. These hosts can be biologically valuable while remaining difficult to manipulate with large or poorly adapted editing systems.</p>
-    <p class="figure-caption"><b>Table</b><b>  4</b>  Connecting TnpB Engineering Features with Real-World Constraints and Potential Value</p>   
-    <table>
-        <tr><th>Property of the editor</th><th>Real-world constraint</th><th>Potential value</th></tr>
-        <tr><td>Compactness</td><td>Genetic cargo, transformation and expression burden</td><td>A lightweight starting point for difficult hosts</td></tr>
-        <tr><td>Broader TAM recognition</td><td>Desired loci may lack a compatible TAM</td><td>More potentially accessible genomic sites and greater engineering freedom</td></tr>
-        <tr><td>Host compatibility</td><td>Non-model chassis differ in expression and physiology</td><td>A requirement for practical deployment, not an automatic consequence of small size</td></tr>
-        <tr><td>Stable genome modification</td><td>Production strains must maintain genotype and phenotype</td><td>A bridge from editing to strain construction</td></tr>
-        <tr><td>Biocontainment</td><td>Escape and HGT concerns</td><td>A pathway toward more responsible use of engineered microorganisms</td></tr>
-    </table>
-    <p class="body-text">This application framework changed the way we describe our project. Our goal is not simply to create a TnpB that recognizes more sequences. It is to <b>expand the engineering space in which a compact genome editor could potentially be used</b>, while being explicit about the additional validation required for real deployment.</p>
-
-    <h2 class="heading-2" id="hp-12"><e>2.6 </e>Shenzhen synthetic biology research infrastructure — Thinking about scale and implementation</h2>
-    <h3 class="heading-3">Why this practice was useful</h3>
-    <p class="body-text">We also visited a major synthetic-biology research infrastructure in Shenzhen to understand how large-scale platforms organize automated <b>Design–Build–Test–Learn</b> workflows, support external academic and industrial users, and connect standardized high-throughput experimentation with technology translation.</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure18.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  18</b>Visiting a major synthetic-biology research infrastructure in Shenzhen.</p>
-    <h3 class="heading-3">What we took away</h3>
-    <p class="body-text">The visit helped us understand how future TnpB development could benefit from shared infrastructure, especially for <b>high-throughput strain or variant screening</b>. It also made the resource requirements of translation more concrete: a promising molecular tool still needs scalable workflows, standardized testing, data handling, and access to appropriate platforms.</p>
-    <h3 class="heading-3">Role in the project</h3>
-    <p class="body-text">It helped us think about how the project could be implemented and scaled in the future, and where shared research infrastructure might reduce the barrier between a laboratory method and a broadly usable platform.</p>
-
-    <h1 class="heading-1"><e>3 </e>Public Engagement — Engineering Our Communication<span class="heading-sub">Different audiences require different entry points into the same science</span></h1>
-    <p class="body-text">Our project was repeatedly shaped by people outside the laboratory. We therefore considered communication as another two-way design problem. Genome editing, TnpB, TAM recognition and directed evolution can become abstract very quickly; simply giving every audience the same explanation would not make the science meaningful. We learned to ask the same kinds of questions that guided our engineering: <b>Who is the audience? What can they already understand? What will make them curious? What level of reasoning can they participate in?</b></p>
-    <p class="body-text"><b>Communication principle</b>: Curiosity → concepts → reasoning. We did not reduce every audience to a simpler version of the same lecture. We designed different pathways for primary-school students, science-museum visitors, and high-school students.</p>
-
-    <h2 class="heading-2" id="hp-13"><e>3.1 </e>Yankui Experimental Primary School — Curiosity before terminology</h2>
-    <h3 class="heading-3">Situation</h3>
-    <p class="body-text">For primary-school students, beginning with nuclease names, TAM motifs or genome editing would have created an immediate barrier. We therefore chose <b>water</b> as a familiar entry point and designed an activity around observable phenomena rather than technical terminology.</p>
-    <h3 class="heading-3">Engagement</h3>
-    <p class="body-text">In the “Wonderful World of Water” activity, students participated in three hands-on experiments: <b>celery water transport</b>, a <b>density-based rainbow water</b> experiment, and a <b>soft-water versus hard-water</b> comparison using soap. Team members distributed materials, guided students through the experiments, and encouraged them to describe observations and ask questions.</p>
-    <p class="body-text">Only after the students had built confidence through direct observation did we extend the conversation toward environmental problems and the idea that biology can be investigated and engineered to address real-world challenges.</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure19.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  19</b>XMU-China 2026 members giving a popular science lecture and taking a group photo.</p>
-    <h3 class="heading-3">What we learned</h3>
-    <p class="body-text">For this audience, the purpose was not to teach the full mechanism of TnpB. It was to create a reason to care about how living systems work. <b>Curiosity was the prerequisite for terminology.</b></p>
-
-    <h2 class="heading-2" id="hp-14"><e>3.2 </e>Xiamen Science and Technology Museum — From familiar analogies to synthetic biology</h2>
-    <h3 class="heading-3">Situation</h3>
-    <p class="body-text">A science-museum audience is broader than a classroom: children, parents, and visitors arrive with very different backgrounds. We therefore focused on <b>conceptual accessibility</b> and multiple ways to engage rather than assuming prior knowledge of molecular biology.</p>
-    <h3 class="heading-3">Engagement</h3>
-    <p class="body-text">Our activity “Synthetic Biology: Modifying Life Like Building with LEGO” used interactive games and visual analogies to introduce foundational ideas. Activities included <b>ATCG matching</b>, an <b>organelle-themed game</b>, <b>DNA double-helix origami</b>, and a LEGO analogy for synthetic biology. We then introduced our TnpB project at a level appropriate for a general audience and answered questions from children and parents.</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure20.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  20</b>Introducing synthetic biology to children at Xiamen Science and Technology Museum.</p>
-    <h3 class="heading-3">What we learned</h3>
-    <p class="body-text">The museum setting reinforced that public communication is not only about defining terms. Audiences first need a clear progression from familiar ideas to more abstract ones: <b>DNA → biological information → genome editing → synthetic biology → why these technologies are being developed</b>. Questions from visitors also helped us see where our explanations were still too technical or too assumption-heavy.</p>
+    <h1 class="heading-1"><e>1 </e>Overview<e> — Engineering TnpB with the World</e></h1>
+    <p class="body-text">Synthetic biology can only address real-world problems when its tools are not merely powerful in principle, but usable in the contexts where they are needed. Our project <b>began with</b> a simple technical attraction: <b><u>TnpB is compact</u>. Human Practices repeatedly challenged</b> us to ask a harder question—<b><u>what makes a genome editor genuinely useful?</u></b></p>
+    <p class="body-text">Throughout the project, we treated Human Practices as a decision-making process rather than a chronological record of interviews. Stakeholder input helped us redefine <b>how we selected a nuclease, why we prioritized TAM expansion, how we engineered TAM recognition, how we validated success,</b> and <b>how we should think about future deployment.</b> Experimental results then tested these decisions and generated new questions. We organized this process around <b><u>ASK → ENGAGE → INTEGRATE → TEST → REFLECT.</u></b> The central principle was simple: Human Practices should not sit beside the engineering cycle; it should change the question entering the next cycle.</p>
+    <p class="body-text">This page therefore follows five layers: </p>
+    <p class="body-text">(1) an overview of our approach; </p>
+    <p class="body-text">(2) how Human Practices shaped our experiments; </p>
+    <p class="body-text">(3) how Human Practices helped us evaluate future applications of TnpB; </p>
+    <p class="body-text">(4) how public engagement changed the way we communicate science; </p>
+    <p class="body-text">(5) reflection on how our definition of a 'good genome editor' evolved.</p>
+    <h2 class="heading-2">Stakeholder landscape</h2> 
+    <p class="body-text">Different stakeholders entered the project at different decision points. Researchers and protein-engineering experts helped us challenge technical assumptions; industry and application-oriented experts helped us test whether our engineering priorities mattered outside the laboratory; and students and public audiences helped us redesign how we communicate synthetic biology.</p>
     
-    <h2 class="heading-2" id="hp-15"><e>3.3 </e>E'Nan High School — From understanding to scientific reasoning</h2>
-    <h3 class="heading-3">Situation</h3>
-    <p class="body-text">High-school students in the talent program already had a stronger biological foundation. This allowed us to move beyond introductory definitions and show more of the real reasoning behind a research project, including uncertainty, failed experiments, iteration, and the Design-Build-Test-Learn cycle.</p>
-    <h3 class="heading-3">Engagement</h3>
-    <p class="body-text">In an online lecture, we introduced synthetic-biology concepts, biological parts and DNA assembly, then connected them to our TnpB project. We also shared examples of experimental failure, repeated troubleshooting and unexpected observations rather than presenting research as a sequence of perfect outcomes. During the question session, students raised topics including <b>mRNA vaccines</b> and <b>synthetic life</b>.</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure21-1.avif" alt="1" class="figure-image">
-    <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure21-2.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  21</b>Holding online science lectures and sharing authentic research life with students from E'nan High School.</p>
-    <h3 class="heading-3">What we learned</h3>
-    <p class="body-text">With this audience, we could ask the same conceptual question that shaped our own project: <b>if a genome editor works efficiently but cannot recognize a suitable sequence near the region we want to modify, is it still a useful editor?</b> Communication therefore shifted from “observe and understand” toward <b>question and reason</b>.</p>
+    <h1 class="heading-1"><e>2 </e>How human practices shaped our experiments</h1>
+    <h2 class="heading-2"><e>2.1 From 'small' to 'usable' — defining </e>what a good editor means</h2> 
+    <h3 class="heading-3">Initial assumption</h3>
+    <p class="body-text">Our starting assumption was straightforward: smaller genome editors should be advantageous in difficult or non-model hosts because compact systems can reduce genetic cargo and may ease delivery and expression burdens. This was one reason TnpB attracted our attention.</p>
+    <h3 class="heading-3">Engagement and insight</h3>
+    <p class="body-text">In our discussion with <a href="{{ url_for('pages', page='hp') }}#hp-1">Dr. Lin Xiaofeng (Read more)</a>, the evaluation criteria became more demanding. Editing efficiency and protein size alone were not sufficient. <b>TnpB expression, ωRNA transcription and stability, RNP assembly, DNA binding and cleavage, and host toxicity could all determine whether a compact editor actually functions in a particular host.</b></p>
+    <h3 class="heading-3">What changed?</h3>
+    <p class="body-text">We therefore changed the way we defined a “good” genome editor. Compactness remained an advantage, but it became only one dimension of usability. <b>Our working criteria expanded to include activity, expression, RNA stability, assembly, host compatibility, toxicity and engineering feasibility.</b></p>
+    <h3 class="heading-3">Connection to Results</h3>
+    <p class="body-text">This broader definition is reflected in <a href="{{ url_for('pages', page='results') }}#">Results Section 1</a>, where the project does not stop at describing TnpB as compact. The pEcTnpB/preRNA dual-plasmid system is developed and the editor is evaluated experimentally in bacterial contexts including <i>E. coli</i> strains and <i>Pseudomonas putida</i> KT2440. Interference and base-editing modules further test whether the platform can support functions beyond a single cleavage demonstration.</p>
 
-    <h1 class="heading-1"><e>4 </e>Peer Learning and Collaboration<span class="heading-sub">Using dialogue with other builders to challenge our own assumptions</span></h1>
-    <h2 class="heading-2" id="hp-16"><e>4.1 </e>Five-team iGEM exchange — Learning from parallel projects</h2>
-    <p class="body-text">On July 22, 2026, XMU-China joined a five-team exchange hosted by the College of Life Sciences at South China Agricultural University with <b>GCGS, BIST-China, ECUST, and SCAU-China</b>. The teams presented mid-stage progress and discussed experimental challenges, project design, application pathways, and Human Practices.</p>
-    <p class="body-text">For us, the value of the exchange was not that another team could provide a ready-made answer to the TnpB project. It allowed us to compare how different teams dealt with uncertainty, experimental bottlenecks, and the relationship between technical work and Human Practices. These conversations reinforced an important principle for our own communication: <b>sharing science is also an opportunity to listen, compare, reflect, and redesign</b>.</p>
+    <h2 class="heading-2"><e>2.2 From criteria to candidate — </e>why ISHahl1 TnpB?</h2>  
+    <p class="body-text">With these criteria established, we applied them to the next decision: which TnpB should we engineer? We therefore conducted an extensive literature review of reported TnpB homologs, comparing their nuclease activity, structural information, and potential for further engineering. Through several rounds of team brainstorming and discussion, <b>ISHahl1 TnpB emerged as a particularly promising candidate</b>, owing to its compact size, reported high cleavage activity, and available structural basis for engineering.</p>
+    <p class="body-text">However, before committing to this choice, we wanted to challenge our own reasoning from an expert perspective. We therefore discussed our candidate selection and engineering considerations with <a href="{{ url_for('pages', page='hp') }}#hp-2">Dr. Lin Xiaofeng (Read more)</a>. After reviewing our rationale, Lin agreed that <b>ISHahl1 TnpB represented a strong starting point for further engineering</b>, particularly given its combination of intrinsic activity and engineering potential.</p>
+    <p class="body-text"><b>This discussion reinforced rather than initiated our decision</b>. By integrating our literature research, internal <b>brainstorming</b>, and expert feedback, we ultimately selected <b>ISHahl1 TnpB as the starting point for subsequent engineering</b>. With the starting nuclease established, our next question became: <b>if ISHahl1 TnpB is already active, what most strongly limits where it can be used?</b></p>
+    <h2 class="heading-2"><e>2.3 From activity to targetability — </e>why broaden TAM?</h2>   
+    <h3 class="heading-3">Initial assumption</h3>
+    <p class="body-text">After selecting ISHahl1 TnpB as our starting nuclease, we encountered an apparent contradiction. ISHahl1 TnpB has relatively strong plasmid-cleavage activity, yet its targeting flexibility remains limited by a strict preference for the 5′-CTAC-3′ TAM. A single-base change in this motif can substantially reduce or even abolish DNA binding and cleavage.</p>
+    <p class="body-text">At first, we regarded this strict TAM preference mainly as a biochemical characteristic of ISHahl1 TnpB. However, this raised a more practical question: <b>If a nuclease is active but cannot access the genomic region we want to edit, how useful is that activity?</b></p>
+    <h3 class="heading-3">Engagement and insight</h3>
+    <p class="body-text">To understand whether this limitation matters in real genome engineering, we discussed target selection with <a href="{{ url_for('pages', page='hp') }}#hp-3">Prof. Wang Kaifeng (Read more)</a>. The discussion highlighted that a narrow TAM preference does not merely reduce the number of theoretically recognizable sequences. It can directly restrict the choice of editing sites, particularly when engineering requires access to specific genomic regions or multiple sites simultaneously.</p>
+    <p class="body-text">This perspective changed the way we interpreted the TAM limitation. Our original question was: <b>Can ISHahl1 TnpB cut efficiently?</b> The more relevant engineering question became: <b>Can ISHahl1 TnpB reach enough meaningful targets?</b></p>
+    <p class="body-text">Rather than treating TAM specificity as an isolated molecular property, we therefore began to view it as a targetability constraint.</p>
+    <h3 class="heading-3">What changed?</h3>
+    <p class="body-text">This distinction changed our optimization objective. We could have focused primarily on increasing the activity of ISHahl1 TnpB against its native CTAC TAM. Such optimization might produce a stronger nuclease, but it would not solve the problem that many desired genomic positions remain inaccessible when an appropriate TAM is absent. <b>Expand the TAM recognition range while preserving useful nuclease activity.</b></p>
+    <p class="body-text">In other words, our goal shifted from simply making TnpB cut better to enabling it to reach more potential targets. This decision established TAM expansion as the central engineering objective of the next stage of our project. <b>Activity tells us how well TnpB cuts. TAM breadth determines where it can cut.</b></p>
+    <h3 class="heading-3">Connection to Results[</h3>
+    <p class="body-text">To test whether broader TAM recognition translated into greater targeting flexibility, we quantified the genomic target space accessible to wild-type ISHahl1 TnpB and compared it with that accessible to experimentally validated TAM-expanded variants.</p>
+    <p class="body-text">This analysis converted our qualitative expectation—“broader TAM recognition should provide more targets”—into a measurable outcome: how much additional targetable sequence space did TAM engineering create?</p>
 
-    <h2 class="heading-2" id="hp-17"><e>4.2 </e>Zhu Chuning / NJTech-China — Project-building lessons from a previous iGEM team</h2>
-    <p class="body-text">We also spoke with <b>Zhu Chuning</b>, the 2025 NJTech-China team leader, about challenges relevant to our project: protein engineering when computational predictions are imperfect, plasmid adaptation in non-model microorganisms, Dry Lab–wet lab coordination, and how a tool-development project can build meaningful Human Practices.</p>
-    <p class="body-text">The discussion emphasized iterative testing when rational prediction is insufficient and drew our attention to practical variables in non-model systems, including plasmid backbone compatibility, copy number and promoter strength. On the Human Practices side, it reinforced the value of recording <b>how feedback changes a decision</b>, rather than collecting activities simply to increase the number of stakeholders.</p>
-    <h3 class="heading-3">Role in our project</h3>
-    <p class="body-text">This was supporting peer learning rather than a primary causal driver of our central engineering strategy. We include it because it helped us inspect our own assumptions through the experience of another project-building team and improved how we documented iteration.</p>
+    <h2 class="heading-2"><e>2.4 From mutation to structure-</e>informed directed evolution</h2>
+    <h3 class="heading-3">Our initial idea</h3>
+    <p class="body-text">Once we had identified TAM expansion as our main optimization objective, the next question was <b>how to alter TAM recognition without compromising the nuclease activity that made ISHahl1 TnpB attractive in the first place.</b></p>
+    <p class="body-text">Previous studies [Ref.] on other TnpB homologs provided an encouraging starting point. In ISDra2 TnpB, key residues associated with TAM recognition had been identified, suggesting that TAM preference is not necessarily fixed and may be altered through protein engineering.</p>
+    <p class="body-text">Our initial idea was therefore relatively straightforward: <b>use previously reported TAM-associated residues as references, identify corresponding positions in ISHahl1 TnpB, and introduce mutations to explore altered TAM recognition.</b></p>
+    <p class="body-text">However, this assumption raised two uncertainties. First, ISHahl1 and ISDra2 differ in sequence and structural context, meaning that mutations effective in one TnpB may not be directly transferable to another. Second, TAM recognition is structurally coupled to DNA recognition, ωRNA-associated conformational changes and nuclease activation. Blindly introducing mutations could therefore alter TAM preference while simultaneously damaging the nuclease activity we wanted to preserve.</p>
+    <p class="body-text">This led us to ask: <b>How can we explore new TAM preferences without blindly disrupting TnpB function?</b></p>
+    <h3 class="heading-3">Engagement and insight</h3>
+    <p class="body-text">To refine our engineering strategy, we discussed TAM recognition and protein engineering with <a href="{{ url_for('pages', page='hp') }}#hp-4">Dr. Liao langxing (Read more)</a>.</p>
+    <p class="body-text">The discussion challenged the idea that a known mutation in ISDra2 could simply be copied into ISHahl1. Because the two TnpB homologs differ in sequence and structural context, the more meaningful question was not: “Which residue number should we copy?” but rather: <b>“Which residues in ISHahl1 are structurally or functionally equivalent to known TAM-interacting regions in other TnpB homologs?”</b></p>
+    <p class="body-text">This shifted our attention from <b>sequence position alone to structure–function relationships</b>. Dr.  Liao suggested that homologous comparison and structural analysis could be used to identify candidate regions in ISHahl1 that may participate in TAM recognition.</p>
+    <p class="body-text">At the same time, we discussed the limitations of purely random mutagenesis. Because TAM recognition, ωRNA interaction and nuclease activation are interconnected, unrestricted mutation could easily compromise the basal activity of TnpB. Structural information could therefore be used to <b>constrain the search space before mutagenesis.</b></p>
+    <p class="body-text">However, the opposite extreme—relying only on a few rationally predicted mutations—also had limitations. Protein structure cannot reliably predict every amino-acid substitution capable of generating a new TAM preference. Together, these discussions suggested that neither <b>blind random mutagenesis</b> nor <b>rational design alone</b> was sufficient.</p>
+    <p class="body-text">The strategy needed to combine both: <b>Structure-informed design to focus the search space, and directed evolution to explore solutions that cannot be predicted in advance.</b></p>
+    <h3 class="heading-3">What changed?</h3>
+    <p class="body-text">These insights changed the architecture of our TAM-engineering strategy.</p>
+    <p class="body-text">Instead of simply: <b>Known mutation → copy the mutation → test activity</b> or: <b>Randomly mutate TnpB → screen for improved variants</b>, we developed a <b>structure-informed directed-evolution strategy:</b></p>
+    <p class="body-text">Use literature and previously characterized TnpB systems to understand known TAM-recognition mechanisms. Compare sequence and structural information between characterized TnpB homologs and ISHahl1 to identify candidate TAM-associated regions. Construct focused mutant libraries around structurally informed candidate regions rather than exploring the entire protein blindly. Use a high-throughput reporter system to identify variants showing activity toward alternative TAMs. Determine whether selected variants truly changed TAM recognition while retaining functional nuclease activity.</p>
+    <p class="body-text">In short, Human Practices helped move our engineering strategy from: <b>“Where should we mutate?”</b> to: <b>“How can we explore sequence space in a biologically informed way?”</b></p>
+    <h3 class="heading-3">Connection to Results</h3>
+    <p class="body-text">This Decision Gate is implemented experimentally in <a href="{{ url_for('pages', page='results') }}#">Results Section 2</a>. The resulting workflow connects: <b>Structural analysis→Candidate residue/region selection→Mutant library construction→eYFP-based high-throughput screening→Candidate variants.</b></p>
 
-    <h1 class="heading-1"><e>5 </e>Reflection — What Does “Better” Mean?<span class="heading-sub">How our definition of a good genome editor evolved</span></h1>
-    <h2 class="heading-2"><e>5.1 </e>Project evolution</h2>
-    <p class="body-text"><b>Small → Active → Targetable → Reliable → Practical → Responsible</b></p>
-    <p class="body-text">At the beginning of the project, our answer seemed simple: a better genome editor could be smaller. Human Practices and experimental evidence repeatedly made that definition more demanding.</p>
-    <p class="figure-caption"><b>Table</b><b>  5</b>  How Human Practices Reshaped Our Definition of a Better Genome Editor</p>   
-    <table>
-        <tr><th>Earlier assumption</th><th>What challenged it</th><th>Our revised position</th></tr>
-        <tr><td>Smaller is better</td><td>Dr. Lin Xiaofeng</td><td>Compactness is only one dimension of usability</td></tr>
-        <tr><td>High activity is enough</td><td>Prof. Wang Kaifeng</td><td>Activity must be paired with access to meaningful targets</td></tr>
-        <tr><td>Known mutations can be transferred directly</td><td>Dr. Liao Langxing</td><td>Engineering must respect structure-function context</td></tr>
-        <tr><td>Fluorescence-positive means TAM-expanded</td><td>Dr. Liao Langxing</td><td>Success requires specificity profiling plus functional validation</td></tr>
-        <tr><td>Laboratory editing demonstrates utility</td><td>Dr. Duan Ran</td><td>Industrial usefulness also requires stability, deployability and process fit</td></tr>
-        <tr><td>Useful means ready to deploy</td><td>Industrial biosafety discussion</td><td>Responsible use requires containment and risk management</td></tr>
-        <tr><td>One explanation can fit every audience</td><td>Education activities</td><td>Communication must be designed for the audience and its level of reasoning</td></tr>
-    </table>
-    <p class="body-text">Human Practices therefore did not simply help us find applications for TnpB. It changed <b>what we considered worth engineering, how we engineered it, how we judged success, where we saw future value, how we defined the limits of our evidence, and how we communicated our work to society</b>.</p>
+    <h2 class="heading-2"><e>2.5 From a bright signal to convincing evidence — </e>redefining success</h2>  
+    <h3 class="heading-3">What the screen could tell us</h3>
+    <p class="body-text">After establishing the screening system, we faced a critical interpretation problem. A fluorescence-positive variant does not necessarily represent broader TAM recognition. The same signal could arise because the mutant has higher overall nuclease activity, altered expression, or another change unrelated to TAM specificity. <b>A brighter fluorescence signal does not necessarily mean broader TAM recognition.</b></p>
+    <h3 class="heading-3">Engagement and insight</h3>
+    <p class="body-text">In discussion of the screening results, <a href="{{ url_for('pages', page='hp') }}#hp-5">Dr. Zhang Yonghui (Read more)</a> pointed out that a positive mutant might simply be a stronger nuclease. We therefore needed to separate two properties that our original screening concept risked conflating: overall activity and TAM specificity.</p>
+    <h3 class="heading-3">What changed?</h3>
+    <p class="body-text">This changed the validation pipeline from a single-readout screen into a multi-stage evidence chain. Fluorescence screening identifies candidates; TAM profiling determines whether recognition preference changed; plasmid interference tests intracellular DNA cleavage; and genome-editing assays determine whether the evolved variant remains useful as an editor.</p>
+    <h3 class="heading-3">Connection to Results</h3>
+    <p class="body-text">This decision is directly reflected in <a href="{{ url_for('pages', page='results') }}#">Results Section 2</a>, which includes fluorescence-based selection, TAM specificity profiling, molecular analysis, plasmid interference and editing-efficiency measurements. Together, these experiments allow the project to distinguish a genuinely broadened TAM profile from a variant that is merely more active.</p>
 
-    <h2 class="heading-2"><e>5.2 </e>A transferable Human Practices method</h2>
-    <p class="body-text">The most transferable outcome of our Human Practices is not a particular stakeholder list. It is a way of documenting and evaluating decisions. For each important interaction, a future team can record:</p>
-    <p class="body-text"><b>·Initial assumption</b> — What did we believe before the interaction?<br>
-    <b>·Reason for engagement</b> — Why was this stakeholder relevant to the decision?<br>
-    <b>·Insight</b> — What challenged, refined or complicated our assumption?<br>
-    <b>·Concrete change</b> — What did we actually change in the project?<br>
-    <b>·Evidence</b> — How did we test whether that change was useful?<br>
-    <b>·New question</b> — What uncertainty emerged next?</p>
-    <p class="body-text">This approach kept our Human Practices connected to engineering without pretending that every technical choice was stakeholder-driven. The team remained responsible for integrating outside perspectives with scientific evidence and making the final decisions.</p>
+    <h2 class="heading-2"><e>2.6 From Structure and Observation to Mechanism — </e>Why did TAM recognition change?</h2> 
+    <h3 class="heading-3">The question left by the functional tests</h3>
+    <p class="body-text"><a href="{{ url_for('pages', page='results') }}#">Although plasmid interference assays and genome editing experiments</a> have demonstrated that TnpB TAM expansion variants are effective, why the mutations affect TAM recognition remains unclear, making it difficult to guide future iterations. We hope to further elucidate the molecular mechanism of TAM expansion from the structural and dynamic changes of the protein-DNA complex, and thereby summarize design principles.</p>
+    <h3 class="heading-3">Engagement and insight</h3>
+    <p class="body-text">In discussions with <a href="{{ url_for('pages', page='hp') }}#hp-6">Professor Wang Binju (Read more)</a>, he noted that our molecular dynamics analysis should be more closely integrated with the elucidation of the mechanism underlying TAM site broadening. Specifically, starting from effective TAM-broadening variants, we can identify key mutation sites or interaction mechanisms by examining non-covalent interactions such as hydrogen bonds and salt bridges, as well as the related motions, thereby providing rational guidance for subsequent optimization. In addition, PhD student Hou Xiaoxiao and research assistant Jiang Zhihui discussed the computational details of the molecular dynamics simulations with us.</p>
+    <h3 class="heading-3">What changed?</h3>
+    <p class="body-text">After discussions with Professor Wang, we incorporated interface analysis of non-covalent interactions such as hydrogen bonds, along with analysis of relative motion features, into the overall structural analysis framework to identify key mutation sites or mechanisms of action, thereby establishing a comprehensive analytical framework of "static structural analysis + protein dynamic feature analysis + interface interaction analysis."</p>
+    <h3 class="heading-3">Connection to Results</h3>
+    <p class="body-text">This decision is directly reflected in <a href="{{ url_for('pages', page='results') }}#">Section 3 of the Results</a>. By simulating the dynamic behavior of TAM-broadening variants in solution, this section systematically examines the non-covalent interaction networks and relative motion features of the protein-DNA complex at the interface, revealing at the atomic level how mutations affect TAM recognition. This work helps us elucidate the reasons underlying TAM broadening, thereby providing a basis and direction for the rational design and iterative optimization of subsequent variants.</p>
+    <p class="body-text">Not every experimental choice originated from a stakeholder. Reporter construction, host comparison, molecular modelling and other technical extensions also depended on literature, internal reasoning and experimental evidence. We therefore distinguish HP-driven changes from science-driven decisions rather than attributing every experiment to an interview. This distinction is important to our interpretation of Integrated Human Practices: stakeholders helped define criteria, challenge assumptions and expose weaknesses in our reasoning; the team remained responsible for integrating those insights with scientific evidence and making the final engineering decisions.</p>
 
-    <h2 class="heading-2"><e>5.3 </e>Closing thought</h2>
-    <p class="body-text">We began by asking how to make TnpB better. We ended by asking what <b>“better”</b> should mean. For us, a good genome editor is not simply one that cuts efficiently. It must reach meaningful targets, function in the intended context, generate interpretable evidence, and be developed within practical and responsible boundaries.</p>
+    <h1 class="heading-1"><e>3 </e>From a Better Editor to a Useful Technology</h1>
+    <p class="body-text">By this stage, we had focused primarily on the molecular performance of TnpB: <b>compactness, activity and TAM recognition</b>. But this raised a broader question: <b>If we successfully engineer a smaller and more targetable TnpB, is that enough to make it useful outside the laboratory?</b></p>
+    <p class="body-text">To challenge our laboratory-centered definition of “useful,” we engaged with industry and application-oriented researchers and examined TnpB in <b>non-model microbial engineering.</b></p>
+    <p class="body-text">Our question shifted from: <b>Where could TnpB be used?</b> to: <b>What makes TnpB useful in a specific application?</b></p>
+
+    <h2 class="heading-2"><e>3.1 </e>Industry changed our definition of 'usable'</h2>   
+    <p class="body-text">Our discussion with <a href="{{ url_for('pages', page='hp') }}#hp-7">Dr. Duan Ran (Read more)</a>, an engineer from Xiamen Kingdomway Group Company, showed us that industrial users evaluate a genome-editing tool very differently from a laboratory experiment. Editing efficiency is only the beginning. Industrial strain engineering also requires <b>stability, host compatibility, production reliability and biosafety</b>. One distinction became particularly important: <b>Tool stability ≠ Production stability.</b> </p>
+    <p class="body-text">A genome editor may reliably generate the intended modification, while the resulting strain may still fail to maintain its phenotype through repeated cultivation and fermentation. The discussion also brought us back to TAM. Dr. Duan also pointed out that a narrow TAM can restrict access to genomic regions required for strain engineering, reinforcing the practical importance of broader targetability.</p>
+    <p class="body-text">Our definition of a useful editor expanded from <b></b>“Active + Targetable”</b> to <b></b>“Stable + Practical + Deployable + Responsible”</b>. We also became more careful about our claims: <b>Successful genome editing does not demonstrate successful industrial deployment.</b></p>
+
+    <h2 class="heading-2"><e>3.2 </e>From Petrochemical Needs to Non-model Microbial Engineering</h2>  
+    <p class="body-text">After exploring the requirements of genome-editing tools from an industrial perspective, we wanted to identify a concrete scenario in which the properties we were engineering—particularly <b>compactness and broader targetability</b>—could provide practical value.</p>
+    <p class="body-text">During our visit to <a href="{{ url_for('pages', page='hp') }}#hp-9">Fujian Fuhaichuang Petrochemical Co., Ltd. (Read more)</a>, discussions on the practical challenges of petrochemical pollution control led the company to suggest alkane degradation as a potential application direction. This shifted our exploration from the genome-editing tool itself toward a specific environmental-remediation context.</p>
+    <p class="body-text">However, an industrial need alone was not enough to establish that TnpB would be relevant. We therefore asked a more specific question: <b>Does alkane degradation involve a genuine genome-engineering need, and could a compact genome editor such as TnpB provide new possibilities for engineering the microorganisms involved?</b></p>
+    <p class="body-text">Following this lead, we consulted <a href="{{ url_for('pages', page='hp') }}#hp-10">Dr. Wei Guangshan (Read more)</a>, whose research experience in alkane degradation allowed us to evaluate the biological feasibility of this application direction. Prof. Wei pointed out that alkane-degradation research involves the engineering of <b>non-model microbial chassis</b>, for which genetic manipulation remains challenging. In this context, the compact size of TnpB could make it a promising alternative genome-editing tool for these microorganisms. Importantly, however, <b>compactness alone would not solve the problem</b>. Prof. Wei also highlighted that the narrow TAM preference of TnpB could restrict the selection of key genomic loci and multi-gene targets, limiting the flexibility required for further strain engineering.</p>
+    <p class="body-text">This discussion therefore connected a real environmental need back to the central engineering objective of our project: <b>For non-model microorganisms, a compact editor provides an opportunity—but broader TAM recognition may determine how much of that opportunity can actually be used</b>. Thus, alkane degradation became a meaningful potential application scenario for our project: <b>By retaining the compactness of TnpB while expanding its TAM recognition range, we may increase the genomic target space available for engineering non-model microorganisms involved in environmental remediation.</b> Importantly, further validation in relevant non-model hosts would still be required to determine whether this potential can be translated into practical environmental biotechnology.</p>
+
+    <h2 class="heading-2"><e>3.3 From Usability to Responsibility — </e>Engineering Biocontainment</h2>
+    <p class="body-text">Our discussion with <a href="{{ url_for('pages', page='hp') }}#hp-8">Xiamen Kingdomway Group Company (Read more)</a> extended beyond the performance of TnpB as a genome-editing tool. When considering the use of engineered microorganisms in industrial production, their engineers emphasized that biosafety must be considered alongside productivity and genetic stability.</p>
+    <p class="body-text">In particular, we discussed potential risks associated with accidental escape and horizontal gene transfer (HGT). Dr. Duan also introduced practical approaches used to manage these risks, including auxotrophic containment, monitoring strategies, genomic verification, and standardized inactivation procedures. This discussion changed how we thought about the boundary of our project. Previously, our engineering focused mainly on whether TnpB could edit efficiently and access more genomic targets. Industrial feedback introduced another question: <b>A useful genome-editing system can help us engineer microorganisms—but can we also control the organisms we engineer?</b></p>
+    <p class="body-text">Rather than leaving biosafety as a consideration for future deployment, we decided to translate this concern into an engineering objective. This directly motivated us to explore whether TnpB itself could be repurposed as part of a genetic containment system. We therefore developed a TnpB-based biocontainment strategy and experimentally evaluated its killing efficiency, forming <a href="{{ url_for('pages', page='results') }}#">Results Section 3 of our project</a>.</p>
+    <p class="body-text">Our current system does not resolve every challenge associated with industrial deployment, but this interaction fundamentally changed where we placed biosafety within our project. Biocontainment was no longer something to discuss after engineering—it became something we could engineer.</p>
+
+    <h1 class="heading-1"><e>4 </e>Public educations — Engineering Our Communication</h1>
+    <p class="body-text">These conversations allowed the outside world to shape the science we were developing. But this relationship should not be one-way. As our project progressed, we began to ask another question: <b>If society can shape how science is developed, how should scientists bring that science back to society?</b></p>
+    <p class="body-text">Genome editing, TnpB and synthetic biology can quickly become abstract when explained through terms such as nucleases, TAM recognition, targetability and directed evolution. Simply presenting the same scientific content to everyone would not necessarily make it meaningful. Through our inter-team exchanges and science-education activities, we gradually realized that effective communication requires the same principles that guided our engineering process: <b>understanding the context, designing for a specific need, testing our approach, learning from feedback, and redesigning accordingly.</b> We therefore began to treat science communication not as a series of isolated outreach events, but as an <b>iterative design process.</b></p>
+
+    <h2 class="heading-2"><e>4.1 </e>Learning from Other Builders</h2>   
+    <p class="body-text">Before communicating our project to broader audiences, we also learned from people who were building science alongside us. During the development of our project, we participated in exchanges with other iGEM teams. On July 22, 2026, teams from GCGS, BIST-China, ECUST, XMU and SCAU-China participated in a five-team iGEM exchange hosted by the College of Life Sciences at <a href="{{ url_for('pages', page='hp') }}#hp-16">South China Agricultural University (Read more)</a>. Teams presented their mid-stage progress, discussed experimental challenges and exchanged perspectives on project development and Human Practices.</p>
+    <p class="body-text">We also communicated with Zhu Chuning, team leader of <a href="{{ url_for('pages', page='hp') }}#hp-17">NJTech-China (Read more)</a>, focusing on several challenges closely related to our own project: protein engineering, plasmid adaptation in non-model microorganisms, and how Human Practices can meaningfully feed back into experimental design. These conversations were valuable not because another team could provide a ready-made solution for our project, but because they gave us an opportunity to examine our own assumptions through the experiences of other builders.</p>
+    <p class="body-text">Discussions surrounding protein engineering reinforced the importance of iterative testing when rational prediction is insufficient. Conversations about non-model microorganisms drew our attention to practical variables including plasmid backbone compatibility, copy number and promoter strength. These peer exchanges strengthened an idea that would later become central to our broader engagement activities: <b>good communication is not simply about presenting what we have already done—it is also an opportunity to listen, compare, reflect and redesign.</b></p>
+
+    <h2 class="heading-2"><e>4.2 </e>One Science, Different Audiences</h2>  
+    <p class="body-text">As we moved from communication with iGEM teams and researchers toward science education, we encountered a very different challenge. The audiences we met did not share the same scientific background. A primary-school student, a visitor at a science museum and a high-school student with biology training cannot be expected to engage with synthetic biology in the same way.</p>
+    <p class="body-text">Our initial instinct was relatively simple: <b>If scientific concepts are difficult, explain them more simply.</b> Our education experience gradually showed us that this was incomplete. Effective science communication is not simply a matter of reducing difficulty. It requires us to ask: <b>Who are we speaking to? What can they already understand? What might interest them? And what level of scientific reasoning can they meaningfully participate in?</b> We therefore began to design different communication pathways for different audiences.</p>
+    <p class="body-text"><b>Younger students — Curiosity before terminology.</b> </p>
+    <p class="body-text">When engaging younger students at <a href="{{ url_for('pages', page='hp') }}#hp-13">Yankui Experimental Primary School (Read more)</a>, we did not begin with TnpB, TAM recognition or genome editing. Instead, we started from phenomena that students could directly observe and interact with. Activities involving water transport in celery, density experiments and water properties provided accessible entry points into biological and environmental questions. From these familiar phenomena, we gradually introduced the idea that biology can be understood, investigated and eventually engineered to address real-world problems. For this audience, our objective was therefore not: <b>“Teach them TnpB.”</b> It was: <b>“Give them a reason to become curious about how living systems work.”</b></p>
+    <p class="body-text"><b>Public audiences — Connecting concepts with the real world</b></p>
+    <p class="body-text"><a href="{{ url_for('pages', page='hp') }}#hp-14">In the science-museum setting, we faced a broader audience with highly variable scientific backgrounds (Read more)</a>. Here, our communication focus shifted from experimental phenomena toward <b>conceptual accessibility.</b> Rather than assuming prior knowledge of molecular biology, we tried to build a progression from familiar ideas toward more abstract concepts: <b>DNA → biological information → genome editing → synthetic biology → real-world applications.</b> We also paid greater attention to visual explanation, analogy and interaction, because the objective was not simply to define scientific terms but to help visitors understand <b>why these technologies are being developed and what questions they raise.</b></p>
+    <p class="body-text"><b>High-school students — From understanding to reasoning</b></p>
+    <p class="body-text">When communicating with students at <a href="{{ url_for('pages', page='hp') }}#hp-15">E'Nan High School</a>, we could build on a stronger biological foundation. Instead of stopping at “what is genome editing?”, we were able to introduce more of the reasoning behind our own project: sequence recognition, genome-editing specificity, TnpB and the role of TAM in determining where an editor can act. This allowed us to move from science communication toward scientific reasoning. For example, rather than simply telling students that broader TAM recognition is useful, we could pose the same conceptual question that had shaped our own project: <b>If a genome editor works efficiently but cannot recognize a suitable sequence near the region we want to modify, is it still a useful editor?</b> The goal therefore shifted again: <b>observe → understand → question → reason.</b></p>
+
+    <h1 class="heading-1"><e>5 </e>Reflection — What Does 'Better' Mean?</h1>
+    <p class="body-text">At the beginning of the project, our answer seemed simple: a better genome editor could be smaller. By the end of the project, Human Practices and experimental evidence had repeatedly made that definition more demanding.</p>
+    <p class="body-text">Small → Active → Targetable → Reliable → Practical → Responsible</p>
+    <p class="body-text">Compactness drew us to TnpB. Stakeholder feedback showed that compactness alone does not define usability. The strict TAM of ISHahl1 showed that activity alone does not define targetability. Our screening experience showed that fluorescence alone does not prove TAM expansion. Industrial engagement showed that laboratory editing does not prove production utility. Application and biosafety discussions showed that utility alone does not justify deployment.</p>
+    <p class="body-text">Human Practices therefore did not simply help us find applications for TnpB. It changed what we considered worth engineering, how we engineered it, how we judged success, where we saw future value, how carefully we defined the limits of our evidence, and how we communicated our work to society.</p>
+    <p class="body-text">We began by asking how to make TnpB better. We ended by asking what 'better' should mean.</p>
+    <p class="body-text">For us, a good genome editor is not simply one that cuts efficiently. It must reach meaningful targets, function in the intended context, generate interpretable evidence, and be developed within practical and responsible boundaries.</p>
+
+    <h2 class="heading-2">For future teams</h2>  
+    <p class="body-text">The most transferable lesson from our IHP is not a particular stakeholder list. It is a way of recording decisions. For each important interaction, future teams can document: the initial assumption, why that stakeholder was relevant, what challenged or refined the assumption, what concrete decision changed, what evidence tested that decision, and what new question emerged.</p>
 
 </main>
 
