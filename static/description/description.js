@@ -2062,24 +2062,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
    原先这里是“Kill Switch”组件（suicide.webm 视频 + 绿 / 灰开关，正放 /
    倒放细菌变灰）。换成静态图标后，那套播放机、开关状态机与视频素材一起
-   删掉了 —— 本节只剩下“挂在侧边栏下方、跟着侧边栏出现 / 移动、在页脚碰到
-   它之前收起”这一件事，浮动本身交给 CSS。
+   删掉了 —— 本节只剩下“在侧边栏到达正常位置时出现、在页脚碰到它之前收起”
+   这一件事；坐标由 CSS 的百分比决定，浮动本身也交给 CSS。
 
-   一、它长在哪儿（与侧边栏绑定的部分）
+   一、它长在哪儿（页面相对坐标，纯 CSS）
    ------------------------------------------------------
    组件【不是】侧边栏的子元素：.side-container 是 overflow: hidden 的深蓝
    底板（第 3 / 3.0 节要的就是这个裁切），塞进去会被裁掉。它是一层独立的
-   fixed 图层，坐标由下面 9.5 节的 sync() 按侧边栏的【实时位置】算出来：
+   fixed 图层，位置与尺寸全部写在 description.css 第 15 节，用【百分比】
+   钉在页面的相对坐标上 —— 图标的几何中心 = (页面宽度的 8.5%, 页面高度的
+   88.25%)，脚本不写 left / top / width / height：
 
-       left   = 0
-       width  = 正文白卡片的左边缘（第 4 节 .main-container 的 margin-left），
-                也就是左侧那条空白带的宽度
-       top    = 侧边栏当前的下沿 + 一点空隙
-       height = 固定值：侧边栏贴在视口 15% 时“视口底部减去 top”的那一段
-                （不跟侧边栏一起变高变矮，见 9.5 的 ①）
+       左侧空白带 17%（= .main-container 的 margin-left）→ 中心 X 8.5%
+       侧边栏正常位置下沿 75%，留 3.5% 空隙 → 竖带 78.5% ~ 98%，中心 Y 88.25%
 
-   所以侧边栏挪到哪儿、滑到哪儿，图标就贴在它的下沿跟到哪儿；正文白卡片
-   的左右边界以后改了（比如 des.css 覆盖了 margin），图标也跟着改。
+   以前是用 JS 量侧边栏的 px 边界 + 正文左边缘再换算成 px 写内联样式：窗口
+   宽度、滚动条、加载遮罩（overflow: hidden 期间没有滚动条）都会让量出来的
+   数字不一样，图标就跟着横向漂 1~3px，越宽的屏越明显。改成百分比之后，
+   任何屏幕宽度下中心都锁在同一个相对位置，不再乱飘。
+
+   本节只负责【显隐】：什么时候淡入、什么时候收起（9.5）。
 
    二、什么时候出现（与侧边栏状态绑定的部分）
    ------------------------------------------------------
@@ -2125,9 +2127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     /* 断点与视口比例：必须与 description.css 第 8 节、第 2 节的取值一致 */
     var MOBILE_MAX = 1024;          /* ≤ 它就是窄屏：侧边栏整块隐藏，图标也不显示 */
     var NORMAL_TOP_RATIO = 0.15;    /* 侧边栏的“正常位置” = 视口高度的 15%（第 2 节） */
-    var GAP_RATIO = 0.035;          /* 图标与侧边栏下沿之间的空隙（视口高度比例） */
-    var BOTTOM_RATIO = 0.02;        /* 图标底边距视口底部的留白（视口高度比例） */
-    var MIN_HEIGHT = 96;            /* 算出来的高度比它还小就不显示（窗口太矮时） */
+    var MIN_HEIGHT = 96;            /* 竖带高度比它还小就不显示（窗口太矮时） */
     var FADE_EPS = 0.02;            /* 透明度低于它就算“已经看不见”（与第 2 节判据一致） */
     var FOOTER_GAP = 16;            /* 页脚上沿离图标下沿不到这么多 px 就把图标直接收起
                                        （不让页脚把图标盖掉半截，见 9.5 的 ③） */
@@ -2136,11 +2136,10 @@ document.addEventListener('DOMContentLoaded', () => {
        9.2 运行时状态
        ------------------------------------------------------ */
     var side = null;        /* #sideContainer：位置与透明度的来源 */
-    var main = null;        /* #mainContainer：只用来量左侧空白带的宽度 */
+    var main = null;        /* #mainContainer：只用来确认这是内容页（定位全在 CSS） */
     var foot = null;        /* 页脚 <footer>：图标不许被它盖住（见 9.5 的 ③） */
     var el = null;          /* 外壳 .side-pole */
     var ico = null;         /* <img class="side-pole__ico"> */
-    var gutter = 0;         /* 左侧空白带的宽度（px），随窗口尺寸重算 */
     var broken = false;     /* 图标加载不出来：整块收起来，不留空壳 */
 
     /* ------------------------------------------------------
@@ -2180,10 +2179,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ------------------------------------------------------
-       9.5 位置、尺寸与显隐：与侧边栏的三段滚动对齐
+       9.5 显隐：与侧边栏的三段滚动对齐
        ------------------------------------------------------
-       全部从侧边栏【此刻的真实状态】推出来（见本节开头“二”），组件自己不
-       再重算一套公式：
+       位置与尺寸不在这里算 —— 全部由 description.css 第 15 节的百分比决定
+       （图标的几何中心钉在页面的 (8.5%, 88.25%)）。这里只决定【显不显示】，
+       判断依据一律取侧边栏【此刻的真实状态】：
 
          · 窄屏 / 图标坏了                → 不显示；
          · 侧边栏 display: none 或不可见  → 不显示（例如目录为空时的 .is-empty）；
@@ -2191,25 +2191,22 @@ document.addEventListener('DOMContentLoaded', () => {
          · 侧边栏 opacity ≤ 0.02          → 页尾淡出已经走完，不显示；
          · 页脚上沿离图标下沿不到 FOOTER_GAP
                                           → 立刻收起（见下面的说明）；
-         · 其余（② 正常段 / ③ 收尾段）    → 显示，贴在侧边栏下沿。
+         · 其余（② 正常段 / ③ 收尾段）    → 显示。
 
-       三件事与以前不同，都是一次只做一件、互不牵连：
+       三条规则，都是一次只做一件、互不牵连：
 
-       ① 尺寸固定。以前 height = 视口底部 − 图标上沿，而图标上沿跟着侧边栏的
-          下沿走：侧边栏在页尾往上收（底边贴齐正文卡片）时，这段高度会从
-          ≈176px 长到 ≈310px，图标跟着放大 1.7 倍。现在只按“侧边栏贴在
-          15% 那一刻”的高度算（fixedHeight），之后无论侧边栏怎么滑，
-          图标都是同一个尺寸、跟着上下移动。
-       ② 不再跟侧边栏一起变淡。以前把侧边栏的内联 opacity 直接写给图标，
-          于是页尾那段里图标会半透明地留在页面上。现在图标要么整块在（CSS
-          的 opacity: 1），要么被收起；侧边栏自己的淡出与它无关。
+       ① 尺寸固定。竖带高度写在 CSS（--sp-band-h: 19.5%），不随侧边栏在页尾
+          往上收而变化，所以图标不会跟着放大。
+       ② 不跟侧边栏一起变淡。图标要么整块在（CSS 的 opacity: 1），要么被
+          收起；侧边栏自己的淡出与它无关。
        ③ 页脚快碰到时就收起。图标是左侧空白带里的装饰，页脚又从最下面整条
           升上来（footer 的 z-index: 40 高于图标的 9），两者的边缘一交叠，
           图标就会被页脚从下往上“吃掉”半截 —— 看着像被裁掉了一块。所以
           在页脚上沿离图标下沿不足 FOOTER_GAP 时直接收起（.is-cut，不做
           渐变），宁可整块消失，也不留半截露在页脚上。
 
-       抖动 / 高度不够（窗口太矮）也一并按“不显示”处理，绝不半截露在外面。 */
+       窗口太矮（竖带高度小于 MIN_HEIGHT）也一并按“不显示”处理，绝不半截
+       露在外面。 */
     function sync() {
         if (!el) return;
 
@@ -2230,22 +2227,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isNaN(opacity)) opacity = 1;
         if (opacity <= FADE_EPS) { hideComponent(); return; }
 
-        /* 尺寸：固定成“侧边栏贴在视口 15%”那一刻的高度（见上面 ①） */
-        var fixedHeight = (vh - vh * BOTTOM_RATIO) -
-                          (vh * NORMAL_TOP_RATIO + rect.height + vh * GAP_RATIO);
-        if (fixedHeight < MIN_HEIGHT) { hideComponent(); return; }
-
-        var top = rect.bottom + vh * GAP_RATIO;
-        var bottom = top + fixedHeight;
+        /* 位置与尺寸由 CSS 算好：这里只读外壳的盒子，做“太矮就隐藏”和
+           “页脚要碰到就收起”两个判断（外壳是百分比定尺寸，读到的永远是
+           当前视口下的最终值，不会因为量算时机不同而漂移）。 */
+        var box = el.getBoundingClientRect();
+        if (box.height < MIN_HEIGHT) { hideComponent(); return; }
 
         /* 页脚快碰到图标下沿：直接收起（见上面 ③） */
         var footerTop = foot ? foot.getBoundingClientRect().top : Infinity;
-        if (footerTop - bottom < FOOTER_GAP) { hideNow(); return; }
-
-        el.style.left = '0';
-        el.style.width = gutter + 'px';
-        el.style.top = Math.round(top) + 'px';
-        el.style.height = Math.round(fixedHeight) + 'px';
+        if (footerTop - box.bottom < FOOTER_GAP) { hideNow(); return; }
 
         el.classList.remove('is-cut');
         el.classList.add('is-visible');
@@ -2270,22 +2260,12 @@ document.addEventListener('DOMContentLoaded', () => {
         el.style.opacity = '';
     }
 
-    /* 左侧空白带的宽度 = 正文白卡片的左边缘（第 4 节 .main-container 的
-       margin-left）。它只在窗口尺寸变化时变，所以单独量一次缓存起来，
-       滚动时不再读。量不出来（布局还没好）就按桌面档的 17% 兜底。 */
-    function measure() {
-        gutter = 0;
+    /* 坐标与尺寸都在 CSS 里（百分比），不量正文左边缘、也不写内联样式；
+       滚动 / 缩放只需重新判断显隐。 */
 
-        if (main) {
-            var r = main.getBoundingClientRect();
-            if (r.left > 0) gutter = Math.round(r.left);
-        }
-
-        if (gutter < 40) gutter = Math.round(window.innerWidth * 0.17);
-    }
-
-    /* 滚动 / 缩放都合并到一帧里算：第 2 节先写好侧边栏的内联样式，本节在
-       同一个 rAF 里读它的结果并写图标的位置，画到屏幕上时两边是同一帧。 */
+    /* 滚动 / 缩放都合并到一帧里算：第 2 节先写好侧边栏的内联 top / opacity，
+       本节在同一个 rAF 里读它此刻的状态，据此决定图标显不显示 —— 与侧边栏
+       的移动落在同一帧上，不会出现“侧边栏到了、图标还慢半拍”的错位。 */
     var rafId = null;
 
     function schedule() {
@@ -2327,7 +2307,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (document.getElementById('sidePole')) return;
 
         build();
-        measure();
         sync();
 
         /* 目录被清空 → 侧边栏整块隐藏（第 3.2 节的 .is-empty）：图标跟着消失 */
@@ -2348,32 +2327,29 @@ document.addEventListener('DOMContentLoaded', () => {
         schedule();
     }
 
-    /* 图片 / 字体都就位之后再算一次：布局高度定下来，位置才是最终值 */
+    /* 图片 / 字体都就位之后再判断一次显隐：那时侧边栏与页脚的位置才是最终值 */
     window.addEventListener('load', function () {
-        measure();
         schedule();
     }, { passive: true });
 
     window.addEventListener('scroll', schedule, { passive: true });
-    window.addEventListener('resize', function () {
-        measure();
-        schedule();
-    }, { passive: true });
+    window.addEventListener('resize', schedule, { passive: true });
 
     /* 只读调试接口：
-       __SIDE_POLE__.sync()   立刻重算一次位置 / 透明度；
-       __SIDE_POLE__.state()  看当前状态（是否显示、左侧空白带多宽、图标是否加载失败）。 */
+       __SIDE_POLE__.sync()   立刻重判一次显隐；
+       __SIDE_POLE__.state()  看当前状态（是否显示、盒子尺寸、图标是否加载失败）。
+       坐标与尺寸由 CSS 的百分比决定，这里只报实算结果，便于核对。 */
     window.__SIDE_POLE__ = {
         sync: function () {
-            measure();
             sync();
             return el ? el.className : null;
         },
         state: function () {
+            var box = el ? el.getBoundingClientRect() : null;
             return {
-                gutter: gutter,
                 broken: broken,
-                visible: !!(el && el.classList.contains('is-visible'))
+                visible: !!(el && el.classList.contains('is-visible')),
+                box: box ? { x: box.x, y: box.y, width: box.width, height: box.height } : null
             };
         }
     };
