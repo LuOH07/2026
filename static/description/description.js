@@ -402,17 +402,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* -------------------------------------------------------------
-     * 2. 侧边栏 TOC 目录构建与滚动跟随（含底边齐平与渐隐逻辑）
+     * 2. 侧边栏 TOC 目录构建与滚动跟随（含抽屉形态与高亮逻辑）
      * -------------------------------------------------------------
-     * 侧边栏只允许两种状态，二者都带文字或干脆没有：
-     *   ① 宽屏（>1024px）：显示，目录一定建好、文字一定可见；
-     *   ② 窄屏（≤1024px）：整块不显示（与手机端一致，由 CSS 隐藏）。
-     * 绝不允许“显示侧边栏但里面没有文字”。为此：
-     *   · 断点与页眉 head_foot 保持一致（见本文件开头的 MOBILE_MAX_WIDTH）；
-     *   · 目录宽窄屏【一律构建】：窄屏只是被 CSS 藏起来，不建目录的话，
-     *     从窄屏拖宽到宽屏就会出现“侧边栏显示了却一个字都没有”；
+     * 侧边栏有两种形态，切换条件与页面本身走 PC 还是移动端布局【完全无关】
+     * —— 页面走哪一套是 description.css 第 8 节媒体查询的事，侧边栏走哪
+     * 一套只看下面这两条（判定见 2.1）：
+     *   · 页面是窄屏（≤1024px，与页眉断点一致）→ 抽屉；
+     *   · 即使页面是 PC 布局，只要侧边栏里的一级标题一行放不下 8 个字
+     *     → 也换成抽屉（15% 的窄栏挤成两行时，PC 固定栏已经没法读了）。
+     *
+     * 两种形态都绝不允许“显示侧边栏但里面没有文字”：
+     *   · 目录宽窄屏【一律构建】：抽屉一打开就必须有完整目录；
      *   · 目录为空（页面没有标题 / 脚本异常）时给侧边栏加 .is-empty，
-     *     由 description.css 第 3.2 节整块隐藏；
+     *     由 description.css 第 3.2 节整块隐藏，圆环也不会冒出来；
      *   · description.css 第 3.1 节还给 #tocNav 加固过权重，防止它被
      *     页眉那条裸 nav 选择器（opacity: 0 / visibility: hidden）“劫持”。
      * ------------------------------------------------------------- */
@@ -430,10 +432,122 @@ document.addEventListener('DOMContentLoaded', () => {
         sideContainer.classList.toggle('is-empty', tocNav.querySelectorAll('.toc-item').length === 0);
     };
 
+    /* =============================================================
+     * 2.1 侧边栏形态：PC 固定栏 ↔ 悬浮抽屉
+     * =============================================================
+     * PC 固定栏（2.2）：贴在页面左侧、跟着正文滚动的深蓝长条。
+     * 悬浮抽屉（2.3）：左上角一枚圆环，点开才浮出一块 30% 宽的侧边栏。
+     * 形态类名加在 <body> 上（.sidebar-drawer），长相全部由
+     * description.css 第 16 节接管。 */
+
+    /* 侧边栏里【一级标题】一行至少要放得下这么多个字，否则 PC 固定栏
+       已经没有阅读价值（标题全挤成两行、侧边栏比正文还长），改走抽屉。
+       判断是“小于”就换：一行为 7.9 个字 → 抽屉；8.0 个字 → PC。 */
+    const MIN_H1_CHARS_PER_LINE = 8;
+
+    const DRAWER_MODE_CLASS = 'sidebar-drawer';   /* 加在 <body> 上 */
+    const OPEN_CLASS = 'is-open';                 /* 抽屉展开 */
+    const VISIBLE_CLASS = 'is-visible';           /* 圆环出现 */
+
+    /* 'desktop' | 'drawer'；null = 还没判定过 */
+    let sideMode = null;
+
+    /* -------------------------------------------------------------
+     * 2.1.1 量算：侧边栏里的“一级标题一行能放几个字”
+     * -------------------------------------------------------------
+     * 为什么要量而不是算：侧边栏内宽 = 15% 页面宽 − 目录左右留白 − 条目的
+     * 右留白 − 圆点直径 − 圆点与文字的间距，其中一半是 CSS 里的变量与
+     * 百分比。把这条式子抄进 JS，CSS 一改两边就对不上。
+     *
+     * 所以这里造一个【离屏探针】：结构与真正的侧边栏条目一模一样
+     * （外层用 .side-measure 代替 .side-container，几何由 description.css
+     * 第 3.0.1 节那一份变量给），里面放一串样本文字：
+     *   · .toc-text 的盒子宽度       = 一级标题真正能用的横向空间；
+     *   · 样本文字的宽度 ÷ 字符数    = 这个字号下一个字符的平均宽度；
+     *   · 两者相除                   = 一行能放下几个字。
+     *
+     * 探针是 position: fixed 且钉在屏幕外：不参与排版、不挡点击、读屏器
+     * 也跳过（aria-hidden）。它只在判定形态时读一次宽度，量完一直留着，
+     * 窗口缩放 / 字体加载完重量的成本就是两次 getBoundingClientRect。
+     * ------------------------------------------------------------- */
+    const h1LineCapacity = (() => {
+        /* 样本：小写字母 + 数字 —— 一级标题里最常见的那类字符。
+           只借它算“一个字符的平均宽度”，不参与任何判断。 */
+        const SAMPLE = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+        let probe = null;
+        let textBox = null;
+        let sampleBox = null;
+
+        function build() {
+            if (probe) return;
+
+            probe = document.createElement('div');
+            probe.className = 'side-measure';
+            probe.setAttribute('aria-hidden', 'true');
+
+            const nav = document.createElement('nav');
+            nav.className = 'toc-nav';
+
+            const item = document.createElement('a');
+            item.className = 'toc-item toc-item-h1';
+
+            const circle = document.createElement('span');
+            circle.className = 'toc-circle';
+            circle.setAttribute('aria-hidden', 'true');
+
+            textBox = document.createElement('span');
+            textBox.className = 'toc-text';
+
+            sampleBox = document.createElement('span');
+            sampleBox.className = 'side-measure-sample';
+            sampleBox.textContent = SAMPLE;
+            textBox.appendChild(sampleBox);
+
+            item.appendChild(circle);
+            item.appendChild(textBox);
+            nav.appendChild(item);
+            probe.appendChild(nav);
+            document.body.appendChild(probe);
+        }
+
+        /* 返回“一行能放几个字”。
+           量不出来（样式还没上屏、元素被隐藏…）时返回 Infinity：
+           宁可留在 PC 形态，也不要因为一次量算失败把侧边栏变成抽屉。 */
+        function capacity() {
+            build();
+
+            const available = textBox.getBoundingClientRect().width;
+            const sampleWidth = sampleBox.getBoundingClientRect().width;
+            if (!(available > 0) || !(sampleWidth > 0)) return Infinity;
+
+            return available / (sampleWidth / SAMPLE.length);
+        }
+
+        return { capacity };
+    })();
+
+    /* 该不该换成抽屉形态：两个条件任一成立。
+       ① 页面本身是窄屏（≤1024px，与页眉断点一致）；
+       ② 即使页面是 PC，侧边栏里的一级标题一行也放不下 8 个字。 */
+    const prefersDrawer = () => {
+        if (isMobile()) return true;
+        return h1LineCapacity.capacity() < MIN_H1_CHARS_PER_LINE;
+    };
+
+    /* =============================================================
+     * 2.2 PC 固定栏：滚动跟随 / 底边齐平 / 页尾渐隐
+     * =============================================================
+     * 先声明成空函数，下面 if (sideContainer) 里再换掉实现：2.3 的
+     * applySideMode() 在“切回 PC 形态”时要立刻调它一次，而那时这个
+     * const 还在块级作用域里、外面看不见。 */
+    let updateSidebarPosition = () => {};
+
     if (sideContainer) {
-        const updateSidebarPosition = () => {
-            // 窄屏侧边栏由 CSS 整块隐藏，不必再算位置（也避免对隐藏元素读写布局）
-            if (isMobile()) return;
+        updateSidebarPosition = () => {
+            /* 抽屉形态的位置与显隐全在 CSS（description.css 第 16 节），
+               这里只管 PC 固定栏；形态还没判定出来时也先不动。 */
+            if (sideMode !== 'desktop') return;
 
             const mainRect = mainContainer.getBoundingClientRect();
             const sidebarRect = sideContainer.getBoundingClientRect();
@@ -497,11 +611,178 @@ document.addEventListener('DOMContentLoaded', () => {
         updateSidebarPosition();
     }
 
+    /* =============================================================
+     * 2.3 抽屉形态：左上角的圆环 + 点开的悬浮侧边栏
+     * =============================================================
+     * 结构（都由脚本建，页面 HTML 里一个字都不用写）：
+     *     <button class="side-toggle">            左上角那枚圆环，
+     *                                             几何中心 (5%, 15%)
+     *     <aside class="side-container is-open">  还是页面里那块侧边栏，
+     *                                             换一身 CSS 当抽屉用
+     * 位置、尺寸、颜色全在 description.css 第 16 节，这里只决定【显不显、
+     * 开不开】。
+     *
+     * 圆环什么时候出现：视口【竖直中心线】落在正文（.main-container）里
+     * 的时候 —— 也就是读者已经在读正文、还没到页脚。见 isCenterInBody()。
+     *
+     * 开合：
+     *   · 点圆环 → 开 / 关；
+     *   · 点抽屉以外的地方 → 收起（用文档级的 click 判“点的是谁”，而不是
+     *     给整页盖一层透明遮罩 —— 遮罩会把页面的滚动一起吃掉）；
+     *   · 点目录里的条目、按 Esc → 收起。 */
+
+    let drawerToggle = null;      /* 左上角那枚圆环 */
+    let drawerOpen = false;       /* 抽屉是不是开着 */
+    let sidebarRendered = true;   /* 这块侧边栏在页面上是不是真的会显示 */
+
+    /* 侧边栏被整页样式强制隐藏时（例如 attributions.css 里那条
+       .side-container { display: none !important }：那个页面不要侧边栏），
+       圆环也不该冒出来 —— 量一下 computed display 就知道。
+       注意抽屉收起时用的是 visibility 而不是 display，所以这里读到的
+       display 仍是 flex，不会把“抽屉收着”误判成“页面上没有侧边栏”。 */
+    function refreshSidebarRendered() {
+        if (!sideContainer) { sidebarRendered = false; return; }
+        sidebarRendered = window.getComputedStyle(sideContainer).display !== 'none';
+    }
+
+    /* 视口竖直中心线是不是落在正文里 —— 圆环只在这时候出现。
+       “正文部分”就是 .main-container 这块白卡片：中心线在它上沿之下、
+       下沿之上，就算读者正在读正文（首屏 Hero 与页脚都不算）。 */
+    function isCenterInBody() {
+        const rect = mainContainer.getBoundingClientRect();
+        const centerY = window.innerHeight / 2;
+        return rect.top <= centerY && rect.bottom >= centerY;
+    }
+
+    function buildDrawerToggle() {
+        if (drawerToggle) return;
+
+        drawerToggle = document.createElement('button');
+        drawerToggle.type = 'button';
+        drawerToggle.className = 'side-toggle';
+        drawerToggle.setAttribute('aria-label', 'Table of contents');
+        drawerToggle.setAttribute('aria-controls', 'tocNav');
+        drawerToggle.setAttribute('aria-expanded', 'false');
+        document.body.appendChild(drawerToggle);
+    }
+
+    function setDrawerOpen(open) {
+        if (!sideContainer || !drawerToggle) { drawerOpen = false; return; }
+
+        const next = !!open;
+        if (next === drawerOpen) return;
+        drawerOpen = next;
+
+        sideContainer.classList.toggle(OPEN_CLASS, drawerOpen);
+        drawerToggle.classList.toggle(OPEN_CLASS, drawerOpen);
+        drawerToggle.setAttribute('aria-expanded', drawerOpen ? 'true' : 'false');
+
+        /* 打开时先把“当前正在读的那一节”滚到抽屉中间：抽屉一露出来就停在
+           正文对应的位置，而不是永远从第一条开始。
+           用 'auto' 而不是 'smooth' —— 抽屉本身正在滑出来，目录再滚一段
+           两个动画叠在一起会显得很飘。 */
+        if (drawerOpen) {
+            const active = tocNav.querySelector('.toc-item.active');
+            if (active) centerTocItemInSidebar(active, 'auto');
+        }
+    }
+
+    /* 圆环显隐：抽屉形态 + 侧边栏没被整页隐藏 + 竖直中心线在正文里 */
+    function syncToggle() {
+        if (!drawerToggle) return;
+
+        const show = sideMode === 'drawer' && sidebarRendered && isCenterInBody();
+        drawerToggle.classList.toggle(VISIBLE_CLASS, show);
+
+        /* 圆环都不在了，抽屉就没有“把手”：一起收起，状态永远只有一套 */
+        if (!show) setDrawerOpen(false);
+    }
+
+    /* 形态判定 + 落地。形态没变时什么都不做（一个 DOM 都不碰）。 */
+    function applySideMode() {
+        if (!sideContainer) return;
+
+        const next = prefersDrawer() ? 'drawer' : 'desktop';
+        if (next === sideMode) return;
+        sideMode = next;
+
+        document.body.classList.toggle(DRAWER_MODE_CLASS, sideMode === 'drawer');
+
+        /* 两种形态的定位来源不同：
+           · PC：top / opacity / visibility 由 2.2 反复写成内联样式；
+           · 抽屉：位置与显隐全交给 CSS 第 16 节，那些内联样式必须清干净，
+             否则内联值会压住 CSS，抽屉永远停在 PC 的位置上。 */
+        sideContainer.style.top = '';
+        sideContainer.style.opacity = '';
+        sideContainer.style.visibility = '';
+        sideContainer.style.pointerEvents = '';
+
+        refreshSidebarRendered();
+        if (sideMode === 'drawer' && sidebarRendered) buildDrawerToggle();
+
+        setDrawerOpen(false);
+        updateSidebarPosition();   /* 切回 PC 时立刻把固定栏摆好 */
+        syncToggle();
+    }
+
+    /* 点圆环开 / 关，点别的地方收起。
+       用文档级 click 委托，而不是给整页盖一层透明遮罩：遮罩会把页面的
+       滚动与文字选中一起吃掉，尤其手机上。 */
+    document.addEventListener('click', (event) => {
+        if (sideMode !== 'drawer' || !drawerToggle) return;
+
+        const target = event.target;
+
+        /* 圆环本体：开 / 关 */
+        if (drawerToggle.contains(target)) {
+            setDrawerOpen(!drawerOpen);
+            return;
+        }
+
+        if (!drawerOpen) return;
+        /* 抽屉里面的点击（滚动条、条目之间的缝）不收起 */
+        if (sideContainer && sideContainer.contains(target)) return;
+
+        /* 其它任何地方（正文、空白、页眉、页脚…）：收起 */
+        setDrawerOpen(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && drawerOpen) setDrawerOpen(false);
+    });
+
+    /* 滚动只影响圆环显不显示（中心线进 / 出正文），与形态无关 */
+    window.addEventListener('scroll', syncToggle, { passive: true });
+
+    /* 缩放 / 转屏 / 字体加载完：都要重新量一次“一级标题一行几个字”，
+       量完可能换形态 —— 合并到一帧里做，连续 resize 不会反复量。 */
+    let modeRafId = null;
+
+    function scheduleModeSync() {
+        if (modeRafId !== null) return;
+        modeRafId = requestAnimationFrame(() => {
+            modeRafId = null;
+            applySideMode();
+            refreshSidebarRendered();
+            updateSidebarPosition();
+            syncToggle();
+        });
+    }
+
+    window.addEventListener('resize', scheduleModeSync, { passive: true });
+    window.addEventListener('orientationchange', scheduleModeSync, { passive: true });
+
+    /* 字体没加载完时量到的字宽是回退字体的：等 document.fonts 就位再判一次 */
+    if (document.fonts && document.fonts.ready && typeof document.fonts.ready.then === 'function') {
+        document.fonts.ready.then(function () { scheduleModeSync(); });
+    }
+
     const headings = mainContainer.querySelectorAll('h1.heading-1, h2.heading-2, h3.heading-3, h1.heading-reference');
 
-    /* 目录宽窄屏【一律构建】：窄屏的侧边栏虽然被 CSS 整块隐藏，但目录照建，
-       这样窗口从窄拖宽（或旋转平板）跨过断点时，侧边栏一出现就已经有文字，
-       不会出现“有 sidebar 但没有文字”的中间状态。构建成本只是十来个 <a>。
+    /* 目录宽窄屏【一律构建】：抽屉形态下目录虽然暂时不可见（抽屉收着），
+       但打开的那一刻必须已经有完整文字；窗口从窄拖宽跨过形态临界点时，
+       侧边栏一出现也已经有文字，不会出现“有 sidebar 但没有文字”的中间态。
+       构建成本只是十来个 <a>。
        页面若一个标题都没有，目录就是空的，最后由 syncSidebarContent() 把
        整块侧边栏隐藏（而不是留一个空壳）。 */
     tocNav.innerHTML = '';
@@ -627,6 +908,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 centerTocItemInSidebar(tocItem);
             }
+            /* 抽屉形态：点完目录就收起，正文立刻露出来。
+               PC 固定栏不受影响（setDrawerOpen 在没有圆环时直接返回）。 */
+            setDrawerOpen(false);
         });
 
         tocNav.appendChild(tocItem);
@@ -642,7 +926,10 @@ document.addEventListener('DOMContentLoaded', () => {
        一律以 tocNav 为准；侧边栏本体只用来判断显示状态。 */
     const tocScroller = tocNav;
 
-    const centerTocItemInSidebar = (item) => {
+    /* behavior 默认 'smooth'（滚动正文时目录跟着慢慢走，见 updateActiveToc）；
+       抽屉刚打开时传 'auto' —— 目录要立刻停在该在的位置，不跟抽屉的滑出
+       动画叠在一起。 */
+    const centerTocItemInSidebar = (item, behavior = 'smooth') => {
         if (!sideContainer || !item) return;
         const viewportRect = tocScroller.getBoundingClientRect();
         const itemRect = item.getBoundingClientRect();
@@ -653,7 +940,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tocScroller.scrollTo({
             top: Math.max(0, targetScrollTop),
-            behavior: 'smooth'
+            behavior: behavior
         });
     };
 
@@ -715,6 +1002,41 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', updateActiveToc, { passive: true });
     window.addEventListener('resize', updateActiveToc, { passive: true });
     updateActiveToc();
+
+    /* 目录建好、高亮算过一次之后再定形态（2.1）：抽屉一打开看到的就是
+       完整目录，并且已经停在当前这一节上。
+       放在最后是因为 applySideMode() 会读侧边栏的 computed display
+       （.is-empty、页面级覆盖都算进去了），此刻 DOM 才是最终状态。 */
+    applySideMode();
+
+    /* 只读调试接口（与 __IHP__ / __TABLES__ / __SIDE_POLE__ 同一套写法）：
+         __SIDEBAR__.mode()      当前形态：'desktop' | 'drawer' | null
+         __SIDEBAR__.capacity()  一级标题一行能放几个字（抽屉判定的实测值）
+         __SIDEBAR__.state()     圆环 / 抽屉此刻的状态
+         __SIDEBAR__.sync()      立刻重判一次形态与圆环显隐
+       抽屉形态下想手动开合，直接点页面左上角那枚圆环即可。 */
+    window.__SIDEBAR__ = {
+        mode: function () { return sideMode; },
+        capacity: function () { return h1LineCapacity.capacity(); },
+        state: function () {
+            var ring = drawerToggle ? drawerToggle.getBoundingClientRect() : null;
+            return {
+                mode: sideMode,
+                rendered: sidebarRendered,
+                centerInBody: isCenterInBody(),
+                ringVisible: !!(drawerToggle && drawerToggle.classList.contains(VISIBLE_CLASS)),
+                ringBox: ring ? { x: ring.x, y: ring.y, width: ring.width, height: ring.height } : null,
+                open: drawerOpen
+            };
+        },
+        sync: function () {
+            applySideMode();
+            refreshSidebarRendered();
+            updateSidebarPosition();
+            syncToggle();
+            return sideMode;
+        }
+    };
 
     /* -------------------------------------------------------------
      * 3. 宝剑 & 剑鞘滚动条与 Back to Top 逻辑

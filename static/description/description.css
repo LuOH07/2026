@@ -322,11 +322,35 @@ z-index: 2;
 /* ========================================================
 3. 侧边栏 TOC 导航样式
 ======================================================== */
+
+/* ---------- 3.0.1 侧边栏的三把尺子：只在这里定义一次 ----------
+   --side-width ：侧边栏宽度。PC 固定栏 15%；抽屉形态在第 16.3 节改成 30%
+                  （“宽度占据页面的 30%”）。
+   --side-gap-y ：目录上下的留白（同时也是 3.0 两条渐隐带的高度）。
+   --side-gap-x ：目录左右的留白。
+
+   这一组同时挂在 .side-container 与 3.3 节的量算探针 .side-measure 上：
+   探针要按【PC 固定栏】的宽度量出“一级标题一行能放几个字”，
+   description.js 的 2.1 节据此决定要不要把侧边栏换成抽屉 ——
+   尺子只有这一处，宽度改了，判定跟着一起变。
+
+   纵向那圈留白没有写在本体上，而是作为 padding 写进了目录本体 .toc-nav
+   （见 3.1）：滚动发生在目录上，留白必须跟着内容一起滚，静止时第一行、
+   滚到底时最后一行才都离边缘这么远。 */
+.side-container,
+.side-measure {
+--side-width: 15%;
+--side-gap-y: 2rem;
+--side-gap-x: 1rem;
+}
+
 .side-container {
 position: fixed;
 left: 0;
 top: 10vh;
-width: 15%;
+/* 宽度见 3.0.1；抽屉形态（第 16 节）会把 --side-width 改成 30%，
+   两种形态共用这一行，不各写一个 width */
+width: var(--side-width);
 height: 60vh;
 background-color: #142F5C;
 border-radius: 0 2rem 2rem 0;
@@ -335,11 +359,10 @@ transition: box-shadow 0.3s ease, opacity 0.2s cubic-bezier(0.25, 1, 0.5, 1);
 will-change: top, opacity;
 z-index: 10;
 
-/* 上下沿留白的两个尺寸（见 3.0）。纵向那圈留白没有写在本体上，而是作为
-   padding 写进了目录本体 .toc-nav（见 3.1）：滚动发生在目录上，留白必须
-   跟着内容一起滚，静止时第一行、滚到底时最后一行才都离边缘这么远。 */
---side-gap-y: 2rem;
---side-gap-x: 1rem;
+/* 上下沿留白的两个尺寸 --side-gap-y / --side-gap-x 见 3.0.1（与宽度写在一起，
+   两种形态共用一份）：纵向那圈留白没有写在本体上，而是作为 padding 写进了
+   目录本体 .toc-nav（见 3.1）：滚动发生在目录上，留白必须跟着内容一起滚，
+   静止时第一行、滚到底时最后一行才都离边缘这么远。 */
 
 padding: 0;
 display: flex;
@@ -406,8 +429,12 @@ border-radius: 0.25rem;
 background: rgba(255, 255, 255, 0.45);
 }
 
-/* ---------- 3.1 目录本体：把“被页眉劫持”的属性全部重新声明 ----------。 */
-.side-container .toc-nav {
+/* ---------- 3.1 目录本体：把“被页眉劫持”的属性全部重新声明 ----------
+   .side-measure 是 3.3 节的量算探针，它不是 .side-container，所以同样
+   要在这里把那条裸 nav 选择器（≤1024px 时的 opacity: 0 / visibility:
+   hidden / position: absolute…）盖掉，否则量出来的宽度全是错的。 */
+.side-container .toc-nav,
+.side-measure .toc-nav {
 position: static;
 top: auto;
 right: auto;
@@ -454,6 +481,53 @@ z-index: auto;
 .side-container:has(.toc-nav:empty),
 .side-container.is-empty {
 display: none !important;
+}
+
+/* ---------- 3.3 量算探针：量出“一级标题一行能放几个字” ----------
+   description.js 的 2.1 节靠它决定侧边栏走 PC 固定栏还是抽屉形态。
+   为什么要“量”而不是“算”：侧边栏内宽 =
+         15% 页面宽 − 目录左右留白 − 条目右留白 − 圆点直径 − 圆点与文字的间距
+   其中一半是 CSS 里的变量与百分比。把这条式子抄进 JS，CSS 一改两边就对不上。
+
+   所以脚本造一个离屏探针：结构与真正的侧边栏条目一模一样（外层用
+   .side-measure 代替 .side-container，几何由 3.0.1 同一份变量给），里面
+   放一串样本文字 ——
+        · .toc-text 的宽度        = 一级标题真正能用的横向空间
+        · 样本文字的宽度 ÷ 字符数 = 这个字号下一个字符的平均宽度
+        两者相除                  = 一行能放下几个字
+   探针钉在屏幕外、不可见、不接鼠标、读屏器跳过（脚本给了 aria-hidden），
+   也永远不参与页面排版。 */
+.side-measure {
+position: fixed;
+left: -200vw;
+top: 0;
+width: var(--side-width);   /* 与 PC 固定栏同一把尺子，见 3.0.1 */
+height: auto;
+display: flex;
+flex-direction: column;
+visibility: hidden;
+opacity: 0;
+pointer-events: none;
+z-index: -1;
+}
+
+/* 探针里的目录本体：几何完全沿用 3.1 那份声明，只是不需要滚动 ——
+   让内容按自然高度摊开，别被 overflow: auto 裁掉。
+   3.1 里强制写过 visibility: visible（为了兜页眉的劫持），这里再按探针
+   整体隐藏一次；两条选择器权重相同，靠写在后面取胜。 */
+.side-measure .toc-nav {
+overflow: visible;
+visibility: hidden;
+}
+
+/* 被量的那串样本：绝对定位、不参与排版，只用来量“一个字符多宽”。
+   white-space: pre 让它不换行，宽度才是整串的真实宽度。 */
+.side-measure-sample {
+position: absolute;
+left: 0;
+top: 0;
+white-space: pre;
+visibility: hidden;
 }
 
 .toc-item {
@@ -950,13 +1024,16 @@ min-height: 0;
 border-radius: 1.125rem;
 }
 
-/* ---------- 8.2 侧边目录（TOC）在移动端整体隐藏 ---------- */
-/* 断点与页眉 head_foot.css 对齐（都是 1024px），侧边栏要么“显示且有文字”，
-   要么整块不显示，不存在两者之间的夹缝。
-   JS 仍会写入内联 top / opacity / visibility，因此用 !important 兜底。 */
-.side-container {
-display: none !important;
-}
+/* ---------- 8.2 侧边目录（TOC）在移动端改成「圆环 + 抽屉」 ----------
+   原先这一档是把 .side-container 整块 display: none 掉（手机上没有侧边栏）。
+   现在手机上也有侧边栏：左上角一枚圆环，点开浮出侧边栏、点别处收起，
+   这一套的样式全在文末第 16 节。
+
+   为什么这里一条规则都不留：第 16 节那套形态【不跟着页面的断点走】——
+   它由 description.js 的 2.1 节单独判定，条件是“页面是窄屏”或者
+   “侧边栏里的一级标题一行放不下 8 个字”。后者在 PC 布局下也会成立，
+   所以侧边栏的形态切换与页面本身的 PC / 移动端切换是两件独立的事：
+   第 8 节只管页面（正文宽度、标题字号…），侧边栏归第 16 节。 */
 
 /* ---------- 8.3 右侧宝剑 / 剑鞘 / BACK TO TOP 索引条隐藏 ---------- */
 .scroll-sword,
@@ -2024,4 +2101,281 @@ mark {
     visibility: hidden;
     transform: translateY(0.625rem);
     transition: none;
+}
+
+/* ========================================================
+   16. 抽屉形态的侧边栏（左上角圆环 + 悬浮侧边栏）
+   ========================================================
+   什么时候换成这一套 —— 判定全在 description.js 的 2.1 节，本节只管长相：
+     · 页面是窄屏（≤1024px，与第 8 节、页眉的断点一致）；
+     · 或者 —— 即使页面还是 PC 布局 —— 侧边栏里的一级标题一行放不下
+       8 个字（侧边栏只有页面的 15% 宽，窗口一窄标题就挤成两行，PC 固定栏
+       已经没法读了）。
+
+   这两条与“页面走 PC 还是移动端布局”是【分开的】两件事：本节只改侧边栏
+   自己，页面自己的媒体查询（第 8 节）一个字都没动。
+
+   形态：
+     · 圆环（16.1 / 16.2）：左上角一枚 #C7C6F2 的空心圆环，几何中心钉在
+       (5% 页面宽, 15% 页面高)；只有视口竖直中心线落在正文里时才出现。
+     · 抽屉（16.3）：点圆环浮出的一块圆角矩形侧边栏，宽 = 页面宽度的 30%，
+       底色 / 圆角 / 目录排版与 PC 固定栏一致；再点圆环、点页面其它地方、
+       按 Esc、点目录里的条目都会收起。
+
+   开关是 <body class="sidebar-drawer">（脚本加）。抽屉的显隐只用
+   transform / opacity / visibility，【不用 display】：
+     · 收起时元素仍然参与布局，目录的 scrollTop 与“居中某个条目”的量算
+       才是准的（description.js 2.3 节的 centerTocItemInSidebar）；
+     · 也不会和 attributions.css 里那条 .side-container { display: none
+       !important }（那个页面不要侧边栏）打架 —— 那条依旧生效，脚本量到
+       display: none 时连圆环都不会建。
+   ======================================================== */
+
+/* ---------- 16.1 圆环本体 ----------
+   --st-center-x / --st-center-y 就是“几何中心：left 5%、top 15%”。
+   position: fixed 的 left / top 百分比天然是相对视口算的，所以任何屏幕尺寸
+   下圆环的中心都钉在同一个相对位置。
+
+   --st-ring 是看得见的那个圆环的直径；--st-hit 是按钮的点击热区，比圆环大
+   一圈（手指按得到），热区本身完全透明。圆环画在 ::before 上、在热区里
+   居中，于是“按得准”与“几何中心就在 (5%, 15%)”互不干扰。 */
+
+/* 圆环只在抽屉形态下才存在：脚本只在抽屉形态里建它（切回 PC 后节点仍留在
+   DOM 里，没必要每次缩放都建 / 删一遍）。没有 .sidebar-drawer 时它就是一枚
+   没有任何样式的原生 <button>，会以 4×4px 的小方块躺在 <body> 末尾 ——
+   所以这里默认 display: none，由下面那条 .sidebar-drawer .side-toggle 打开
+   （选择器权重更高）。 */
+.side-toggle {
+display: none;
+}
+
+.sidebar-drawer .side-toggle {
+--st-ring: 1.5rem;
+--st-hit: 2.75rem;
+--st-color: #C7C6F2;
+--st-center-x: 5%;
+--st-center-y: 15%;
+
+/* 上面那条 .side-toggle 把默认形态设成 display: none，这里必须重新打开，
+   否则圆环在抽屉形态下也一样不显示（按钮盒子留白、点击热区全靠它） */
+display: block;
+position: fixed;
+left: var(--st-center-x);
+top: var(--st-center-y);
+width: var(--st-hit);
+height: var(--st-hit);
+/* 从左上角反推半个身位：这样【几何中心】正好落在 (5%, 15%) */
+transform: translate(-50%, -50%);
+margin: 0;
+padding: 0;
+border: 0;
+background: none;
+-webkit-appearance: none;
+appearance: none;
+color: inherit;
+cursor: pointer;
+touch-action: manipulation;
+-webkit-tap-highlight-color: transparent;
+/* 低于页眉（100，绝不盖住汉堡按钮），高于正文白卡片与宝剑装饰（90~92） */
+z-index: 95;
+
+/* 默认不出现，16.2 的 .is-visible 才显示 */
+opacity: 0;
+visibility: hidden;
+pointer-events: none;
+transition: opacity 0.24s cubic-bezier(0.25, 1, 0.5, 1),
+            visibility 0s linear 0.24s;
+}
+
+/* 圆环本体：空心圆 + 一圈淡淡的同色光晕，衬在白卡片上也看得清 */
+.sidebar-drawer .side-toggle::before {
+content: "";
+position: absolute;
+left: 50%;
+top: 50%;
+width: var(--st-ring);
+height: var(--st-ring);
+box-sizing: border-box;
+border: 0.25rem solid var(--st-color);
+border-radius: 50%;
+background-color: rgba(199, 198, 242, 0.16);
+box-shadow: 0 0 0 0.1875rem rgba(199, 198, 242, 0.22),
+            0 0.25rem 0.875rem rgba(20, 47, 92, 0.18);
+transform: translate(-50%, -50%);
+transition: background-color 0.22s ease,
+            box-shadow 0.22s ease,
+            transform 0.22s ease;
+}
+
+/* 展开中：圆环填满同色、略微收小 —— “再点一下会收起” */
+.sidebar-drawer .side-toggle.is-open::before {
+background-color: var(--st-color);
+box-shadow: 0 0 0 0.3125rem rgba(199, 198, 242, 0.3),
+            0 0.25rem 1rem rgba(20, 47, 92, 0.24);
+transform: translate(-50%, -50%) scale(0.86);
+}
+
+.sidebar-drawer .side-toggle:hover::before {
+background-color: rgba(199, 198, 242, 0.42);
+}
+
+.sidebar-drawer .side-toggle.is-open:hover::before {
+background-color: var(--st-color);
+}
+
+.sidebar-drawer .side-toggle:focus-visible {
+outline: 0.125rem solid var(--st-color);
+outline-offset: 0.125rem;
+border-radius: 50%;
+}
+
+/* ---------- 16.2 圆环什么时候出现 ----------
+   脚本（description.js 2.3 节的 syncToggle）在三条同时成立时加 .is-visible：
+      ① 侧边栏是抽屉形态；
+      ② 这块侧边栏没被整页样式隐藏（例如 attributions 页面不要它）；
+      ③ 视口【竖直中心线】落在正文 .main-container 里 —— 也就是读者正在
+         读正文的时候，首屏 Hero 与页脚都不算。
+   条件一消失就摘掉，圆环淡出；同时抽屉也会被收起（圆环是唯一的把手）。 */
+.sidebar-drawer .side-toggle.is-visible {
+opacity: 1;
+visibility: visible;
+pointer-events: auto;
+transition: opacity 0.28s cubic-bezier(0.25, 1, 0.5, 1),
+            visibility 0s linear 0s;
+}
+
+/* ---------- 16.3 悬浮侧边栏（抽屉本体） ----------
+   宽度 = --side-width: 30%（页面宽度的 30%，与 PC 的 15% 出自同一把尺子，
+   定义见 3.0.1）。其余一切沿用 PC 固定栏：同一块深蓝底板 #142F5C、同一套
+   圆角语言、同一个 .toc-nav 排版 —— 两边看起来是同一个侧边栏，只是换了个
+   出现方式。
+
+   圆角：PC 贴着左边缘，所以是 0 2rem 2rem 0；抽屉是浮在正文上的一块，
+   四角都圆（圆角矩形）。 */
+.sidebar-drawer .side-container {
+--side-width: 30%;
+
+left: 2.5%;
+/* 让开圆环：圆环中心在 15% 页面高、直径 1.5rem，这里再留一点空隙 */
+top: calc(15% + 1.75rem);
+width: var(--side-width);
+height: auto;
+max-height: 60vh;
+border-radius: 1.5rem;
+z-index: 94;
+
+/* 收起：整体左移出屏 + 透明 + 不可交互（仍参与布局，见本节开头） */
+opacity: 0;
+visibility: hidden;
+pointer-events: none;
+transform: translateX(-108%);
+transition: opacity 0.26s cubic-bezier(0.25, 1, 0.5, 1),
+            transform 0.26s cubic-bezier(0.25, 1, 0.5, 1),
+            visibility 0s linear 0.26s,
+            box-shadow 0.3s ease;
+}
+
+/* 展开 */
+.sidebar-drawer .side-container.is-open {
+opacity: 1;
+visibility: visible;
+pointer-events: auto;
+transform: none;
+/* 浮起来的那块要多一点投影才和正文卡片分得开（PC 固定栏贴着边，用不着） */
+box-shadow: 0.5rem 1rem 2.5rem rgba(20, 47, 92, 0.28),
+            0 0.25rem 0.75rem rgba(0, 0, 0, 0.08);
+transition: opacity 0.26s cubic-bezier(0.25, 1, 0.5, 1),
+            transform 0.26s cubic-bezier(0.25, 1, 0.5, 1),
+            visibility 0s linear 0s,
+            box-shadow 0.3s ease;
+}
+
+/* ---------- 16.4 抽屉形态下的正文卡片 ----------
+   PC 固定栏常驻在页面左侧 15%，所以第 4 节给正文卡片留了 margin-left: 17%
+   让位。换成抽屉以后左侧不再有常驻的侧边栏，那 17% 就只是白空 —— 正文改为
+   左右各 4%，与 8.1 节移动端用的是同一套边距；抽屉浮在正文之上。
+   页面本身的 PC / 移动端布局（标题字号、段落字号、插图宽度…）一概不动。 */
+.sidebar-drawer .main-container {
+margin-left: 4%;
+}
+
+/* ---------- 16.5 侧边栏下方那枚图标（第 15 节）在抽屉形态下不出现 ----------
+   它是“PC 固定栏下沿那片左侧空白”里的装饰；抽屉形态没有那片空白，
+   留着它只会孤零零浮在正文左边。 */
+.sidebar-drawer .side-pole {
+display: none !important;
+}
+
+/* ---------- 16.6 系统开了“减少动态效果”：只留淡入淡出 ----------
+   圆环不做填充过渡、抽屉不再横移，只改透明度，位置直接到位。
+   这几条与 16.1 / 16.3 的权重相同，必须排在那两节之后才压得住。 */
+@media (prefers-reduced-motion: reduce) {
+.sidebar-drawer .side-toggle,
+.sidebar-drawer .side-toggle.is-visible {
+    transition: opacity 0.2s linear, visibility 0s linear 0s;
+}
+
+.sidebar-drawer .side-toggle::before {
+    transition: background-color 0.2s linear, box-shadow 0.2s linear;
+}
+
+.sidebar-drawer .side-toggle.is-open::before {
+    transform: translate(-50%, -50%);
+}
+
+.sidebar-drawer .side-container,
+.sidebar-drawer .side-container.is-open {
+    transform: none;
+    transition: opacity 0.2s linear, visibility 0s linear 0s;
+}
+}
+
+/* ---------- 16.7 窄屏（≤1024px）的抽屉：把目录字号与留白收一档 ----------
+   抽屉宽度是页面宽度的 30%（16.3），到手机上只有 ~117px（390px 宽的屏）。
+   PC 那套 18px 字号 + 16px 左右留白 + 18px 圆点会把文字挤成一条一条
+   （"Ins / pir / atio / n"）。这里按第 8.6 节移动端正文字号（12px）的同一
+   档位缩小目录，字号层级 12 / 11 / 10px 与 PC 的 18 / 16 / 14px 一一对应，
+   留白也同步收紧 —— 外观（深蓝底板、圆角、圆点、下划线、配色）一点没变，
+   变的只是这一档的尺寸，与第 8 节对正文做的事完全一样。
+
+   只在 ≤1024px 生效：PC 宽度下也会进抽屉形态（一级标题一行放不下 8 个字
+   时），那时抽屉有 300 多 px，用的是 PC 字号，不需要这一档。
+
+   ★ 每条选择器都带上了 .side-container：3.3 节的量算探针 .side-measure
+     也建在 <body> 里、也用同一套 .toc-item / .toc-text 类名，但它是用来量
+     “PC 固定栏一行几个字”的，必须永远按 PC 那套字号量 —— 少这一层限定，
+     窄屏下探针就会跟着缩成抽屉字号，量出来的就不再是 PC 固定栏的容量。 */
+@media (max-width: 1024px) {
+    .sidebar-drawer .side-container {
+        --side-gap-y: 1.25rem;
+        --side-gap-x: 0.5rem;
+    }
+
+    .sidebar-drawer .side-container .toc-item {
+        padding-right: 0.5rem;
+        gap: 0.375rem;
+    }
+
+    .sidebar-drawer .side-container .toc-circle {
+        width: 0.75rem;
+        height: 0.75rem;
+        border-width: 0.1875rem;
+    }
+
+    .sidebar-drawer .side-container .toc-text {
+        font-size: 0.75rem;
+    }
+
+    .sidebar-drawer .side-container .toc-item-h2 .toc-text {
+        font-size: 0.6875rem;
+    }
+
+    .sidebar-drawer .side-container .toc-item-h3 .toc-text {
+        font-size: 0.625rem;
+    }
+
+    .sidebar-drawer .side-container .toc-triangle {
+        width: 0.625rem;
+        height: 0.75rem;
+    }
 }
