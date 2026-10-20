@@ -1,11 +1,85 @@
-{% extends "layout.html" %}
-{% block title %}Home{% endblock %}
-{% block page_styles %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='content-page.css') }}">
-{% endblock %}
-{% block page_content %}
-<section class="content-page" aria-labelledby="page-heading">
-  <h1 id="page-heading">Home</h1>
-  <p>This page is under development.</p>
-</section>
-{% endblock %}
+{#- 首页：整屏滚动叙事页，【不继承 layout.html】—— 这一页自带底图、进度宝剑、
+    全屏文字排版和页尾接续，与站点页眉 / 页脚 / 加载动画互斥（详见 static/home/
+    各文件顶部的说明，例如 5.css 开头讲“移动端只做覆盖”的那一段）。
+    CSS / JS 全部放在 static/home/，用 url_for('static', ...) 取地址；
+    Frozen-Flask 的 FREEZER_RELATIVE_URLS 会把它们转成相对路径，
+    所以本地预览与挂在子路径下的 GitLab Pages 构建都能命中。
+
+    <base> 是给脚本里那批“和 index.html 放在同一个目录”的写法用的：
+    1.js ~ 5.js 里的 ./title.mp4、./assets/*.webm、./5.css …… 都写成相对路径，
+    浏览器是按【文档地址】解析它们的；页面改由 Flask 路由（/ 与 /home）渲染之后，
+    文档地址不再是资源所在目录，直接用会 404。把基址钉在 static/home/ 上，
+    脚本一行都不用改，两种部署形态下相对路径都能落到同一个目录。
+    基址从 1.css 的地址里去掉文件名得到（不能直接 url_for 一个目录名：Frozen-Flask
+    会把模板里出现过的每个 url_for 都当成一页去构建，目录地址会 404；
+    也不能让地址以斜杠结尾，那样会被改写成 index.html）。 -#}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | XMU-China - iGEM 2026</title>
+    <link rel="icon" type="image/avif" href="https://static.igem.wiki/teams/6059/wiki/head-foot/favicon-6.avif">
+    <base href="{{ url_for('static', filename='home/1.css').rsplit('/', 1)[0] }}/">
+    <link rel="stylesheet" href="{{ url_for('static', filename='home/1.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='home/2.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='home/3.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='home/4.css') }}">
+    <!-- 5.css = 移动端（窄屏）专用样式，必须放在 1~4.css 之后 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='home/5.css') }}">
+</head>
+<body>
+    <div class="text-box text-1">Compact is only the<br>BEGINNING</div>
+    <div class="text-box text-2">Engineering ISHahl1 TnpB for versatile<br>genome engineering, expanded<br>targeting, and mechanistic insight.</div>
+
+    <div class="text-box text-3">Genome editing gets harder beyond<br>Familiar Host</div>
+    <div class="text-box text-4">Genome editing has transformed<br>synthetic biology, yet adapting<br>editing tools across bacterial<br>hosts remains challenging. </div>
+    <div class="text-box text-5">Large systems can complicate<br>delivery and expression, <br>motivating the development<br>of compact and adaptable alternatives. </div>
+
+    <div class="text-box text-6">But small does  NOT  mean flexible.</div>
+    <div class="text-box text-7">ISHahl1 TnpB, a remarkably compact<br>RNA-guided nuclease of<br> approximately 400 amino acids,<br>offered a promising choice. </div>
+    <div class="text-box text-8">However, its broader applicability<br>was limited by a strict preference<br>for the 5'-CTAC-3' TAM. </div>
+
+    <div class="text-box text-9">An editor can cut well<br>and still be unable to cut where we need it.</div>
+
+    <div class="text-box text-10">That is why we introduce</div>
+
+    <div class="text-box text-11">Small TnpB-based Innovative<br>Nuclease toolkit for<br>bacterial Genome editing.</div>
+
+    <div class="text-box text-12">From a compact nuclease to<br>a functional, targetable,<br>and explainable platform.</div>
+
+
+    <div class="text-box text-13">BUILD<br>Establish the Editing Tools</div>
+    <div class="text-box text-14"><span>Developed TnpB genome editing,<br>TnpB interference, and base editors,<br>validated in <i>E. coli</i><br>BL21 (DE3) / DH5α / ECNP,<br>and <i>P. putida</i>.</span></div>
+
+    <div class="text-box text-15">EXPAND<br>Broaden the Targeting Toolbox</div>
+    <div class="text-box text-16">Engineered and screened TnpB variants with<br>altered TAM preferences, expanding target<br>accessibility and editing flexibility.</div>
+
+    <div class="text-box text-17">MODEL<br>From Data to Mechanism</div>
+    <div class="text-box text-18">Bioinformatics-guided editor<br>design and structure-based<br>explanation of editing efficiency. </div>
+    <div class="text-box text-19">Data-driven scoring prioritized<br>candidates from 30+ CDSs, while<br>molecular dynamics revealed<br>TAM-recognition mechanisms.</div>
+
+    <div class="text-box text-20">Our platform allowS<br>More Targets<br>More functIons<br>More uNderstandinG</div>
+    
+    <div class="text-box text-22">STING integrates bacterial genome<br>editing and regulation, expanded TAM<br>recognition, and computational guidance. </div>
+    <div class="text-box text-23">From bioinformatics-based design, through data-driven mutant prioritization, to molecular-level explanation, it offers a clearer path from a compact nuclease to a more flexible and interpretable genome-editing toolbox.</div>
+
+
+<!--
+    <div class="rect-box rect-1"></div>
+    <div class="rect-box rect-2"></div>
+    <div class="rect-box rect-3"></div>
+    <div class="rect-box rect-4"></div>
+    -->
+<!--
+    <img class="img-box img-1" src="./1.png" alt="">
+-->
+
+    <script src="{{ url_for('static', filename='home/1.js') }}"></script>
+    <script src="{{ url_for('static', filename='home/2.js') }}"></script>
+    <script src="{{ url_for('static', filename='home/3.js') }}"></script>
+    <script src="{{ url_for('static', filename='home/4.js') }}"></script>
+    <!-- 5.js = 移动端（窄屏）专用脚本，必须放在 1~4.js 之后 -->
+    <script src="{{ url_for('static', filename='home/5.js') }}"></script>
+</body>
+</html>
