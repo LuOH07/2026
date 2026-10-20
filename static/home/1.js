@@ -642,10 +642,23 @@ function updateFreeze() {
 /* 页面滚到底时对应的进度值：进度不可能超过它 */
 const progressLimit = () => introLen() + pageMaxScroll();
 
+/* 站点页脚（layout.html 里的 <footer>）就接在舞台这一屏之后：
+   要把它的高度也算进“还能往下滚多远”，否则页脚永远滚不到。
+   没有页脚时 = 0，行为和原来一模一样；高度缓存一次，onResize() 里清掉重算。 */
+let footerExtraPx = null;
+function footerExtra() {
+    if (footerExtraPx === null) {
+        const f = document.querySelector("body > footer");
+        footerExtraPx = f ? f.offsetHeight : 0;
+    }
+    return footerExtraPx;
+}
+
 function maxProgress() {
     const lim = progressLimit();
     if (items.length === 0) return lim;
-    return Math.min(items[items.length - 1].E + TAIL_SECONDS * playbackRate(), lim);
+    const animEnd = Math.min(items[items.length - 1].E + TAIL_SECONDS * playbackRate(), lim);
+    return Math.min(animEnd + footerExtra(), lim);
 }
 
 /* 单个组件的时长配置（秒） */
@@ -1266,6 +1279,7 @@ function onResize() {
     updateBodyHeight();
     sizeTopVideo();        /* 视频高度 / 下移量 / 文档总高：必须在 updateBodyHeight() 之后、layout() 之前 */
     layout();
+    footerExtraPx = null;  /* 页脚高度跟着窗口宽度变，重新量 */
     resetFreeze();             // resize 属于“外部”变化，不继承冻结状态，也不会上锁
     cur = target = clamp(cur, 0, maxProgress());
     render();
@@ -1383,7 +1397,7 @@ window.__home = {
    想换成原生控件（暂停 / 音量 / 进度 / 全屏）：把 1.css 里 .top-video-media 的
    pointer-events 改成 auto，代价是鼠标停在视频区域时滚轮不再驱动页面。
    以后换成有音轨的素材、想让声音外放：把下面 topVideo.muted 改成 false（自动播放可能被拦）。 */
-const TOP_VIDEO_SRC = "https://video.igem.org/w/4dso4SfHQGHnNmX9udtDCq";
+const TOP_VIDEO_SRC = HOME_MEDIA + "title.mp4";
 
 const topVideoWrap = document.createElement("div");
 topVideoWrap.className = "top-video-wrap";

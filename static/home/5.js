@@ -164,7 +164,7 @@
         }
         var link = document.createElement("link");
         link.rel = "stylesheet";
-        link.href = "./5.css";
+        link.href = HOME_MEDIA + "5.css";
         link.setAttribute("data-m5", "auto");
         document.head.appendChild(link);
     }

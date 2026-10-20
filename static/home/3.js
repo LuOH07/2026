@@ -61,7 +61,7 @@
         {
             cls: "bug-icon-1",
             host: ".text-4",
-            src: "./B. subtilis.webm",                 /* ★ 视频素材：自动用 <video muted autoplay loop> 建节点 */
+            src: HOME_MEDIA + "B. subtilis.webm",                 /* ★ 视频素材：自动用 <video muted autoplay loop> 建节点 */
             name: "Bacillus subtilis",
             label: "B. subtilis",
             /* text-4 一淡入就跟着淡入，时长 = text-4 的淡入区间 */
@@ -172,7 +172,7 @@
                · 位置 / 大小在 3.css 的 .bug-icon-8 .bug-icon-video 里调
                  （默认和静态图【同中心、同高度】；只想挪一点就改 --video-dx / --video-dy）；
                · 想让视频停在自己的最后一帧、播完不回到静态图：在这里加一行 hold: true。 */
-            video: { src: "./CTAC.webm" }
+            video: { src: HOME_MEDIA + "CTAC.webm" }
         },
 
         /* ---- 图标 9（tnpb-1.avif）—— text-7 淡入时出现，跟 text-7 一起消失 ----
@@ -207,7 +207,7 @@
         {
             cls: "bug-icon-10",
             host: ".text-9",
-            src: "./editing.webm",
+            src: HOME_MEDIA + "editing.webm",
             name: "Title",
             pin: true,                      /* ★ 不飘动：位置由 3.css 的 .bug-icon-10 决定 */
             autoplay: false,                /* ★ 亮起来才播（见 createIconVideo / mediaLive） */
@@ -228,7 +228,7 @@
         {
             cls: "bug-icon-11",
             host: ".text-10",
-            src: "./answer.webm",                    /* ★ 相对路径：和 index.html 同目录 */
+            src: HOME_MEDIA + "answer.webm",                    /* ★ 相对路径：和 index.html 同目录 */
             name: "Answer",
             pin: true,                      /* ★ 不飘动：位置由 3.css 的 .bug-icon-11 决定 */
             autoplay: false,                /* ★ 亮起来才播（不然进页面就播完了） */
@@ -386,7 +386,7 @@
         {
             cls: "bug-icon-19",
             host: ".text-15",
-            src: "./expand.webm",                    /* ★ 相对路径：和 index.html 同目录 */
+            src: HOME_MEDIA + "expand.webm",                    /* ★ 相对路径：和 index.html 同目录 */
             name: "Expand",
             pin: true,                      /* ★ 不飘动：位置由 3.css 的 .bug-icon-19 决定 */
             /* ★ 跟着 text-15 的【淡入区间】一起淡入（它的 A → H） */
@@ -411,7 +411,7 @@
         {
             cls: "bug-icon-20",
             host: ".text-13",
-            src: "./standing.webm",                  /* ★ 相对路径：和 index.html 同目录 */
+            src: HOME_MEDIA + "standing.webm",                  /* ★ 相对路径：和 index.html 同目录 */
             name: "Standing",
             pin: true,                      /* ★ 不飘动：位置由 3.css 的 .bug-icon-20 决定 */
             autoplay: false,                /* ★ 亮起来才播（不然进页面就播完了） */
@@ -489,7 +489,7 @@
                    暂停着         → 从当前帧接着播到结尾（不会跳回第一帧）
                    停在最后一帧   → 从第一帧重新播一次
                ★ 两个都不能删：hold 少了会在播完后收起来，replay 少了就没有那颗按钮。 */
-            video: { src: "./model.mp4", hold: true, replay: true }
+            video: { src: HOME_MEDIA + "model.mp4", hold: true, replay: true }
         },
 
         /* ---- 图标 23（tool.webm）—— 跟 text-11 同步淡入 / 淡出 ----
@@ -511,7 +511,7 @@
         {
             cls: "bug-icon-23",
             host: ".text-11",
-            src: "./tool.webm",                      /* ★ 相对路径：和 index.html 同目录 */
+            src: HOME_MEDIA + "tool.webm",                      /* ★ 相对路径：和 index.html 同目录 */
             name: "Tool",
             pin: true,                      /* ★ 不飘动：位置由 3.css 的 .bug-icon-23 决定 */
             /* ★★ 图层：它在文字【上面】★★
@@ -550,7 +550,7 @@
         {
             cls: "bug-icon-24",
             host: ".text-23",
-            src: "./end.webm",                       /* ★ 相对路径：和 index.html 同目录 */
+            src: HOME_MEDIA + "end.webm",                       /* ★ 相对路径：和 index.html 同目录 */
             name: "End",
             pin: true,                      /* ★ 不飘动：位置由 3.css 的 .bug-icon-24 决定 */
             autoplay: false,                /* ★ 亮起来才播（不然进页面就播完了） */

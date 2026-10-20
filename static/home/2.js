@@ -17,7 +17,7 @@ var VIDEO_GROUPS = {
        · VIDEO_NAMES 里【故意没有】"falls" —— 所以它不接鼠标、不会 hover 出名字，
          也不挡图标 / 文字的 hover 和滚轮（pointer-events 保持 none）。 */
     "falls": [
-        "./falls.webm"
+        HOME_MEDIA + "falls.webm"
     ],
     /* ★ 数组位置 = 序号，对应 2.css 里的 .bg-video-wrap-crispr-<序号>：
        第 1 格 → crispr-1（出场动画）、第 2 格 → crispr-2、第 3 格 → crispr-3（走路）、
@@ -25,17 +25,17 @@ var VIDEO_GROUPS = {
        某格写成 null = “这一格不放视频”（但不能整行删掉，否则后面的序号会整体前移、位置全错）。
        crispr-2 已经去掉了，所以第 2 格是 null。 */
     "CRISPR": [
-        "./assets/CRISPR_1.webm",
+        HOME_MEDIA + "assets/CRISPR_1.webm",
         null,
-        "./assets/CRISPR_3.webm",
-        "./assets/CRISPR_4.webm"
+        HOME_MEDIA + "assets/CRISPR_3.webm",
+        HOME_MEDIA + "assets/CRISPR_4.webm"
         // "./Preset-3.webm"
     ],
     "gene": [
-        "./assets/gene_1.webm",
-        { src: "./assets/gene_1.webm", startAt: 1.05 },
-        "./assets/gene_2.webm",
-        "./assets/gene_2.webm"
+        HOME_MEDIA + "assets/gene_1.webm",
+        { src: HOME_MEDIA + "assets/gene_1.webm", startAt: 1.05 },
+        HOME_MEDIA + "assets/gene_2.webm",
+        HOME_MEDIA + "assets/gene_2.webm"
     ],
     /* ★ GeneWalk：gene-1 的【走路版】—— 和上面 gene-1 / gene-2 用的是同一个
        gene_1.webm，但它是【单独的一个组】，所以：
@@ -46,11 +46,11 @@ var VIDEO_GROUPS = {
        走动的逻辑和 TnpB_1 完全一样（见下面的 MOVE_GROUPS["genewalk-1"]）。
        ★ 不想要它：把这一段删掉即可（2.css 里 genewalk 那一块也可以一起删）。 */
     "GeneWalk": [
-        "./assets/gene_1.webm"
+        HOME_MEDIA + "assets/gene_1.webm"
     ],
     "TnpB": [
-        "./assets/TnpB_1.webm",
-        "./assets/TnpB_2.webm"
+        HOME_MEDIA + "assets/TnpB_1.webm",
+        HOME_MEDIA + "assets/TnpB_2.webm"
     ],
     /* ★ TnpB 的【终点定格视频】：TnpB_1 走完最后一段、走到轨迹最后一个点之后播的那一个
        （相对路径 ./TnpB-end.webm —— 和 index.html 放在同一个目录，不在 assets 里）。
@@ -62,7 +62,7 @@ var VIDEO_GROUPS = {
        · 位置 / 大小正常写在 2.css 的 .bg-video-wrap-tnpbend-1 里（top / left / width）。
        ★ 不想用它：把这一段删掉（或者把 finale 那一项删掉），其余都不用动。 */
     "TnpBEnd": [
-        "./TnpB-end.webm"
+        HOME_MEDIA + "TnpB-end.webm"
     ]
 };
 

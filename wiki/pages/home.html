@@ -1,18 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home | XMU-China - iGEM 2026</title>
-    <link rel="icon" type="image/avif" href="https://static.igem.wiki/teams/6059/wiki/head-foot/favicon-6.avif">
-    <base href="{{ url_for('static', filename='home/1.css').rsplit('/', 1)[0] }}/">
-    <link rel="stylesheet" href="1.css">
-    <link rel="stylesheet" href="2.css">
-    <link rel="stylesheet" href="3.css">
-    <link rel="stylesheet" href="4.css">
-    <link rel="stylesheet" href="5.css">
-</head>
-<body>
+{% extends "layout.html" %}
+{% block title %}Home{% endblock %}
+
+{% block page_styles %}
+{#- 整屏滚动页：1~4.css 是桌面版，5.css 是窄屏（手机）专用样式，必须排在最后 #}
+<link rel="stylesheet" href="{{ url_for('static', filename='home/1.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='home/2.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='home/3.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='home/4.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='home/5.css') }}">
+<style>
+  /* 与站点页眉 / 页脚的接缝：只补三行，static/home/ 里不动。
+     这一页的坐标系就是 body（1.js 把页面高度写在 body 上、底图也是 body 的背景），
+     所以「让出页眉高度」要挪 body 本身，而不是挪里面那些绝对定位的元素。 */
+  html { background-color: #fff; }   /* 阻断 body 背景向画布传播，底图才会跟着 body 一起下移 */
+  body { margin-top: 4rem; }         /* 4rem = 页眉高度：整页下移一个页眉，首屏不被固定页眉遮挡 */
+  /* 窄屏页眉是 3.1rem（见 head_foot.css 的 @media (max-width: 1024px)），这里跟着换 */
+  @media (max-width: 1024px) { body { margin-top: 3.1rem; } }
+  /* 舞台高 = 底图高（1.js 写在 body 上的 height）+ 顶部视频引导段 + 手机端接续的底图，
+     页脚正好接在底图末端（--lead-in 由 1.js 写、--m5-blank 由 5.js 写在 :root 上）。 */
+  #main-content { height: calc(100% + var(--lead-in, 0px) + var(--m5-blank, 0px)); }
+</style>
+{% endblock %}
+
+{% block page_content %}
     <div class="text-box text-1">Compact is only the<br>BEGINNING</div>
     <div class="text-box text-2">Engineering ISHahl1 TnpB for versatile<br>genome engineering, expanded<br>targeting, and mechanistic insight.</div>
 
@@ -58,11 +68,17 @@
 <!--
     <img class="img-box img-1" src="./1.png" alt="">
 -->
+{% endblock %}
 
-    <script src="1.js"></script>
-    <script src="2.js"></script>
-    <script src="3.js"></script>
-    <script src="4.js"></script>
-    <script src="5.js"></script>
-</body>
-</html>
+{% block page_scripts %}
+{#- 脚本里的视频都写成 HOME_MEDIA + "文件名"，这里把 static/home/ 交给它们。
+    不用 <base>：layout 的页眉页脚链接是相对页面的，加了 base 会被拼歪。 -#}
+<script>
+  window.HOME_MEDIA = "{{ url_for('static', filename='home/1.css').rsplit('/', 1)[0] }}/";
+</script>
+<script src="{{ url_for('static', filename='home/1.js') }}"></script>
+<script src="{{ url_for('static', filename='home/2.js') }}"></script>
+<script src="{{ url_for('static', filename='home/3.js') }}"></script>
+<script src="{{ url_for('static', filename='home/4.js') }}"></script>
+<script src="{{ url_for('static', filename='home/5.js') }}"></script>
+{% endblock %}
