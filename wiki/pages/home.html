@@ -6,12 +6,15 @@
     <title>Home | XMU-China - iGEM 2026</title>
     <link rel="icon" type="image/avif" href="https://static.igem.wiki/teams/6059/wiki/head-foot/favicon-6.avif">
     <base href="{{ url_for('static', filename='home/1.css').rsplit('/', 1)[0] }}/">
-    <link rel="stylesheet" href="{{ url_for('static', filename='home/1.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='home/2.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='home/3.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='home/4.css') }}">
+    <!-- ★ 下面一律写【相对 <base> 的短名】，不要再套 url_for：
+         构建产物里的 url_for 是“相对页面”的 static/home/x.css，浏览器再按
+         <base> 解析一次会拼成 static/home/static/home/x.css → 404，整页没样式。 -->
+    <link rel="stylesheet" href="1.css">
+    <link rel="stylesheet" href="2.css">
+    <link rel="stylesheet" href="3.css">
+    <link rel="stylesheet" href="4.css">
     <!-- 5.css = 移动端（窄屏）专用样式，必须放在 1~4.css 之后 -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='home/5.css') }}">
+    <link rel="stylesheet" href="5.css">
 </head>
 <body>
     <div class="text-box text-1">Compact is only the<br>BEGINNING</div>
@@ -60,10 +63,10 @@
     <img class="img-box img-1" src="./1.png" alt="">
 -->
 
-    <script src="{{ url_for('static', filename='home/1.js') }}"></script>
-    <script src="{{ url_for('static', filename='home/2.js') }}"></script>
-    <script src="{{ url_for('static', filename='home/3.js') }}"></script>
-    <script src="{{ url_for('static', filename='home/4.js') }}"></script>
-    <script src="{{ url_for('static', filename='home/5.js') }}"></script>
+    <script src="1.js"></script>
+    <script src="2.js"></script>
+    <script src="3.js"></script>
+    <script src="4.js"></script>
+    <script src="5.js"></script>
 </body>
 </html>
