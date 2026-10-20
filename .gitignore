@@ -8,10 +8,6 @@ __pycache__/
 /public/
 
 # 首页动效视频（25 个 webm / mp4）：iGEM 的 wiki 仓库有 pre-receive 钩子，
-# 拒绝任何图片 / 音视频入库（GL-HOOK-ERR: Images, videos and audio can't be
-# stored in a wiki repository），图片要传 static.igem.wiki，视频要传 iGEM
-# Video Universe。这些文件只供本机预览（static/home/ 下的同目录相对路径），
-# 不能提交，否则 push 会被整体拒绝。
 /static/home/assets/
 /static/home/*.webm
 /static/home/*.mp4
