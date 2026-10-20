@@ -2116,8 +2116,9 @@ mark {
    自己，页面自己的媒体查询（第 8 节）一个字都没动。
 
    形态：
-     · 圆环（16.1 / 16.2）：左上角一枚平面的实色圆环（颜色 = 页眉底色
-       #0A1C37，无投影、无光晕、无半透明填充），几何中心钉在
+     · 圆环（16.1 / 16.2）：左上角一枚平面的圆环 —— 只有一圈实色边，
+       中间**完全透明**（无填充、无投影、无光晕）；收起时 #1D9695，
+       抽屉展开时变成 #47BF7A（依然是空心的环）。几何中心钉在
        (10% 页面宽, 25% 页面高)；只有视口竖直中心线落在正文里时才出现。
      · 抽屉（16.3）：点圆环浮出的一块圆角矩形侧边栏，宽 = 页面宽度的 30%，
        底色 / 圆角 / 目录排版与 PC 固定栏一致；再点圆环、点页面其它地方、
@@ -2141,10 +2142,11 @@ mark {
    一圈（手指按得到），热区本身完全透明。圆环画在 ::before 上、在热区里
    居中，于是“按得准”与“几何中心就在 (10%, 25%)”互不干扰。
 
-   观感是【平面】的：只有一圈实色圆环，没有 box-shadow、没有光晕、没有
-   半透明填充；颜色取页眉底色 #0A1C37，与页眉是同一种蓝。
-   展开时把环填满 = “再点一下会收起”；悬停时给一层极淡的同色平铺
-   （同样是平的，不是发光）。 */
+   观感是【平面】的：只有一圈实色边，中间永远是全透明的 —— 没有填充、
+   没有 box-shadow、没有光晕。两种颜色只换边框色：
+       · 收起：#1D9695
+       · 展开：#47BF7A（“再点一下会收起”的提示，环依旧是空心的）
+   悬停不做任何填充或发光，保持同样的平面空心观感。 */
 
 /* 圆环只在抽屉形态下才存在：脚本只在抽屉形态里建它（切回 PC 后节点仍留在
    DOM 里，没必要每次缩放都建 / 删一遍）。没有 .sidebar-drawer 时它就是一枚
@@ -2161,7 +2163,8 @@ display: none;
 --st-ring: 2.25rem;
 --st-border: 0.375rem;
 --st-hit: 4.125rem;
---st-color: #0A1C37;        /* = 页眉 header 的 background-color */
+--st-color: #1D9695;        /* 收起时 */
+--st-color-open: #47BF7A;   /* 抽屉展开时 */
 --st-center-x: 10%;
 --st-center-y: 25%;
 
@@ -2196,7 +2199,7 @@ transition: opacity 0.24s cubic-bezier(0.25, 1, 0.5, 1),
             visibility 0s linear 0.24s;
 }
 
-/* 圆环本体：一圈实色环，平面的 —— 没有投影、没有光晕、没有底填充 */
+/* 圆环本体：一圈实色边，平面，中间全透明 —— 没有填充、没有投影、没有光晕 */
 .sidebar-drawer .side-toggle::before {
 content: "";
 position: absolute;
@@ -2207,26 +2210,21 @@ height: var(--st-ring);
 box-sizing: border-box;
 border: var(--st-border) solid var(--st-color);
 border-radius: 50%;
+/* 中间必须看得见底下的正文：任何填充都不加（hover / is-open 也不加） */
 background-color: transparent;
 box-shadow: none;
 transform: translate(-50%, -50%);
-transition: background-color 0.2s ease;
+/* 展开 / 收起只换边框色，大小与填充都不变 */
+transition: border-color 0.2s ease;
 }
 
-/* 展开中：环填满同色（不加投影、不改大小）—— “再点一下会收起” */
+/* 展开中：只把边框换成 #47BF7A —— 环依旧是空心的，不填实、不放大 */
 .sidebar-drawer .side-toggle.is-open::before {
-background-color: var(--st-color);
+border-color: var(--st-color-open);
 }
 
-/* 悬停：极淡的一层同色平铺，仍然是平的，不发亮 */
-.sidebar-drawer .side-toggle:hover::before {
-background-color: rgba(10, 28, 55, 0.12);
-}
-
-.sidebar-drawer .side-toggle.is-open:hover::before {
-background-color: var(--st-color);
-}
-
+/* 悬停不设任何规则：中间永远透明，不发亮也不填色（这正是“平面空心”的要求）。
+   所以这里只留键盘聚焦的一圈轮廓，它的里面同样是透的。 */
 .sidebar-drawer .side-toggle:focus-visible {
 outline: 0.125rem solid var(--st-color);
 outline-offset: 0.125rem;
@@ -2312,7 +2310,7 @@ display: none !important;
 }
 
 /* ---------- 16.6 系统开了“减少动态效果”：只留淡入淡出 ----------
-   圆环不做填充过渡、抽屉不再横移，只改透明度，位置直接到位。
+   圆环不再渐变边框色、抽屉不再横移，只改透明度，位置直接到位。
    这几条与 16.1 / 16.3 的权重相同，必须排在那两节之后才压得住。 */
 @media (prefers-reduced-motion: reduce) {
 .sidebar-drawer .side-toggle,
@@ -2320,12 +2318,9 @@ display: none !important;
     transition: opacity 0.2s linear, visibility 0s linear 0s;
 }
 
+/* 环只剩“换边框色”这一条过渡，减少动态效果时也直接换成瞬时 */
 .sidebar-drawer .side-toggle::before {
-    transition: background-color 0.2s linear;
-}
-
-.sidebar-drawer .side-toggle.is-open::before {
-    transform: translate(-50%, -50%);
+    transition: none;
 }
 
 .sidebar-drawer .side-container,
