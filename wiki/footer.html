@@ -7,12 +7,39 @@
     </div>
 
     <!-- 右侧从上到下：社交图标 → 地址 → Contact Us，全部右对齐 -->
+    <!-- 五个图标从左到右：WeChat → Facebook → Instagram → Weibo → X。
+         每个图标都包在 <a> 里，点击在新标签页打开对应主页。
+         WeChat 没有可跳转的网页，链接指向公众号二维码图片，
+         再由 head_foot.js 改成页内弹窗（点空白处 / 关闭按钮 / Esc 收起）；
+         脚本未加载时，链接照常打开那张二维码图片。 -->
     <div class="footer-social">
-        <img src="{{ asset_url('head_foot/1.png') }}" alt="Social 1">
-        <img src="{{ asset_url('head_foot/2.png') }}" alt="Social 2">
-        <img src="{{ asset_url('head_foot/3.png') }}" alt="Social 3">
-        <img src="{{ asset_url('head_foot/4.png') }}" alt="Social 4">
-        <img src="{{ asset_url('head_foot/5.png') }}" alt="Social 5">
+        <a class="footer-social-link"
+           href="https://static.igem.wiki/teams/5136/header-footer-img/wechat.png"
+           data-qr="https://static.igem.wiki/teams/5136/header-footer-img/wechat.png"
+           target="_blank" rel="noopener noreferrer"
+           aria-label="WeChat: click to show the QR code">
+            <img src="{{ asset_url('head_foot/1.png') }}" alt="WeChat">
+        </a>
+        <a class="footer-social-link"
+           href="https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2FIGEM-XMU-China-1067638406629389"
+           target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <img src="{{ asset_url('head_foot/2.png') }}" alt="Facebook">
+        </a>
+        <a class="footer-social-link"
+           href="https://www.instagram.com/xmu_china_igem"
+           target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <img src="{{ asset_url('head_foot/3.png') }}" alt="Instagram">
+        </a>
+        <a class="footer-social-link"
+           href="https://weibo.com/u/7482868083"
+           target="_blank" rel="noopener noreferrer" aria-label="Weibo">
+            <img src="{{ asset_url('head_foot/4.png') }}" alt="Weibo">
+        </a>
+        <a class="footer-social-link"
+           href="https://x.com/XMU_igem"
+           target="_blank" rel="noopener noreferrer" aria-label="X">
+            <img src="{{ asset_url('head_foot/5.png') }}" alt="X">
+        </a>
     </div>
 
     <address class="footer-address" id="contact">

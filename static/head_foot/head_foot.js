@@ -180,9 +180,115 @@
         }
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
+    /* =========================================================================
+       页脚社交图标（桌面端与移动端都生效）
+       -------------------------------------------------------------------------
+       五个图标的跳转由 <a href> 本身完成，脚本只处理 WeChat：
+       微信没有可直接打开的网页，所以它的链接指向公众号二维码图片，
+       这里把点击改成页内弹窗（扫码 / 长按识别），Esc、关闭按钮、点遮罩都可收起。
+       按住 Ctrl / Cmd / Shift 点击或中键点击时不拦截，仍按浏览器默认方式
+       在新标签页打开原图（脚本被禁用时同理）。
+       ========================================================================= */
+    function initFooterSocial() {
+        var social  = document.querySelector('.footer-social');
+        if (!social) return;
+
+        var trigger = social.querySelector('a[data-qr]');
+        if (!trigger) return;
+
+        var qrUrl  = trigger.getAttribute('data-qr') || trigger.getAttribute('href');
+        var modal  = null;
+        var close  = null;
+        var isOpen = false;
+        var lastFocus = null;
+
+        /* 首次点击时才建节点：不需要弹窗的页面不产生多余 DOM */
+        function build() {
+            modal = document.createElement('div');
+            modal.className = 'social-qr';
+            modal.setAttribute('role', 'dialog');
+            modal.setAttribute('aria-modal', 'true');
+            modal.setAttribute('aria-label', 'WeChat QR code');
+
+            var card = document.createElement('div');
+            card.className = 'social-qr__card';
+
+            var img = document.createElement('img');
+            img.className = 'social-qr__img';
+            img.src = qrUrl;
+            img.alt = 'WeChat QR code';
+            card.appendChild(img);
+
+            var caption = document.createElement('p');
+            caption.className = 'social-qr__caption';
+            caption.textContent = 'Scan to follow us on WeChat';
+            card.appendChild(caption);
+
+            close = document.createElement('button');
+            close.type = 'button';
+            close.className = 'social-qr__close';
+            close.setAttribute('aria-label', 'Close');
+            close.innerHTML = '<span aria-hidden="true">\u00D7</span>';
+            card.appendChild(close);
+
+            modal.appendChild(card);
+            document.body.appendChild(modal);
+
+            modal.addEventListener('click', function (event) {
+                if (event.target !== modal) return;   /* 只有点在卡片外才算关闭 */
+                hide();
+            });
+            close.addEventListener('click', hide);
+            document.addEventListener('keydown', onKeydown);
+        }
+
+        function show() {
+            if (!modal) build();
+            if (isOpen) return;
+            lastFocus = document.activeElement;
+            isOpen = true;
+            modal.classList.add('is-open');
+            close.focus();
+        }
+
+        function hide() {
+            if (!isOpen) return;
+            isOpen = false;
+            modal.classList.remove('is-open');
+            if (lastFocus && lastFocus.focus) lastFocus.focus();
+        }
+
+        function onKeydown(event) {
+            if (!isOpen) return;
+            if (event.key === 'Escape' || event.key === 'Esc') {
+                event.preventDefault();
+                hide();
+                return;
+            }
+            /* 弹窗里只有关闭按钮可聚焦：Tab 直接把焦点留在它上面 */
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                close.focus();
+            }
+        }
+
+        trigger.addEventListener('click', function (event) {
+            /* 组合键 / 中键点击：保留浏览器原行为（新标签页打开二维码图片） */
+            if (event.defaultPrevented || event.button !== 0 ||
+                event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+            event.preventDefault();
+            show();
+        });
+    }
+
+    function bootstrap() {
         init();
+        initFooterSocial();
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', bootstrap);
+    } else {
+        bootstrap();
     }
 })();

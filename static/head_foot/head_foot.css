@@ -264,6 +264,131 @@ transform: translateY(-0.125rem);
 opacity: 0.9;
 }
 
+/* 每个图标外面包一层 <a>（点击跳转）：链接本身不占额外空间，
+   尺寸完全由里面的 img 决定，所以图标间距 / 大小仍是上面的 .footer-social 规则 */
+.footer-social a {
+display: flex;
+align-items: center;
+justify-content: center;
+border-radius: 0.5rem;
+-webkit-tap-highlight-color: transparent;
+}
+
+/* 键盘聚焦：给链接一圈可见的焦点环（鼠标点击不显示） */
+.footer-social a:focus-visible {
+outline: 0.125rem solid #E2EBF4;
+outline-offset: 0.1875rem;
+}
+
+/* 按下时轻微回弹，给点击一个反馈 */
+.footer-social a:active img {
+transform: translateY(0) scale(0.94);
+opacity: 1;
+}
+
+/* =======================================================================
+   页脚 WeChat 图标 → 公众号二维码弹窗
+   节点由 head_foot.js 在第一次点击时创建：.social-qr > .social-qr__card
+   关闭方式：点卡片外的遮罩 / 右上角关闭按钮 / Esc
+   弹窗固定相对视口（position: fixed），因此这里用 rem 与 vw 书写，
+   不跟随页脚容器（cqh / cqw）缩放，手机上也保持足够大的扫码面积
+   ======================================================================= */
+.social-qr {
+position: fixed;
+inset: 0;
+z-index: 200;               /* 高于页眉（100）、移动端弹窗（125）与汉堡按钮（130） */
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 1.25rem;
+overflow-y: auto;
+overscroll-behavior: contain;
+background-color: rgba(4, 12, 26, 0.72);
+-webkit-backdrop-filter: blur(0.375rem);
+backdrop-filter: blur(0.375rem);
+opacity: 0;
+/* visibility 而不是只有 opacity：收起时弹窗里的关闭按钮不能留在 Tab 顺序里 */
+visibility: hidden;
+pointer-events: none;
+transition: opacity 0.22s ease, visibility 0.22s ease;
+}
+
+.social-qr.is-open {
+opacity: 1;
+visibility: visible;
+pointer-events: auto;
+}
+
+.social-qr__card {
+position: relative;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 0.625rem;
+max-width: 100%;
+/* 顶部多留一点空间给右上角的关闭按钮，二维码不会被压住 */
+padding: 2.25rem 1.25rem 1.25rem;
+background-color: #ffffff;
+border-radius: 1rem;
+box-shadow: 0 1.5rem 3rem rgba(3, 10, 22, 0.45);
+transform: translateY(0.75rem) scale(0.96);
+transition: transform 0.22s ease;
+}
+
+.social-qr.is-open .social-qr__card {
+transform: translateY(0) scale(1);
+}
+
+.social-qr__img {
+display: block;
+/* 同时受视口宽度与高度约束：横屏手机上 70vw 会超过屏幕高度，
+   用 62vh 兜底，保证整张二维码始终能完整看到 */
+width: min(17.5rem, 70vw, 62vh);
+height: auto;
+border-radius: 0.5rem;
+}
+
+.social-qr__caption {
+margin: 0;
+color: #162741;
+font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+font-size: 0.8125rem;
+font-weight: 700;
+line-height: 1.4;
+letter-spacing: 0.0125rem;
+text-align: center;
+}
+
+.social-qr__close {
+position: absolute;
+top: 0.375rem;
+right: 0.375rem;
+display: flex;
+align-items: center;
+justify-content: center;
+width: 1.75rem;
+height: 1.75rem;
+border: 0;
+border-radius: 50%;
+background-color: transparent;
+color: #4C6E8F;
+font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+font-size: 1.375rem;
+line-height: 1;
+cursor: pointer;
+transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.social-qr__close:hover {
+background-color: #E2EBF4;
+color: #132D55;
+}
+
+.social-qr__close:focus-visible {
+outline: 0.125rem solid #132D55;
+outline-offset: 0.125rem;
+}
+
 /* 地址 */
 .footer-address {
 color: #ffffff;
