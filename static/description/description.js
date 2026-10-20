@@ -616,7 +616,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * =============================================================
      * 结构（都由脚本建，页面 HTML 里一个字都不用写）：
      *     <button class="side-toggle">            左上角那枚圆环，
-     *                                             几何中心 (5%, 15%)
+     *                                             几何中心 (10%, 25%)
      *     <aside class="side-container is-open">  还是页面里那块侧边栏，
      *                                             换一身 CSS 当抽屉用
      * 位置、尺寸、颜色全在 description.css 第 16 节，这里只决定【显不显、

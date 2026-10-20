@@ -2116,8 +2116,9 @@ mark {
    自己，页面自己的媒体查询（第 8 节）一个字都没动。
 
    形态：
-     · 圆环（16.1 / 16.2）：左上角一枚 #C7C6F2 的空心圆环，几何中心钉在
-       (5% 页面宽, 15% 页面高)；只有视口竖直中心线落在正文里时才出现。
+     · 圆环（16.1 / 16.2）：左上角一枚平面的实色圆环（颜色 = 页眉底色
+       #0A1C37，无投影、无光晕、无半透明填充），几何中心钉在
+       (10% 页面宽, 25% 页面高)；只有视口竖直中心线落在正文里时才出现。
      · 抽屉（16.3）：点圆环浮出的一块圆角矩形侧边栏，宽 = 页面宽度的 30%，
        底色 / 圆角 / 目录排版与 PC 固定栏一致；再点圆环、点页面其它地方、
        按 Esc、点目录里的条目都会收起。
@@ -2132,13 +2133,18 @@ mark {
    ======================================================== */
 
 /* ---------- 16.1 圆环本体 ----------
-   --st-center-x / --st-center-y 就是“几何中心：left 5%、top 15%”。
+   --st-center-x / --st-center-y 就是“几何中心：left 10%、top 25%”。
    position: fixed 的 left / top 百分比天然是相对视口算的，所以任何屏幕尺寸
    下圆环的中心都钉在同一个相对位置。
 
    --st-ring 是看得见的那个圆环的直径；--st-hit 是按钮的点击热区，比圆环大
    一圈（手指按得到），热区本身完全透明。圆环画在 ::before 上、在热区里
-   居中，于是“按得准”与“几何中心就在 (5%, 15%)”互不干扰。 */
+   居中，于是“按得准”与“几何中心就在 (10%, 25%)”互不干扰。
+
+   观感是【平面】的：只有一圈实色圆环，没有 box-shadow、没有光晕、没有
+   半透明填充；颜色取页眉底色 #0A1C37，与页眉是同一种蓝。
+   展开时把环填满 = “再点一下会收起”；悬停时给一层极淡的同色平铺
+   （同样是平的，不是发光）。 */
 
 /* 圆环只在抽屉形态下才存在：脚本只在抽屉形态里建它（切回 PC 后节点仍留在
    DOM 里，没必要每次缩放都建 / 删一遍）。没有 .sidebar-drawer 时它就是一枚
@@ -2150,11 +2156,14 @@ display: none;
 }
 
 .sidebar-drawer .side-toggle {
---st-ring: 1.5rem;
---st-hit: 2.75rem;
---st-color: #C7C6F2;
---st-center-x: 5%;
---st-center-y: 15%;
+/* 直径 / 边框 / 热区三者一起按 1.5 倍放大（原来是 1.5rem / 0.25rem / 2.75rem），
+   环的粗细比例因此保持不变，只是整体变大了一圈 */
+--st-ring: 2.25rem;
+--st-border: 0.375rem;
+--st-hit: 4.125rem;
+--st-color: #0A1C37;        /* = 页眉 header 的 background-color */
+--st-center-x: 10%;
+--st-center-y: 25%;
 
 /* 上面那条 .side-toggle 把默认形态设成 display: none，这里必须重新打开，
    否则圆环在抽屉形态下也一样不显示（按钮盒子留白、点击热区全靠它） */
@@ -2164,7 +2173,7 @@ left: var(--st-center-x);
 top: var(--st-center-y);
 width: var(--st-hit);
 height: var(--st-hit);
-/* 从左上角反推半个身位：这样【几何中心】正好落在 (5%, 15%) */
+/* 从左上角反推半个身位：这样【几何中心】正好落在 (10%, 25%) */
 transform: translate(-50%, -50%);
 margin: 0;
 padding: 0;
@@ -2187,7 +2196,7 @@ transition: opacity 0.24s cubic-bezier(0.25, 1, 0.5, 1),
             visibility 0s linear 0.24s;
 }
 
-/* 圆环本体：空心圆 + 一圈淡淡的同色光晕，衬在白卡片上也看得清 */
+/* 圆环本体：一圈实色环，平面的 —— 没有投影、没有光晕、没有底填充 */
 .sidebar-drawer .side-toggle::before {
 content: "";
 position: absolute;
@@ -2196,27 +2205,22 @@ top: 50%;
 width: var(--st-ring);
 height: var(--st-ring);
 box-sizing: border-box;
-border: 0.25rem solid var(--st-color);
+border: var(--st-border) solid var(--st-color);
 border-radius: 50%;
-background-color: rgba(199, 198, 242, 0.16);
-box-shadow: 0 0 0 0.1875rem rgba(199, 198, 242, 0.22),
-            0 0.25rem 0.875rem rgba(20, 47, 92, 0.18);
+background-color: transparent;
+box-shadow: none;
 transform: translate(-50%, -50%);
-transition: background-color 0.22s ease,
-            box-shadow 0.22s ease,
-            transform 0.22s ease;
+transition: background-color 0.2s ease;
 }
 
-/* 展开中：圆环填满同色、略微收小 —— “再点一下会收起” */
+/* 展开中：环填满同色（不加投影、不改大小）—— “再点一下会收起” */
 .sidebar-drawer .side-toggle.is-open::before {
 background-color: var(--st-color);
-box-shadow: 0 0 0 0.3125rem rgba(199, 198, 242, 0.3),
-            0 0.25rem 1rem rgba(20, 47, 92, 0.24);
-transform: translate(-50%, -50%) scale(0.86);
 }
 
+/* 悬停：极淡的一层同色平铺，仍然是平的，不发亮 */
 .sidebar-drawer .side-toggle:hover::before {
-background-color: rgba(199, 198, 242, 0.42);
+background-color: rgba(10, 28, 55, 0.12);
 }
 
 .sidebar-drawer .side-toggle.is-open:hover::before {
@@ -2256,8 +2260,9 @@ transition: opacity 0.28s cubic-bezier(0.25, 1, 0.5, 1),
 --side-width: 30%;
 
 left: 2.5%;
-/* 让开圆环：圆环中心在 15% 页面高、直径 1.5rem，这里再留一点空隙 */
-top: calc(15% + 1.75rem);
+/* 让开圆环：圆环中心在 25% 页面高、半径 1.125rem（直径 2.25rem），
+   这里再留 0.625rem 空隙 —— 抽屉正好从圆环下沿外面开始，不压住圆环 */
+top: calc(25% + 1.75rem);
 width: var(--side-width);
 height: auto;
 max-height: 60vh;
@@ -2316,7 +2321,7 @@ display: none !important;
 }
 
 .sidebar-drawer .side-toggle::before {
-    transition: background-color 0.2s linear, box-shadow 0.2s linear;
+    transition: background-color 0.2s linear;
 }
 
 .sidebar-drawer .side-toggle.is-open::before {
