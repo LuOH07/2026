@@ -1,3 +1,44 @@
+/* ========================================================
+   0. 侧边栏文字工具：首单词首字母大写
+   ========================================================
+   侧边目录（#tocNav）里每个标题的文字，只把【第一个单词的首字母】改成
+   大写，其余字符一个都不动 —— 正文标题本身写没写大写都一样：
+
+       <h2 class="heading-2">the evolution of gene-editing technology</h2>
+       正文：the evolution of gene-editing technology   （原样，不动）
+       侧边：The evolution of gene-editing technology
+
+   规则细节：
+     · 只改第一个“字母”字符，它前面的数字、空格、引号、括号一律跳过
+       （"1. the ..." → "1. The ..."、"“better”..." → "“Better”..."）；
+     · 只改这一个字母，其余字符一概不动（绝不把整串小写化）：
+       首字母本来是大写就原样返回；"mRNA …" → "MRNA …" 里的 R、N 也保持原样；
+     · 找不到字母（纯数字 / 纯符号标题）就原样返回。
+
+   ★ 这个函数被【两处】用到，两处必须用同一个 —— 任何一处漏掉，
+     另一处都会把文字改回原样（它们在同一个目录项上先后写文字）：
+       ① 第 2 节 headingLabel()：首次构建目录项时的文字与 title 提示；
+       ② 第 4 节 cleanTocItem()：剔除 <e> 之后按标题重算目录文字。
+   正文 DOM 永远不会被这里改动（只改目录项的 .toc-text 文字节点）。
+   ======================================================== */
+function capitalizeSidebarLabel(text) {
+    if (!text) return '';
+
+    for (var i = 0; i < text.length; i++) {
+        var ch = text.charAt(i);
+
+        /* “有大小写之分”的字符：小写化与大写化结果不同的才是字母。
+           数字、空格、标点、引号两类结果相同，直接跳过（不算首字母）。 */
+        if (ch.toLowerCase() === ch.toUpperCase()) continue;
+
+        var upper = ch.toUpperCase();
+        if (upper === ch) return text;          /* 首字母已经是大写：一个字都不用改 */
+        return text.slice(0, i) + upper + text.slice(i + 1);
+    }
+
+    return text;                                 /* 整串没有字母（纯数字 / 纯符号） */
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
     /* 移动端断点：1024px —— 与 description.css 第 8 节、以及全站页眉
@@ -423,8 +464,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // 纯滚轮/滚动距离计算：超过齐平临界点后向下滑动的溢出距离 (px)
                 const overflowDistance = targetTop - alignedTop; // >= 0
-                // 渐隐滚动的缓冲行程（160px 行程提供最自然的滚轮过渡感）
-                const fadeRange = 160;
+
+                /* 渐隐滚动的缓冲行程（160px 行程提供最自然的滚轮过渡感）。
+                   但行程必须收在“页面能滚到的最后一像素”之内，否则底边对齐之后
+                   剩下的滚动距离不够 160px 时，透明度就停在一个大于 0 的值上 ——
+                   这就是“拉到底 sidebar 没有完全消失”：侧边栏半透明地压在正文
+                   末段上，直到最后一屏也不归零。
+                   所以实际行程取 min(160, 底部还能再滚出来的溢出量)：
+                   一到底，opacity 正好是 0（<= 0.02 即 visibility: hidden）。 */
+                const docMaxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+                const mainBottomInDoc = mainRect.bottom + window.scrollY;
+                // 滚到最底时侧边栏的齐平位置 → 那时还能溢出多少
+                const overflowAtBottom = Math.max(0, targetTop - (mainBottomInDoc - docMaxScroll - sidebarHeight));
+                const fadeRange = Math.max(1, Math.min(160, overflowAtBottom));
+
                 const fadeProgress = Math.min(1, Math.max(0, overflowDistance / fadeRange));
                 const opacity = Math.max(0, 1 - fadeProgress);
 
@@ -465,14 +518,21 @@ document.addEventListener('DOMContentLoaded', () => {
     /* 侧边目录里的标题文字：只取主标题，不含副标题（副标题见第 8 节）。
        第 8 节在 DOMContentLoaded 之前就把副标题搬出了标题元素，正常情况下
        这里根本走不到克隆分支；留着是为了兜住“副标题是后来才插进标题里的”
-       这类极端情况，保证侧边栏里永远不会混进副标题文字。 */
+       这类极端情况，保证侧边栏里永远不会混进副标题文字。
+
+       最后一步的 capitalizeSidebarLabel() 是【侧边栏专属】的排版规则：
+       目录里每个标题都首单词首字母大写，正文标题保持原样（见本文件第 0 节）。
+       第 4 节 cleanTocItem() 重算目录文字时用的是同一个函数，否则那边会把
+       这里的大写改回去。 */
     const headingLabel = (heading) => {
-        if (!heading.querySelector('.heading-sub')) return heading.textContent.trim();
+        if (!heading.querySelector('.heading-sub')) {
+            return capitalizeSidebarLabel(heading.textContent.trim());
+        }
 
         const clone = heading.cloneNode(true);
         const cloneSub = clone.querySelector('.heading-sub');
         if (cloneSub && cloneSub.parentNode) cloneSub.parentNode.removeChild(cloneSub);
-        return clone.textContent.trim();
+        return capitalizeSidebarLabel(clone.textContent.trim());
     };
 
     headings.forEach((heading) => {
@@ -822,6 +882,10 @@ document.addEventListener('DOMContentLoaded', () => {
    注意：正文里的 <e></e> 一个都不会被改动，只在“克隆出来的节点”
    上做剔除，因此正文永远照常显示。
 
+   剔除完还会按第 0 节的规则把目录文字的首单词首字母大写（本文件 4.1
+   的 cleanTocItem 里调用的 capitalizeSidebarLabel）：这一节会把目录文字
+   整段重写，不在这里再大写一次的话，第 2 节大写好的文字会被改回原样。
+
    执行时机：本段代码写在文件末尾、DOMContentLoaded 回调之外，defer
    脚本执行时（readyState 已是 interactive）就会直接启动；此刻第 2 节
    的目录尚未构建，真正生效的是下面的 MutationObserver 回调。
@@ -878,7 +942,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // "<h2>标题 <e>隐藏</e></h2>"），description.js 原本是用
         // textContent.trim() 生成目录文字的，这里保持一致。
         // 正文 DOM 不受影响，只改克隆出来的目录文字。
-        var label = visibleTextOnly(heading).trim();
+        //
+        // 这里必须再套一次 capitalizeSidebarLabel()：目录文字会被本函数
+        // 整段重写，如果只大写一次（第 2 节的 headingLabel），这一步就会
+        // 把首字母改回标题原本的大小写。两处用同一个函数，正文一个字不动。
+        var label = capitalizeSidebarLabel(visibleTextOnly(heading).trim());
 
         Array.prototype.forEach.call(item.querySelectorAll('.toc-text'), function (el) {
             if (el.textContent !== label) el.textContent = label;
@@ -989,10 +1057,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* 只读调试接口：例如在控制台执行
        __IHP__.sidebarLabel(document.querySelector('.heading-2'))
-       即可看到该标题在侧边栏里会显示成什么。 */
+       即可看到该标题在侧边栏里会显示成什么（含首字母大写）。 */
     window.__IHP__ = {
         sidebarLabel: function (heading) {
-            return visibleTextOnly(heading).trim();
+            return capitalizeSidebarLabel(visibleTextOnly(heading).trim());
         },
         refreshToc: function () {
             var nav = document.getElementById('tocNav');
@@ -1994,8 +2062,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
    原先这里是“Kill Switch”组件（suicide.webm 视频 + 绿 / 灰开关，正放 /
    倒放细菌变灰）。换成静态图标后，那套播放机、开关状态机与视频素材一起
-   删掉了 —— 本节只剩下“挂在侧边栏下方、跟着侧边栏一起出现 / 淡出”这一件
-   事，浮动本身交给 CSS。
+   删掉了 —— 本节只剩下“挂在侧边栏下方、跟着侧边栏出现 / 移动、在页脚碰到
+   它之前收起”这一件事，浮动本身交给 CSS。
 
    一、它长在哪儿（与侧边栏绑定的部分）
    ------------------------------------------------------
@@ -2007,7 +2075,8 @@ document.addEventListener('DOMContentLoaded', () => {
        width  = 正文白卡片的左边缘（第 4 节 .main-container 的 margin-left），
                 也就是左侧那条空白带的宽度
        top    = 侧边栏当前的下沿 + 一点空隙
-       height = 视口底部减去 top
+       height = 固定值：侧边栏贴在视口 15% 时“视口底部减去 top”的那一段
+                （不跟侧边栏一起变高变矮，见 9.5 的 ①）
 
    所以侧边栏挪到哪儿、滑到哪儿，图标就贴在它的下沿跟到哪儿；正文白卡片
    的左右边界以后改了（比如 des.css 覆盖了 margin），图标也跟着改。
@@ -2020,12 +2089,14 @@ document.addEventListener('DOMContentLoaded', () => {
           正文往上走 —— 侧边栏都还没到位，图标也不出现；
        ② 正常段（固定在视口 15%）：侧边栏到位，图标淡入，贴在它下沿；
        ③ 收尾段（底边贴齐正文底边、再往下滚就淡出）：侧边栏的 opacity
-          从 1 淡到 0，图标用【同一个透明度】一起淡出。
+          从 1 淡到 0（到底正好归零，见第 2 节的 fadeRange）；图标【不跟】
+          着变淡 —— 它贴在侧边栏下沿继续走，直到页脚上沿快碰到它，就直接
+          收起（.is-cut），绝不半透明地留在页面上、也绝不被页脚盖掉半截。
 
    判断依据一律取侧边栏【此刻的真实状态】（computed 的 display /
    visibility + 内联 opacity + getBoundingClientRect），而不是把第 2 节那
    套公式再抄一遍：以后第 2 节的算法怎么改，这里都不用跟着改，两边天然
-   永远是同一件事。
+   永远是同一件事（图标尺寸与页脚避让是本节自己的两条规则，见 9.5）。
 
    三、上下浮动（纯 CSS，见 description.css 第 15.1 节）
    ------------------------------------------------------
@@ -2058,12 +2129,15 @@ document.addEventListener('DOMContentLoaded', () => {
     var BOTTOM_RATIO = 0.02;        /* 图标底边距视口底部的留白（视口高度比例） */
     var MIN_HEIGHT = 96;            /* 算出来的高度比它还小就不显示（窗口太矮时） */
     var FADE_EPS = 0.02;            /* 透明度低于它就算“已经看不见”（与第 2 节判据一致） */
+    var FOOTER_GAP = 16;            /* 页脚上沿离图标下沿不到这么多 px 就把图标直接收起
+                                       （不让页脚把图标盖掉半截，见 9.5 的 ③） */
 
     /* ------------------------------------------------------
        9.2 运行时状态
        ------------------------------------------------------ */
     var side = null;        /* #sideContainer：位置与透明度的来源 */
     var main = null;        /* #mainContainer：只用来量左侧空白带的宽度 */
+    var foot = null;        /* 页脚 <footer>：图标不许被它盖住（见 9.5 的 ③） */
     var el = null;          /* 外壳 .side-pole */
     var ico = null;         /* <img class="side-pole__ico"> */
     var gutter = 0;         /* 左侧空白带的宽度（px），随窗口尺寸重算 */
@@ -2106,7 +2180,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ------------------------------------------------------
-       9.5 位置与透明度：与侧边栏的三段滚动对齐
+       9.5 位置、尺寸与显隐：与侧边栏的三段滚动对齐
        ------------------------------------------------------
        全部从侧边栏【此刻的真实状态】推出来（见本节开头“二”），组件自己不
        再重算一套公式：
@@ -2114,9 +2188,26 @@ document.addEventListener('DOMContentLoaded', () => {
          · 窄屏 / 图标坏了                → 不显示；
          · 侧边栏 display: none 或不可见  → 不显示（例如目录为空时的 .is-empty）；
          · 侧边栏顶边还在 15vh 下面       → ① 滑入段，不显示；
-         · 侧边栏 opacity ≤ 0.02          → ③ 收尾段末尾，不显示；
-         · 其余（② 正常段 / ③ 收尾段）    → 显示，贴在侧边栏下沿，
-                                            透明度跟侧边栏的内联 opacity 走。
+         · 侧边栏 opacity ≤ 0.02          → 页尾淡出已经走完，不显示；
+         · 页脚上沿离图标下沿不到 FOOTER_GAP
+                                          → 立刻收起（见下面的说明）；
+         · 其余（② 正常段 / ③ 收尾段）    → 显示，贴在侧边栏下沿。
+
+       三件事与以前不同，都是一次只做一件、互不牵连：
+
+       ① 尺寸固定。以前 height = 视口底部 − 图标上沿，而图标上沿跟着侧边栏的
+          下沿走：侧边栏在页尾往上收（底边贴齐正文卡片）时，这段高度会从
+          ≈176px 长到 ≈310px，图标跟着放大 1.7 倍。现在只按“侧边栏贴在
+          15% 那一刻”的高度算（fixedHeight），之后无论侧边栏怎么滑，
+          图标都是同一个尺寸、跟着上下移动。
+       ② 不再跟侧边栏一起变淡。以前把侧边栏的内联 opacity 直接写给图标，
+          于是页尾那段里图标会半透明地留在页面上。现在图标要么整块在（CSS
+          的 opacity: 1），要么被收起；侧边栏自己的淡出与它无关。
+       ③ 页脚快碰到时就收起。图标是左侧空白带里的装饰，页脚又从最下面整条
+          升上来（footer 的 z-index: 40 高于图标的 9），两者的边缘一交叠，
+          图标就会被页脚从下往上“吃掉”半截 —— 看着像被裁掉了一块。所以
+          在页脚上沿离图标下沿不足 FOOTER_GAP 时直接收起（.is-cut，不做
+          渐变），宁可整块消失，也不留半截露在页脚上。
 
        抖动 / 高度不够（窗口太矮）也一并按“不显示”处理，绝不半截露在外面。 */
     function sync() {
@@ -2134,31 +2225,48 @@ document.addEventListener('DOMContentLoaded', () => {
         /* ① 滑入段：侧边栏还没滑到正常位置 —— 图标也不出现 */
         if (rect.top > normalTop + 1) { hideComponent(); return; }
 
-        /* ③ 收尾段：侧边栏被第 2 节写成越来越透明，已经看不见了就不必再放它 */
+        /* 页尾：侧边栏本体已经被第 2 节淡到看不见了 —— 图标不单独留在页面上 */
         var opacity = parseFloat(side.style.opacity);
         if (isNaN(opacity)) opacity = 1;
         if (opacity <= FADE_EPS) { hideComponent(); return; }
 
-        /* 位置：紧贴侧边栏下沿，向下铺满到视口底部（留一点空隙） */
+        /* 尺寸：固定成“侧边栏贴在视口 15%”那一刻的高度（见上面 ①） */
+        var fixedHeight = (vh - vh * BOTTOM_RATIO) -
+                          (vh * NORMAL_TOP_RATIO + rect.height + vh * GAP_RATIO);
+        if (fixedHeight < MIN_HEIGHT) { hideComponent(); return; }
+
         var top = rect.bottom + vh * GAP_RATIO;
-        var height = (vh - vh * BOTTOM_RATIO) - top;
-        if (height < MIN_HEIGHT) { hideComponent(); return; }
+        var bottom = top + fixedHeight;
+
+        /* 页脚快碰到图标下沿：直接收起（见上面 ③） */
+        var footerTop = foot ? foot.getBoundingClientRect().top : Infinity;
+        if (footerTop - bottom < FOOTER_GAP) { hideNow(); return; }
 
         el.style.left = '0px';
         el.style.width = gutter + 'px';
         el.style.top = Math.round(top) + 'px';
-        el.style.height = Math.round(height) + 'px';
+        el.style.height = Math.round(fixedHeight) + 'px';
 
+        el.classList.remove('is-cut');
         el.classList.add('is-visible');
-        /* ② 正常段：清掉内联值 → 用 CSS 的 opacity: 1（走淡入过渡）；
-           ③ 收尾段：直接跟侧边栏的透明度，两边同时、同一条曲线往下走 */
-        el.style.opacity = opacity >= 0.999 ? '' : String(Math.round(opacity * 1000) / 1000);
+        /* 不透明度回到 CSS 的 opacity: 1（见上面 ②）：图标不跟侧边栏一起变淡 */
+        el.style.opacity = '';
     }
 
-    /* 收起来：摘掉 .is-visible，CSS 回到 opacity: 0 并延迟隐藏 */
+    /* 收起来：摘掉 .is-visible，CSS 回到 opacity: 0 并延迟隐藏（走 0.2s 过渡） */
     function hideComponent() {
         if (!el) return;
         el.classList.remove('is-visible');
+        el.classList.remove('is-cut');
+        el.style.opacity = '';
+    }
+
+    /* 立刻收起：不做任何过渡（见上面 ③）。页脚要碰到图标时用它 ——
+       200ms 的淡出在这条路径上反而会让图标“先被页脚盖住、再慢慢淡掉”。 */
+    function hideNow() {
+        if (!el) return;
+        el.classList.remove('is-visible');
+        el.classList.add('is-cut');
         el.style.opacity = '';
     }
 
@@ -2208,6 +2316,9 @@ document.addEventListener('DOMContentLoaded', () => {
         side = document.getElementById('sideContainer');
         main = document.getElementById('mainContainer') ||
                document.querySelector('.main-container');
+        /* 页脚：图标在它升上来之前就要收起（见 9.5 的 ③）。页面上没有
+           <footer> 时保持 null，判定里按 Infinity 处理 —— 图标正常显示。 */
+        foot = document.querySelector('footer');
 
         /* 没有侧边栏的页面（页面上没有 <aside class="side-container">）什么都不做 */
         if (!side || !main) return;
