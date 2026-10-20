@@ -1,3 +1,5 @@
+/* 注意：width 会被 max-width 压住，所以 width 写 50% 以上都看不出差别
+   （description.css 里 .figure-image 的 max-width 是 60%，本文件又限到 50%）。 */
 @media (min-width: 1025px) {
     .main-container > img.figure-image:nth-of-type(4) {
         width: 80%;
