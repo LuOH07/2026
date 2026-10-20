@@ -10,12 +10,12 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='home/5.css') }}">
 <style>
   /* 与站点页眉 / 页脚的接缝：只补三行，static/home/ 里不动。
-     这一页的坐标系就是 body（1.js 把页面高度写在 body 上、底图也是 body 的背景），
-     所以「让出页眉高度」要挪 body 本身，而不是挪里面那些绝对定位的元素。 */
-  html { background-color: #fff; }   /* 阻断 body 背景向画布传播，底图才会跟着 body 一起下移 */
-  body { margin-top: 4rem; }         /* 4rem = 页眉高度：整页下移一个页眉，首屏不被固定页眉遮挡 */
+     整页下移靠【根元素】的外边距，不能挪 body：这一页的底图是 body 的背景，
+     会传播成“画布背景”、按根元素盒子定位；body 自己的高度只有底图高（不含
+     顶部视频那截 --lead-in），挪 body 的话底图会被裁掉最后一截，页脚前面留白。 */
+  html { margin-top: 4rem; }   /* 4rem = 页眉高度：整页下移一个页眉，首屏不被固定页眉遮挡 */
   /* 窄屏页眉是 3.1rem（见 head_foot.css 的 @media (max-width: 1024px)），这里跟着换 */
-  @media (max-width: 1024px) { body { margin-top: 3.1rem; } }
+  @media (max-width: 1024px) { html { margin-top: 3.1rem; } }
   /* 舞台高 = 底图高（1.js 写在 body 上的 height）+ 顶部视频引导段 + 手机端接续的底图，
      页脚正好接在底图末端（--lead-in 由 1.js 写、--m5-blank 由 5.js 写在 :root 上）。 */
   #main-content { height: calc(100% + var(--lead-in, 0px) + var(--m5-blank, 0px)); }
