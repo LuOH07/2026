@@ -1892,7 +1892,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         scrollBackToTop: {
             position: 'fixed',
-            right: '45px',
+            right: '2.8125rem', /* 45px —— 与全站 rem 基准（1rem = 16px）一致 */
             top: '23vh',
             zIndex: '92',
             transform: 'translateY(-50%)',
@@ -2242,7 +2242,7 @@ document.addEventListener('DOMContentLoaded', () => {
         var footerTop = foot ? foot.getBoundingClientRect().top : Infinity;
         if (footerTop - bottom < FOOTER_GAP) { hideNow(); return; }
 
-        el.style.left = '0px';
+        el.style.left = '0';
         el.style.width = gutter + 'px';
         el.style.top = Math.round(top) + 'px';
         el.style.height = Math.round(fixedHeight) + 'px';

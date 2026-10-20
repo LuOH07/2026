@@ -73,21 +73,21 @@
     font: inherit;                 /* 先抹掉浏览器默认的蓝色小字号 */
     font-weight: bold;
     text-decoration: underline;
-    text-decoration-thickness: 1.5px;
-    text-underline-offset: 3px;
+    text-decoration-thickness: 0.09375rem;
+    text-underline-offset: 0.1875rem;
     transition: text-decoration-thickness 0.15s ease;
 }
 
 .title-header-wrapper .hero-hp-note a:hover,
 .title-header-wrapper .hero-hp-note a:focus-visible {
-    text-decoration-thickness: 2.5px;
+    text-decoration-thickness: 0.15625rem;
 }
 
 /* 键盘聚焦时给一个不依赖颜色的焦点框 */
 .title-header-wrapper .hero-hp-note a:focus-visible {
-    outline: 2px solid #91ACE0;
-    outline-offset: 4px;
-    border-radius: 3px;
+    outline: 0.125rem solid #91ACE0;
+    outline-offset: 0.25rem;
+    border-radius: 0.1875rem;
 }
 
 /* ============================================================
@@ -98,7 +98,7 @@
    ============================================================ */
 html.ihp-js .title-header-wrapper .hero-hp-note {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(0.5rem);
     transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
@@ -154,7 +154,7 @@ html.ihp-js .title-header-wrapper .hero-hp-note.is-compact {
         max-width: none;
         font-size: 0.8125rem;
         line-height: 1.85;
-        letter-spacing: 0.2px;
+        letter-spacing: 0.0125rem;
         /* 移动端也保持居中：这句话在手机上接在首屏贴图下方，
            与贴图里居中排的标题、引言对齐，不做左对齐的正文块 */
         text-align: center;
@@ -163,7 +163,7 @@ html.ihp-js .title-header-wrapper .hero-hp-note.is-compact {
 
     .title-header-wrapper .hero-hp-note a,
     .title-header-wrapper .hero-hp-note a:visited {
-        text-underline-offset: 2px;
+        text-underline-offset: 0.125rem;
     }
 }
 

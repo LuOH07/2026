@@ -84,6 +84,14 @@ Edit `wiki/pages/<page>.html` and replace its under-development message with pag
 
 Complex pages may use `wiki/pages/<page>/index.html` with section templates alongside it. Both forms keep the same URL. When converting a simple page, remove its old flat file after migrating the content; flat files take precedence when both exist. Members already uses its directory entry.
 
+### Styling units
+
+The root font size is pinned to `16px` in `static/head_foot/head_foot.css`, so `1rem`
+is exactly `16px` on every machine and the browser/OS default font size (system text
+size, 125%/150% settings) no longer changes the layout. Write all lengths as `rem`
+(or `%`, `vw`, `vh`, `cqw`/`cqh` for viewport/container-relative sizing) and keep
+`px` only in media-query breakpoints, which must never follow the font size.
+
 ## Pending manual cleanup
 
 Keep all 28 simple `.html` files directly inside `wiki/pages/` and keep `wiki/pages/members/`. Delete only the redundant `wiki/pages/members.html`, the old `wiki/members/` directory, and the 28 other subdirectories directly inside `wiki/pages/` (each contains a duplicate `index.html`). No files were deleted automatically.

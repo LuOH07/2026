@@ -134,7 +134,7 @@ top: calc(50% + 5vw);
 transform: translateY(-50%) scale(2.5);
 transform-origin: center left;
 width: 25vw;
-max-width: 320px;
+max-width: 20rem;
 height: auto;
 z-index: 1;
 display: flex;
@@ -161,7 +161,7 @@ bottom: 0vh;
 transform: scale(1.6);
 transform-origin: bottom right;
 width: 22vw;
-max-width: 300px;
+max-width: 18.75rem;
 height: auto;
 z-index: 1;
 display: flex;
@@ -186,8 +186,8 @@ position: absolute;
 right: 3vw;
 top: 9vh;
 width: 20vw;
-max-width: 260px;
-min-width: 140px;
+max-width: 16.25rem;
+min-width: 8.75rem;
 height: auto;
 z-index: 10;
 display: flex;
@@ -205,7 +205,7 @@ object-fit: contain;
 display: block;
 user-select: none;
 -webkit-user-drag: none;
-filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.06));
+filter: drop-shadow(0 0.375rem 1rem rgba(0, 0, 0, 0.06));
 }
 
 /* 中央大标题图片 */
@@ -253,7 +253,7 @@ top: calc(52% + 5.5vh);
 left: 50%;
 transform: translateX(-50%);
 width: 90%;
-max-width: 880px;
+max-width: 55rem;
 text-align: center;
 z-index: 10;
 pointer-events: auto;
@@ -279,7 +279,7 @@ transform: translateX(-50%);
 display: flex;
 align-items: center;
 justify-content: center;
-gap: 20px;
+gap: 1.25rem;
 z-index: 10;
 pointer-events: auto;
 user-select: none;
@@ -287,10 +287,10 @@ user-select: none;
 
 .scroll-line {
 display: inline-block;
-width: clamp(30px, 3.5vw, 52px);
-height: 1.5px;
+width: clamp(1.875rem, 3.5vw, 3.25rem);
+height: 0.09375rem;
 background-color: #8da2a6;
-border-radius: 1px;
+border-radius: 0.0625rem;
 }
 
 .scroll-text {
@@ -306,12 +306,12 @@ white-space: nowrap;
 
 .bottom-dots-decor {
 position: absolute;
-bottom: 12px;
+bottom: 0.75rem;
 left: 0;
 width: 100%;
-height: 24px;
-background-image: radial-gradient(circle at center, #9db3b8 5px, transparent 5.5px);
-background-size: 38px 24px;
+height: 1.5rem;
+background-image: radial-gradient(circle at center, #9db3b8 0.3125rem, transparent 0.34375rem);
+background-size: 2.375rem 1.5rem;
 background-repeat: repeat-x;
 background-position: center center;
 opacity: 0.2;
@@ -329,8 +329,8 @@ top: 10vh;
 width: 15%;
 height: 60vh;
 background-color: #142F5C;
-border-radius: 0 32px 32px 0;
-box-shadow: 4px 12px 35px rgba(20, 47, 92, 0.16), 0 2px 10px rgba(0, 0, 0, 0.04);
+border-radius: 0 2rem 2rem 0;
+box-shadow: 0.25rem 0.75rem 2.1875rem rgba(20, 47, 92, 0.16), 0 0.125rem 0.625rem rgba(0, 0, 0, 0.04);
 transition: box-shadow 0.3s ease, opacity 0.2s cubic-bezier(0.25, 1, 0.5, 1);
 will-change: top, opacity;
 z-index: 10;
@@ -338,8 +338,8 @@ z-index: 10;
 /* 上下沿留白的两个尺寸（见 3.0）。纵向那圈留白没有写在本体上，而是作为
    padding 写进了目录本体 .toc-nav（见 3.1）：滚动发生在目录上，留白必须
    跟着内容一起滚，静止时第一行、滚到底时最后一行才都离边缘这么远。 */
---side-gap-y: 32px;
---side-gap-x: 16px;
+--side-gap-y: 2rem;
+--side-gap-x: 1rem;
 
 padding: 0;
 display: flex;
@@ -394,12 +394,12 @@ background-image: linear-gradient(to top, #142F5C 0%, #142F5C 55%, rgba(20, 47, 
 
 /* 滚动条挂在真正滚动的目录本体上（原先挂在 .side-container 上） */
 .toc-nav::-webkit-scrollbar {
-width: 4px;
+width: 0.25rem;
 }
 
 .toc-nav::-webkit-scrollbar-thumb {
 background: rgba(255, 255, 255, 0.25);
-border-radius: 4px;
+border-radius: 0.25rem;
 }
 
 .toc-nav::-webkit-scrollbar-thumb:hover {
@@ -415,7 +415,7 @@ bottom: auto;
 left: auto;
 display: flex;
 flex-direction: column;
-gap: 20px;
+gap: 1.25rem;
 width: 100%;
 min-width: 0;
 max-width: none;
@@ -461,8 +461,8 @@ position: relative;
 display: flex;
 align-items: center;
 justify-content: flex-start;
-gap: 10px;
-padding-right: 24px;
+gap: 0.625rem;
+padding-right: 1.5rem;
 text-decoration: none;
 cursor: pointer;
 width: 100%;
@@ -471,7 +471,7 @@ transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .toc-item:hover {
-transform: translateX(4px);
+transform: translateX(0.25rem);
 }
 
 .toc-text {
@@ -482,7 +482,7 @@ font-size: 1.125rem;
 letter-spacing: 0;
 line-height: 1.6;
 text-decoration: underline;
-text-underline-offset: 4px;
+text-underline-offset: 0.25rem;
 white-space: normal;
 overflow: visible;
 text-overflow: clip;
@@ -496,7 +496,7 @@ transition: color 0.25s ease, text-shadow 0.25s ease;
 
 .toc-item:hover .toc-text {
 color: #FFFFF4;
-text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+text-shadow: 0 0 0.375rem rgba(255, 255, 255, 0.4);
 }
 
 .toc-circle {
@@ -536,11 +536,11 @@ text-align: left;
 .toc-triangle {
 display: none;
 position: absolute;
-right: 1px;
+right: 0.0625rem;
 top: 50%;
 transform: translateY(-50%);
-width: 15px;
-height: 17px;
+width: 0.9375rem;
+height: 1.0625rem;
 background-color: #FDEC9E;
 clip-path: polygon(0 50%, 100% 0, 100% 100%);
 flex-shrink: 0;
@@ -564,7 +564,7 @@ text-align: left;
 
 .toc-item-h3.active .toc-text {
 color: #FFFFF4;
-text-shadow: 0 0 5px rgba(217, 210, 80, 0.8), 0 0 10px rgba(217, 210, 80, 0.5);
+text-shadow: 0 0 0.3125rem rgba(217, 210, 80, 0.8), 0 0 0.625rem rgba(217, 210, 80, 0.5);
 }
 
 /* ========================================================
@@ -575,12 +575,12 @@ margin-left: 17%;
 margin-right: 4%;
 margin-top: 6%;   /* 原 17%：标题首屏与正文之间留白过大，压缩为一点点间隔 */
 margin-bottom: 10vh;
-padding-top: 48px;
-padding-bottom: 48px;
+padding-top: 3rem;
+padding-bottom: 3rem;
 min-height: 260vh;
 background-color: #FEFEFE;
-border-radius: 24px;
-box-shadow: 0 12px 35px rgba(0, 0, 0, 0.06), 0 2px 10px rgba(0, 0, 0, 0.04);
+border-radius: 1.5rem;
+box-shadow: 0 0.75rem 2.1875rem rgba(0, 0, 0, 0.06), 0 0.125rem 0.625rem rgba(0, 0, 0, 0.04);
 transition: all 0.3s ease;
 }
 
@@ -607,7 +607,7 @@ align-items: center;
      · 左边的装饰矩形仍垂直居中于整块文字，不会跟着文字一起拉长。 */
 height: auto;
 min-height: 8vh;
-gap: 20px;
+gap: 1.25rem;
 margin-left: 8%;
 margin-right: 8%;
 font-weight: 700;
@@ -676,7 +676,7 @@ content: "";
 display: inline-block;
 flex-shrink: 0;
 height: 6vh;
-border-radius: 8px 0 0 8px;
+border-radius: 0.5rem 0 0 0.5rem;
 clip-path: polygon(
 0 0,
 calc(100% - 4.2vh) 0,
@@ -717,7 +717,7 @@ content: "";
 display: inline-block;
 flex: 1;
 height: 6vh;
-border-radius: 0 8px 8px 0;
+border-radius: 0 0.5rem 0.5rem 0;
 clip-path: polygon(
 100% 0,
 4.2vh 0,
@@ -757,7 +757,7 @@ clip-path: polygon(
 font-family: 'harding-text-web-regular-regular', -apple-system, sans-serif;
 font-stretch: semi-condensed;
 font-size: 1.125rem;
-letter-spacing: 0.5px;
+letter-spacing: 0.03125rem;
 line-height: 2;
 color: #465E77;
 text-align: justify;
@@ -812,7 +812,7 @@ width: 100%;
     max-width: 60%;             
     height: auto;
     margin-top: 1.5em;          
-    margin-bottom: 12px;        
+    margin-bottom: 0.75rem;        
     margin-left: auto;          
     margin-right: auto;                   
 }
@@ -822,7 +822,7 @@ width: 100%;
     font-size: 1.125rem;
     font-weight: bold;          
     line-height: 1.5;           
-    letter-spacing: 0.5px;     
+    letter-spacing: 0.03125rem;     
     color: #748699;             
     text-align: center;        
     margin-top: 0;              
@@ -907,7 +907,7 @@ white-space: nowrap;
 }
 
 .scroll-back-to-top:hover {
-filter: drop-shadow(0 0 6px rgba(136, 216, 177, 0.6));
+filter: drop-shadow(0 0 0.375rem rgba(136, 216, 177, 0.6));
 }
 
 /* ========================================================
@@ -943,11 +943,11 @@ filter: drop-shadow(0 0 6px rgba(136, 216, 177, 0.6));
 margin-left: 4%;
 margin-right: 4%;
 width: auto;
-margin-top: 56px;         /* 让开固定页眉（桌面 4rem / 移动端 3.1rem）；原 96px 空白过大已压缩 */
+margin-top: 3.5rem;         /* 让开固定页眉（桌面 4rem / 移动端 3.1rem）；原 96px 空白过大已压缩 */
 margin-bottom: 6vh;
-padding: 24px 0 32px;
+padding: 1.5rem 0 2rem;
 min-height: 0;
-border-radius: 18px;
+border-radius: 1.125rem;
 }
 
 /* ---------- 8.2 侧边目录（TOC）在移动端整体隐藏 ---------- */
@@ -1011,7 +1011,7 @@ height: auto;
    上下沿开始量 —— 与 PC 端那条规则是同一个道理。 */
 height: auto;
 min-height: 0;
-gap: 12px;
+gap: 0.75rem;
 margin-left: 5%;
 margin-right: 5%;
 }
@@ -1064,7 +1064,7 @@ margin-bottom: 0.7em;
 .body-text {
 font-size: 0.75rem;
 line-height: 1.85;
-letter-spacing: 0.2px;
+letter-spacing: 0.0125rem;
 text-align: left;        
 margin-left: 5%;
 margin-right: 5%;
@@ -1177,7 +1177,7 @@ e.toc-hidden {
 .heading-2:has(e)::before,
 .heading-3:has(e)::before,
 .heading-reference:has(e)::before {
-    margin-right: 20px; /* 顶替被归零的 gap: 20px */
+    margin-right: 1.25rem; /* 顶替被归零的 gap: 20px */
 }
 
 /* 9.2.2 兜底：不支持 :has() 的旧浏览器。description.js 会给含 <e> 的标题加上
@@ -1200,7 +1200,7 @@ e.toc-hidden {
 .heading-2.ihp-has-e::before,
 .heading-3.ihp-has-e::before,
 .heading-reference.ihp-has-e::before {
-    margin-right: 20px;
+    margin-right: 1.25rem;
 }
 
 /* --------------------------------------------------------
@@ -1236,7 +1236,7 @@ mark {
     background-color: #D5D5FF;
     color: inherit;
     padding: 0 0.18em;
-    border-radius: 3px;
+    border-radius: 0.1875rem;
     /* 高亮跨行时，每一行都各自补上内边距与圆角，而不是只在整块首尾补 */
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
@@ -1265,8 +1265,8 @@ mark {
     color: #91ACE0;
     font-weight: bold;
     text-decoration: underline;
-    text-decoration-thickness: 1.5px;
-    text-underline-offset: 3px;
+    text-decoration-thickness: 0.09375rem;
+    text-underline-offset: 0.1875rem;
     transition: text-decoration-thickness 0.15s ease;
 }
 
@@ -1278,7 +1278,7 @@ mark {
 /* 悬停 / 键盘聚焦时只把下划线加粗，不改变颜色与字号 */
 .main-container a:hover,
 .main-container a:focus-visible {
-    text-decoration-thickness: 2.5px;
+    text-decoration-thickness: 0.15625rem;
 }
 
 /* ========================================================
@@ -1286,7 +1286,7 @@ mark {
    ========================================================*/
 .main-container table {
     --wp-table-rule-color: #000000;
-    --wp-table-rule-width: 1.5px;
+    --wp-table-rule-width: 0.09375rem;
     --wp-table-head-bg: #1D2D5E;      /* 表头行底色 */
     --wp-table-head-color: #FFFFFF;   /* 表头行文字颜色 */
 
@@ -1441,7 +1441,7 @@ mark {
     --upfold-open-bg: #465E77;    /* 展开后的底色 */
     --upfold-color: #FFFFFF;      /* 收起时的文字颜色 */
     --upfold-open-color: #ffffff; /* 展开后的文字颜色：与正文 .body-text 一致 */
-    --upfold-radius: 20px;        /* 圆角大小；写成 999px 会变成胶囊形 */
+    --upfold-radius: 1.25rem;        /* 圆角大小；写成 999px 会变成胶囊形 */
     --upfold-font-size: 1.375rem;     /* 与 .heading-3 一致 */
 
     position: relative;           /* 给 JS 注入的装饰元素当参照 */
@@ -1690,8 +1690,8 @@ mark {
        --heading-sub-drop   色带下移多少 px：把色带压到文字下沿再往下一点点，
                             这样只有字母的“脚”（下伸部）会搭在色带上，
                             主体笔画不会被盖住 —— 荧光笔划过字下的观感 */
-    --heading-sub-thick: 7px;
-    --heading-sub-drop: 1px;
+    --heading-sub-thick: 0.4375rem;
+    --heading-sub-drop: 0.0625rem;
 
     display: inline;             /* 宽度随文字伸缩；换行时逐行画色带 */
     font-family: inherit;        /* 字体、字号、字重都跟着所在行（14.3 按级给） */
@@ -1720,7 +1720,7 @@ mark {
     /* 色带两端按“粗的圆边矩形”处理：圆角 999px 在这么扁的盒子上就是两端
        半圆（胶囊头），比固定 20px 的圆角更接近荧光笔的笔头。
        box-decoration-break: clone 让换行后每一行都各自拥有完整的两端圆角。 */
-    border-radius: 999px;
+    border-radius: 62.4375rem;
     -webkit-box-decoration-break: clone;
     box-decoration-break: clone;
 
@@ -1876,7 +1876,7 @@ mark {
 .side-pole {
     /* ---- 可调的尺寸与浮动参数：只改这几行，图标与它的飘动会一起变 ---- */
     --sp-ico-max-w: 88%;              /* 图标宽度上限：空白带的 88%，绝不贴上正文白卡片 */
-    --sp-float: 12px;                 /* 上下浮动的幅度（单侧，px） */
+    --sp-float: 0.75rem;                 /* 上下浮动的幅度（单侧，px） */
     --sp-float-duration: 4.2s;        /* 一个来回（上 → 下 → 上）的周期 */
 
     /* 坐标由脚本写内联样式；这里的 left / width / height 只是脚本没跑起来
@@ -1898,7 +1898,7 @@ mark {
        左侧空白带里原本就没什么可点的东西，不必替它挡住指针。 */
     opacity: 0;
     visibility: hidden;
-    transform: translateY(10px);
+    transform: translateY(0.625rem);
     pointer-events: none;
 
     /* 淡入 / 普通收起（侧边栏还没到位、目录为空、页尾侧边栏淡没…）走这条
@@ -1949,12 +1949,12 @@ mark {
 
 .side-pole__ico {
     display: block;
-    height: calc(100% - var(--sp-float) * 2 - 4px);
+    height: calc(100% - var(--sp-float) * 2 - 0.25rem);
     width: auto;
     max-width: var(--sp-ico-max-w);
     object-fit: contain;
 
-    filter: drop-shadow(0 6px 16px rgba(20, 47, 92, 0.10));  /* 与第 2 节蛋白图一致的轻投影 */
+    filter: drop-shadow(0 0.375rem 1rem rgba(20, 47, 92, 0.10));  /* 与第 2 节蛋白图一致的轻投影 */
     pointer-events: none;         /* 纯装饰：不挡鼠标，也不接点击 */
     -webkit-user-drag: none;
     user-select: none;
@@ -2003,6 +2003,6 @@ mark {
 .side-pole.is-cut {
     opacity: 0;
     visibility: hidden;
-    transform: translateY(10px);
+    transform: translateY(0.625rem);
     transition: none;
 }

@@ -54,7 +54,7 @@ html, body {
   transform: translateY(-50%) scale(2.5);
   transform-origin: center left;
   width: 25vw;
-  max-width: 320px;
+  max-width: 20rem;
   height: auto;
   z-index: 1;
   display: flex;
@@ -81,7 +81,7 @@ html, body {
   transform: scale(1.6);
   transform-origin: bottom right;
   width: 22vw;
-  max-width: 300px;
+  max-width: 18.75rem;
   height: auto;
   z-index: 1;
   display: flex;
@@ -106,8 +106,8 @@ html, body {
   right: 3vw;
   top: 9vh;
   width: 20vw;
-  max-width: 260px;
-  min-width: 140px;
+  max-width: 16.25rem;
+  min-width: 8.75rem;
   height: auto;
   z-index: 10;
   display: flex;
@@ -125,7 +125,7 @@ html, body {
   display: block;
   user-select: none;
   -webkit-user-drag: none;
-  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.06));
+  filter: drop-shadow(0 0.375rem 1rem rgba(0, 0, 0, 0.06));
 }
 
 #gridCanvas {
@@ -176,7 +176,7 @@ html, body {
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
-  max-width: 880px;
+  max-width: 55rem;
   text-align: center;
   z-index: 10;
   pointer-events: auto;
@@ -201,7 +201,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
+  gap: 1.25rem;
   z-index: 10;
   pointer-events: auto;
   user-select: none;
@@ -209,10 +209,10 @@ html, body {
 
 .scroll-line {
   display: inline-block;
-  width: clamp(30px, 3.5vw, 52px);
-  height: 1.5px;
+  width: clamp(1.875rem, 3.5vw, 3.25rem);
+  height: 0.09375rem;
   background-color: #8da2a6;
-  border-radius: 1px;
+  border-radius: 0.0625rem;
 }
 
 .scroll-text {
@@ -228,12 +228,12 @@ html, body {
 
 .bottom-dots-decor {
   position: absolute;
-  bottom: 12px;
+  bottom: 0.75rem;
   left: 0;
   width: 100%;
-  height: 24px;
-  background-image: radial-gradient(circle at center, #9db3b8 5px, transparent 5.5px);
-  background-size: 38px 24px;
+  height: 1.5rem;
+  background-image: radial-gradient(circle at center, #9db3b8 0.3125rem, transparent 0.34375rem);
+  background-size: 2.375rem 1.5rem;
   background-repeat: repeat-x;
   background-position: center center;
   opacity: 0.2;

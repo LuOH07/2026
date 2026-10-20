@@ -25,8 +25,8 @@ html, body {
 }
 
 [data-sting-portrait]:focus-visible {
-  outline: 2px solid #175B50;
-  outline-offset: 4px;
+  outline: 0.125rem solid #175B50;
+  outline-offset: 0.25rem;
 }
 
 /* =======================================================================
@@ -88,7 +88,7 @@ html, body {
     top: 19.06%;
     width: 63.08%;
     height: 7.17%;
-    border-radius: 8px;
+    border-radius: 0.5rem;
     z-index: 2;
     -webkit-tap-highlight-color: transparent;
   }
@@ -99,7 +99,7 @@ html, body {
   }
 
   .members-video-hotspot:focus-visible {
-    outline: 2px solid #175B50;
-    outline-offset: 2px;
+    outline: 0.125rem solid #175B50;
+    outline-offset: 0.125rem;
   }
 }

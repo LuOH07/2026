@@ -19,7 +19,7 @@ html, body {
   z-index: 2 !important;
   clear: both;
   background-color: #f3f7f8 !important;
-  margin-top: -50px !important;
+  margin-top: -3.125rem !important;
 }
 
 .map-underlay {
@@ -38,8 +38,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 18%;
-  max-width: 480px;
-  min-width: 100px;
+  max-width: 30rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -60,8 +60,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 23%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -72,8 +72,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 19%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -102,10 +102,10 @@ html, body {
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 700;
-  line-height: 25px;
-  letter-spacing: -0.364px;
-  width: 60.884px;
-  height: 29.342px;
+  line-height: 1.5625rem;
+  letter-spacing: -0.02275rem;
+  width: 3.80525rem;
+  height: 1.833875rem;
   transform: rotate(-4.138deg);
   z-index: 2;
 }
@@ -117,8 +117,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 18%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(-6deg);
   transform-origin: center center;
@@ -149,10 +149,10 @@ html, body {
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 700;
-  line-height: 25px;
-  letter-spacing: -0.364px;
-  width: 60.884px;
-  height: 29.342px;
+  line-height: 1.5625rem;
+  letter-spacing: -0.02275rem;
+  width: 3.80525rem;
+  height: 1.833875rem;
   transform: rotate(1deg);
   z-index: 2;
 }
@@ -164,8 +164,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 18%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(8deg);
   transform-origin: center center;
@@ -196,10 +196,10 @@ html, body {
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 700;
-  line-height: 25px;
-  letter-spacing: -0.364px;
-  width: 60.884px;
-  height: 29.342px;
+  line-height: 1.5625rem;
+  letter-spacing: -0.02275rem;
+  width: 3.80525rem;
+  height: 1.833875rem;
   transform: rotate(2deg);
   z-index: 2;
 }
@@ -211,8 +211,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 18%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(2deg);
   transform-origin: center center;
@@ -243,10 +243,10 @@ html, body {
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 700;
-  line-height: 25px;
-  letter-spacing: -0.364px;
-  width: 60.884px;
-  height: 29.342px;
+  line-height: 1.5625rem;
+  letter-spacing: -0.02275rem;
+  width: 3.80525rem;
+  height: 1.833875rem;
   transform: rotate(2deg);
   z-index: 2;
 }
@@ -258,8 +258,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 18%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(-4deg);
   transform-origin: center center;
@@ -290,10 +290,10 @@ html, body {
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 700;
-  line-height: 25px;
-  letter-spacing: -0.364px;
-  width: 60.884px;
-  height: 29.342px;
+  line-height: 1.5625rem;
+  letter-spacing: -0.02275rem;
+  width: 3.80525rem;
+  height: 1.833875rem;
   transform: rotate(2deg);
   z-index: 2;
 }
@@ -305,8 +305,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 19%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(6deg);
   transform-origin: center center;
@@ -337,10 +337,10 @@ html, body {
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 700;
-  line-height: 25px;
-  letter-spacing: -0.364px;
-  width: 60.884px;
-  height: 29.342px;
+  line-height: 1.5625rem;
+  letter-spacing: -0.02275rem;
+  width: 3.80525rem;
+  height: 1.833875rem;
   transform: rotate(-4.138deg);
   z-index: 2;
 }
@@ -352,8 +352,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 18%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(4deg);
   transform-origin: center center;
@@ -384,10 +384,10 @@ html, body {
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 700;
-  line-height: 25px;
-  letter-spacing: -0.364px;
-  width: 60.884px;
-  height: 29.342px;
+  line-height: 1.5625rem;
+  letter-spacing: -0.02275rem;
+  width: 3.80525rem;
+  height: 1.833875rem;
   transform: rotate(2deg);
   z-index: 2;
 }
@@ -399,8 +399,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 19%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(-4deg);
   transform-origin: center center;
@@ -431,10 +431,10 @@ html, body {
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 700;
-  line-height: 25px;
-  letter-spacing: -0.364px;
-  width: 60.884px;
-  height: 29.342px;
+  line-height: 1.5625rem;
+  letter-spacing: -0.02275rem;
+  width: 3.80525rem;
+  height: 1.833875rem;
   transform: rotate(-4.138deg);
   z-index: 2;
 }
@@ -446,8 +446,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 18%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(4deg);
   transform-origin: center center;
@@ -478,10 +478,10 @@ html, body {
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 700;
-  line-height: 25px;
-  letter-spacing: -0.364px;
-  width: 60.884px;
-  height: 29.342px;
+  line-height: 1.5625rem;
+  letter-spacing: -0.02275rem;
+  width: 3.80525rem;
+  height: 1.833875rem;
   transform: rotate(2deg);
   z-index: 2;
 }
@@ -493,8 +493,8 @@ html, body {
   z-index: 3;
   pointer-events: auto;
   width: 19%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(0deg);
   transform-origin: center center;
@@ -525,10 +525,10 @@ html, body {
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 700;
-  line-height: 25px;
-  letter-spacing: -0.364px;
-  width: 60.884px;
-  height: 29.342px;
+  line-height: 1.5625rem;
+  letter-spacing: -0.02275rem;
+  width: 3.80525rem;
+  height: 1.833875rem;
   transform: rotate(-4.138deg);
   z-index: 2;
 }
@@ -540,8 +540,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 18%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(-4deg);
   transform-origin: center center;
@@ -572,10 +572,10 @@ html, body {
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 700;
-  line-height: 25px;
-  letter-spacing: -0.364px;
-  width: 60.884px;
-  height: 29.342px;
+  line-height: 1.5625rem;
+  letter-spacing: -0.02275rem;
+  width: 3.80525rem;
+  height: 1.833875rem;
   transform: rotate(2deg);
   z-index: 2;
 }
@@ -587,8 +587,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 19%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(8deg);
   transform-origin: center center;
@@ -621,10 +621,10 @@ html, body {
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 700;
-  line-height: 25px;
-  letter-spacing: -0.364px;
-  width: 60.884px;
-  height: 29.342px;
+  line-height: 1.5625rem;
+  letter-spacing: -0.02275rem;
+  width: 3.80525rem;
+  height: 1.833875rem;
   transform: rotate(-4.138deg);
   z-index: 2;
 }
@@ -636,8 +636,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 18%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(4deg);
   transform-origin: center center;
@@ -668,10 +668,10 @@ html, body {
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 700;
-  line-height: 25px;
-  letter-spacing: -0.364px;
-  width: 60.884px;
-  height: 29.342px;
+  line-height: 1.5625rem;
+  letter-spacing: -0.02275rem;
+  width: 3.80525rem;
+  height: 1.833875rem;
   transform: rotate(2deg);
   z-index: 2;
 }
@@ -683,8 +683,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 18%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(6deg);
   transform-origin: center center;
@@ -715,10 +715,10 @@ html, body {
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 700;
-  line-height: 25px;
-  letter-spacing: -0.364px;
-  width: 60.884px;
-  height: 29.342px;
+  line-height: 1.5625rem;
+  letter-spacing: -0.02275rem;
+  width: 3.80525rem;
+  height: 1.833875rem;
   transform: rotate(2deg);
   z-index: 2;
 }
@@ -730,8 +730,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 18%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(4deg);
   transform-origin: center center;
@@ -762,10 +762,10 @@ html, body {
   font-size: 1.25rem;
   font-style: normal;
   font-weight: 700;
-  line-height: 25px;
-  letter-spacing: -0.364px;
-  width: 60.884px;
-  height: 29.342px;
+  line-height: 1.5625rem;
+  letter-spacing: -0.02275rem;
+  width: 3.80525rem;
+  height: 1.833875rem;
   transform: rotate(2deg);
   z-index: 2;
 }
@@ -777,8 +777,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 34%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -789,8 +789,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 16%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -801,8 +801,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 16%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -813,8 +813,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 16%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -825,8 +825,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 23%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -837,8 +837,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 15%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -849,8 +849,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 20%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -861,8 +861,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 13%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -873,8 +873,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 15%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -885,8 +885,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 15%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -897,8 +897,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 15%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -909,8 +909,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 15%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -921,8 +921,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 15%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -933,8 +933,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 16%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -945,8 +945,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 25%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -957,8 +957,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 15%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -969,8 +969,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 48%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -981,8 +981,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 15%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -993,8 +993,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 15%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -1005,8 +1005,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 15%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -1017,8 +1017,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 15%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -1029,8 +1029,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 15%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
 }
 
@@ -1041,8 +1041,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 19%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   opacity: 0.8;
   transform: rotate(-58deg);
@@ -1056,8 +1056,8 @@ html, body {
   z-index: 1;
   pointer-events: auto;
   width: 21%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   opacity: 0.8;
   transform: rotate(0deg);
@@ -1070,8 +1070,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 15%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   opacity: 0.8;
   transform: rotate(0deg);
@@ -1086,8 +1086,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 13%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   opacity: 0.8;
   transform: rotate(-40deg);
@@ -1101,8 +1101,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 11%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   opacity: 0.8;
   transform: rotate(-60deg);
@@ -1116,8 +1116,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 13%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   opacity: 0.8;
   transform: rotate(45deg);
@@ -1131,8 +1131,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 25%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(-17deg);
   transform-origin: center center;
@@ -1145,8 +1145,8 @@ html, body {
   z-index: 2;
   pointer-events: auto;
   width: 25%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(67deg);
   transform-origin: center center;
@@ -1159,8 +1159,8 @@ html, body {
   z-index: 1;
   pointer-events: auto;
   width: 33%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(0deg);
   transform-origin: center center;
@@ -1173,8 +1173,8 @@ html, body {
   z-index: 1;
   pointer-events: auto;
   width: 33%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(-25deg);
   transform-origin: center center;
@@ -1187,8 +1187,8 @@ html, body {
   z-index: 1;
   pointer-events: auto;
   width: 33%;
-  max-width: 1000px;
-  min-width: 100px;
+  max-width: 62.5rem;
+  min-width: 6.25rem;
   height: auto;
   transform: rotate(40deg);
   transform-origin: center center;
@@ -1204,8 +1204,8 @@ html, body {
   font-size: 4.25rem;
   font-style: normal;
   font-weight: 800;
-  line-height: 54.66px;
-  letter-spacing: -0.364px;
+  line-height: 3.41625rem;
+  letter-spacing: -0.02275rem;
   pointer-events: auto;
 }
 
@@ -1219,7 +1219,7 @@ html, body {
   font-size: 1.5rem;
   font-style: normal;
   font-weight: 300;
-  line-height: 22.1px;
+  line-height: 1.38125rem;
   pointer-events: auto;
 }
 
@@ -1233,8 +1233,8 @@ html, body {
   font-size: 1.625rem;
   font-style: normal;
   font-weight: 300;
-  line-height: 50px;
-  width: 335px;
+  line-height: 3.125rem;
+  width: 20.9375rem;
   pointer-events: auto;
   white-space: nowrap;
 }
@@ -1245,13 +1245,13 @@ html, body {
   left: 14%;
   z-index: 2;
   color: #354453;
-  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   font-family: "Kaisei Tokumin";
   font-size: 3.25rem;
   font-style: normal;
   font-weight: 800;
-  line-height: 74px;
-  letter-spacing: -1.04px;
+  line-height: 4.625rem;
+  letter-spacing: -0.065rem;
   transform: rotate(-12.415deg);
   pointer-events: auto;
   white-space: pre-line;
@@ -1263,13 +1263,13 @@ html, body {
   left: 48%;
   z-index: 2;
   color: #206E63;
-  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   font-family: "Kite One", sans-serif;
   font-size: 1.75rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 74px;
-  letter-spacing: -1.04px;
+  line-height: 4.625rem;
+  letter-spacing: -0.065rem;
   pointer-events: auto;
   white-space: pre-line;
 }
@@ -1280,13 +1280,13 @@ html, body {
   left: 45%;
   z-index: 2;
   color: #206E63;
-  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   font-family: "Kite One", sans-serif;
   font-size: 1.75rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 74px;
-  letter-spacing: -1.04px;
+  line-height: 4.625rem;
+  letter-spacing: -0.065rem;
   pointer-events: auto;
   white-space: pre-line;
 }
@@ -1297,13 +1297,13 @@ html, body {
   left: 45%;
   z-index: 2;
   color: #206E63;
-  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   font-family: "Kite One", sans-serif;
   font-size: 1.75rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 74px;
-  letter-spacing: -1.04px;
+  line-height: 4.625rem;
+  letter-spacing: -0.065rem;
   pointer-events: auto;
   white-space: pre-line;
 }
@@ -1314,13 +1314,13 @@ html, body {
   left: 45.5%;
   z-index: 2;
   color: #206E63;
-  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   font-family: "Kite One", sans-serif;
   font-size: 1.75rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 74px;
-  letter-spacing: -1.04px;
+  line-height: 4.625rem;
+  letter-spacing: -0.065rem;
   pointer-events: auto;
   white-space: pre-line;
 }
@@ -1331,13 +1331,13 @@ html, body {
   left: 44%;
   z-index: 2;
   color: #206E63;
-  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   font-family: "Kite One", sans-serif;
   font-size: 1.75rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 74px;
-  letter-spacing: -1.04px;
+  line-height: 4.625rem;
+  letter-spacing: -0.065rem;
   pointer-events: auto;
   white-space: pre-line;
 }
@@ -1348,13 +1348,13 @@ html, body {
   left: 44.5%;
   z-index: 2;
   color: #354453;
-  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   font-family: "Kaisei Tokumin";
   font-size: 3.75rem;
   font-style: normal;
   font-weight: 800;
-  line-height: 74px;
-  letter-spacing: -1.04px;
+  line-height: 4.625rem;
+  letter-spacing: -0.065rem;
   pointer-events: auto;
   white-space: pre-line;
 }
@@ -1365,13 +1365,13 @@ html, body {
   left: 36.5%;
   z-index: 2;
   color: #354453;
-  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   font-family: "Kaisei Tokumin";
   font-size: 3.75rem;
   font-style: normal;
   font-weight: 800;
-  line-height: 74px;
-  letter-spacing: -1.04px;
+  line-height: 4.625rem;
+  letter-spacing: -0.065rem;
   pointer-events: auto;
   white-space: pre-line;
 }
@@ -1382,13 +1382,13 @@ html, body {
   left: 42.5%;
   z-index: 2;
   color: #354453;
-  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   font-family: "Kaisei Tokumin";
   font-size: 3.75rem;
   font-style: normal;
   font-weight: 800;
-  line-height: 74px;
-  letter-spacing: -1.04px;
+  line-height: 4.625rem;
+  letter-spacing: -0.065rem;
   pointer-events: auto;
   white-space: pre-line;
 }
@@ -1399,13 +1399,13 @@ html, body {
   left: 41%;
   z-index: 2;
   color: #354453;
-  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   font-family: "Kaisei Tokumin";
   font-size: 3.75rem;
   font-style: normal;
   font-weight: 800;
-  line-height: 74px;
-  letter-spacing: -1.04px;
+  line-height: 4.625rem;
+  letter-spacing: -0.065rem;
   pointer-events: auto;
   white-space: pre-line;
 }
@@ -1416,13 +1416,13 @@ html, body {
   left: 29.5%;
   z-index: 2;
   color: #354453;
-  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 0.25rem 0.25rem rgba(0, 0, 0, 0.25);
   font-family: "Kaisei Tokumin";
   font-size: 3.75rem;
   font-style: normal;
   font-weight: 800;
-  line-height: 74px;
-  letter-spacing: -1.04px;
+  line-height: 4.625rem;
+  letter-spacing: -0.065rem;
   pointer-events: auto;
   white-space: pre-line;
 }

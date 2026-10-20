@@ -66,8 +66,8 @@
     const startTop = parseFloat(movingSword.style.top) || 0;
     swordAnimation = movingSword.animate([
       { transform: 'translate(0, -50%) rotate(0deg)' },
-      { transform: 'translate(30px, calc(-50% - 12px)) rotate(-18deg)', offset: 0.25 },
-      { transform: 'translate(30px, calc(-50% - 12px)) rotate(-18deg)', offset: 0.7 },
+      { transform: 'translate(1.875rem, calc(-50% - 0.75rem)) rotate(-18deg)', offset: 0.25 },
+      { transform: 'translate(1.875rem, calc(-50% - 0.75rem)) rotate(-18deg)', offset: 0.7 },
       { transform: 'translate(0, -50%) rotate(0deg)' }
     ], { duration, easing: 'ease-in-out' });
     function tick(now) {
