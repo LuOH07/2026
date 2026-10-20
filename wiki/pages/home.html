@@ -1,18 +1,3 @@
-{#- 首页：整屏滚动叙事页，【不继承 layout.html】—— 这一页自带底图、进度宝剑、
-    全屏文字排版和页尾接续，与站点页眉 / 页脚 / 加载动画互斥（详见 static/home/
-    各文件顶部的说明，例如 5.css 开头讲“移动端只做覆盖”的那一段）。
-    CSS / JS 全部放在 static/home/，用 url_for('static', ...) 取地址；
-    Frozen-Flask 的 FREEZER_RELATIVE_URLS 会把它们转成相对路径，
-    所以本地预览与挂在子路径下的 GitLab Pages 构建都能命中。
-
-    <base> 是给脚本里那批“和 index.html 放在同一个目录”的写法用的：
-    1.js ~ 5.js 里的 ./title.mp4、./assets/*.webm、./5.css …… 都写成相对路径，
-    浏览器是按【文档地址】解析它们的；页面改由 Flask 路由（/ 与 /home）渲染之后，
-    文档地址不再是资源所在目录，直接用会 404。把基址钉在 static/home/ 上，
-    脚本一行都不用改，两种部署形态下相对路径都能落到同一个目录。
-    基址从 1.css 的地址里去掉文件名得到（不能直接 url_for 一个目录名：Frozen-Flask
-    会把模板里出现过的每个 url_for 都当成一页去构建，目录地址会 404；
-    也不能让地址以斜杠结尾，那样会被改写成 index.html）。 -#}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -79,7 +64,6 @@
     <script src="{{ url_for('static', filename='home/2.js') }}"></script>
     <script src="{{ url_for('static', filename='home/3.js') }}"></script>
     <script src="{{ url_for('static', filename='home/4.js') }}"></script>
-    <!-- 5.js = 移动端（窄屏）专用脚本，必须放在 1~4.js 之后 -->
     <script src="{{ url_for('static', filename='home/5.js') }}"></script>
 </body>
 </html>
