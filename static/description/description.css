@@ -982,7 +982,24 @@ width: 100%;
 .figure-caption strong {
     color: #465E77;              /* 默认：标题文字（第三个及以后的加粗） */
     font-weight: bold;
-    margin-right: 0.5em;        
+}
+
+/* ---------- 题注里加粗后面的那 0.5em：只给【前三个】加粗 ----------
+   题注的固定写法是“序号 + 标题文字 + 说明正文”，前三段加粗后面常常直接
+   跟着正文、HTML 里未必留了空格（例如 human-practices 的
+   "…TAM expansion.</b>Stakeholder feedback…"、hp 的 "<b>  1</b>Dr. Lin…"），
+   所以靠这 0.5em 兜住间距。
+
+   但第 4 个加粗起就不该再加了：从这一段开始是 (A)、(B)、(C) 这类
+   “分图标号”，紧跟其后的是右括号 ")"，补 0.5em 就变成 "(A )" ——
+   截图里那几处“莫名其妙”的空格（(A ) / (B ) / (C ) / (D )…）就是这么来的，
+   HTML 源码里其实是干净的 "(<b>A</b>)"。
+
+   原来这条 margin-right 写在上面那条通配规则里，会命中题注里的【每一个】
+   加粗，才有了括号前的空隙。 */
+.figure-caption b:nth-of-type(-n + 3),
+.figure-caption strong:nth-of-type(-n + 3) {
+    margin-right: 0.5em;
 }
 
 /* 前两个加粗 = 图表序号：保留原来的绿色 */
