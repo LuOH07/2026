@@ -2676,3 +2676,95 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 })();
+
+/* ========================================================
+   10. 小字号行内标签 <s>（配合 description.css 第 17 节）
+   ========================================================
+   字号是【纯 CSS】的事：第 17 节的 calc(1em - 0.125rem) 用相对单位表达
+   “比所在处的字号小 2px”，页面缩放、改基础字号、窄屏换字号档位都会自动
+   跟着变。所以本节一行 font-size 都不写 —— 写了反而会在缩放、换字体之后
+   失配，把“相对大小”这件事重新变成死数字。
+
+   那这一节做什么：两件 CSS 管不到的事。
+
+   ① 目录与标题文字里【不能】剔除 <s> 的内容
+   ------------------------------------------------------
+   <e></e> 是“正文有、目录没有”的标签，第 4 节会把它从侧边目录里删掉；
+   <s></s> 恰好相反：它就是正文的一部分，只是字号小一档，侧边目录当然要
+   照常包含它。第 2 节的 headingLabel() 与第 4 节的 visibleTextOnly() 都用
+   textContent 取字，天然包含 <s> 的文字，所以这里【不需要】任何代码。
+   这一段写下来，是为了拦住以后“顺手把 <s> 也加进剔除名单”的改动 ——
+   那样标题里的小字会在目录里凭空消失。
+
+   ② 量算接口：在任意缩放 / 基础字号下核对“小 2px”
+   ------------------------------------------------------
+       __SMALL_TEXT__.audit()           列出页面上每个 <s> 的实算字号
+       __SMALL_TEXT__.measure(element)  只量一个元素
+
+   返回 fontSize（<s> 自己的字号）、contextFontSize（所在上下文的字号）、
+   diff（两者之差）、expectedDiff（按当前根字号折算出的预期差值）。数值全
+   部来自运行时的 getComputedStyle，而不是把 CSS 里的 0.125rem 再抄一遍
+   算法，所以缩放 / 改默认字号之后 diff 与 expectedDiff 仍应吻合。
+
+   若某个 <s> 的 largerThanExpected 为 true，说明它的字号比预期大：要么被
+   更具体的字号规则顶住了，要么撞上了浏览器的“最小字号”设置 —— 看
+   contextFontSize 就能分辨是哪种。接口只读不写，不给页面留任何副作用。
+   ======================================================== */
+(function () {
+    'use strict';
+
+    /* 标签名与 description.css 第 17 节一一对应 */
+    var SMALL_TAG = 's';
+    /* 与第 17.1 节的 0.125rem 对应：那边改了这里跟着改（只用来算“预期值”，
+       不参与任何排版 —— 页面上的字号一律由 CSS 给） */
+    var SHRINK_REM = 0.125;
+
+    function round(value) {
+        return Math.round(value * 100) / 100;
+    }
+
+    function rootFontSize() {
+        var size = parseFloat(window.getComputedStyle(document.documentElement).fontSize);
+        return size > 0 ? size : 16;
+    }
+
+    function fontSizeOf(element) {
+        if (!element) return 0;
+        return parseFloat(window.getComputedStyle(element).fontSize) || 0;
+    }
+
+    /* 量一个 <s>：它自己的字号、所在上下文的字号、实际差值与预期差值。
+       “上下文”取父元素 —— <s> 的字号就是“父元素的字号 − 2px（相对值）”，
+       与第 17.1 节的 calc(1em - 0.125rem) 是同一件事。 */
+    function measure(element) {
+        if (!element) return null;
+
+        var own = fontSizeOf(element);
+        var context = fontSizeOf(element.parentElement || document.body);
+        var expected = Math.max(0, context - SHRINK_REM * rootFontSize());
+
+        return {
+            text: (element.textContent || '').trim().slice(0, 40),
+            fontSize: round(own),
+            contextFontSize: round(context),
+            diff: round(context - own),
+            expectedDiff: round(context - expected),
+            largerThanExpected: own > expected + 0.5
+        };
+    }
+
+    function audit() {
+        return Array.prototype.map.call(document.querySelectorAll(SMALL_TAG), measure);
+    }
+
+    /* 只读调试接口（与 __IHP__ / __TABLES__ / __SIDE_POLE__ 同一套写法）：
+       放在控制台里执行 __SMALL_TEXT__.audit()，就是一张“每个 <s> 到底小了
+       多少 px”的表；缩放 / 改浏览器默认字号之后再执行一次，可以确认差值
+       仍按比例跟着基准走。 */
+    window.__SMALL_TEXT__ = {
+        measure: function (element) {
+            return measure(element || document.querySelector(SMALL_TAG));
+        },
+        audit: audit
+    };
+})();
