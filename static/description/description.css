@@ -824,6 +824,61 @@ clip-path: polygon(
 .heading-1::after { background-color: #9CDCDD; }
 .heading-reference::after { background-color: #B9C7D1; }
 
+/* ---------- 4.1 标题里的行内标签：整段标题必须是【同一个】flex 条目 ----------
+
+   第 4 节把 .heading-* 设成了 display: flex。flex 容器会把它的每一个
+   【直接子节点】各自变成一个 flex 条目（flex item）；标签之间连续的纯文字
+   会被合成为一个“匿名”条目，而夹在文字中间的行内标签（<i> <b> <em> …）
+   各自单独成条目。于是
+
+       <h2 class="heading-2">2. Practical genome editing in <i>E. coli</i>:
+           CRISPR-Cas9 versus ISHahl1 TnpB</h2>
+
+   在页面上不是“一句会自己换行的标题”，而是被拆成了三栏：
+
+       [2. Practical genome editing in] [E. coli] [: CRISPR-Cas9 versus ISHahl1 TnpB]
+
+   三栏各自在栏内换行、各自按 align-items: center 垂直居中，栏与栏之间还
+   多出一份 gap: 1.25rem —— 看上去就是标题被拆散、错位、字距忽大忽小。
+   这是 flex 布局的固有行为，与字号、窗口宽度、断点都无关：只要标题里写了
+   行内标签，它就会出现一次。所以“标题换行写得好好的，加了个 <i> 就乱了”
+   不是某条样式被改坏，而是从“一句文字”变成了“三个条目”。
+
+   修法与第 9.2 节处理 <e></e> 是同一个：让这些行内标签【不生成盒子】
+   （display: contents），它们里面的文字就回到标题这个 flex 容器里，与前后
+   的文字连成同一个匿名条目 —— 换行、行距、垂直居中、箭头对齐全部恢复成
+   “一句普通标题”的样子，视觉上与“把整段文字包进一个 <span>”完全一致。
+   display: contents 只去掉排版盒子，字体相关属性照常继承，所以 <i> 仍然
+   斜体、<b> 仍然加粗；正文 DOM 一个字都不改，侧边目录取的
+   heading.textContent 也不受影响。
+
+   刻意【不】放进这份名单的几类：
+     · .heading-sub —— 副标题由 description.js 第 8 节搬到标题外面的
+       .heading-sub-row 里；脚本没跑时它留在标题里，也该是独立的一块，
+       不能被 display: contents 拆散。
+     · <e></e> —— 由第 9.2 节单独处理（连带把 gap 归零、把间距补到箭头上）。
+     · <a> / <mark> —— 这两个的“盒子”本身就是外观：display: contents 之后
+       链接不可点、高亮底色也画不出来。标题里真要写链接或高亮，请把整段
+       文字包进一个 <span>（flex 条目同样只有一个），而不要只包住那几个字。
+     · <u> / <s> / <del> / <ins> / <abbr> —— 下划线、删除线、虚线下划线都是
+       “盒子上的装饰”（text-decoration），没有盒子就画不出来。
+     · <br> / <img> —— 它们没有“里面的文字”，去盒子等于删掉换行 / 图片。
+
+   名单里的 <sub> / <sup> 是一个折中：留着它们，标题里一出现上下标就会被
+   拆成多栏；放进名单后整体排版保住，代价是它们只剩“更小的字号”，上下标
+   的那点位移没有了。标题里真要写上下标，用“整段文字包进一个 <span>”的
+   写法即可两全。
+
+   用后代选择器（而不是 > 直接子代）：<b><i>Sp</i>Cas9</b> 这种嵌套写法，
+   外层的 <b> 去盒子后，里面的 <i> 也会变成 flex 条目，所以每一层都要匹配。
+   ---------- */
+:is(.heading-1, .heading-2, .heading-3, .heading-reference) :is(
+    i, em, b, strong, cite, var, dfn, code, small, sub, sup,
+    span:not(.heading-sub)
+) {
+    display: contents;
+}
+
 /* ========================================================
 5. 正文段落及加粗、斜体样式
 ======================================================== */
