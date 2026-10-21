@@ -69,7 +69,10 @@
 <!--
     <img class="img-box img-1" src="./1.png" alt="">
 -->
+{% endblock %}
 
+{% block page_scripts %}
+{#- 首页脚本放在布局的 page_scripts 区域，避免混入 main 正文。 -#}
 <script>
   window.HOME_MEDIA = "{{ url_for('static', filename='home/1.css').rsplit('/', 1)[0] }}/";
 </script>
