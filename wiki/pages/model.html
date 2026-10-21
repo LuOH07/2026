@@ -320,13 +320,49 @@
 
     <p class="figure-caption"><b>Figure</b><b>  7</b>  <b>Data-driven Scoring for selecting high confident varient.</b>
         <b> A</b>, Statistical results of enriched mutated amino acids. 
-        <b> B</b>, Using Gaussian mixture model to indetify the hot area and provide the pre-weights. 
+        <b> B</b>, Using the Gaussian mixture model to identify the hot area and provide the pre-weights. 
         <b> C</b>, Socre composition. 
-        <b> D</b>, Hot areas identified for IsHahl1 TnpB in TAM. 
+        <b> D</b>, Hot areas identified using the algorithm for IsHahl1 TnpB in directed evolution for altered TAM specificities. 
     </p>  
 
 
-    <h2 class="heading-2">Enrichment-based scoring of variants</h2> 
+    <h2 class="heading-2">Hot areas and scoring result</h2> 
+
+
+    <p class="body-text">
+
+        Figure 7D illustrates the hotspot regions identified by our scoring algorithm, 
+        the number of candidate amino acids is reduced from 120 to 50, 
+        representing a 60% reduction in the search space when considering only single-site mutations.
+        The meaningful regions are also distributed into several small connected areas, 
+        which is promising for future NNNNN screening experiments. 
+        What's more, the selected hotspots are close to TAM, tsDNA, and ωRNA, 
+        contributing to the future mechanistic exploration, as those sites may take part in recognition of guide and stabilization of 
+        the ternary complexes directly. 
+        Table 5 shows all the top-ranking variants selected by the algorithm for later genomic editing verification, 
+        in which <b> the one with the highest score (CTGC-15) produces the only clean result without any mixture products during PCR </b>. 
+        In addition, ~50% of the selected variants can be used to edit the genome. 
+        Both results demonstrate the efficiency of our data-driven scoring.
+
+
+
+    <p class="figure-caption"><b>Table</b><b>  1</b>  Selected varients by data-driven algorithm</p>   
+    <table>
+        <tr><th>TAM   </th>   <th>Index</th>   <th>Score</th></tr>
+        <tr><td> CTGC </td>   <td>15</td> <td>3</td></tr>
+        <tr><td> CTGC     </td>   <td>59</td> <td>2</td></tr>
+        <tr><td> CTGC     </td>   <td>53</td> <td>1.5</td></tr>
+        <tr><td> CTGC     </td>   <td>55</td>  <td>1.5</td></tr>
+        <tr><td> GTAC     </td>   <td>60</td>  <td>2.3</td></tr>
+        <tr><td>  GTAC    </td>   <td>39</td> <td>1.5</td></tr>
+        <tr><td>  CGAC    </td>   <td>6</td> <td>1.5</td></tr>
+        <tr><td>  CGAC    </td>   <td>20</td> <td>1.5</td></tr>
+        <tr><td>  CGAC    </td>   <td>49</td>  <td>1</td></tr>
+        <tr><td>  CAAC    </td>   <td>51</td> <td>1.5</td></tr>
+        <tr><td>  ATAC    </td>   <td>40</td>  <td>2</td></tr>
+    </table>
+
+    </p>
 
 
 
