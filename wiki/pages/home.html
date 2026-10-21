@@ -9,13 +9,20 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='home/4.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='home/5.css') }}">
 <style>
-  /* 与站点页眉 / 页脚的接缝：只补三行，static/home/ 里不动。
-     整页下移靠【根元素】的外边距，不能挪 body：这一页的底图是 body 的背景，
-     会传播成“画布背景”、按根元素盒子定位；body 自己的高度只有底图高（不含
-     顶部视频那截 --lead-in），挪 body 的话底图会被裁掉最后一截，页脚前面留白。 */
-  html { margin-top: 4rem; }   /* 4rem = 页眉高度：整页下移一个页眉，首屏不被固定页眉遮挡 */
-  /* 窄屏页眉是 3.1rem（见 head_foot.css 的 @media (max-width: 1024px)），这里跟着换 */
-  @media (max-width: 1024px) { html { margin-top: 3.1rem; } }
+  /* 与站点页眉 / 页脚的接缝：只补这几行，static/home/ 里不动。 */
+
+  /* 页眉默认收起（不再把整页往下顺延）。鼠标贴到页面顶部、页脚进入视口、
+     或者往上滚的时候才从上往下拉出；条件一消失就收回。
+     位移用 top 而不是 transform：transform 会让页眉变成 fixed 子元素的包含块，
+     移动端全屏菜单（nav 是 position: fixed）会被压进页眉那一条里。 */
+  .site-header {
+    top: -5rem;
+    transition: top 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+    pointer-events: none;          /* 收起时不挡首屏的视频 / 播放键 */
+  }
+  .site-header.is-shown { top: 0; pointer-events: auto; }
+  @media (max-width: 1024px) { .site-header { top: -4.2rem; } }   /* 窄屏页眉是 3.1rem */
+
   /* 舞台高 = 底图高（1.js 写在 body 上的 height）+ 顶部视频引导段 + 手机端接续的底图，
      页脚正好接在底图末端（--lead-in 由 1.js 写、--m5-blank 由 5.js 写在 :root 上）。 */
   #main-content { height: calc(100% + var(--lead-in, 0px) + var(--m5-blank, 0px)); }
@@ -81,4 +88,56 @@
 <script src="{{ url_for('static', filename='home/3.js') }}"></script>
 <script src="{{ url_for('static', filename='home/4.js') }}"></script>
 <script src="{{ url_for('static', filename='home/5.js') }}"></script>
+{#- 页眉开合：这一页是整屏滚动页，页眉平时收起，只在三种情况下拉出——
+    ① 鼠标贴到页面顶部（想用导航）；② 页脚进入视口；③ 往上滚。
+    鼠标离开页眉（含下拉菜单）且不再往上滚、页脚也看不见时收回。 -#}
+<script>
+  (function () {
+    var header = document.querySelector(".site-header");
+    var footer = document.querySelector("footer");
+    if (!header) return;
+
+    var EDGE = 16;        /* 鼠标离页面顶部多少像素算“要调出页眉” */
+    var hover = false;    /* 鼠标在页眉上（含展开的下拉菜单） */
+    var up = false;       /* 最近一次滚动方向：往上 */
+    var lastY = window.scrollY;
+    var shown = false;
+
+    function footerVisible() {
+      if (!footer) return false;
+      return footer.getBoundingClientRect().top < window.innerHeight - 1;
+    }
+
+    function sync() {
+      var want = hover || up || footerVisible();
+      if (want === shown) return;
+      shown = want;
+      header.classList.toggle("is-shown", want);
+    }
+
+    window.addEventListener("mousemove", function (e) {
+      /* 页眉收起时 pointer-events: none，鼠标不一定“进入”过它，
+         所以这里用 :hover 判断是否还在页眉 / 下拉菜单上，不用 mouseenter。 */
+      var want = e.clientY <= EDGE || header.matches(":hover");
+      if (want !== hover) { hover = want; sync(); }
+    }, { passive: true });
+
+    document.documentElement.addEventListener("mouseleave", function () {
+      if (!hover) return;
+      hover = false;
+      sync();
+    });
+
+    window.addEventListener("scroll", function () {
+      var y = window.scrollY;
+      if (y < lastY - 2) up = true;
+      else if (y > lastY + 2) up = false;
+      lastY = y;
+      sync();
+    }, { passive: true });
+
+    window.addEventListener("resize", sync);
+    sync();
+  })();
+</script>
 {% endblock %}
