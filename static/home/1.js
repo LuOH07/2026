@@ -18,15 +18,6 @@ const HOLD_SECONDS = 3.0;      /* 钉在竖直视觉中心（ANCHOR_RATIO）的�
 const FADE_OUT_SECONDS = 0.6;  /* 原地淡出时长 */
 const GAP_SECONDS = 0.4;       /* 相邻组件之间的额外留白（秒）；0 = 上一个消失完下一个立刻淡入 */
 
-/* ---- 0.1 的覆盖表：单个组件可以单独设时长（两类文字都适用）----
-   从上往下匹配，命中的规则覆盖上面的默认值。例：
-   const COMPONENT_TIMING = [
-       { sel: ".text-12", hold: 4.0, fadeIn: 0.8, fadeOut: 0.8 },
-       { sel: ".text-1",  hold: 2.0 },
-       { sel: ".img-13",  fadeIn: 1.2 }
-   ];
-   没写的字段沿用上面的默认值；
-   一条都不需要就留空数组（= 全部组件用同一套默认时长）。 */
 const COMPONENT_TIMING = [
     /* text-9（“An editor can cut well / and still be unable to cut where we need it.”）：
        多停一会儿。默认 hold = 3.0 秒 → 这一句总共只挂 0.6 + 3.0 + 0.6 = 4.2 秒，
