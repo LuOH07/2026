@@ -10,67 +10,149 @@
 <header class="title-header-wrapper" id="heroWrapper">
     <div class="grid-container" id="heroGridContainer">
         <canvas id="gridCanvas"></canvas>
-
-        <!-- 移动端整块首屏贴图（标题 + DNA / 蛋白装饰 + 引言文字一体）：移动端只渲染它，
-             PC 端由 description.css 隐藏，见该文件第 8.0 / 8.4 节 -->
         <img class="mobile-hero-image"
              src="https://static.igem.wiki/teams/6059/wiki/move/ES-1.avif"
              alt="Engineering Success — STING: an international team of students, researchers, and innovators exploring the frontiers of bacterial genome engineering.">
-        
-        <!-- 左侧装饰 DNA (通过 asset-map.json 解析) -->
         <div class="left-dna-wrapper">
             <img src="{{ asset_url('title/DNA_1.png') }}" alt="DNA Structure Left" class="left-dna-image">
         </div>
-
-        <!-- 右侧装饰蛋白结构 -->
         <div class="right-protein-wrapper">
             <img src="{{ asset_url('title/protein.png') }}" alt="Protein Structure Right" class="right-protein-image">
         </div>
-
-        <!-- 右下装饰 DNA -->
         <div class="bottom-right-dna-wrapper">
             <img src="{{ asset_url('title/DNA_2.png') }}" alt="DNA Structure Bottom Right" class="bottom-right-dna-image">
         </div>
-
-        <!-- 中央大标题图片 -->
         <div class="center-image-wrapper">
-            <img src="https://static.igem.wiki/teams/6059/wiki/title/engineering-success.avif" alt="Description" class="title-image">
+            <img src="https://static.igem.wiki/teams/6059/wiki/title/engineering-success.avif" alt="Engineering Success" class="title-image">
         </div>
-
-        <!-- 中央引言文案 -->
         <div class="center-description-wrapper">
             <p class="center-description-text">
                 Documenting our iterative Design-Build-Test-Learn<br>
-                 cycles to continuously optimize our TnpB system.
+                cycles to continuously optimize our TnpB system.
             </p>
         </div>
-
-        <!-- 底部滑动探索指引 -->
         <div class="scroll-explore-wrapper">
             <span class="scroll-line"></span>
             <span class="scroll-text">SCROLL TO EXPLORE</span>
             <span class="scroll-line"></span>
         </div>
-
         <div class="bottom-dots-decor"></div>
     </div>
 </header>
 
-<!-- 侧边动态目录导航栏 (TOC) -->
 <aside class="side-container" id="sideContainer">
     <nav class="toc-nav" id="tocNav" aria-label="Table of Contents"></nav>
 </aside>
 
-<!-- 正文主体容器 -->
 <main class="main-container" id="mainContainer">
-    <h1 class="heading-1">Heading 1</h1>
-    <p class="body-text"><b>TnpB</b> CRISPR-Cas9/Cas12.</p>
+    <h1 class="heading-1">Engineering Success</h1>
+    <h2 class="heading-2">Structure-informed engineering of ISHahl1 TnpB: from mutant discovery to TAM-dependent functional validation</h2>
 
-    <img src="https://static.igem.wiki/teams/6059/wiki/description/figure/1.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  1</b>  Comparison of protein sizes among Cas9, TnpB, and Cas12a</p>    
-    <h2 class="heading-2">Heading 2</h2>   
-    <h3 class="heading-3">Heading 3</h3>
-    <h1 class="heading-reference">Reference</h1>
+    <h2 class="heading-2">Overview | Defining the engineering challenge</h2>
+    <p class="body-text">A miniature genome editor is useful only when it can reach the DNA sequences that need to be changed. ISHahl1 TnpB is a compact reRNA-guided nuclease with reported activity in <i>Escherichia coli</i>, but its strong preference for the 5′-CTAC-3′ transposon-associated motif (TAM) restricts its targetable sequence space [1,2]. Our goal was therefore not simply to create a more active nuclease. We sought to identify ISHahl1 TnpB variants capable of acting on noncanonical TAMs, while retaining the functionality required for subsequent genome-editing applications.</p>
+
+    <p class="body-text">This posed two engineering challenges. First, the residues determining TAM recognition in ISHahl1 TnpB could not be assumed to match equivalent sequence positions in better-characterized homologs. Second, a screening signal alone could not establish that a mutant had acquired a useful new TAM preference. Guided by sequence–structure comparisons, we chose a focused region for error-prone mutagenesis and designed a two-stage evaluation workflow. Fluorescence-based screening would identify candidates efficiently; an independent plasmid-interference assay would then test TAM-dependent function across a wider sequence panel.</p>
+
+    <p class="body-text">We present this work as two connected Design–Build–Test–Learn (DBTL) cycles. The first cycle established a structure-informed mutant-generation and primary-screening strategy. The second cycle responded to the limits of the first assay by refining the validation strategy and profiling candidate responses to nine noncanonical TAMs. These cycles document an iteration of the discovery and validation workflow, rather than two successive rounds of TnpB protein mutagenesis. The stakeholder interactions informing selected project decisions are documented separately on our <a href="{{ url_for('pages', page='human-practices') }}">Human Practices</a> and Integrated Human Practices pages.</p>
+
+    <h1 class="heading-1">Cycle 1 | Structure-informed mutagenesis and fluorescence-based candidate discovery</h1>
+    <h2 class="heading-2">Design | Where should we mutate, and how should we screen?</h2>
+    <p class="body-text">The starting hypothesis was that changing residues associated with TAM recognition could relax the strict CTAC dependence of ISHahl1 TnpB [2,4]. However, mutation sites reported for other TnpB homologs could not be transferred directly to ISHahl1: differences in sequence and local structure may change the effects of substitutions at apparently corresponding positions. We therefore used sequence and structural comparison to define a focused mutation window (Figure 1), instead of relying on whole-protein random mutagenesis or copying a single previously reported residue.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/es/es-1.avif" alt="1" class="figure-image">
+    <p class="figure-caption"><b>Figure</b><b>  1</b><b>  Multiple-sequence alignment (A) and structural alignment (B) for determining the mutation window. </b></p>
+
+    <p class="body-text">We examined ISHahl1 TnpB models generated with AlphaFold3 and ESMFold alongside structural information for ISDra2 TnpB and its nucleic-acid complex (PDB 8EXA). PyMOL and TM-align were used for structural comparison, while PROMALS3D was used for sequence alignment (Figure 1A) with characterized TnpB homologs [6,7]. We considered the putative DNA/TAM-interacting region and selected amino acid residues 50–170 of ISHahl1 TnpB as the mutagenesis window (Figure 1B). This range was an engineering hypothesis informed by comparative analysis; its individual residues were not all experimentally confirmed TAM contacts.</p>
+
+    <p class="body-text">To screen the resulting library without measuring cleavage for every clone individually, we employed an EYFP reporter plasmid. Test TAMs were introduced at the illustrated reporter target sites through synonymous codon engineering, preserving the encoded protein sequence where applicable (Figure 2B). A pSTING-based plasmid expressed reRNA from the proD promoter and ISHahl1 TnpB from an arabinose-inducible promoter. In cells containing both plasmids, a TnpB variant capable of targeting the non-CTAC reporter was expected to reduce reporter-plasmid maintenance and thus lower fluorescence (Figure 2A). Because changes in fluorescence could also reflect expression or physiological effects, the readout was explicitly designed for preliminary selection.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/es/es-2.avif" alt="1" class="figure-image">
+    <p class="figure-caption"><b>Figure</b><b>  2</b><b>  Design of the EYFP-based preliminary screen. </b>(A) Gene circuits of the fluorescence-intensity-based selection. (B) Reporter target-site designs with the illustrated alternative TAM sequences and corresponding spacers.</p>
+
+    <h2 class="heading-2">Build | Constructing and introducing a focused mutant library</h2>
+    <p class="body-text">We used the wild-type pSTING-ISHahl1 plasmid as the template for error-prone PCR of the selected region. PCR conditions were adjusted to introduce mutations, and the resulting approximately 420-bp fragments were amplified and assembled into linearized pSTING backbones by Gibson assembly. Electrophoresis showed products at the expected sizes for the amplified mutant region (Figure 3) and the approximately 5,085-bp pSTING backbones (Figure 4). These observations supported correct preparation of the required DNA fragments, but gel bands alone do not establish library diversity or the functional effect of mutations.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/es/es-3.avif" alt="1" class="figure-image">
+    <p class="figure-caption"><b>Figure</b><b>  3</b><b>  First- and second-round PCR products used for the mutant library. </b>The expected amplified fragment is approximately 420 bp.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/es/es-4.avif" alt="1" class="figure-image">
+    <p class="figure-caption"><b>Figure</b><b>  4</b><b>  Linearized pSTING vector backbones, labeled pSTING-E1, pSTING-E2, and pSTING-E3. </b>The expected fragment size is approximately 5,085 bp.</p>
+
+    <p class="body-text">The library was chemically introduced into <i>E. coli</i> BW25113 cells carrying a pEYFP reporter with a non-CTAC target TAM. After recovery, cells were selected using chloramphenicol (34 μg/mL), ampicillin (100 μg/mL), and 0.5% glucose. Individual colonies were grown and sub-cultured before induction of TnpB expression using 0.2% (w/v) <i>L</i>-arabinose. Wild-type ISHahl1 TnpB paired with a CTAC reporter served as the canonical-targeting control, while wild-type TnpB paired with a non-CTAC reporter provided the negative-control reference.</p>
+
+    <h2 class="heading-2">Test | Screening for concordant changes in fluorescence and plasmid-associated growth</h2>
+    <p class="body-text">We collected samples at 0 h and 6 h after induction and measured both OD<sub>600</sub> and EYFP fluorescence, correcting against an LB blank. Fluorescence was normalized to cell density to reduce the influence of different culture concentrations.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/es/es-5.avif" alt="1" class="figure-image">
+    <p class="figure-caption"><b>Figure</b><b>  5</b><b>  During the fluorescence-intensity selection, several promising mutants highlighted in yellow were obtained. </b></p>
+
+    <p class="body-text">In the primary screen, wild-type ISHahl1 TnpB did not produce a detectable targeting phenotype against the tested non-CTAC reporter condition. On the basis of the fluorescent phenotype, we selected promising clones (Figure 5) for sequence analysis and subsequent validation. Sequencing identified the mutations present in selected candidates; the functional interpretation still required an independent assay.</p>
+
+    <h2 class="heading-2">Learn | A screening hit is not yet a validated TAM-expanded editor</h2>
+    <p class="body-text">Cycle 1 combined a structure-informed mutation window with a rapid cellular readout to identify candidate TnpB variants. Its main limitation was the interpretation of the screening phenotypes. Lower fluorescence can reflect reporter-plasmid loss, but it can also arise from differences in expression or cellular physiology; reduced growth in ampicillin provides another indicator of reporter maintenance, not direct proof of DNA cleavage. Moreover, neither phenotype alone distinguishes a change in TAM preference from a general change in nuclease activity. We therefore needed an independent target-genome editing assay and a defined TAM panel before interpreting the candidates as functionally altered.</p>
+    <p class="body-text"><b>Engineering decision:</b> We retained the selected variants but redesigned the next test. Instead of relying on reporter fluorescence, we moved to a genome-editing assay with a panel of noncanonical TAMs. This decision links the Learn of Cycle 1 directly to the Design of Cycle 2.</p>
+
+    <h1 class="heading-1">Cycle 2 | From Fluorescent Hits to Chromosomal Editing and TAM-Dependent Profiling</h1>
+    <h2 class="heading-2">Design | What would count as functional evidence beyond fluorescence?</h2>
+    <p class="body-text">Cycle 1 yielded variants with promising EYFP-screening phenotypes, but the reporter readout did not demonstrate that these candidates could edit a chromosomal locus. We therefore changed the principal success criterion: a selected variant should produce a detectable, sequence-defined genomic alteration at a site adjacent to a noncanonical TAM. In parallel, a plasmid-interference assay would help determine whether candidate activity varied across different TAM sequences rather than simply reflecting a general change in nuclease performance.</p>
+
+    <p class="body-text">We chose the <i>maeA</i> locus of <i>Escherichia coli</i> BL21(DE3) as a chromosomal test target and designed an assay for a 1,695-bp deletion (Δ<i>maeA</i>). Colony PCR could distinguish the expected deletion product from the intact locus; a representative sequence trace in the figure illustrates the intended deletion junction. Wild-type ISHahl1 TnpB with its canonical CTAC TAM and a λ-Red control provided reference conditions. A streamlined TnpB vector, pEcTnpB-SP1, enabled the selected variants to be transferred into the genome-editing system (Figure 6).</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/es/es-6.avif" alt="1" class="figure-image">
+    <p class="figure-caption"><b>Figure</b><b>  6</b><b>  Chromosomal validation strategy. </b>The original pEcTnpB construct was simplified to pEcTnpB-SP1 for insertion of selected ISHahl1 variants. The right-hand diagram shows the planned 1,695-bp <i>maeA</i> deletion and a representative WT/deletion-junction sequence comparison.</p>
+
+    <h2 class="heading-2">Build | Transferring selected variants into a chromosomal editing system</h2>
+    <p class="body-text">To make variant testing more straightforward, the pEcTnpB vector was simplified by removing the <i>sacB</i> counter-selection marker and the pMB1-targeting reRNA plasmid-curing module, while retaining the TnpB expression and λ-Red recombination components indicated in Figure 6. Selected TnpB coding sequences were introduced into pEcTnpB-SP1 to generate the corresponding variant constructs.</p>
+
+    <p class="body-text">For chromosomal testing, BL21(DE3) cells were first transformed with pEcTnpB-SP1-Variant and then supplied with the <i>maeA</i>-targeting guide-RNA plasmid (pEcgRNA-maeA). Matched guides and target TAMs were used for the candidate/target combinations shown in Figure 7.</p>
+
+    <p class="body-text">We also compared selected variants using the plasmid-interference framework established for TAM characterization. In the reported CFU panel, mutant 39 and mutant 15 were examined alongside the corresponding negative controls (NC) over canonical CTAC and nine noncanonical TAM sequences: ATAC, GTAC, TTAC, CAAC, CGAC, CCAC, CTTC, CTCC, and CTGC. The noncanonical motifs form the DTAC, CVAC, and CTBC subgroups displayed in Figure 8.</p>
+
+    <h2 class="heading-2">Test | Did the variants edit the chromosome, and how did TAM affect activity?</h2>
+    <p class="body-text">We first assessed chromosomal editing by screening individual colonies with PCR primers spanning the <i>maeA</i> deletion region. An expected smaller amplicon was taken as an initial indication of Δ<i>maeA</i> formation, to be distinguished from the full-length wild-type product. The gel series in Figure 7 reports the number of colonies with a deletion-consistent PCR pattern over the total number screened for each condition.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/es/es-7.avif" alt="1" class="figure-image">
+    <p class="figure-caption"><b>Figure</b><b>  7</b><b>  Colony-PCR assessment of the designed 1,695-bp <i>maeA</i> deletion in BL21(DE3). </b>Representative gels compare wild-type TnpB, the λ-Red control, and indicated TnpB variants at their labeled TAMs. WT and Δ<i>maeA</i> positions identify the intact and deletion-consistent amplicons; fractions on the panels indicate PCR-positive colonies/colonies screened.</p>
+
+    <p class="body-text">The canonical-TAM positive control yielded a deletion-consistent PCR product in 23 of 23 screened colonies, whereas the λ-Red control yielded none in 8 screened colonies. Importantly, the mutant panel also contained deletion-consistent products at noncanonical TAMs, albeit at much lower frequencies: mutant 39 at GTAC (1/24), mutant 48 at TTAC (1/8), mutant 40 at ATAC (1/8), mutants 6 and 46 at CGAC (1/8 each), and mutant 15 at CTGC (1/24).</p>
+
+    <p class="body-text">Other candidate/TAM combinations shown in Figure 7 yielded no PCR-positive colonies within the screened samples. Thus, the screening hits were not uniformly successful in the chromosomal assay; some nevertheless produced the anticipated deletion phenotype at sites adjacent to noncanonical TAMs.</p>
+
+    <p class="body-text">These fractions describe positive colonies among the colonies examined and should not be read as absolute editing efficiencies across all transformed cells. Moreover, colony-PCR band size is an initial genotype readout; sequence-level confirmation is required to establish the intended junction for each selected isolate.</p>
+
+    <p class="body-text">To characterize TAM dependence with a complementary assay, we compared CFUs per milliliter of culture for mutant 39 and mutant 15 against the matched NC conditions (Figure 8). The colony-based assay reports interference with maintenance of the targeted plasmid under selection: lower CFU can be consistent with stronger target-plasmid interference, but it does not directly measure chromosomal deletion efficiency or biochemical cleavage rate.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/es/es-8.avif" alt="1" class="figure-image">
+    <p class="figure-caption"><b>Figure</b><b>  8</b><b>  TAM-dependent plasmid-interference profiles of (A) ISHahl1 TnpB mutant 39, selected for GTAC, and (B) mutant 15, selected for CTGC. </b>CFUs/mL are compared with matched negative-control combinations across CTAC and the DTAC, CVAC, and CTBC TAM subgroups. Points and significance symbols are reproduced from the original data figure.</p>
+
+    <p class="body-text">The two candidate profiles were not identical. For mutant 39, CFU recovery was reduced relative to the corresponding NC for several first-position substitutions, particularly GTAC, ATAC, and TTAC; the plotted comparisons for ATAC and TTAC are additionally marked with significance symbols.</p>
+
+    <p class="body-text">Mutant 15 showed a different and nonuniform set of CFU responses across the panel. Some candidate/TAM combinations displayed little reduction or even higher recovery than their controls. Together, these data indicate that activity cannot be summarized by a single “active/inactive” label, and that plasmid interference and chromosome editing should remain distinct measures of function.</p>
+
+    <h2 class="heading-2">Learn | Genome-editing competence and TAM recognition must be evaluated together</h2>
+    <p class="body-text">Cycle 2 answered the principal question left open by Cycle 1: several EYFP-selected ISHahl1 variants were associated with PCR-detectable deletion of a real chromosomal target at noncanonical TAM sites. This provides stronger evidence of functional engineering than reporter loss alone.</p>
+
+    <p class="body-text">At the same time, the low fractions of deletion-consistent colonies in the mutant conditions contrasted sharply with the wild-type/CTAC control, showing that detectable noncanonical-TAM activity is not yet equivalent to an efficient, broadly deployable genome editor.</p>
+
+    <p class="body-text">The plasmid-interference data added a second lesson: different variants and TAMs produced different cellular targeting profiles, and a CFU decrease need not translate proportionally into a successful chromosomal deletion.</p>
+
+    <p class="body-text">These assays read out different stages of a multicomponent process that may be affected by guide design, target context, expression, cellular physiology, and recombination. The experiments do not by themselves isolate which factor limits a particular mutant.</p>
+
+    <p class="body-text">Likewise, activity against a noncanonical motif demonstrates altered target recognition under tested conditions, whereas a claim of expanded TAM recognition additionally requires systematic evaluation of retained canonical-CTAC activity and comparisons across a consistent TAM panel.</p>
+
+    <p class="body-text"><b>Engineering decision:</b> The next iteration should prioritize sequence-confirmed isolates, including mutants 39 and 15 and the other candidates with deletion-consistent PCR products; confirm deletion junctions by sequencing; measure editing outcomes in independent biological repeats; and assess canonical and noncanonical TAMs under matched guide and host conditions.</p>
+
+    <p class="body-text">The contrast between the chromosome-editing screen and the plasmid-interference profiles offers a concrete basis for the next DBTL iteration: retain the structure-informed mutation strategy, strengthen sequence-level validation, and use matched genomic and plasmid assays to distinguish TAM recognition from downstream editing performance.</p>
+
+    <h1 class="heading-1">Conclusion | Engineering Success</h1>
+    <p class="body-text">Through two interconnected Design–Build–Test–Learn (DBTL) cycles, we established a structure-informed engineering workflow to overcome the stringent TAM recognition requirements of ISHahl1 TnpB. In Cycle 1, sequence and structural analyses guided targeted random mutagenesis, while an EYFP-based reporter system enabled the preliminary identification of promising variants. Recognizing that fluorescence screening alone could not provide sufficient evidence of functional TAM expansion, we advanced selected candidates to Cycle 2 for chromosomal genome-editing validation and TAM-dependent plasmid-interference profiling. Colony PCR revealed deletion-consistent products for several variants targeting noncanonical TAMs, including GTAC, TTAC, ATAC, CGAC, and CTGC, while plasmid-interference assays demonstrated distinct TAM-dependent activity profiles among the selected variants. Although editing performance at noncanonical TAMs remained lower than that of wild-type TnpB at its canonical TAM, these results provided preliminary evidence that engineered ISHahl1 TnpB variants could function beyond the original CTAC restriction. Our engineering success lies not only in identifying functional candidate variants, but also in establishing an iterative workflow that connects structure-informed mutagenesis, high-throughput screening, and increasingly rigorous functional validation. This work lays a foundation for further optimization of TAM recognition, editing efficiency, and specificity, contributing to the development of more versatile miniature genome-editing tools.</p>
+
+    <h1 class="heading-reference">References</h1>
+    <p class="body-text">[1] Sasnauskas G, Tamulaitiene G, Druteika G, <i>et al.</i> TnpB structure reveals minimal functional core of Cas12 nuclease family. <i>Nature</i>. 2023;616:384–389.</p>
+    <p class="body-text">[2] Xiang G, Li Y, Sun J, <i>et al.</i> Evolutionary mining and functional characterization of TnpB nucleases identify efficient miniature genome editors. <i>Nature Biotechnology</i>. 2024;42:745–757.</p>
+    <p class="body-text">[3] Marquart KF, Mathis N, Mollaysa A, <i>et al.</i> Effective genome editing with an enhanced ISDra2 TnpB system and deep learning-predicted ωRNAs. <i>Nature Methods</i>. 2024;21:2084–2093.</p>
+    <p class="body-text">[4] Nakagawa R, Hirano H, Omura SN, <i>et al.</i> Cryo-EM structure of the transposon-associated TnpB enzyme. <i>Nature</i>. 2023;616:390–397.</p>
+    <p class="body-text">[5] Kleinstiver BP, Prew MS, Tsai SQ, <i>et al.</i> Engineered CRISPR-Cas9 nucleases with altered PAM specificities. <i>Nature</i>. 2015;523:481–485.</p>
 </main>
 
 <img src="https://static.igem.wiki/teams/6059/wiki/description/sword.avif" alt="Sword Scroll Track" class="scroll-sword" id="scrollSword">

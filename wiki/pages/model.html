@@ -87,7 +87,7 @@
         standing for <b><u>ST</u>ructural and dynamic <u>I</u>nsights into <u>N</u>uclease architecture and <u>G</u>uide recognition</b>.
     </p>
 
-    <img src="https://static.igem.wiki/teams/6059/wiki/model/mfig1-nn.avif" alt="1" class="figure-image">
+    <img src="https://static.igem.wiki/teams/6059/wiki/model/mfiggg11.avif" alt="1" class="figure-image">
     <p class="figure-caption"><b>Figure</b><b>  1</b>  Summary and highlight of our STING modelling framework.</p>  
 
     <p class="body-text">
@@ -97,10 +97,9 @@
         Combining the bioinformatics tools with the reliable structure, 
         our model provides key domain/residue information to guide the design of both base editors and engineered variants with altered TAM specificities, 
         building the TnpB toolkit. 
-        In addition, the LLM-generated contact probabilities are employed to explain the base editor system's efficiency. 
         Second, to accelerate directed evolution of TnpB for altered TAM specificities, 
         our framework designs a data-driven scoring method to prioritize variants, 
-        providing not only scores but also key regions for later mechanistic analysis. 
+        providing not only scores but also key regions for later experiments design and mechanistic analysis. 
         Finally, we uncover the structural and dynamic mechanisms underlying guide recognition using molecular dynamics, 
         revealing a molecular basis for future rational engineering.
 
@@ -143,7 +142,7 @@
     target-strand DNA (tsDNA), non-target-strand DNA (ntsDNA), guide omegaRNA (ωRNA), 
     where the transposon-associated motif (TAM) is located in ntsDNA. 
     Generating so many parts in one structure remains challenging, 
-    even with powerful LLM-based models (for example, AlphaFold3), as reported in (X). 
+    even with powerful LLM-based models (for example, AlphaFold3), as reported. 
     Given our goal of developing a TnpB-based genome-editing toolkit, 
     accurately resolving the molecular interactions among TnpB, DNA, and RNA is particularly important. 
     Specifically, the DNA–RNA interface is of primary interest, 
@@ -177,7 +176,7 @@
     while the one for AlphaFold3 is 30th, Sep, 2021. 
     Most ISDra2 TnpB structures were released after 2023, which is the main driver of this phenomenon. 
     
-    In addition, Figure 3D shows the DNA-RNA interface for both models. 
+    In addition, Figure 2D shows the DNA-RNA interface for both models. 
     The AlphaFold model generated a poorly paired DNA-RNA contact: 
     the two colored nucleic acids are too close, so PyMOL even renders a bond between them. 
     In Protenix, the structure is well maintained in the contact area, with a slight unpairing at the long end, 
@@ -269,8 +268,6 @@
 
 
 
-    <h1 class="heading-1">Heading 1</h1>
-
 
 
 
@@ -286,7 +283,7 @@
         By integrating experimental enrichment data with quantitative scoring strategies, 
         our approach enables systematic evaluation and prioritization of promising variants, 
         while identifying key residues and regions potentially involved in TAM recognition. 
-        This section aims to reduce the experimental verification burden and provide mechanistic insights to guide further analysis.
+        This section aims to reduce the experimental verification burden and provide insights to guide further experiments.
 
 
 
@@ -300,8 +297,8 @@
 
     To quantitatively evaluate the contribution of individual amino acid substitutions to TnpB activity and TAM specificity, 
     all successful sequencing variants collected in the 1st round of directed evolution will be taken into account, 
-    with the statistical result of enrichment times at each position (Figure 7A). 
-    Gaussian mixture model (GMM) is employed to characterize the distribution of mutant enrichment values (Figure 7B). 
+    with the statistical result of enrichment times at each position (Figure 5A). 
+    Gaussian mixture model (GMM) is employed to characterize the distribution of mutant enrichment values (Figure 5B). 
     The best number of clusters is obtained by screening a defined range of cluster numbers with the criterion of minimizing the BIC score.
     Rather than assuming that all enrichment measurements follow a single distribution, 
     the GMM represents the observed enrichment profile as a weighted combination of Gaussian components.
@@ -309,16 +306,16 @@
     it can produce several hot areas that contribute to the alternative TAM specificity, 
     as well as the importance weight for each position.
 
-    Then, the scoring is performed for each variant (Figure 7C). 
+    Then, the scoring is performed for each variant (Figure 5C). 
     A position-specific score is generated only for mutation sites by multiplying this position's importance weight from the GMM fit and the fraction of this mutation type among all mutation types collected at this position. 
     The latter fraction can be computed using Laplace smoothing to handle extreme scores arising from sparse observations and reduce the influence of sampling variability. Finally, the final score is the sum of all position-specific scores for one mutant.
 
     </p>
 
-    <img src="https://static.igem.wiki/teams/6059/wiki/model/mfig31.avif" alt="4" class="figure-image">
+    <img src="https://static.igem.wiki/teams/6059/wiki/model/mfig31.avif" alt="5" class="figure-image">
 
 
-    <p class="figure-caption"><b>Figure</b><b>  7</b>  <b>Data-driven Scoring for selecting high confident varient.</b>
+    <p class="figure-caption"><b>Figure</b><b>  5</b>  <b>Data-driven Scoring for selecting high confident varient.</b>
         <b> A</b>, Statistical results of enriched mutated amino acids. 
         <b> B</b>, Using the Gaussian mixture model to identify the hot area and provide the pre-weights. 
         <b> C</b>, Socre composition. 
@@ -331,7 +328,7 @@
 
     <p class="body-text">
 
-        Figure 7D illustrates the hotspot regions identified by our scoring algorithm, 
+        Figure 5D illustrates the hotspot regions identified by our scoring algorithm, 
         the number of candidate amino acids is reduced from 120 to 50, 
         representing a 60% reduction in the search space when considering only single-site mutations.
         The meaningful regions are also distributed into several small connected areas, 
@@ -382,11 +379,111 @@
 
     Each is a successful variant (including genome editing) within the TAM subgroups set in the directed evolution: 
     C<u>V</u>AC, CT<u>B</u>C, and <u>D</u>TAC.
+
+
+
+
 </p>
 
 
 
     <h2 class="heading-2">System preparation</h2> 
+
+    <p class="body-text">
+
+        The simulation systems were organized into groups according to their TAM sequences. 
+        Within each group, the ntsDNA, tsDNA, and ωRNA sequences were kept identical to those used in the directed evolution, while the TnpB protein was either an engineered variant or the wild-type (as negative control). 
+        This design enabled a systematic comparison of the effects of protein mutations on spacer–tsDNA duplex stability under identical nucleic acid sequence conditions. 
+        
+        The detailed group names used in later analysis and the big information are listed in Table 2. The structure is generate by Protenix. 
+
+
+
+
+<p class="figure-caption">
+
+<b>Table 2</b> Composition of TnpB–DNA–RNA ternary complexes used in molecular dynamics simulations.
+</p>
+
+<table>
+    <tr>
+        <th>TAM</th>
+        <th>Group Name</th>
+        <th>TnpB Protein</th>
+        <th>tsDNA/ntsDNA</th>
+        <th>ωRNA</th>
+
+    </tr>
+    <tr>
+        <td>CTAC</td>
+        <td>CTAC-WT</td>
+        <td>ISHahl1 TnpB WT (TAM: CTAC)</td>
+        <td>BBa_26EZ5IUH</td>
+        <td>BBa_26QMV3MA</td>
+    </tr>
+    <tr>
+        <td rowspan="2">CGAC</td>
+        <td>CGAC-6</td>
+        <td>ISHahl1 TnpB Mutant 6 (TAM: CGAC)</td>
+        <td rowspan="2">BBa_26HRH36Z</td>
+        <td rowspan="2">BBa_26XX9MAA</td>
+
+    </tr>
+    <tr>        
+        <td>CGAC-NC</td>
+        <td>ISHahl1 TnpB WT (TAM: CTAC)</td>
+    </tr>
+    <tr>
+        <td rowspan="2">CTGC</td>        
+        <td>CTGC-15</td>
+        <td>ISHahl1 TnpB Mutant 15 (TAM: CTGC)</td>
+        <td rowspan="2">BBa_26ZT0Z58</td>
+        <td rowspan="2">BBa_262TOKV9</td>
+
+    </tr>
+    <tr>
+        <td>CTGC-NC</td>
+        <td>ISHahl1 TnpB WT (TAM: CTAC)</td>
+        
+
+    </tr>
+    <tr>
+        <td rowspan="2">ATAC</td>
+
+        <td>ATAC-40</td>
+        <td>ISHahl1 TnpB Mutant 40 (TAM: ATAC)</td>
+        <td rowspan="2">BBa_26EZ5IUH</td>
+        <td rowspan="2">BBa_26QMV3MA</td>
+
+    </tr>
+    <tr>
+        <td>ATAC-NC</td>
+        <td>ISHahl1 TnpB WT (TAM: CTAC)</td>
+
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+    </p>
+
+
+
+
+
+
+
+
+
 
 
 
@@ -452,7 +549,7 @@
     <p class="body-text">
         To assess the equilibration state of the systems, 
         we calculated the time evolution of the root-mean-square deviation (RMSD) of heavy atoms relative to the initial structures for each complex. 
-        The results (Figure 8) show that all complexes reached equilibration well within 20 ns before, 
+        The results (Figure 6) show that all complexes reached equilibration well within 20 ns before, 
         with minimal increases in RMSD in 50 ns production. 
         This indicates that the structures remained relatively stable and close to their initial conformations for the majority of the simulation.
 
@@ -460,11 +557,11 @@
 
 
         <img src="https://static.igem.wiki/teams/6059/wiki/model/rmsd.avif" alt="4" class="figure-image">
-        <p class="figure-caption"><b>Figure</b><b>  8</b>  <b>RMSD prove the the equilibrium of system.</b> 
-        <b> A</b>, The ISHahl1 TnpB wild-typw (TAM: CTAC). 
-        <b> B</b>, The ISHahl1 TnpB mutant 6  (TAM: CGAC). 
-        <b> C</b>, The ISHahl1 TnpB mutant 15 (TAM: CTGC). 
-        <b> D</b>, The ISHahl1 TnpB mutant 40 (TAM: ATAC). 
+        <p class="figure-caption"><b>Figure</b><b>  6</b>  <b>RMSD prove the the equilibrium of system.</b> 
+        <b> A</b>, CTAC group. 
+        <b> B</b>, CGAC group. 
+        <b> C</b>, CTGC group. 
+        <b> D</b>, ATAC group. 
 
     </p>  
 
@@ -494,13 +591,13 @@
 <p class="body-text">
 
     For the wild-type TnpB recognizing the TAM 5'-CTAC-3' sequence, 
-    if the simulation is performed with a compatible TAM sequence (Figure 9A), 
+    if the simulation is performed with a compatible TAM sequence (Figure 7A), 
     the distance differences are extremely small (< 1×10-6 Å), 
     indicating that the stable structure is well maintained, providing the foundation for later cleavage.
     
     
     When the TAM sequences are altered to be incompatible, 
-    the relative distances between the spacer and tsDNA fluctuate significantly (Figure 9B-D), 
+    the relative distances between the spacer and tsDNA fluctuate significantly (Figure 7B-D), 
     causing substantial perturbations around the paired structure, 
     which in turn undermines the protein's ability to stabilize the nucleic acid coordination structure. 
 
@@ -512,11 +609,11 @@
 
 
         <img src="https://static.igem.wiki/teams/6059/wiki/model/mfig33.avif" alt="9" class="figure-image">
-        <p class="figure-caption"><b>Figure</b><b>  9</b>  <b></b> 
-        <b> A</b>, The combination of ISHahl1 TnpB wild-type with TAM 5'-CTAC-3'. 
-        <b> B</b>, The combination of ISHahl1 TnpB wild-type with TAM 5'-ATAC-3'
-        <b> C</b>, The combination of ISHahl1 TnpB wild-type with TAM 5'-CTGC-3'
-        <b> D</b>, The combination of ISHahl1 TnpB wild-type with TAM 5'-CGAC-3'
+        <p class="figure-caption"><b>Figure</b><b>  7</b>  <b>Evolution of distance differences for ISHahl1 TnpB wild-type recognizing different TAM sites.</b> 
+        <b> A</b>, CTAC-WT group. 
+        <b> B</b>, ATAC-NC group.
+        <b> C</b>, CTGC-NC group.
+        <b> D</b>, CGAC-NC group.
 
 </p>
 
@@ -529,10 +626,10 @@
 
 
 
-    In contrast, when those TAMs are combined with variants from their corresponding directed evolution experiments (Figure 10A-C), 
+    In contrast, when those TAMs are combined with variants from their corresponding directed evolution experiments (Figure 8A-C), 
     the simulation again shows stabilization of the pairing between the spacer and tsDNA, 
     indicating that the TnpB variants can significantly stabilize this pairing through non-covalent interactions.
-    Figure 10D shows a quantitative comparison of the mean spacer–tsDNA distance fluctuations between wild-type TnpB and the corresponding engineered variants across three expanded TAM sequences (ATAC, CGAC, and CTGC). 
+    Figure 8D shows a quantitative comparison of the mean spacer–tsDNA distance fluctuations between wild-type TnpB and the corresponding engineered variants across three expanded TAM sequences (ATAC, CTGC, and CGAC). 
     For all three TAMs, the engineered variants exhibit significantly lower mean distance fluctuations than wild-type TnpB, indicating enhanced stability of the spacer–tsDNA duplex. 
     Notably, this consistent stabilization across different TAM sequences suggests that maintaining stable guide–target base pairing may represent a general mechanism underlying TAM expansion, 
     rather than a sequence-specific effect. 
@@ -545,11 +642,10 @@
 
 
 
+        <img src="https://static.igem.wiki/teams/6059/wiki/model/mfig34.avif" alt="8" class="figure-image">
+        <p class="figure-caption"><b>Figure</b><b>  8</b>  <b>Evolution of distance differences and statistical analysis for ISHahl1 TnpB mutants recognizing corresponding TAM sites.</b> 
 
-        <img src="https://static.igem.wiki/teams/6059/wiki/model/mfig34.avif" alt="9" class="figure-image">
-        <p class="figure-caption"><b>Figure</b><b>  10</b>  <b>Evolution of distance differences and statistical analysis for ISHahl1 TnpB mutants recognizing different TAM sites.</b> 
-
-            <b> A–C </b>, Time-evolution curves of distance differences between hotspot residues and the spacer–tsDNA when ISHahl1 TnpB mutants recognize their corresponding TAM sites. 
+            <b> A–C </b>, Time-evolution curves of distance differences between spacer and tsDNA when ISHahl1 TnpB mutants recognize their corresponding TAM sites. 
             <b> D </b>, Statistical significance analysis of the time-averaged distance differences between TnpB mutants and the wild-type when recognizing the same TAM site.
 
 
@@ -571,13 +667,37 @@
 
 
 
-    <h2 class="heading-2">Coordinated residue dynamics stabilize the spacer–tsDNA duplex</h2> 
-
 
 
 
 
     <h1 class="heading-reference">Reference</h1>
+
+<p class="body-text">
+
+1.	M. J. Abraham et al., GROMACS: High performance molecular simulations through multi-level parallelism from laptops to supercomputers. SoftwareX 1-2, 19–25 (2015). <br>
+2.	J. Abramson et al., Accurate structure prediction of biomolecular interactions with AlphaFold 3. Nature 630, 493–500 (2024). <br>
+3.	A. M. L. A. I. S. T. ByteDance et al., Protenix - Advancing Structure Prediction Through a Comprehensive AlphaFold3 Reproduction. bioRxiv, 2025.2001.2008.631967 (2025). <br>
+4.	D. A. Case et al., AmberTools. Journal of Chemical Information and Modeling 63, 6183–6191 (2023). <br>
+5.	D. A. Case et al., Recent Developments in Amber Biomolecular Simulations. Journal of Chemical Information and Modeling 65, 7835–7843 (2025). <br>
+6.	N. H. H. Chong et al., Evaluation of protein–RNA Docking Web Servers for Template-Free Docking and Comparison with the AlphaFold Server. Journal of Chemical Theory and Computation 22, 3746–3760 (2026). <br>
+7.	H. Cui et al., Precision in Predicting Protein–Nucleic Acid Complexes: Establishing a Benchmark Data Set and Comparative Metrics. Journal of Chemical Information and Modeling 65, 9654–9671 (2025). <br>
+8.	M. J. Frisch et al., Gaussian 16 Rev. C.01, Wallingford, CT, 2016. <br>
+9.	M. J. Frisch et al., Gaussian 16 Rev. C.01, Wallingford, CT, 2016. <br>
+10.	T. Karvelis et al., Transposon-associated TnpB is a programmable RNA-guided DNA endonuclease. Nature 599, 692–696 (2021). <br>
+11.	J. Pei, B.-H. Kim, N. V. Grishin, PROMALS3D: a tool for multiple protein sequence and structure alignments. Nucleic Acids Research 36, 2295–2300 (2008). <br>
+12.	T. Protenix et al., Protenix-v1: Toward High-Accuracy Open-Source Biomolecular Structure Prediction. bioRxiv, 2026.2002.2005.703733 (2026). <br>
+13.	G. Sasnauskas et al., TnpB structure reveals minimal functional core of Cas12 nuclease family. Nature 616, 384–389 (2023). <br>
+14.	Schrödinger, LLC. The PyMOL Molecular Graphics System, Version 3.0. (2024). <br>
+15.	G. Xiang et al., Evolutionary mining and functional characterization of TnpB nucleases identify efficient miniature genome editors. Nature Biotechnology 42, 745–757 (2024). <br>
+
+
+</p>
+
+
+
+
+
 </main>
 
 <img src="https://static.igem.wiki/teams/6059/wiki/description/sword.avif" alt="Sword Scroll Track" class="scroll-sword" id="scrollSword">
