@@ -10,75 +10,149 @@
 <header class="title-header-wrapper" id="heroWrapper">
     <div class="grid-container" id="heroGridContainer">
         <canvas id="gridCanvas"></canvas>
-
-        <!-- 移动端整块首屏贴图（标题 + DNA / 蛋白装饰 + 引言文字一体）：移动端只渲染它，
-             PC 端由 description.css 隐藏，见该文件第 8.0 / 8.4 节 -->
         <img class="mobile-hero-image"
              src="https://static.igem.wiki/teams/6059/wiki/move/parts-1.avif"
-             alt="Parts — STING: an international team of students, researchers, and innovators exploring the frontiers of bacterial genome engineering.">
-        
-        <!-- 左侧装饰 DNA (通过 asset-map.json 解析) -->
+             alt="Parts — STING: a standardized toolkit based on ISHahl1 TnpB.">
         <div class="left-dna-wrapper">
             <img src="{{ asset_url('title/DNA_1.png') }}" alt="DNA Structure Left" class="left-dna-image">
         </div>
-
-        <!-- 右侧装饰蛋白结构 -->
         <div class="right-protein-wrapper">
             <img src="{{ asset_url('title/protein.png') }}" alt="Protein Structure Right" class="right-protein-image">
         </div>
-
-        <!-- 右下装饰 DNA -->
         <div class="bottom-right-dna-wrapper">
             <img src="{{ asset_url('title/DNA_2.png') }}" alt="DNA Structure Bottom Right" class="bottom-right-dna-image">
         </div>
-
-        <!-- 中央大标题图片 -->
         <div class="center-image-wrapper">
-            <img src="https://static.igem.wiki/teams/6059/wiki/title/parts.avif" alt="Description" class="title-image">
+            <img src="https://static.igem.wiki/teams/6059/wiki/title/parts.avif" alt="Parts" class="title-image">
         </div>
-
-        <!-- 中央引言文案 -->
         <div class="center-description-wrapper">
             <p class="center-description-text">
                 Showcasing the standardized, modular BioBricks<br>
                 we built and characterized for the TnpB system.
             </p>
         </div>
-
-        <!-- 底部滑动探索指引 -->
         <div class="scroll-explore-wrapper">
             <span class="scroll-line"></span>
             <span class="scroll-text">SCROLL TO EXPLORE</span>
             <span class="scroll-line"></span>
         </div>
-
         <div class="bottom-dots-decor"></div>
     </div>
 </header>
 
-<!-- 侧边动态目录导航栏 (TOC) -->
 <aside class="side-container" id="sideContainer">
     <nav class="toc-nav" id="tocNav" aria-label="Table of Contents"></nav>
 </aside>
 
-<!-- 正文主体容器 -->
 <main class="main-container" id="mainContainer">
-    <h1 class="heading-1">Heading 1</h1>
-    <p class="body-text"><b>TnpB</b> CRISPR-Cas9/Cas12.</p>
+    <h1 class="heading-1">Parts Collection</h1>
+    <h2 class="heading-2">Overview</h2>
 
-    <p class="figure-caption"><b>table</b><b>  1</b>  parts</p>   
+    <p class="body-text">In 2026, we constructed a standardized synthetic-biology part collection centered on the ISHahl1 TnpB miniature genome-editing tool. The collection contains basic and composite parts designed by our team according to iGEM RFC standards. Most parts have been functionally characterized <i>in vivo</i> to verify their activity and reliability.</p>
+
+    <p class="body-text">Our bacterial ISHahl1 TnpB-based toolkit for genome editing and gene regulation includes wild-type TnpB, catalytically dead dTnpB and TnpB interference technology, a library of screened TnpB variants, base-editing modules, and the genetic components required for fluorescence-based reporter screening and plasmid-interference assays. Together, these parts provide a lightweight and potentially low-toxicity toolkit for genetic manipulation. See the <a href="{{ url_for('pages', page='design') }}">Design</a> page for the engineering rationale.</p>
+
+    <p class="body-text">The collection is divided into five independent yet combinable subgroups: the dual-plasmid genome-editing subgroup, the TnpB derivative-tool subgroup, the reRNA-spacer guide subgroup, the TAM-recognition-site mutagenesis subgroup, and the TnpB random-mutant-library subgroup. Parts are interchangeable and recombinable, allowing users to assemble devices for gene knockout, transcriptional interference, base editing, and TAM activity screening. Sequences, design rationale, and characterization records are uploaded to the iGEM Registry.</p>
+
+    <h1 class="heading-1">Subgroup 1: TnpB Dual-Plasmid Genome Editing and Scarless Modification</h1>
+    <p class="body-text">This editing system uses a dual-plasmid architecture. The effector plasmid carries the TnpB nuclease, the λ-Red-mediated homologous-recombination system, and counter-selection markers, while the reRNA guide unit is carried on a separate guide plasmid. The pωRNA plasmid contains the <i>ccdB</i> counter-selection marker to simplify spacer cloning, whereas pEcTnpB carries <i>sacB</i>, enabling plasmid curing after genome editing.</p>
+
+    <p class="body-text">When the TnpB–reRNA complex recognizes a target site and its corresponding TAM, it introduces a double-strand break. The λ-Red system encoded on pEcTnpB then mediates donor-DNA-directed repair, enabling scarless genomic modification.</p>
+
     <table>
-        <tr><th>Favorite</th><th>Name</th><th>Type</th><th>Description</th></tr>
-        <tr><td> </td><td>0000</td><td>0000</td><td>0000</td></tr>
-        <tr><td> </td><td>0000</td><td>0000</td><td>0000</td></tr>
-        <tr><td> </td><td>0000</td><td>0000</td><td>0000</td></tr>
+        <thead>
+            <tr><th>Part or construct</th><th>Type</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>pEcTnpB</td><td>Composite plasmid</td><td>ISHahl1 TnpB, λ-Red recombination system, induction and counter-selection modules.</td></tr>
+            <tr><td>pEcreRNA-entry / pωRNA</td><td>Composite plasmid</td><td>reRNA guide backbone with a ccdB-based spacer-cloning cassette.</td></tr>
+            <tr><td>pEcCas</td><td>Composite plasmid</td><td>SpCas9-based reference editing plasmid.</td></tr>
+            <tr><td>pEcgRNA-entry</td><td>Composite plasmid</td><td>Guide-plasmid entry system for the Cas9 reference workflow.</td></tr>
+            <tr><td>pSEVA321-TnpB</td><td>Composite plasmid</td><td>Broad-host-range TnpB and λ-Red construct for <i>P. putida</i>.</td></tr>
+            <tr><td>pSEVA241-reRNA-entry</td><td>Composite plasmid</td><td>Broad-host-range reRNA guide and donor-DNA construct.</td></tr>
+            <tr><td>λ-Red, sacB, ccdB, reRNA scaffold, oriT</td><td>Basic parts</td><td>Recombination, counter-selection, guide-scaffold, and conjugation modules used to assemble the plasmids above.</td></tr>
+        </tbody>
     </table>
+    <p class="figure-caption"><b>Table 1</b> Representative parts in the TnpB dual-plasmid genome-editing subgroup. Registry identifiers are assigned during part submission.</p>
 
-    <img src="https://static.igem.wiki/teams/6059/wiki/description/figure/1.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  1</b>  Comparison of protein sizes among Cas9, TnpB, and Cas12a</p>    
-    <h2 class="heading-2">Heading 2</h2>   
-    <h3 class="heading-3">Heading 3</h3>
-    <h1 class="heading-reference">Reference</h1>
+    <h1 class="heading-1">Subgroup 2: TnpB Derivative Tools</h1>
+    <p class="body-text">Site-directed mutagenesis of the TnpB catalytic domain yields derivative variants with distinct activities. Catalytically dead dTnpB loses DNA-cleavage activity while retaining reRNA-guided target binding. Nickase nTnpB is designed to cleave only one DNA strand. When dTnpB binds a promoter or transcription-start region, steric hindrance can implement TnpB interference (TnpBi), enabling gene knockdown without changing the DNA sequence.</p>
+
+    <p class="body-text">Fusing dTnpB or nTnpB with deaminase domains enables miniature base editors. These modules are designed to mediate C-to-T or A-to-G substitutions without introducing the toxic double-strand breaks associated with nuclease-based editing. We first generated and characterized catalytic-site mutants, then used the validated dTnpB variant to develop TnpBi and base-editing tools.</p>
+
+    <table>
+        <thead>
+            <tr><th>Part or construct</th><th>Type</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>araC-pBAD-dISHahl1 / dTnpB D190A</td><td>Expression construct</td><td>Inducible catalytically dead TnpB for TnpBi and base editing.</td></tr>
+            <tr><td>APOBEC-1–dTnpB–UGI</td><td>Composite base editor</td><td>N-terminal deaminase fusion for C-to-T base editing.</td></tr>
+            <tr><td>UGI–dTnpB–APOBEC-1</td><td>Composite base editor</td><td>C-terminal deaminase fusion for C-to-T base editing.</td></tr>
+            <tr><td>pMB1-sfGFP and TnpB interference test constructs</td><td>Assay constructs</td><td>Target and non-targeting plasmids for validating nuclease and dTnpB activity.</td></tr>
+            <tr><td>ReRNA<sub>sfGFP</sub>, reRNA<sub>NT</sub>, reRNA<sub>J23118</sub></td><td>Guide parts</td><td>Targeting and non-targeting guides for plasmid-interference and TnpBi assays.</td></tr>
+        </tbody>
+    </table>
+    <p class="figure-caption"><b>Table 2</b> Representative parts in the TnpB derivative-tool subgroup.</p>
+
+    <h1 class="heading-1">Subgroup 3: reRNA-Spacer Guide Subgroup</h1>
+    <p class="body-text">TnpB relies on reRNA for target-DNA recognition. reRNA consists of a conserved scaffold and a replaceable spacer. The scaffold binds the TnpB protein, while the spacer recognizes the target DNA through complementary base pairing.</p>
+
+    <p class="body-text">The guide plasmid carries the <i>ccdB</i> lethal negative-selection marker. When a new spacer is inserted, only clones in which the spacer has successfully replaced <i>ccdB</i> can survive selection. This simplifies cloning, reduces the need for extensive screening, and enables rapid construction of multiple target-specific guides for genome editing and base editing. Combined with variants recognizing expanded TAMs, this guide collection broadens the genomic regions that can be targeted.</p>
+
+    <table>
+        <thead>
+            <tr><th>Part or construct</th><th>Type</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>reRNA scaffold</td><td>Basic part</td><td>Conserved RNA scaffold that binds TnpB.</td></tr>
+            <tr><td>Target-specific spacer parts</td><td>Basic parts</td><td>Interchangeable spacer sequences for bacterial genomic targets.</td></tr>
+            <tr><td>reRNA–spacer composite guides</td><td>Composite parts</td><td>Complete guides for genome editing, TnpBi, and base-editing assays.</td></tr>
+            <tr><td>Non-targeting reRNA</td><td>Control part</td><td>Negative control that does not match the host genome or experimental plasmids.</td></tr>
+        </tbody>
+    </table>
+    <p class="figure-caption"><b>Table 3</b> Representative parts in the reRNA-spacer guide subgroup.</p>
+
+    <h1 class="heading-1">Subgroup 4: TAM-Recognition-Site Mutagenesis and Screening</h1>
+    <p class="body-text">The canonical 5′-CTAC-3′ TAM restricts the genomic sites accessible to ISHahl1 TnpB. To identify variants with altered TAM preferences, synonymous TAM variants were introduced into an <i>eyfp</i> reporter without changing the encoded protein sequence. The resulting reporter plasmids contain the DTAC subgroup (GTAC, ATAC, and TTAC), the CVAC subgroup (CGAC, CAAC, and CCAC), and the CTBC subgroup (CTGC, CTTC, and CTCC).</p>
+
+    <p class="body-text">In the fluorescence-selection system, cleavage and loss of the reporter plasmid leads to a reduction in normalized EYFP fluorescence. This converts TAM recognition into a measurable phenotype and provides a scalable way to screen TnpB variants. The subgroup also includes the inducible expression and control parts needed for fluorescence-based selection and plasmid-interference validation.</p>
+
+    <table>
+        <thead>
+            <tr><th>Part or construct</th><th>Type</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>pSTING-EX</td><td>Screening plasmid</td><td>p15A-based plasmid carrying constitutive reRNA and inducible TnpB variant expression.</td></tr>
+            <tr><td>pEYFP-CTAC</td><td>Reporter plasmid</td><td>Constitutive EYFP reporter carrying the canonical CTAC TAM.</td></tr>
+            <tr><td>pEYFP-DTAC / CVAC / CTBC</td><td>Reporter plasmids</td><td>Synonymous reporter variants for screening alternative TAMs.</td></tr>
+            <tr><td>GTAC, ATAC, TTAC, CGAC, CAAC, CCAC, CTGC, CTTC, CTCC</td><td>TAM parts</td><td>Single-nucleotide TAM variants used in selection and validation.</td></tr>
+        </tbody>
+    </table>
+    <p class="figure-caption"><b>Table 4</b> Representative parts in the TAM-recognition-site mutagenesis subgroup.</p>
+
+    <h1 class="heading-1">Subgroup 5: TnpB Random Mutant Library</h1>
+    <p class="body-text">We constructed a TnpB protein mutant library by random mutagenesis to generate a large pool of TnpB variants. Library components can be paired with reporter systems from the TAM-recognition-site screening subgroup to characterize the TAM preferences and <i>in vivo</i> cleavage activity of individual mutants.</p>
+
+    <p class="body-text">The library enables identification of variants with expanded TAM-recognition spectra. Selected variants can subsequently be tested using plasmid-interference assays and genome-editing assays to determine whether altered recognition is accompanied by functional editing activity.</p>
+
+    <table>
+        <thead>
+            <tr><th>Part or construct</th><th>Type</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>TnpB random-mutant library</td><td>Library</td><td>Collection of ISHahl1 TnpB variants generated by random mutagenesis.</td></tr>
+            <tr><td>TnpB variant expression constructs</td><td>Composite parts</td><td>Inducible constructs for screening and functional validation of individual variants.</td></tr>
+            <tr><td>Candidate variants 39, 40, 48, 6, 46, and 15</td><td>Characterized variants</td><td>Variants that showed editing activity at non-canonical TAMs in the genome-editing assay.</td></tr>
+        </tbody>
+    </table>
+    <p class="figure-caption"><b>Table 5</b> Representative parts in the TnpB random-mutant-library subgroup.</p>
+
+    <h1 class="heading-1">Conclusion</h1>
+    <p class="body-text">We built this Part Collection for miniature TnpB genome editing by integrating nuclease variants, reRNA-spacer guides, homologous-recombination systems, selection markers, and high-throughput reporter modules into a standardized, freely recombinable toolkit.</p>
+
+    <p class="body-text">Fully characterized, modular, and reusable TnpB editing tools remain scarce in the public iGEM Registry. This collection aims to provide the iGEM community with ready-to-use and easily adaptable parts, lowering the barrier to adopting miniature RNA-guided editing tools and supporting future work on gene knockout, transcriptional repression, base editing, TAM-directed evolution, and related applications.</p>
+
+    <h1 class="heading-reference">References</h1>
 </main>
 
 <img src="https://static.igem.wiki/teams/6059/wiki/description/sword.avif" alt="Sword Scroll Track" class="scroll-sword" id="scrollSword">
