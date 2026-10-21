@@ -143,7 +143,7 @@ body::-webkit-scrollbar {
     font-size: calc(40 * var(--u));
 }
 .text-2 {
-    top: 4%;
+    top: 3%;
     left: 10%;
     max-width: 60%;
     font-size: calc(40 * var(--u));
