@@ -6,20 +6,20 @@
 }
 @media (min-width: 1025px) {
     .main-container > img.figure-image:nth-of-type(5) {
-        width: 8cqmax;
-        max-width: 50%;
+        width: 80%;
+        max-width: 80%;
     }
 }
 @media (min-width: 1025px) {
     .main-container > img.figure-image:nth-of-type(6) {
         width: 80%;
-        max-width: 50%;
+        max-width: 80%;
     }
 }
 @media (min-width: 1025px) {
     .main-container > img.figure-image:nth-of-type(7) {
         width: 80%;
-        max-width: 50%;
+        max-width: 80%;
     }
 }
 
