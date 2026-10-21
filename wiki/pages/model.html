@@ -369,7 +369,74 @@
     <h1 class="heading-1">Molecular Dynamics Reveals the Mechanisms of Guide Recognition</h1>
 
 
-    <h2 class="heading-2">System preparation and simulation</h2> 
+
+    <h2 class="heading-2">System preparation</h2> 
+
+
+
+    <p class="body-text">
+
+
+    The molecular dynamics (MD) simulation systems were prepared using the AMBER 26 software package. 
+    The AMBER ff14SB force field was employed to describe the protein, while the OL3 and OL15 force fields were used to parameterize RNA and DNA, respectively. 
+    The zinc-finger domain of TnpB was parameterized using the Metal Center Parameter Builder (MCPB.py). 
+    Geometry optimization and electrostatic potential calculations were performed using Gaussian at the B3LYP/def2-SVP level of theory, followed by the derivation of restrained electrostatic potential (RESP) charges within the MCPB.py workflow.
+
+    All systems were solvated in explicit TIP3P water using a solvent box extending 16 Å beyond the solute in each direction. 
+    Counterions were added to neutralize the net charge of each system, and additional ions were introduced to achieve a physiological salt concentration of 0.15 M.
+
+
+
+    </p>
+
+
+
+    <h2 class="heading-2">System simulation</h2> 
+
+
+    <p class="body-text">
+
+        All-atom molecular dynamics simulations were performed using GROMACS. 
+        Each system underwent a multistage preparation protocol consisting of energy minimization, 
+        canonical ensemble (NVT) equilibration, isothermal–isobaric ensemble (NPT) equilibration, 
+        and unrestrained production simulations.
+
+        Long-range electrostatic interactions were treated using the particle mesh Ewald (PME) method, 
+        with a real-space cutoff of 10 Å. The van der Waals interactions were truncated at 10 Å, 
+        and long-range dispersion corrections were applied to account for truncation effects on energy and pressure. 
+        
+        All covalent bonds involving hydrogen atoms were constrained using the LINCS algorithm, allowing an integration time step of 2 fs.
+
+        Energy minimization was initially performed to eliminate steric clashes and unfavorable atomic contacts in the starting structures. 
+        The steepest descent algorithm was employed with a maximum force convergence criterion of 1,000 kJ mol⁻¹ nm⁻¹. 
+        To prevent substantial structural deviations during minimization, harmonic positional restraints with a force constant of 50 kcal mol⁻¹ Å⁻² were applied to the heavy atoms of the protein, DNA, and RNA.
+
+        Following energy minimization, each system was equilibrated under NVT conditions using the velocity-rescaling (V-rescale) thermostat, 
+        with a reference temperature of 300 K and a coupling time constant of 1.0 ps. 
+        A simulated annealing protocol was employed to gradually relax the initial structures. 
+        Specifically, the temperature was increased linearly from 0 to 300 K over the first 50 ps and subsequently maintained at 300 K for an additional 100 ps. 
+        No pressure coupling was applied during this stage. Positional restraints of 50 kcal mol⁻¹ Å⁻² were maintained on the protein and nucleic acid heavy atoms to allow solvent relaxation around the restrained solute.
+
+        The systems were subsequently subjected to NPT equilibration using a three-stage positional restraint relaxation protocol. 
+        Harmonic restraints were progressively reduced from 50 to 25 and finally to 10 kcal mol⁻¹ Å⁻², with each stage lasting 150 ps. 
+        Temperature was maintained at 300 K using the V-rescale thermostat, while pressure was controlled at 1 bar using the C-rescale barostat with isotropic coupling and a time constant of 10.0 ps. 
+        Pressure coupling was updated every 10 integration steps. Center-of-mass reference coordinate scaling was applied to minimize artifacts associated with positional restraints. 
+        The leap-frog integration algorithm was employed with a time step of 2 fs throughout the equilibration procedure.
+
+        Following restrained equilibration, all positional restraints were removed, and the systems underwent additional unrestrained NPT equilibration to allow further structural relaxation. 
+        During this stage, the pressure coupling time constant was adjusted to 5.0 ps, while the temperature and pressure were maintained at 300 K and 1 bar, respectively.
+
+        Finally, production MD simulations were performed under NPT conditions at 300 K and 1 bar for 50 ns, 
+        using a 2 fs integration time step. 
+        The resulting trajectories were collected for subsequent analyses of structural stability, intermolecular interactions, and conformational dynamics within the TnpB–DNA–RNA ternary complexes.
+
+
+
+    </p>
+
+
+
+    
 
 
     <h2 class="heading-2">General link between spacer–tsDNA stability and TAM expansion</h2> 
