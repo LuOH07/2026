@@ -137,7 +137,7 @@ body::-webkit-scrollbar {
     text-align: center;           
 }
 .text-1 {
-    top: -1%;
+    top: -2%;
     left: 10%;
     max-width: 60%;
     font-size: calc(40 * var(--u));
