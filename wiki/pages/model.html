@@ -62,6 +62,19 @@
     <nav class="toc-nav" id="tocNav" aria-label="Table of Contents"></nav>
 </aside>
 
+
+<script src="https://2021.igem.org/common/MathJax-2.5-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+<script type="text/x-mathjax-config" async>
+  MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<style>
+.MathJax nobr>span.math>span{border-left-width:0 !important};
+</style>
+
 <!-- 正文主体容器 -->
 <main class="main-container" id="mainContainer">
     <h1 class="heading-1">Overview</h1>
@@ -253,7 +266,6 @@
 
     </p>  
 
-    <h3 class="heading-3">Heading 3</h3>
 
 
 
@@ -263,27 +275,68 @@
 
 
 
-    <h1 class="heading-1">Data-driven </h1>
+    <h1 class="heading-1"> Data-driven Scoring to accelerate verification in directed evolution</h1>
+
+    <p class="body-text">
+
+
+
+        To accelerate the verification experiment in the directed evolution of TnpB variants with altered TAM specificities, 
+        we developed a data-driven scoring algorithm based on mutant enrichment profiles. 
+        By integrating experimental enrichment data with quantitative scoring strategies, 
+        our approach enables systematic evaluation and prioritization of promising variants, 
+        while identifying key residues and regions potentially involved in TAM recognition. 
+        This section aims to reduce the experimental verification burden and provide mechanistic insights to guide further analysis.
+
+
+
+    </p>
+
+    <h2 class="heading-2">Enrichment-based scoring of variants</h2> 
+
+
+    <p class="body-text">
+
+
+    To quantitatively evaluate the contribution of individual amino acid substitutions to TnpB activity and TAM specificity, 
+    all successful sequencing variants collected in the 1st round of directed evolution will be taken into account, 
+    with the statistical result of enrichment times at each position (Figure 7A). 
+    Gaussian mixture model (GMM) is employed to characterize the distribution of mutant enrichment values (Figure 7B). 
+    The best number of clusters is obtained by screening a defined range of cluster numbers with the criterion of minimizing the BIC score.
+    Rather than assuming that all enrichment measurements follow a single distribution, 
+    the GMM represents the observed enrichment profile as a weighted combination of Gaussian components.
+    In this step, 
+    it can produce several hot areas that contribute to the alternative TAM specificity, 
+    as well as the importance weight for each position.
+
+    Then, the scoring is performed for each variant (Figure 7C). 
+    A position-specific score is generated only for mutation sites by multiplying this position's importance weight from the GMM fit and the fraction of this mutation type among all mutation types collected at this position. 
+    The latter fraction can be computed using Laplace smoothing to handle extreme scores arising from sparse observations and reduce the influence of sampling variability. Finally, the final score is the sum of all position-specific scores for one mutant.
+
+    </p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/model/mfig31.avif" alt="4" class="figure-image">
+
+
+    <p class="figure-caption"><b>Figure</b><b>  7</b>  <b>Data-driven Scoring for selecting high confident varient.</b>
+        <b> A</b>, Statistical results of enriched mutated amino acids. 
+        <b> B</b>, Using Gaussian mixture model to indetify the hot area and provide the pre-weights. 
+        <b> C</b>, Socre composition. 
+        <b> D</b>, Hot areas identified for IsHahl1 TnpB in TAM. 
+    </p>  
+
+
+    <h2 class="heading-2">Enrichment-based scoring of variants</h2> 
+
+
+
+    <h1 class="heading-1">Molecular Dynamics Reveals the Mechanisms of Guide Recognition</h1>
 
 
     <h2 class="heading-2">System preparation and simulation</h2> 
-
-
-    <h2 class="heading-2">System preparation and simulation</h2> 
-
-
-
-    <h1 class="heading-1">Molecular Dynamics Reveals the Mechanisms of Guide Recognition in TnpB</h1>
-
-
-
-
-    <h2 class="heading-2">System preparation and simulation</h2> 
-
 
 
     <h2 class="heading-2">General link between spacer–tsDNA stability and TAM expansion</h2> 
-
 
 
 
