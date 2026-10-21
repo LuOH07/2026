@@ -395,7 +395,7 @@
         {
             cls: "bug-icon-20",
             host: ".text-13",
-            src: HOME_MEDIA + "standing.webm",                  /* ★ 相对路径：和 index.html 同目录 */
+            src: HOME_MEDIA + "https://static.igem.wiki/teams/6059/wiki/home/build-finalplan.avif",                  /* ★ 相对路径：和 index.html 同目录 */
             name: "Standing",
             pin: true,                      /* ★ 不飘动：位置由 3.css 的 .bug-icon-20 决定 */
             autoplay: false,                /* ★ 亮起来才播（不然进页面就播完了） */
