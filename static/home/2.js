@@ -1,6 +1,6 @@
 
 /* ==========================================================================
-   一、视频清单（要加/减少视频改这里）
+   一、素材清单（要加/减少视频或图片改这里）
    ========================================================================== */
 
 var VIDEO_GROUPS = {
@@ -8,15 +8,15 @@ var VIDEO_GROUPS = {
         HOME_MEDIA + "falls.webm"
     ],
     /* ★ 数组位置 = 序号，对应 2.css 里的 .bg-video-wrap-crispr-<序号>：
-       第 1 格 → crispr-1（出场动画）、第 2 格 → crispr-2、第 3 格 → crispr-3（走路）、
-       第 4 格 → crispr-4（终点动画）。
+       第 1 格 → crispr-1（出场图）、第 2 格 → crispr-2、第 3 格 → crispr-3（走路）、
+       第 4 格 → crispr-4（终点图）。
        某格写成 null = “这一格不放视频”（但不能整行删掉，否则后面的序号会整体前移、位置全错）。
        crispr-2 已经去掉了，所以第 2 格是 null。 */
     "CRISPR": [
-        HOME_MEDIA + "assets/CRISPR_1.webm",
+        "https://static.igem.wiki/teams/6059/wiki/home/wizard.avif",
         null,
-        HOME_MEDIA + "assets/CRISPR_3.webm",
-        HOME_MEDIA + "assets/CRISPR_4.webm"
+        "https://static.igem.wiki/teams/6059/wiki/home/wizard.avif",
+        "https://static.igem.wiki/teams/6059/wiki/home/wizard.avif"
         // "./Preset-3.webm"
     ],
     "gene": [
@@ -232,9 +232,9 @@ var MOVE_FX = {
         finale: { key: "TnpBEnd_1", rate: 1 }
     },
     "crispr-3": {
-        appear: { key: "CRISPR_1", rate: 1, up: 0.05, left: -1.5 },
+        appear: { key: "CRISPR_1", duration: 700, up: 0.05, left: -1.5 },
         end: {
-            key: "CRISPR_4", segments: [2], rate: 1, up: 0.01, left: 0.9,
+            key: "CRISPR_4", segments: [2], duration: 700, up: 0.01, left: 0.9,
             /* ★ 这个终点动画一触发，gene-3 / gene-4 就分别摆到 gene-1 / gene-2 的位置上
                一起播（也就是在这一刻替代了它们的画面），同时把 gene-1 / gene-2 藏起来；
                它们播完再过 2 秒，gene-1 / gene-2 重新出现。
@@ -755,6 +755,7 @@ function makeFxPlayer(cfg, kind) {
         cfg: cfg || null,
         key: cfg ? cfg.key : "",
         rate: (cfg && cfg.rate > 0) ? cfg.rate : 1,
+        duration: (cfg && cfg.duration > 0) ? cfg.duration : 0,
         up: (cfg && cfg.up) ? cfg.up : 0,            /* 相对轨迹点往上挪（底图高度的 %） */
         left: (cfg && cfg.left) ? cfg.left : 0,      /* 相对轨迹点往左挪（底图宽度的 %） */
         wrap: null,
@@ -792,26 +793,30 @@ function setupFx(pl) {
     pl.ready = true;                                 /* 只找一次，找不到就算了 */
 
     var wrap = document.getElementById("bgVideoWrap_" + pl.key);
-    var video = wrap ? wrap.querySelector("video") : null;
-    if (!wrap || !video) return;
+    var media = wrap ? wrap.querySelector(".bg-video") : null;
+    if (!wrap || !media) return;
 
     pl.wrap = wrap;
-    pl.video = video;
-
-    video.loop = false;
-    video.removeAttribute("loop");
-    video.pause();
-    /* 有的视频配了“从第几秒开始播”（VIDEO_GROUPS 里的 startAt），回到那个点 */
-    try { video.currentTime = video.__startAt || 0; } catch (err) { /* 忽略 */ }
+    if (media.tagName === "VIDEO") {
+        pl.video = media;
+        media.loop = false;
+        media.removeAttribute("loop");
+        media.pause();
+        /* 有的视频配了“从第几秒开始播”（VIDEO_GROUPS 里的 startAt），回到那个点 */
+        try { media.currentTime = media.__startAt || 0; } catch (err) { /* 忽略 */ }
+    }
 
     wrap.style.visibility = "hidden";
 
-    video.addEventListener("ended", function () { finishFx(pl); });
-    video.addEventListener("error", function () { finishFx(pl); });
+    if (pl.video) {
+        pl.video.addEventListener("ended", function () { finishFx(pl); });
+        pl.video.addEventListener("error", function () { finishFx(pl); });
+    }
 }
 
-/* 这次要播多久：视频自己的时长（减去 startAt）÷ 倍速，多留一点点；拿不到时长就按 1 秒算 */
+/* 静态图片阶段按配置时长展示；视频阶段按自身时长播，拿不到时长就按 1 秒算 */
 function fxDurationMs(pl) {
+    if (pl.duration > 0) return pl.duration;
     var rate = pl.rate > 0 ? pl.rate : 1;
     var d = pl.video && isFinite(pl.video.duration) ? pl.video.duration : 0;
     var from = (pl.video && pl.video.__startAt) ? pl.video.__startAt : 0;
@@ -844,12 +849,14 @@ function playFxAt(pl, point) {
         (point.y - corner.y - up).toFixed(2) + "px,0)";
     wrap.style.visibility = "visible";
 
-    var from = video.__startAt || 0;           /* 配了 startAt 的就从那一秒开始播 */
-    try { video.currentTime = from; } catch (err) { /* 忽略 */ }
-    try { video.playbackRate = pl.rate; } catch (err) { /* 忽略 */ }
-    var p = video.play();
-    if (p && typeof p.catch === "function") {
-        p.catch(function () { /* 放不出来也没关系：下面的计时器会收尾 */ });
+    if (video) {
+        var from = video.__startAt || 0;       /* 配了 startAt 的就从那一秒开始播 */
+        try { video.currentTime = from; } catch (err) { /* 忽略 */ }
+        try { video.playbackRate = pl.rate; } catch (err) { /* 忽略 */ }
+        var p = video.play();
+        if (p && typeof p.catch === "function") {
+            p.catch(function () { /* 放不出来也没关系：下面的计时器会收尾 */ });
+        }
     }
 
     pl.active = true;
@@ -1477,7 +1484,7 @@ function initMovement() {
 
 
 /* ==========================================================================
-   三、视频渲染逻辑（通常不需要动）
+   三、素材渲染逻辑（通常不需要动）
    ========================================================================== */
 
 /* 把类名转成类名后缀：CRISPR -> crispr，TnpB -> tnpb */
@@ -1587,33 +1594,43 @@ function applyStartAt(video) {
         var moveGroup = moveGroupOf(group, index);
         if (moveGroup) wrap.dataset.tnpbMove = moveGroup;
 
-        /* 视频本体：静音 + 循环 + 自动播放，才能被浏览器允许无声自动播放 */
-        var video = document.createElement("video");
-        video.className = VIDEO_CLASS;
-        video.dataset.videoKey = key;
-        video.dataset.videoGroup = group;
-        video.dataset.startAt = String(startAt || 0);
-        video.__startAt = startAt || 0;
-        video.src = src;
-        video.autoplay = true;
-        video.loop = true;
-        video.muted = true;
-        video.defaultMuted = true;
-        video.playsInline = true;
-        video.setAttribute("muted", "");
-        video.setAttribute("playsinline", "");
-        video.setAttribute("webkit-playsinline", "");
-        video.setAttribute("preload", "auto");
-        video.setAttribute("disablepictureinpicture", "");
+        var isImage = /\.(avif|png|jpe?g|webp|gif)(?:[?#].*)?$/i.test(src);
+        var media = document.createElement(isImage ? "img" : "video");
+        media.className = VIDEO_CLASS;
+        media.dataset.videoKey = key;
+        media.dataset.videoGroup = group;
+        media.src = src;
 
-        video.addEventListener("error", function () {
-            console.error("[home] 视频加载失败（" + key + "），请检查路径：" + src);
-        });
+        if (isImage) {
+            media.alt = "";
+            media.draggable = false;
+            media.addEventListener("error", function () {
+                console.error("[home] 图片加载失败（" + key + "），请检查路径：" + src);
+            });
+        } else {
+            var video = media;
+            video.dataset.startAt = String(startAt || 0);
+            video.__startAt = startAt || 0;
+            video.autoplay = true;
+            video.loop = true;
+            video.muted = true;
+            video.defaultMuted = true;
+            video.playsInline = true;
+            video.setAttribute("muted", "");
+            video.setAttribute("playsinline", "");
+            video.setAttribute("webkit-playsinline", "");
+            video.setAttribute("preload", "auto");
+            video.setAttribute("disablepictureinpicture", "");
 
-        /* 起始播放时间（只对设了 startAt 的视频生效） */
-        applyStartAt(video);
+            video.addEventListener("error", function () {
+                console.error("[home] 视频加载失败（" + key + "），请检查路径：" + src);
+            });
 
-        wrap.appendChild(video);
+            /* 起始播放时间（只对设了 startAt 的视频生效） */
+            applyStartAt(video);
+        }
+
+        wrap.appendChild(media);
 
         /* ★ 悬停名字：鼠标移到这个视频上时，在它下面淡入它的名字
            （名字在字表 VIDEO_NAMES 里，样式在 2.css 的 .bg-video-label）。
@@ -1644,12 +1661,14 @@ function applyStartAt(video) {
 
         mountedVideos[key] = wrap;
 
-        /* 个别浏览器（低电量模式等）会拒绝自动播放，这里再手动拉一次 */
-        var p = video.play();
-        if (p && typeof p.catch === "function") {
-            p.catch(function (err) {
-                console.warn("[home] 视频自动播放被拦截（" + key + "）：", err);
-            });
+        if (!isImage) {
+            /* 个别浏览器（低电量模式等）会拒绝自动播放，这里再手动拉一次 */
+            var p = media.play();
+            if (p && typeof p.catch === "function") {
+                p.catch(function (err) {
+                    console.warn("[home] 视频自动播放被拦截（" + key + "）：", err);
+                });
+            }
         }
     }
 
@@ -1701,4 +1720,3 @@ function applyStartAt(video) {
         boot();
     }
 })();
-
