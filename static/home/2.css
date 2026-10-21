@@ -253,21 +253,6 @@ body {
 
 /* ======================= CRISPR 类 ======================= */
 
-/* 出场图：第一次滑到 crispr-3 第一个轨迹点时，由 2.js 钉在起点显示一小段时间，
-   然后切换到跟随滚轮移动的 crispr-3。wizard 图在此阶段为 4.2vw，移动阶段为 6vw。 */
-.bg-video-wrap-crispr-1 {
-    width: 4.2vw;         
-    --rotate: 0deg;       
-}
-
-/* crispr-2 已经去掉了 —— 2.js 的 VIDEO_GROUPS 里 CRISPR 第 2 格写成了 null，
-   所以根本不会创建这个容器，这里也不用再写规则。
-   想恢复：把那一格改回 "./assets/CRISPR_2.webm"，再在这里补回 top / right / width。 */
-
-/* 走路 —— ★ 这个现在和 TnpB_1 一样会跟着滚动位置走（完整的那套走动逻辑）。
-   它的轨迹点在下面 crispr-3 那一节（.crispr3-points > .crispr3-move-N），
-   数字随你改；那份删掉的话它会自动借用 tnpb-1 的点。
-   （它自己这条 top / right 对走动没有影响 —— 位置完全由轨迹点决定。） */
 .bg-video-wrap-crispr-3 {
     left: 72.99%;                       /* ← 几何中心 X（相对底图宽度） */
     top: 11.34%;                        /* ← 几何中心 Y（相对底图高度） */
@@ -275,11 +260,6 @@ body {
     --rotate: 0deg;       
 }
 
-/* 终点图：到达第 2 段终点时显示 wizard 图片，然后回到移动图层；宽度 9vw。 */
-.bg-video-wrap-crispr-4 {
-    width: 9vw;           
-    --rotate: 0deg;       
-}
 
 /* ======================= gene 类 ======================= */
 
@@ -299,24 +279,6 @@ body {
     width: 6vw;
     --rotate: -8deg;         
     z-index: 1;              
-}
-
-/* gene-3 / gene-4：★ 原来静态摆着的那两个不要了 —— 位置去掉了，平时完全不显示。
-   它们现在只做“同步动画”：crispr-4 那个终点动画一触发，2.js 就把
-     gene-3 摆到 gene-1 的位置上、gene-4 摆到 gene-2 的位置上，各播一遍，
-   同时把 gene-1 / gene-2 藏起来；它们播完再过 2 秒，gene-1 / gene-2 重新出现。
-   （位置 / 倍速 / 藏谁 / 几秒后恢复都写在 2.js 的 MOVE_FX 里，end.also 那两项。
-     这里只留宽度和角度 —— 要和各自的参照视频一致（都是 6vw / -8deg）才叠得准。） */
-.bg-video-wrap-gene-3 {
-    width: 6vw;
-    --rotate: -8deg;         
-    z-index: 2;              
-}
-
-.bg-video-wrap-gene-4 {
-    width: 6vw;
-    --rotate: -8deg;         
-    z-index: 1;             
 }
 
 /* ============ gene-1 的走路版（GeneWalk_1 / .bg-video-wrap-genewalk-1） ============
