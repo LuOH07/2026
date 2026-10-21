@@ -122,7 +122,7 @@
     <h2 class="heading-2">2.4 From mutation to structure - informed directed evolution</h2>
     <h3 class="heading-3">Our initial idea</h3>
     <p class="body-text">Once we had identified TAM expansion as our main optimization objective, the next question was <b>how to alter TAM recognition without compromising the nuclease activity that made ISHahl1 TnpB attractive in the first place.</b></p>
-    <p class="body-text">Previous studies [Ref.] on other TnpB homologs provided an encouraging starting point. In ISDra2 TnpB, key residues associated with TAM recognition had been identified, suggesting that TAM preference is not necessarily fixed and may be altered through protein engineering.</p>
+    <p class="body-text">Previous studies (1) on other TnpB homologs provided an encouraging starting point. In ISDra2 TnpB, key residues associated with TAM recognition had been identified, suggesting that TAM preference is not necessarily fixed and may be altered through protein engineering.</p>
     <p class="body-text">Our initial idea was therefore relatively straightforward: <b>use previously reported TAM-associated residues as references, identify corresponding positions in ISHahl1 TnpB, and introduce mutations to explore altered TAM recognition.</b></p>
     <p class="body-text">However, this assumption raised two uncertainties. First, ISHahl1 and ISDra2 differ in sequence and structural context, meaning that mutations effective in one TnpB may not be directly transferable to another. Second, TAM recognition is structurally coupled to DNA recognition, ωRNA-associated conformational changes and nuclease activation. Blindly introducing mutations could therefore alter TAM preference while simultaneously damaging the nuclease activity we wanted to preserve.</p>
     <p class="body-text">This led us to ask: <b>How can we explore new TAM preferences without blindly disrupting TnpB function?</b></p>
@@ -223,6 +223,9 @@
     <h2 class="heading-2">For future teams</h2>  
     <p class="body-text">The most transferable lesson from our IHP is not a particular stakeholder list. It is a way of recording decisions. For each important interaction, future teams can document: the initial assumption, why that stakeholder was relevant, what challenged or refined the assumption, what concrete decision changed, what evidence tested that decision, and what new question emerged.</p>
 
+    <h1 class="heading-reference">References</h1>
+    <p class="body-text">[1] Sasnauskas, G., Tamulaitiene, G., Druteika, G.; et al., TnpB structure reveals minimal functional core of Cas12 nuclease family. Nature 616, 384-389 (2023).</p>
+    
 </main>
 
 <img src="https://static.igem.wiki/teams/6059/wiki/description/sword.avif" alt="Sword Scroll Track" class="scroll-sword" id="scrollSword">
@@ -234,3 +237,4 @@
 <script src="{{ url_for('static', filename='description/description.js') }}" defer></script>
 <script src="{{ url_for('static', filename='description/IHP.js') }}" defer></script>
 {% endblock %}
+
