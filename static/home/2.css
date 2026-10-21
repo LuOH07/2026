@@ -187,6 +187,24 @@ body {
     opacity: 1;
 }
 
+/* 首个 CRISPR wizard hover 名字下方显示两排 chickx5 装饰图 */
+.bg-video-wrap-crispr-1 .bg-video-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bg-video-wrap-crispr-1 .bg-video-label::after {
+    content: "";
+    display: block;
+    width: calc(180 * var(--u));
+    height: calc(104.3 * var(--u));
+    margin: calc(2 * var(--u)) auto 0;
+    background-image: url("https://static.igem.wiki/teams/6059/wiki/home/chickx5.avif");
+    background-repeat: repeat-y;
+    background-size: 100% auto;
+}
+
 /* ==========================================================================
    ★ falls：循环播放的背景视频（falls.webm，由 2.js 的 VIDEO_GROUPS["falls"] 挂出来）
    --------------------------------------------------------------------------
@@ -235,11 +253,8 @@ body {
 
 /* ======================= CRISPR 类 ======================= */
 
-/* 出现动画 —— ★ 位置已经去掉了：它平时完全不显示，只在“第一次滑到 crispr-3
-   第一个轨迹点”时，由 2.js 钉在【第 1 段起点】上播一遍（每次刷新只播一次），
-   播完 crispr-3 才出现。位置 / 倍速都写在 2.js 的 MOVE_FX 里。
-   ★ 宽度现在比 crispr-3 小 30%（4.2vw vs 6vw），所以出场动画切到 crispr-3
-     时大小会变大一点；想跟 crispr-3 一样大就改回 6vw。 */
+/* 出场图：第一次滑到 crispr-3 第一个轨迹点时，由 2.js 钉在起点显示一小段时间，
+   然后切换到跟随滚轮移动的 crispr-3。wizard 图在此阶段为 4.2vw，移动阶段为 6vw。 */
 .bg-video-wrap-crispr-1 {
     width: 4.2vw;         
     --rotate: 0deg;       
@@ -260,10 +275,7 @@ body {
     --rotate: 0deg;       
 }
 
-/* 终点动画（敲除）—— ★ 位置也已经去掉了：它平时完全不显示，只在 crispr-3
-   往下滑走到【第 2 段终点】时，由 2.js 挪到那个点上播一遍；播完它消失、
-   crispr-3 再出现并常驻在终点。再滑下来会再播一次。
-   位置 / 倍速同样写在 2.js 的 MOVE_FX 里。 */
+/* 终点图：到达第 2 段终点时显示 wizard 图片，然后回到移动图层；宽度 9vw。 */
 .bg-video-wrap-crispr-4 {
     width: 9vw;           
     --rotate: 0deg;       

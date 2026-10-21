@@ -1,6 +1,9 @@
 (function () {
     "use strict";
 
+    /* 仅对已配置 motion 的视频生效："motion" 用 AVIF 动效，切到 "video" 恢复原视频。 */
+    const MEDIA_MODE = "motion";
+
     const FIRST_LINE_FRAC = 0.5;    /* 第一行“出现”的时刻：淡入窗口走一半 ——
                                        easeOut 曲线下这时已经 87% 不透明，第一行看得清了 */
     const ICO5_FADE_FRAC  = 0.4;    /* ico5 淡入时长：0.4 × 0.6s ≈ 0.24s */
@@ -32,7 +35,11 @@
         {
             cls: "bug-icon-1",
             host: ".text-4",
-            src: HOME_MEDIA + "B. subtilis.webm",                 /* ★ 视频素材：自动用 <video muted autoplay loop> 建节点 */
+            src: HOME_MEDIA + "B. subtilis.webm",
+            motion: {
+                src: "https://static.igem.wiki/teams/6059/wiki/home/b-subtilis.avif",
+                effect: "subtilis"
+            },
             name: "Bacillus subtilis",
             label: "B. subtilis",
             /* text-4 一淡入就跟着淡入，时长 = text-4 的淡入区间 */
@@ -123,7 +130,11 @@
         {
             cls: "bug-icon-8",
             host: ".text-7",
-            src: "https://static.igem.wiki/teams/6059/wiki/home/ctac.avif",
+            src: "https://static.igem.wiki/teams/6059/wiki/home/ctac-before.avif",
+            transition: {
+                from: ".text-8",
+                src: "https://static.igem.wiki/teams/6059/wiki/home/ctac.avif"
+            },
             name: "CTAC",
             pin: true,                      /* ★ 不飘动：位置由 3.css 的 .bug-icon-8 决定 */
             /* ★ text-8【淡入区间】里跟着一起淡入 ——
@@ -159,32 +170,34 @@
             name: "TnpB",
             pin: true,                      /* ★ 不飘动：位置由 3.css 的 .bug-icon-9 决定 */
             /* ★ 跟着 text-7 的【淡入区间】一起淡入（它的 A → H） */
-            start: { from: ".text-6", mark: "A" },
+            start: { from: ".text-6", mark: "H" },
             /* ★ 跟着 text-7 的【淡出区间】一起消失（它的 B → E），
                往上滑倒放时会对称地跟着亮回来 */
             fadeOut: ".text-6"
         },
 
-        /* ---- 图标 10（title.mp4）—— text-10 淡入时出现，跟 text-10 一起消失 ----
-           ★ 它【本身就是一个视频】（src 写成 .mp4，下面第 2 节会自动用 <video> 建节点），
-             不是“图片上盖视频”那种。
-           ★ 三个关键开关：
-               · autoplay: false —— 不要一进页面就播（那点时间早就放完了）；
-                 等这只图标随 text-10 亮起来，才由 mediaLive() 开始播；
-               · loop: false     —— 只播一次，播完就停在最后一帧，不从头再来；
-               · fadeOut        —— 跟 text-10 的淡出区间一起消失。
-             所以整段看起来就是：text-10 淡入 → 视频跟着出现并放一遍 → 定格在最后一帧。
-           ★ 位置 / 大小在 3.css 的 .bug-icon-10 里（默认在文字下方、屏幕竖直 65% 处）。 */
+        /* ---- 图标 10（editing.webm）—— text-9 淡入时出现，跟 text-9 一起消失 ----
+           动效模式下用剪刀和 DNA 的 AVIF 分层合成；切回 video 模式会恢复原视频。
+           动画只播放一次，结束后保留切口、下落片段和黄色高亮；位置 / 大小仍由 3.css 控制。 */
         {
             cls: "bug-icon-10",
             host: ".text-9",
             src: HOME_MEDIA + "editing.webm",
-            name: "Title",
-            pin: true,                      /* ★ 不飘动：位置由 3.css 的 .bug-icon-10 决定 */
-            autoplay: false,                /* ★ 亮起来才播（见 createIconVideo / mediaLive） */
-            loop: false,                    /* ★ 只播一次，播完定格在最后一帧 */
-            start: { from: ".text-9", mark: "A" },   /* 跟着 text-10 的淡入区间出现 */
-            fadeOut: ".text-9"                        /* 跟着 text-10 的淡出区间一起消失 */
+            motion: {
+                effect: "editing",
+                frames: {
+                    scissorRight: "https://static.igem.wiki/teams/6059/wiki/home/scissor-right.avif",
+                    scissorsLeft: "https://static.igem.wiki/teams/6059/wiki/home/scissors-left.avif",
+                    geneCut: "https://static.igem.wiki/teams/6059/wiki/home/gene-cut.avif",
+                    gene: "https://static.igem.wiki/teams/6059/wiki/home/gene.avif"
+                }
+            },
+            name: "Editing",
+            pin: true,
+            autoplay: false,
+            loop: false,
+            start: { from: ".text-9", mark: "A" },
+            fadeOut: ".text-9"
         },
 
         /* ---- 图标 11（answer.webm）—— 跟 text-11 同步淡入 / 淡出 ----
@@ -482,7 +495,8 @@
         {
             cls: "bug-icon-23",
             host: ".text-11",
-            src: HOME_MEDIA + "tool.webm",                      /* ★ 相对路径：和 index.html 同目录 */
+            src: HOME_MEDIA + "tool.webm",
+            motion: { effect: "toolkit" },                      /* ★ 相对路径：和 index.html 同目录 */
             name: "Tool",
             pin: true,                      /* ★ 不飘动：位置由 3.css 的 .bug-icon-23 决定 */
             /* ★★ 图层：它在文字【上面】★★
@@ -540,7 +554,7 @@
     /* 没写 fadeOut 的图标统一在它的淡出区间里一起消失（默认 .text-6）；
        写了 fadeOut 的各自认自己的宿主：图标 1 / 3 / 4 跟 .text-5（三只一起退场）、
        图标 5 / 6 / 7 跟 .text-2、图标 8 跟 .text-9、图标 9 跟 .text-7、
-       图标 10 跟 .text-10、图标 11 跟 .text-10、
+       图标 10 跟 .text-9、图标 11 跟 .text-10、
        图标 14（现在是静态图 platform.avif）跟 .text-12、图标 15 / 16 / 17 / 18 跟 .text-21、
        图标 19 跟 .text-16、图标 20 跟 .text-14、图标 21 跟 .text-19、
        图标 22 跟 .text-19、图标 23 跟 .text-11、图标 24 跟 .text-23
@@ -678,9 +692,7 @@
         const v = document.createElement("video");
         v.className = "bug-icon";
         /* ★ 默认是“一进页面就自动播”（图标 1 / 2 那种循环素材）；
-             在 ICONS 那一条里写 autoplay: false，就变成“等它亮起来再播” ——
-             图标 10 的 title.mp4 就是这么用的（它一进页面就播的话，等滚到 text-10
-             早就放完了，只会看到一个不动的最后一帧）。 */
+             在 ICONS 那一条里写 autoplay: false，就变成“等它亮起来再播”。 */
         const autoStart = cfg.autoplay !== false;
         /* ★ muted / autoplay 要在 src 之前设好，浏览器才会把它当“允许静音自动播放”的素材 */
         v.muted = true;
@@ -746,13 +758,58 @@
         return v;
     }
 
+    function createEditingMotion(cfg) {
+        const motion = document.createElement("div");
+        motion.className = "bug-icon bug-icon-motion bug-icon-motion--editing";
+        motion.setAttribute("aria-hidden", "true");
+
+        // gene.avif is the final frame (gap + yellow target). Reuse its alpha
+        // for the intact strands, and animate gene-cut independently.
+        const layers = [
+            ["gene", "gene"], ["blueTarget", "gene"],
+            ["geneCut", "geneCut"],
+            ["scissorRight", "scissorRight"], ["scissorsLeft", "scissorsLeft"]
+        ];
+        layers.forEach(([key, source]) => {
+            const image = document.createElement("img");
+            image.className = "editing-motion__" + key;
+            image.src = cfg.motion.frames[source];
+            image.alt = "";
+            image.draggable = false;
+            image.addEventListener("error", () => {
+                console.error("[home] 动效素材加载失败：", cfg.name, source);
+            });
+            motion.appendChild(image);
+        });
+
+        return motion;
+    }
+
     const nodes = ICONS.map(cfg => {
         const slot = document.createElement("div");
         slot.className = "bug-icon-slot " + cfg.cls + (cfg.pin ? " is-pinned" : "");
 
-        const isVideo = isVideoSrc(cfg.src);
-        const el = isVideo ? createIconVideo(cfg) : createIconImage(cfg);
+        const isVideoSource = isVideoSrc(cfg.src);
+        const useMotion = isVideoSource && MEDIA_MODE === "motion" && cfg.motion;
+        const el = useMotion && cfg.motion.effect === "editing"
+            ? createEditingMotion(cfg)
+            : useMotion && cfg.motion.effect === "toolkit"
+                ? window.createHomeToolkitMotion()
+                : useMotion
+                ? createIconImage({ ...cfg, src: cfg.motion.src })
+                : isVideoSource ? createIconVideo(cfg) : createIconImage(cfg);
+        if (useMotion && cfg.motion.effect !== "editing") {
+            el.classList.add("bug-icon-motion", "bug-icon-motion--" + cfg.motion.effect);
+        }
+        const isVideo = el.tagName.toLowerCase() === "video";
         slot.appendChild(el);
+        // Preload the after frame; swap the source on the SAME visible image.
+        let transitionImage = null;
+        if (MEDIA_MODE === "motion" && cfg.transition) {
+            transitionImage = createIconImage({ ...cfg, src: cfg.transition.src });
+            transitionImage.decoding = "async";
+        }
+
 
         /* ★ 图标 8：那个“淡入之后才插入的视频” ——
            建好就放在【同一个 slot】里、盖在静态图上面，
@@ -760,7 +817,7 @@
            现在它是藏着的（CSS 里 opacity: 0），什么时候播由 update() 按时间轴说了算
            （见下面的 overlayLive）。 */
         let overlay = null;
-        if (cfg.video && cfg.video.src) {
+        if (cfg.video && cfg.video.src && !(MEDIA_MODE === "motion" && cfg.transition)) {
             overlay = createOverlayVideo(cfg, cfg.video);
             slot.appendChild(overlay);
         }
@@ -837,6 +894,11 @@
             cfg,
             el,                     /* <img> 或 <video>，取决于 cfg.src */
             isVideo,                /* true = 这个图标是视频（见 createIconVideo） */
+            transitionImage,
+            motionEl: useMotion ? el : null,
+            motionActive: false,
+            motionStarted: false,
+            motionFinished: false,
             slot,
             label,
             pinned: !!cfg.pin,      /* true = 钉在屏幕上，不飘动 */
@@ -859,6 +921,16 @@
             lastX: null,
             lastY: null
         };
+    });
+
+    nodes.forEach(n => {
+        if (!n.motionEl || !["editing", "toolkit"].includes(n.cfg.motion.effect)) return;
+        n.motionEl.addEventListener("animationend", event => {
+            if (event.target === n.motionEl && event.animationName === n.cfg.motion.effect + "-motion-clock") {
+                n.motionFinished = true;
+            }
+        });
+        n.motionEl.addEventListener("home:replay-motion", () => restartMotion(n));
     });
 
     /* ★ 叠加视频自己出错（文件没放对 / 浏览器不支持这种编码 / 网络断了）→ 记一笔：
@@ -1380,12 +1452,9 @@
        图标大部分时间是全透明的（opacity 0 并不会让视频停止解码），
        一个看不见的视频一直在解码纯粹是白烧 CPU / 电量。
        ★ pause() 不会丢播放进度，下次亮起来会接着播。
-       ★ 例外是“一次性视频”（ICONS 里写了 autoplay: false 的那种，比如 ico10 的 title.mp4）：
-         它不进页面就播，而是等这只图标亮起来（text-10 淡入）才播；而且
-         【不会因为看不见就暂停】——
-         这类素材比较长（title.mp4 有 13 秒），一暗下去就暂停的话，
-         人往下滚两屏它就再也走不到结尾，“定格在最后一帧”也就永远不会发生；
-         反正只播一次，让它自己安静走完最省事。 */
+       ★ 例外是“一次性视频”（ICONS 里写了 autoplay: false 的素材，例如 editing.webm）：
+         它等图标亮起来才播，而且不会因为图标暗下去就暂停，
+         这样滚动离开后仍能播完并停在最后一帧。 */
     function mediaLive(n, on) {
         if (!n.el || !n.isVideo) return;
         const v = !!on;
@@ -1411,6 +1480,26 @@
         } else {
             n.el.pause();
         }
+    }
+
+    function restartMotion(n) {
+        if (!n.motionEl) return;
+        n.motionEl.classList.remove("is-playing");
+        void n.motionEl.offsetWidth;
+        n.motionEl.classList.add("is-playing");
+        n.motionStarted = true;
+        n.motionFinished = false;
+    }
+
+    function motionLive(n, on) {
+        if (!n.motionEl || !["editing", "toolkit"].includes(n.cfg.motion.effect)) return;
+
+        const live = !!on;
+        if (live === n.motionActive) return;
+        n.motionActive = live;
+        if (!live || (n.motionStarted && !n.motionFinished)) return;
+
+        restartMotion(n);
     }
 
     /* ======================= 开关按钮（原来给图标 14 的 suicide 用） =======================
@@ -1562,6 +1651,12 @@
     /* 视频图标统一入口：有开关的交给开关，其余的仍走老的“亮起来才播”逻辑 */
     function mediaOrSwitch(n, live) {
         if (n.cfg.toggle) { switchTick(n, live); return; }
+        if (n.motionEl && n.cfg.motion.effect === "toolkit") return;
+
+        if (n.motionEl && ["editing", "toolkit"].includes(n.cfg.motion.effect)) {
+            motionLive(n, live);
+            return;
+        }
         mediaLive(n, live);
     }
 
@@ -2206,6 +2301,31 @@
             const outT = fadeOutT(fadeItem, outStateOf(fadeSel));   /* 0 = 还没淡出，1 = 全淡出 */
 
             const p = win.clock;
+            if (n.transitionImage) {
+                const item = findItem(n.cfg.transition.from);
+                // Both files are 4000 x 1665 with identical transparent margins.
+                // Reusing one DOM image keeps its exact size and position.
+                const after = !!item && clockOf(item) > item.A;
+                const source = after ? n.cfg.transition.src : n.cfg.src;
+                if (n.el.getAttribute("src") !== source) n.el.src = source;
+                n.el.dataset.ctacState = after ? "after" : "original";
+            }
+
+            if (n.motionEl && n.cfg.motion.effect === "toolkit") {
+                // Finish while text-11 is fully visible. Reversing scroll seeks
+                // the same paused animations backward, without starting a replay.
+                const end = host.H + (host.B - host.H) * .85;
+                const motionStart = host.A - (end - host.A);
+                n.motionEl.setProgress((p - motionStart) / Math.max(1e-6, end - motionStart));
+            }
+
+            // Keep the final yellow target visible before downward scrolling
+            // reaches the fade-out, even when scrolling faster than real time.
+            if (n.motionEl && n.cfg.motion.effect === "editing") {
+                const done = p >= host.H + (host.B - host.H) * .72;
+                n.motionEl.classList.toggle("is-scroll-complete", done);
+            }
+
             let op = 0;
 
             if (p <= win.a) {

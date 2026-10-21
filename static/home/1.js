@@ -1388,13 +1388,17 @@ window.__home = {
    想换成原生控件（暂停 / 音量 / 进度 / 全屏）：把 1.css 里 .top-video-media 的
    pointer-events 改成 auto，代价是鼠标停在视频区域时滚轮不再驱动页面。
    以后换成有音轨的素材、想让声音外放：把下面 topVideo.muted 改成 false（自动播放可能被拦）。 */
+// "motion" uses the layered title; "video" restores the original title.mp4.
+const TOP_TITLE_MODE = "motion";
 const TOP_VIDEO_SRC = HOME_MEDIA + "title.mp4";
 
 const topVideoWrap = document.createElement("div");
 topVideoWrap.className = "top-video-wrap";
 
-const topVideo = document.createElement("video");
-topVideo.className = "top-video-media";
+const topVideo = TOP_TITLE_MODE === "motion"
+    ? window.createHomeTitleMotion()
+    : document.createElement("video");
+topVideo.classList.add("top-video-media");
 /* ★ 先静音：Chrome / Safari 只放行“静音素材”的自动播放。
    title.mp4 本来就没有音轨（ffmpeg 里只有 video + tmcd），所以 muted 不会丢声音；
    以后换成有音轨的素材、又想自动播放时，把这里改成 false 的代价是可能被浏览器拦。 */
