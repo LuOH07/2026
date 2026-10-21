@@ -62,6 +62,19 @@
     <nav class="toc-nav" id="tocNav" aria-label="Table of Contents"></nav>
 </aside>
 
+
+<script src="https://2021.igem.org/common/MathJax-2.5-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+
+<script type="text/x-mathjax-config" async>
+  MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+</script>
+
+<style>
+.MathJax nobr>span.math>span{border-left-width:0 !important};
+</style>
+
 <!-- 正文主体容器 -->
 <main class="main-container" id="mainContainer">
     <h1 class="heading-1">Overview</h1>
@@ -108,6 +121,14 @@
 
 
     <h1 class="heading-1">Structure-Informed Design and Engineering of the TnpB Toolkit</h1>
+
+    <p class="body-text">
+
+        In this section, 
+        we establish the structure-informed pipeline for the rational design and engineering of TnpB-based genome-editing tools, 
+        integrating reliable ternary complex prediction with bioinformatics-guided analysis to identify key molecular interactions and guide toolkit development.
+
+    </p>
 
 
 
@@ -234,8 +255,6 @@
 
     </p>
 
-
-
     <img src="https://static.igem.wiki/teams/6059/wiki/model/mfig13.avif" alt="4" class="figure-image">
     <p class="figure-caption"><b>Figure</b><b>  4</b>  <b>Identification of the REC and WED domains of IsHahl1 TnpB.</b>
         <b> A</b>, Protein multiple sequence alignment results of the REC and WED domains.
@@ -247,7 +266,6 @@
 
     </p>  
 
-    <h3 class="heading-3">Heading 3</h3>
 
 
 
@@ -257,13 +275,304 @@
 
 
 
-    <h1 class="heading-1">Heading 1</h1>
+    <h1 class="heading-1"> Data-driven Scoring to accelerate verification in directed evolution</h1>
+
+    <p class="body-text">
+
+
+
+        To accelerate the verification experiment in the directed evolution of TnpB variants with altered TAM specificities, 
+        we developed a data-driven scoring algorithm based on mutant enrichment profiles. 
+        By integrating experimental enrichment data with quantitative scoring strategies, 
+        our approach enables systematic evaluation and prioritization of promising variants, 
+        while identifying key residues and regions potentially involved in TAM recognition. 
+        This section aims to reduce the experimental verification burden and provide mechanistic insights to guide further analysis.
+
+
+
+    </p>
+
+    <h2 class="heading-2">Enrichment-based scoring of variants</h2> 
+
+
+    <p class="body-text">
+
+
+    To quantitatively evaluate the contribution of individual amino acid substitutions to TnpB activity and TAM specificity, 
+    all successful sequencing variants collected in the 1st round of directed evolution will be taken into account, 
+    with the statistical result of enrichment times at each position (Figure 7A). 
+    Gaussian mixture model (GMM) is employed to characterize the distribution of mutant enrichment values (Figure 7B). 
+    The best number of clusters is obtained by screening a defined range of cluster numbers with the criterion of minimizing the BIC score.
+    Rather than assuming that all enrichment measurements follow a single distribution, 
+    the GMM represents the observed enrichment profile as a weighted combination of Gaussian components.
+    In this step, 
+    it can produce several hot areas that contribute to the alternative TAM specificity, 
+    as well as the importance weight for each position.
+
+    Then, the scoring is performed for each variant (Figure 7C). 
+    A position-specific score is generated only for mutation sites by multiplying this position's importance weight from the GMM fit and the fraction of this mutation type among all mutation types collected at this position. 
+    The latter fraction can be computed using Laplace smoothing to handle extreme scores arising from sparse observations and reduce the influence of sampling variability. Finally, the final score is the sum of all position-specific scores for one mutant.
+
+    </p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/model/mfig31.avif" alt="4" class="figure-image">
+
+
+    <p class="figure-caption"><b>Figure</b><b>  7</b>  <b>Data-driven Scoring for selecting high confident varient.</b>
+        <b> A</b>, Statistical results of enriched mutated amino acids. 
+        <b> B</b>, Using the Gaussian mixture model to identify the hot area and provide the pre-weights. 
+        <b> C</b>, Socre composition. 
+        <b> D</b>, Hot areas identified using the algorithm for IsHahl1 TnpB in directed evolution for altered TAM specificities. 
+    </p>  
+
+
+    <h2 class="heading-2">Hot areas and scoring result</h2> 
+
+
+    <p class="body-text">
+
+        Figure 7D illustrates the hotspot regions identified by our scoring algorithm, 
+        the number of candidate amino acids is reduced from 120 to 50, 
+        representing a 60% reduction in the search space when considering only single-site mutations.
+        The meaningful regions are also distributed into several small connected areas, 
+        which is promising for future NNNNN screening experiments. 
+        What's more, the selected hotspots are close to TAM, tsDNA, and ωRNA, 
+        contributing to the future mechanistic exploration, as those sites may take part in recognition of guide and stabilization of 
+        the ternary complexes directly. 
+        Table 5 shows all the top-ranking variants selected by the algorithm for later genomic editing verification, 
+        in which <b> the one with the highest score (CTGC-15) produces the only clean result without any mixture products during PCR </b>. 
+        In addition, ~50% of the selected variants can be used to edit the genome. 
+        Both results demonstrate the efficiency of our data-driven scoring.
+
+
+
+    <p class="figure-caption"><b>Table</b><b>  1</b>  Selected varients by data-driven algorithm</p>   
+    <table>
+        <tr><th>TAM   </th>   <th>Index</th>   <th>Score</th></tr>
+        <tr><td> CTGC </td>   <td>15</td> <td>3</td></tr>
+        <tr><td> CTGC     </td>   <td>59</td> <td>2</td></tr>
+        <tr><td> CTGC     </td>   <td>53</td> <td>1.5</td></tr>
+        <tr><td> CTGC     </td>   <td>55</td>  <td>1.5</td></tr>
+        <tr><td> GTAC     </td>   <td>60</td>  <td>2.3</td></tr>
+        <tr><td>  GTAC    </td>   <td>39</td> <td>1.5</td></tr>
+        <tr><td>  CGAC    </td>   <td>6</td> <td>1.5</td></tr>
+        <tr><td>  CGAC    </td>   <td>20</td> <td>1.5</td></tr>
+        <tr><td>  CGAC    </td>   <td>49</td>  <td>1</td></tr>
+        <tr><td>  CAAC    </td>   <td>51</td> <td>1.5</td></tr>
+        <tr><td>  ATAC    </td>   <td>40</td>  <td>2</td></tr>
+    </table>
+
+    </p>
+
+
+
+    <h1 class="heading-1">Molecular Dynamics Reveals the Mechanisms of Guide Recognition</h1>
+
+<p class="body-text">
+
+    While our data-driven scoring framework successfully identifies promising TnpB variants with altered TAM specificities, as well as the hotpot regions, 
+    but related molecular mechanisms underlying TAM expansion remain unclear. 
+    To bridge this gap, we employed molecular dynamics (MD) simulations to investigate the structural stability and dynamic interactions within the TnpB–DNA–RNA ternary complex.
+    Beside the ISHahl1 TnpB wild-typw (TAM: CTAC), 
+    three groups of TnpB variants, 
+    the ISHahl1 TnpB mutant 6  (TAM: CGAC), 
+    ISHahl1 TnpB mutant 15 (TAM: CTGC), 
+    and the ISHahl1 TnpB mutant 40 (TAM: ATAC), 
+    are selected for exploration. 
+
+    Each is a successful variant (including genome editing) within the TAM subgroups set in the directed evolution: 
+    C<u>V</u>AC, CT<u>B</u>C, and <u>D</u>TAC.
+</p>
+
+
+
+    <h2 class="heading-2">System preparation</h2> 
+
+
+
+    <p class="body-text">
+
+
+    The molecular dynamics (MD) simulation systems were prepared using the AMBER 26 software package. 
+    The AMBER ff14SB force field was employed to describe the protein, while the OL3 and OL15 force fields were used to parameterize RNA and DNA, respectively. 
+    The zinc-finger domain of TnpB was parameterized using the Metal Center Parameter Builder (MCPB.py). 
+    Geometry optimization and electrostatic potential calculations were performed using Gaussian at the B3LYP/def2-SVP level of theory, followed by the derivation of restrained electrostatic potential (RESP) charges within the MCPB.py workflow.
+
+    All systems were solvated in explicit TIP3P water using a solvent box extending 16 Å beyond the solute in each direction. 
+    Counterions were added to neutralize the net charge of each system, and additional ions were introduced to achieve a physiological salt concentration of 0.15 M.
+
+
+
+    </p>
+
+
+
+    <h2 class="heading-2">System simulation</h2> 
+
+
+    <p class="body-text">
+
+        All-atom molecular dynamics simulations were performed using GROMACS. 
+        Each system underwent a multistage preparation protocol consisting of energy minimization, 
+        canonical ensemble (NVT) equilibration, isothermal–isobaric ensemble (NPT) equilibration, 
+        and unrestrained production simulations.
+
+        Long-range electrostatic interactions were treated using the particle mesh Ewald (PME) method, 
+        with a real-space cutoff of 10 Å. The van der Waals interactions were truncated at 10 Å, 
+        and long-range dispersion corrections were applied to account for truncation effects on energy and pressure. 
+        
+        All covalent bonds involving hydrogen atoms were constrained using the LINCS algorithm, allowing an integration time step of 2 fs.
+
+        Energy minimization was initially performed to eliminate steric clashes and unfavorable atomic contacts in the starting structures. 
+        The steepest descent algorithm was employed with a maximum force convergence criterion of 1,000 kJ mol⁻¹ nm⁻¹. 
+        To prevent substantial structural deviations during minimization, harmonic positional restraints with a force constant of 50 kcal mol⁻¹ Å⁻² were applied to the heavy atoms of the protein, DNA, and RNA.
+
+        Following energy minimization, each system was equilibrated under NVT conditions using the velocity-rescaling (V-rescale) thermostat, 
+        with a reference temperature of 300 K and a coupling time constant of 1.0 ps. 
+        A simulated annealing protocol was employed to gradually relax the initial structures. 
+        Specifically, the temperature was increased linearly from 0 to 300 K over the first 50 ps and subsequently maintained at 300 K for an additional 100 ps. 
+        No pressure coupling was applied during this stage. Positional restraints of 50 kcal mol⁻¹ Å⁻² were maintained on the protein and nucleic acid heavy atoms to allow solvent relaxation around the restrained solute.
+
+        The systems were subsequently subjected to NPT equilibration using a three-stage positional restraint relaxation protocol. 
+        Harmonic restraints were progressively reduced from 50 to 25 and finally to 10 kcal mol⁻¹ Å⁻², with each stage lasting 150 ps. 
+        Temperature was maintained at 300 K using the V-rescale thermostat, while pressure was controlled at 1 bar using the C-rescale barostat with isotropic coupling and a time constant of 10.0 ps. 
+        Pressure coupling was updated every 10 integration steps. Center-of-mass reference coordinate scaling was applied to minimize artifacts associated with positional restraints. 
+        The leap-frog integration algorithm was employed with a time step of 2 fs throughout the equilibration procedure.
+
+        Following restrained equilibration, all positional restraints were removed, and the systems underwent additional unrestrained NPT equilibration to allow further structural relaxation. 
+        During this stage, the pressure coupling time constant was adjusted to 5.0 ps, while the temperature and pressure were maintained at 300 K and 1 bar, respectively.
+
+        Finally, production MD simulations were performed under NPT conditions at 300 K and 1 bar for 50 ns, 
+        using a 2 fs integration time step. 
+        The resulting trajectories were collected for subsequent analyses of structural stability, intermolecular interactions, and conformational dynamics within the TnpB–DNA–RNA ternary complexes.
+
+    </p>  
+
+
+    <p class="body-text">
+        To assess the equilibration state of the systems, 
+        we calculated the time evolution of the root-mean-square deviation (RMSD) of heavy atoms relative to the initial structures for each complex. 
+        The results (Figure 8) show that all complexes reached equilibration well within 20 ns before, 
+        with minimal increases in RMSD in 50 ns production. 
+        This indicates that the structures remained relatively stable and close to their initial conformations for the majority of the simulation.
+
+        
+
+
+        <img src="https://static.igem.wiki/teams/6059/wiki/model/rmsd.avif" alt="4" class="figure-image">
+        <p class="figure-caption"><b>Figure</b><b>  8</b>  <b>RMSD prove the the equilibrium of system.</b> 
+        <b> A</b>, The ISHahl1 TnpB wild-typw (TAM: CTAC). 
+        <b> B</b>, The ISHahl1 TnpB mutant 6  (TAM: CGAC). 
+        <b> C</b>, The ISHahl1 TnpB mutant 15 (TAM: CTGC). 
+        <b> D</b>, The ISHahl1 TnpB mutant 40 (TAM: ATAC). 
+
+    </p>  
 
 
 
 
 
-    <h1 class="heading-1">Heading 1</h1>
+    
+
+
+    <h2 class="heading-2">General link between spacer–tsDNA stability and TAM expansion</h2> 
+
+<p class="body-text">
+
+
+    Basic structural analyses have confirmed the overall stability of the ternary complexes. 
+    To further investigate the stabilizing role of residues surrounding the spacer–tsDNA on the complex structure, 
+    and to elucidate the mechanism by which the variants accommodate the TAM site while maintaining its stability, 
+    we first constructed a distance difference matrix: using the initial structure as a reference, 
+    and the time-evolution series of the average distance changes between the spacer and tsDNA.
+
+
+
+</p>
+
+
+<p class="body-text">
+
+    For the wild-type TnpB recognizing the TAM 5'-CTAC-3' sequence, 
+    if the simulation is performed with a compatible TAM sequence (Figure 9A), 
+    the distance differences are extremely small (< 1×10-6 Å), 
+    indicating that the stable structure is well maintained, providing the foundation for later cleavage.
+    
+    
+    When the TAM sequences are altered to be incompatible, 
+    the relative distances between the spacer and tsDNA fluctuate significantly (Figure 9B-D), 
+    causing substantial perturbations around the paired structure, 
+    which in turn undermines the protein's ability to stabilize the nucleic acid coordination structure. 
+
+
+
+
+
+
+
+
+        <img src="https://static.igem.wiki/teams/6059/wiki/model/mfig33.avif" alt="9" class="figure-image">
+        <p class="figure-caption"><b>Figure</b><b>  9</b>  <b></b> 
+        <b> A</b>, The combination of ISHahl1 TnpB wild-type with TAM 5'-CTAC-3'. 
+        <b> B</b>, The combination of ISHahl1 TnpB wild-type with TAM 5'-ATAC-3'
+        <b> C</b>, The combination of ISHahl1 TnpB wild-type with TAM 5'-CTGC-3'
+        <b> D</b>, The combination of ISHahl1 TnpB wild-type with TAM 5'-CGAC-3'
+
+</p>
+
+
+
+
+
+
+<p class="body-text">
+
+
+
+    In contrast, when those TAMs are combined with variants from their corresponding directed evolution experiments (Figure 10A-C), 
+    the simulation again shows stabilization of the pairing between the spacer and tsDNA, 
+    indicating that the TnpB variants can significantly stabilize this pairing through non-covalent interactions.
+    Figure 10D shows a quantitative comparison of the mean spacer–tsDNA distance fluctuations between wild-type TnpB and the corresponding engineered variants across three expanded TAM sequences (ATAC, CGAC, and CTGC). 
+    For all three TAMs, the engineered variants exhibit significantly lower mean distance fluctuations than wild-type TnpB, indicating enhanced stability of the spacer–tsDNA duplex. 
+    Notably, this consistent stabilization across different TAM sequences suggests that maintaining stable guide–target base pairing may represent a general mechanism underlying TAM expansion, 
+    rather than a sequence-specific effect. 
+
+
+
+</p>
+
+
+
+
+
+
+        <img src="https://static.igem.wiki/teams/6059/wiki/model/mfig34.avif" alt="9" class="figure-image">
+        <p class="figure-caption"><b>Figure</b><b>  10</b>  <b>Evolution of distance differences and statistical analysis for ISHahl1 TnpB mutants recognizing different TAM sites.</b> 
+
+            <b> A–C </b>, Time-evolution curves of distance differences between hotspot residues and the spacer–tsDNA when ISHahl1 TnpB mutants recognize their corresponding TAM sites. 
+            <b> D </b>, Statistical significance analysis of the time-averaged distance differences between TnpB mutants and the wild-type when recognizing the same TAM site.
+
+
+
+
+<p class="body-text">
+    
+    Together, these results reveal a strong relationship between TAM compatibility and spacer–tsDNA duplex stability, 
+    suggesting that the ability of TnpB to recognize different TAM sequences is closely associated with its capacity to maintain stable guide–target interactions. 
+    In particular, compatible TAM sequences favor the formation of a stable RNA–DNA heteroduplex,
+    whereas incompatible TAM sequences introduce structural fluctuations that may disrupt the recognition complex. 
+    <b>
+    This observation suggests that spacer–tsDNA stability may serve as a general determinant of TAM recognition and expansion, 
+    providing a potential mechanistic explanation for how engineered TnpB variants accommodate a broader range of TAM sequences.
+</b>
+    
+</p>
+
+
+
+
+    <h2 class="heading-2">Coordinated residue dynamics stabilize the spacer–tsDNA duplex</h2> 
+
 
 
 

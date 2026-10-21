@@ -65,12 +65,12 @@
     <p class="figure-caption"><b>Table</b><b>  1</b>  Mapping IHP Decision Gates to Stakeholder Engagements and Project Outcomes</p>   
     <table>
         <tr><th>From the IHP page</th><th>Detailed record on this HP page</th><th>Main project consequence</th></tr>
-        <tr><td>2.1 From “small” to “usable”</td><td>Dr. Lin Xiaofeng — Defining a usable editor</td><td>Expanded evaluation criteria beyond size and editing efficiency</td></tr>
+        <tr><td>2.1 From “small” to “usable”</td><td>Dr. Lin Xiaofeng — Suggestions on editor usability criteria</td><td>Expanded evaluation criteria beyond size and editing efficiency</td></tr>
         <tr><td>2.2 Why ISHahl1 TnpB?</td><td>Dr. Lin Xiaofeng — Challenging our candidate choice</td><td>ISHahl1 selected as a strong engineering starting point</td></tr>
         <tr><td>2.3 Why broaden TAM?</td><td>Prof. Wang Kaifeng — Targetability</td><td>TAM expansion became the central optimization objective</td></tr>
         <tr><td>2.4 How should we engineer TAM?</td><td>Dr. Liao Langxing — Structure-informed evolution</td><td>Structure-informed directed evolution replaced simple mutation logic</td></tr>
         <tr><td>2.5 What counts as success?</td><td>Prof. Zhang Yonghui — Activity vs specificity</td><td>Multi-stage validation replaced a single fluorescence readout</td></tr>
-        <tr><td>2.6 From Structure and Observation to Mechanism</td><td>Prof. Wang Binju — Mechanism elucidation based on molecular dynamics<br>PhD Student Hou Xiaoxiao — Discussion on the construction of the MCPB force field<br>Research Assistant Jiang Zhihui — Technical discussion on molecular dynamics</td><td>Analysis of the interaction mechanism of TAM sequence broadening using molecular dynamics</td></tr>
+        <tr><td>2.6 From Structure and Observation to Mechanism</td><td>Prof. Wang Binju — Suggestions on mechanism analysis using molecular dynamics<br>PhD Student Hou Xiaoxiao — Suggestions on MCPB force-field construction<br>Research Assistant Jiang Zhihui — Technical suggestions on molecular dynamics methods</td><td>Analysis of the interaction mechanism of TAM sequence broadening using molecular dynamics</td></tr>
         <tr><td>3.1 / 3.3 Industry and responsibility</td><td>Dr. Duan Ran / Kingdomway</td><td>Industrial usability criteria and TnpB-based biocontainment</td></tr>
         <tr><td>3.2 Application case</td><td>Engineer / Fuhaichuang + Dr. Wei Guangshan</td><td>Alkane-degrading non-model microorganisms as a concrete potential use case</td></tr>
         <tr><td>4 Public education</td><td>Primary school + science museum + high school + peer exchange</td><td>Audience-specific science communication</td></tr>
@@ -136,8 +136,8 @@
     <h3 class="heading-3">What changed?</h3>
     <p class="body-text">We stopped treating TAM as an isolated biochemical detail and began treating it as a <b>targetability constraint</b>. Our optimization goal shifted from simply making TnpB cut better to <b>expanding the TAM recognition range while preserving useful nuclease activity.</b></p>
     <h3 class="heading-3">How we tested the idea</h3>
-    <p class="body-text">We then converted the stakeholder insight into a measurable question. Instead of leaving the claim at “broader TAM should provide more targets,” we quantified the genomic target space accessible to wild-type ISHahl1 TnpB and compared it with the space accessible to experimentally validated TAM-expanded variants. This allowed us to ask: <b>how much additional targetable sequence space did TAM engineering create?</b></p>
-    <p class="body-text">This bridge between Human Practices, Dry Lab, and wet-lab validation was important because it connected a real genome-engineering constraint to a property we could both engineer and measure.</p>
+    <p class="body-text">Then, we translated insights from Human Practices into our research direction. Instead of only improving the cleavage performance of the original system, we focused on expanding TAM recognition to unlock more genomic target sites. </p>
+    <p class="body-text">This bridge between Human Practices and wet-lab validation was important because it connected a real genome-engineering constraint to a property we could both engineer and measure.</p>
 
     <h2 class="heading-2" id="hp-4">1.4 From mutation to structure-informed directed evolution</h2>
     <h3 class="heading-3">Initial idea</h3>
@@ -164,11 +164,11 @@
 
     <h2 class="heading-2" id="hp-5">1.5 From a bright signal to convincing evidence</h2>
     <h3 class="heading-3">The interpretation problem</h3>
-    <p class="body-text">A fluorescence-positive variant can look promising for more than one reason. The signal may reflect broader TAM recognition, but it could also arise from higher overall nuclease activity, altered expression, or another change unrelated to specificity. In other words, <b>a brighter fluorescence signal does not necessarily mean broader TAM recognition</b>.</p>
+    <p class="body-text">A fluorescence-positive variant can look promising for more than one reason. The signal may reflect broader TAM recognition, but it could also arise from higher overall nuclease activity, altered expression, or another change unrelated to specificity. In other words, <b>a change in fluorescence signal does not necessarily mean broader TAM recognition</b>.Results from plasmid cleavage assays alone are vulnerable to confounding variables and cannot independently confirm a shift in TAM recognition preference.</p>
 <img src="https://static.igem.wiki/teams/6059/wiki/hp/new/9.avif" alt="1" class="figure-image">
     <p class="figure-caption"><b>Figure</b><b>  8</b>Dr. Liao Langxing's main research directions.</p>
     <h3 class="heading-3">Stakeholder challenge</h3>
-    <p class="body-text">When we discussed the screening results, Prof. Zhang Yonghui pointed out that a positive mutant might simply be a stronger nuclease. Our original screening concept risked conflating two different properties: <b>overall activity</b> and <b>TAM specificity</b>.</p>
+    <p class="body-text">When we discussed the screening results, Prof. Zhang Yonghui pointed out this issue and suggested that we directly perform genome-targeted assays to evaluate variant performance within a genomic context. Our original screening concept risked conflating two different properties: <b>overall activity</b> and <b>TAM specificity</b>.</p>
     <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure8.avif" alt="1" class="figure-image">
     <p class="figure-caption"><b>Figure</b><b>  9</b>XMU-China 2026 members discussing with Prof. Zhang Yonghui.</p>
     <h3 class="heading-3">What changed?</h3>
@@ -176,35 +176,34 @@
     <h3 class="heading-3">The revised evidence chain</h3>
     <p class="body-text"><b>·Fluorescence screening</b> identifies candidate variants efficiently.<br>
     <b>·TAM specificity profiling</b> asks whether recognition preference actually changed.<br>
-    <b>·Plasmid interference</b> tests intracellular DNA cleavage under defined TAM conditions.<br>
     <b>·Genome-editing assays</b> determine whether the evolved variant remains useful as an editor.<br>
     <b>·Molecular analysis</b> can help explain why a validated variant behaves differently.</p>
 
     <h2 class="heading-2" id="hp-6">1.6 From observation to mechanism</h2>
     <h3 class="heading-3">Initial assumption</h3>
-    <p class="body-text">Although we obtained evidence for the success of TnpB TAM expansion variants in plasmid interference assays and genome editing experiments (see <a href="{{ url_for('pages', page='results') }}">Results</a> for details), the reasons why the mutations affect TAM recognition remain unclear, making it difficult to provide guidance for future iterations. <b>We hope to further elucidate the molecular mechanism of TAM expansion from the structural and dynamic changes of the protein-DNA complex, thereby summarizing design principles.</b></p>
+    <p class="body-text">Although we obtained evidence for the success of TnpB TAM expansion variants in genome editing experiments (see <a href="{{ url_for('pages', page='results') }}">Results</a> for details), the reasons why the mutations affect TAM recognition remain unclear, making it difficult to inform future optimization efforts. <b>We hope to further elucidate the molecular mechanism of TAM expansion from the structural and dynamic changes of the protein-DNA complex, thereby summarizing design principles.</b></p>
     <h3 class="heading-3">Question</h3>
-    <p class="body-text">Currently, the most time-efficient and cost-effective method for long-timescale dynamic observation of protein-DNA-RNA complexes is to employ computational assistance and carry out molecular dynamics simulations. To this end, we visited Professor Wang Binju to explore <b>how molecular dynamics simulations can provide explanations and iterative guidance for broadening the TAM site</b>.</p>
+    <p class="body-text">Currently, the most time-efficient and cost-effective method for long-timescale dynamic observation of protein-DNA-RNA complexes is to employ computational assistance and carry out molecular dynamics simulations. To this end, we visited Professor Wang Binju to explore <b>how molecular dynamics simulations can help explain TAM broadening and inform subsequent optimization</b>.</p>
     <img src="https://static.igem.wiki/teams/6059/wiki/hp/new/11.avif" alt="1" class="figure-image">
     <p class="figure-caption"><b>Figure</b><b>  10</b>Prof. Wang Binju's main research directions.</p>
     <h3 class="heading-3">Insight</h3>
-    <p class="body-text">We shared with Professor Wang our preliminary molecular dynamics results for the wild-type ISHahl1 TnpB-DNA-RNA ternary complex, and presented the corresponding RMSD, RMSF, and structural clustering results. Professor Wang believed that our molecular dynamics analysis should be more closely integrated with the mechanistic dissection of TAM site broadening. We could <b>start with the effective TAM-broadening variants and, from the perspectives of non-covalent interactions such as hydrogen bonds and salt bridges as well as the associated motions, identify the key mutation sites or interaction mechanisms responsible,</b> thereby summarizing rational guidance for further optimization.</p>
+    <p class="body-text">We shared with Professor Wang our preliminary molecular dynamics results for the wild-type ISHahl1 TnpB-DNA-RNA ternary complex, and presented the corresponding RMSD, RMSF, and structural clustering results. Professor Wang suggested that closer integration of molecular dynamics analysis with the investigation of TAM-broadening mechanisms might be valuable. We could <b>start with the effective TAM-broadening variants and, from the perspectives of non-covalent interactions such as hydrogen bonds and salt bridges as well as the associated motions, identify the key mutation sites or interaction mechanisms responsible,</b> thereby identifying potential design principles for further optimization.</p>
     <img src="https://static.igem.wiki/teams/6059/wiki/hp/figure10.avif" alt="1" class="figure-image">
     <p class="figure-caption"><b>Figure</b><b>  11</b>Offline discussion with Professor Wang Binju.</p>
     <h3 class="heading-3">What changed?</h3>
     <p class="body-text">After the discussion with Professor Wang, we incorporated interfacial analysis of non-covalent interactions such as hydrogen bonds and analysis of relative motion features into the overall structural analysis, in order to identify key mutation sites. This formed an overall analytical framework of <b>"static structure analysis + protein dynamic features + interfacial interaction analysis."</b></p>
-    <h3 class="heading-3">Discussion of computational details</h3>
-    <p class="body-text">PhD student Hou Xiaoxiao and research assistant Jiang Zhihui discussed the computational details of the molecular dynamics simulations with us.</p>
+    <h3 class="heading-3">Technical Suggestions and Experience Sharing</h3>
+    <p class="body-text">During the course of carrying out the molecular dynamics simulations, PhD Student Hou Xiaoxiao and Research Assistant Jiang Zhihui shared technical suggestions and practical experience on computational methods.</p>
     <img src="https://static.igem.wiki/teams/6059/wiki/hp/new/13.avif" alt="1" class="figure-image">
     <p class="figure-caption"><b>Figure</b><b>  12</b>Hou Xiaoxiao's main research directions.</p>
     <img src="https://static.igem.wiki/teams/6059/wiki/hp/new/14.avif" alt="1" class="figure-image">
     <p class="figure-caption"><b>Figure</b><b>  13</b>Jiang Zhihui's main research directions.</p>
-    <p class="body-text">During <b>structural alignment</b>, research assistant Jiang Zhihui recommended the TM-align program to us. Faced with the difficulty of accurately predicting the structure of the TnpB-DNA-RNA ternary complex, he suggested that we use <b>Protenix, whose 2025 model may have a training dataset that includes the IsDra2 TnpB structure,</b> which could increase the prediction success rate.</p>
-    <p class="body-text">PhD student Hou Xiaoxiao suggested that we <b>use MCPB to construct the force field around the metal ions</b>, and discussed with us some methods for using Gaussian calculations to determine the geometric parameters and electric field around the metal, thereby improving the accuracy with which we characterize the zinc finger domain.</p>
+    <p class="body-text">During <b>structural alignment</b>, research assistant Jiang Zhihui recommended the TM-align program to us. Faced with the difficulty of accurately predicting the structure of the TnpB-DNA-RNA ternary complex, he suggested that we use <b>Protenix, whose 2025 model may have a training dataset that includes the IsDra2 TnpB structure,</b> which could increase the prediction success rate.Likewise, he shared practical suggestions on <b>using Amber tools for structural preprocessing</b>.</p>
+    <p class="body-text">PhD student Hou Xiaoxiao suggested that we <b>use MCPB to construct the force field around the metal ions</b>, and discussed with us some methods for using Gaussian calculations to determine the geometric parameters and charge distribution around the metal, thereby improving the accuracy with which we characterize the zinc finger domain.</p>
     <p class="body-text">Our Gaussian calculation work was carried out on Professor Wang Binju's platform.</p>
     <h3 class="heading-3">The revised evidence chain</h3>
     <p class="body-text"><b>·Static structure analysis</b>: structural alignment and preliminary identification of interactions<br>
-    <b>·Protein dynamic features</b>: overall stability, flexibility, and clustering<br>
+    <b>·Protein dynamic features</b>: overall stability and so on.<br>
     <b>·Interfacial interaction analysis</b>: non-covalent interaction analysis and analysis of the relative motion between mutation regions and directly contacting residues</p>
     <p class="body-text">This became one of the clearest examples of Human Practices changing not only what we built, but what evidence we accepted as proof that the engineering had worked.</p>
 
@@ -260,7 +259,7 @@
 
     <h2 class="heading-2" id="hp-10">2.4 Testing the alkane-degradation hypothesis</h2>
     <h3 class="heading-3">Why we reached out</h3>
-    <p class="body-text">Following the direction suggested by engineers from Fuhaichuang, we consulted <b>Dr. Wei Guangshan</b> to ask whether alkane degradation actually involves a genome-engineering challenge and whether TnpB has relevant properties for that challenge. We wanted the application direction to survive expert scrutiny before treating it as meaningful.</p>
+    <p class="body-text">After considering a potential application proposed by engineers from Fuhaichuang, we consulted <b>Dr. Wei Guangshan</b> to ask whether alkane degradation actually involves a genome-engineering challenge and whether TnpB has relevant properties for that challenge. We wanted the application direction to survive expert scrutiny before treating it as meaningful.</p>
     <img src="https://static.igem.wiki/teams/6059/wiki/hp/new/18.avif" alt="1" class="figure-image">
     <p class="figure-caption"><b>Figure</b><b>  17</b>Dr. Wei Guangshan's main research directions.</p>
     <h3 class="heading-3">What we learned</h3>

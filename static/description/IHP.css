@@ -1,35 +1,29 @@
-/* ============================================================
-   IHP.css —— human-practices.html（IHP 页面）专属样式
-   ============================================================
-   处理首屏标题区里的两行文案（都在 .center-description-wrapper 里）：
+@media (min-width: 1025px) {
+    .main-container > img.figure-image:nth-of-type(2) {
+        width: 40%;
+        max-width: 50%;
+    }
+}
+@media (min-width: 1025px) {
+    .main-container > img.figure-image:nth-of-type(5) {
+        width: 80%;
+        max-width: 80%;
+    }
+}
+@media (min-width: 1025px) {
+    .main-container > img.figure-image:nth-of-type(6) {
+        width: 80%;
+        max-width: 80%;
+    }
+}
+@media (min-width: 1025px) {
+    .main-container > img.figure-image:nth-of-type(7) {
+        width: 80%;
+        max-width: 80%;
+    }
+}
 
-   1) 第一句（“Engineering TnpB with the World.”）：加大字号，作为
-      标题的主行，仍居中；
-   2) 第二句 .hero-hp-note（HP 补充文案）：保持居中，排版与标题文案一致。
 
-   这一段文字原先躺在 .main-container 里当正文段落（.body-text），
-   现在直接写进标题文案（.center-description-wrapper）中，作为
-   “Engineering TnpB with the World.” 的第二行。因此它不再是正文：
-   行高、字距、颜色、字体族都与标题文案逐项对齐，视觉上属于
-   标题块；唯一保留的“正文元素”是里面的 <a> 超链接，配色与下划线
-   沿用 description.css 第 11 节（正文超链接）的规则，站内观感统一。
-   （第一句现已单独放大，字号不再与第二句相同，见第 1 节。）
-
-   加载顺序：本文件在 layout.html 的 page_styles 块中排在
-   description.css 之后，选择器优先级也更高（多带了
-   .title-header-wrapper 前缀），所以断点内的 display:none 覆盖得住。
-   具体数值若与 description.css 的 .center-description-text 有出入，
-   以本文件为准（第二句的字号仍与它保持一致，改时应一起改）。
-   ============================================================ */
-
-/* ============================================================
-   1. 第一句：加大，作为标题的主行
-   ============================================================
-   选择器带 :not(.hero-hp-note)，只命中第一句，不碰下面的补充文案
-   （两行在 description.css 里共用 .center-description-text）。
-   字号比原值 clamp(0.9rem, 1.6vw, 1.3rem) 大一档，仍随父级居中；
-   行高随之收紧，否则大字号配 1.68 会显得松散。
-   ============================================================ */
 .title-header-wrapper .center-description-wrapper > .center-description-text:not(.hero-hp-note) {
     font-size: clamp(1.2rem, 2.3vw, 1.8rem);
     line-height: 1.35;
@@ -61,12 +55,6 @@
     user-select: text;
 }
 
-/* ============================================================
-   3. 超链接：保留正文链接格式
-   ============================================================
-   配色 / 加粗 / 下划线粗细与偏移，跟 .main-container a 一致
-   （#91ACE0、1.5px 下划线、3px 偏移、悬停加粗到 2.5px）。
-   ============================================================ */
 .title-header-wrapper .hero-hp-note a,
 .title-header-wrapper .hero-hp-note a:visited {
     color: #91ACE0;
@@ -90,12 +78,6 @@
     border-radius: 0.1875rem;
 }
 
-/* ============================================================
-   4. 入场：跟着首屏标题一起淡入
-   ============================================================
-   只在 JS 成功接管（<html> 上有 .ihp-js）时才隐藏初始状态，
-   JS 失效时文字照常可见，不会出现“空白标题区”。
-   ============================================================ */
 html.ihp-js .title-header-wrapper .hero-hp-note {
     opacity: 0;
     transform: translateY(0.5rem);
@@ -124,15 +106,6 @@ html.ihp-js .title-header-wrapper .hero-hp-note.is-compact {
     }
 }
 
-/* ============================================================
-   5. 移动端（≤1024px，断点与 description.css / head_foot.css 一致）
-   ============================================================
-   移动端首屏只渲染整块贴图（description.css 第 8.4 节把
-   .center-description-wrapper 设为 display:none !important），
-   标题与引言都已印在贴图里。这里只放开这一句补充文案，让它接在
-   贴图下方居中排一行小字，HP 链接在手机上仍然可点；
-   同一块里的标题文案继续隐藏，避免与贴图重复。
-   ============================================================ */
 @media (max-width: 1024px) {
     .title-header-wrapper .center-description-wrapper {
         display: block !important;   /* 压过 description.css 的 display:none !important */

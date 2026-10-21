@@ -10,68 +10,226 @@
 <header class="title-header-wrapper" id="heroWrapper">
     <div class="grid-container" id="heroGridContainer">
         <canvas id="gridCanvas"></canvas>
-
-        <!-- 移动端整块首屏贴图（标题 + DNA / 蛋白装饰 + 引言文字一体）：移动端只渲染它，
-             PC 端由 description.css 隐藏，见该文件第 8.0 / 8.4 节 -->
         <img class="mobile-hero-image"
-             src="https://static.igem.wiki/teams/6059/wiki/move/results.avif"
+             src="https://static.igem.wiki/teams/6059/wiki/move/results-1.avif"
              alt="Results — STING: an international team of students, researchers, and innovators exploring the frontiers of bacterial genome engineering.">
-        
-        <!-- 左侧装饰 DNA (通过 asset-map.json 解析) -->
+
         <div class="left-dna-wrapper">
             <img src="{{ asset_url('title/DNA_1.png') }}" alt="DNA Structure Left" class="left-dna-image">
         </div>
-
-        <!-- 右侧装饰蛋白结构 -->
         <div class="right-protein-wrapper">
             <img src="{{ asset_url('title/protein.png') }}" alt="Protein Structure Right" class="right-protein-image">
         </div>
-
-        <!-- 右下装饰 DNA -->
         <div class="bottom-right-dna-wrapper">
             <img src="{{ asset_url('title/DNA_2.png') }}" alt="DNA Structure Bottom Right" class="bottom-right-dna-image">
         </div>
-
-        <!-- 中央大标题图片 -->
         <div class="center-image-wrapper">
-            <img src="https://static.igem.wiki/teams/6059/wiki/title/results.avif" alt="Description" class="title-image">
+            <img src="https://static.igem.wiki/teams/6059/wiki/title/results.avif" alt="Results" class="title-image">
         </div>
-
-        <!-- 中央引言文案 -->
         <div class="center-description-wrapper">
             <p class="center-description-text">
-                We are an international team of students, researchers,<br>
-                and innovators exploring the frontiers of bacterial<br>
-                genome engineering through the power of STING.
+                Presenting the empirical data that<br>
+                proves our engineered TnpB system<br>
+                works exactly as intended.
             </p>
         </div>
-
-        <!-- 底部滑动探索指引 -->
         <div class="scroll-explore-wrapper">
             <span class="scroll-line"></span>
             <span class="scroll-text">SCROLL TO EXPLORE</span>
             <span class="scroll-line"></span>
         </div>
-
         <div class="bottom-dots-decor"></div>
     </div>
 </header>
 
-<!-- 侧边动态目录导航栏 (TOC) -->
 <aside class="side-container" id="sideContainer">
     <nav class="toc-nav" id="tocNav" aria-label="Table of Contents"></nav>
 </aside>
 
-<!-- 正文主体容器 -->
 <main class="main-container" id="mainContainer">
-    <h1 class="heading-1">Heading 1</h1>
-    <p class="body-text"><b>TnpB</b> CRISPR-Cas9/Cas12.</p>
+    <h1 class="heading-1">1. Gene editing and regulation based on ISHahl1 TnpB in bacteria</h1>
 
-    <img src="https://static.igem.wiki/teams/6059/wiki/description/figure/1.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  1</b>  Comparison of protein sizes among Cas9, TnpB, and Cas12a</p>    
-    <h2 class="heading-2">Heading 2</h2>   
-    <h3 class="heading-3">Heading 3</h3>
-    <h1 class="heading-reference">Reference</h1>
+    <h2 class="heading-2">1.1 The development of pEcTnpB/pEcreRNA dual-plasmid system</h2>
+    <p class="body-text">Although CRISPR-Cas9 or even CRISPR-Cas12a have been widely applied in genome editing across many species, emerging issues related to high plasmid/package burden and cellular toxicity due to their large sizes (1,000–1,500 a.a.) challenge the further development of this promising biotechnology. In recent years, TnpB, a transposon-derived miniature nuclease (~400 a.a.) recognized as the evolutionary ancestor of Cas12, has been gradually regarded as a promising alternative for developing ultra-compact genome-editing tools (5).</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/results/figure-1.avif" alt="pEcTnpB and pEcreRNA dual-plasmid system and genome-editing workflow" class="figure-image">
+    <p class="figure-caption"><b>Figure 1</b> pEcTnpB/pEcreRNA dual-plasmid system and the general genome-editing workflow. (A) Graphical schematic of the pEcTnpB and pEcreRNA plasmids. (B) The genome-editing workflow based on the pEcTnpB/pEcreRNA dual-plasmid system.</p>
+
+    <p class="body-text">The project of XMU-China 2026, “Small TnpB-based Innovative Nuclease toolkit for bacterial Genome editing”, namely STING, aims to develop a genome-editing toolbox based on a TnpB from <i>Halorhodospira halochloris</i> (ISHahl1), which was reported to exhibit relatively high plasmid-cleavage activity in <i>E. coli</i> (6). Leveraging the architecture of a dual-plasmid system, we established a dual-plasmid genome-editing system based on ISHahl1 TnpB, pEcTnpB/pEcreRNA (Figure 1A; see more information on our Design page). A corresponding genome-editing workflow was also established (Figure 1B), making it suitable for comparing the performance of SpCas9 and ISHahl1 TnpB under the same conditions.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/results/figure-2.avif" alt="Target sites of different genes in E. coli MG1655, BL21(DE3), and EcNP" class="figure-image">
+    <p class="figure-caption"><b>Figure 2</b> Target sites of different genes in <i>E. coli</i> MG1655, BL21(DE3), and EcNP. Cyan characters represent mismatches between the designed spacer and the target gene.</p>
+
+    <p class="body-text">Three <i>E. coli</i> strains were used in the comparisons: MG1655, BL21(DE3), and EcNP. MG1655 is derived from the K-12 strain and is regarded as being close to the wild type. BL21(DE3) is derived from the B strain, one of the most commonly used expression strains for recombinant proteins. EcNP, the cryptic-plasmid-free strain of Nissle 1917, is an emerging probiotic with potential as a living therapeutic. Several genes were selected as targets, and spacer sequences were designed according to the PAM (5′-NGG-3′) and TAM (5′-CTAC-3′) requirements (Figure 2).</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/results/figure-3.avif" alt="Colony PCR results showing target-gene deletion in three E. coli strains using CRISPR-Cas9 and ISHahl1 TnpB" class="figure-image">
+    <p class="figure-caption"><b>Figure 3</b> Colony PCR results showing deletion of target genes in different strains using the dual-plasmid systems. (A), (B), and (C) show results using CRISPR-Cas9 (pEcCas/pEcgRNA) in MG1655, BL21(DE3), and EcNP, respectively. (D), (E), and (F) show results using ISHahl1 TnpB (pEcTnpB/pEcreRNA) in MG1655, BL21(DE3), and EcNP, respectively.</p>
+
+    <p class="body-text">All genes tested in the genome-editing experiments could be successfully deleted using the pEcTnpB/pEcreRNA dual-plasmid system, with deletion efficiencies ranging from 4.2% to nearly 100% (Figure 3D–F). SpCas9 also showed editing activity for these genes (Figure 3A–C), but the pEcCas/pEcgRNA system encountered difficulties when deleting <i>recA</i> in EcNP (Figure 3C). This may be attributed to an intolerant mismatch in the seed region (7, 8) between the designed spacer and the target sequence, because the pEcgRNA-<i>recA</i> used in BL21(DE3) was reused in EcNP.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/results/figure-4.avif" alt="Gene-deletion efficiencies of pEcCas/pEcgRNA and pEcTnpB/pEcreRNA in three E. coli strains" class="figure-image">
+    <p class="figure-caption"><b>Figure 4</b> Gene-deletion efficiencies of pEcCas/pEcgRNA or pEcTnpB/pEcreRNA in <i>E. coli</i> MG1655 (A), BL21(DE3) (B), and EcNP (C). Data are presented as mean ± s.d. (<i>n</i> = 3).</p>
+
+    <p class="body-text">Three biologically independent genome-editing experiments were performed for all target genes across the three <i>E. coli</i> strains (Figure 4). The pEcTnpB/pEcreRNA system exhibited considerable editing efficiencies compared with pEcCas/pEcgRNA for the tested genes in MG1655 and BL21(DE3) (Figure 4A and 4B). In EcNP, pEcCas/pEcgRNA showed higher efficiency for deleting <i>maeA</i>, but lower efficiencies for deleting <i>recA</i> and <i>cadA</i> than pEcTnpB/pEcreRNA (Figure 4C). Editing efficiency may be affected by strain context, since the same spacers were used for deleting the same genes across these strains. Taken together, both dual-plasmid systems functioned in a K-12-derived strain, a B-strain-derived strain, and a probiotic strain, showing potential for expansion to other bacteria.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/results/figure-5.avif" alt="Genome editing in Pseudomonas putida KT2440 using ISHahl1 TnpB" class="figure-image">
+    <p class="figure-caption"><b>Figure 5</b> Genome editing in <i>P. putida</i> KT2440 using ISHahl1 TnpB. (A) Schematic of the pSEVA321-TnpB and pSEVA241-reRNA plasmids. (B) Genomic locations and N20 spacer sequences of the target genes <i>nicC</i> (PP_3944) and PP_3361. (C), (E) Colony PCR results showing deletion of <i>nicC</i> and PP_3361, respectively. (D), (F) Sanger sequencing results of the deletion junctions of Δ<i>nicC</i> (1,125 bp deleted) and ΔPP_3361 (2,994 bp deleted). (G) Gene-deletion efficiencies. Data are presented as mean ± s.d. (<i>n</i> = 3).</p>
+
+    <p class="body-text">To explore whether the system could be transferred to non-model bacteria, we tested ISHahl1 TnpB in <i>Pseudomonas putida</i> KT2440, an environmental bacterium with attractive metabolic capabilities. Because the plasmids used in <i>E. coli</i> are not applicable in this host, ISHahl1 TnpB and the λ-Red system were cloned into the broad-host-range vector pSEVA321 (pSEVA321-TnpB), while the reRNA expression cassette and homology arms were assembled in pSEVA241 (pSEVA241-reRNA) (Figure 5A). Two genes, <i>nicC</i> (PP_3944) and PP_3361, located at different chromosomal positions, were selected as targets (Figure 5B). Colony PCR showed that both genes could be deleted (Figure 5C and 5E), and Sanger sequencing confirmed precise deletions of 1,125 bp and 2,994 bp at the designed junctions (Figure 5D and 5F). Deletion efficiencies reached approximately 44% for PP_3361 and 30% for <i>nicC</i> (Figure 5G). Although efficiencies varied among biological replicates and were lower than those in <i>E. coli</i>, these results demonstrate that the compact ISHahl1 TnpB toolset functions in <i>P. putida</i> with little optimization.</p>
+
+    <h2 class="heading-2">1.2 TnpB interference</h2>
+    <img src="https://static.igem.wiki/teams/6059/wiki/results/figure-6.avif" alt="Sequence and structural analysis identifying the DED motif of ISHahl1 TnpB" class="figure-image">
+    <p class="figure-caption"><b>Figure 6</b> Identification of the DED motif of ISHahl1 TnpB. (A) Protein multiple-sequence alignment results. (B) Three-dimensional structure comparison of ISHahl1 TnpB and ISDra2 TnpB. Pink: ISHahl1 TnpB structure from Protenix; blue: ISDra2 TnpB, PDB 8EXA; purple: ISDra2 TnpB, PDB 8BF8.</p>
+
+    <p class="body-text">The DED motif of nucleases contains three highly conserved amino acid residues— aspartic acid, glutamic acid, and aspartic acid—that perform cleavage. In ISDra2 TnpB, site-directed mutagenesis verified the cleavage functions of D191 and E278, while the third aspartic acid, D361, was inferred from the crystal structure. For ISHahl1 TnpB, the corresponding DED motif had not been experimentally defined. We therefore used multiple-sequence alignment and structural alignment to identify the catalytic residues. PROMALS3D alignment showed that the experimentally verified D191 and E278 sites of ISDra2 TnpB are highly conserved and identified the conserved D361 site. Mapping these sites onto ISHahl1 TnpB suggested D190, E290, and D376 as its DED motif.</p>
+
+    <p class="body-text">We also aligned the ISHahl1 TnpB structure generated by Protenix with the two existing ISDra2 TnpB crystal structures using PyMOL to assess the spatial characteristics of the predicted catalytic residues.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/results/figure-7.avif" alt="Plasmid interference assay validating the catalytic residues of ISHahl1 TnpB" class="figure-image">
+    <p class="figure-caption"><b>Figure 7</b> Validation of the catalytic residues of ISHahl1 TnpB by plasmid interference assay. (A) Schematic of the assay. ISHahl1 TnpB variants and reRNA targeting sfGFP (reRNA<sub>sfGFP</sub>) or a non-targeting reRNA (reRNA<sub>NT</sub>) were expressed on the pBBR1-based plasmid, and the sfGFP-bearing plasmid with a pMB1 origin served as the target. (B) Colony-forming units (CFU) per mL after induction with <i>L</i>-arabinose. Data are presented as mean ± s.d. (<i>n</i> = 3).</p>
+
+    <p class="body-text">To verify the predicted DED motif, we constructed alanine substitutions at D190, E290, and D376, with D209A as a control, and evaluated nuclease activity using a plasmid interference assay (Figure 7A). Upon induction with <i>L</i>-arabinose, wild-type (WT) ISHahl1 TnpB with reRNA<sub>sfGFP</sub> decreased CFU by approximately 3 logs compared with reRNA<sub>NT</sub>, indicating efficient cleavage and loss of the target plasmid (Figure 7B). In contrast, D190A, E290A, and D376A showed no obvious difference in CFU between reRNA<sub>sfGFP</sub> and reRNA<sub>NT</sub>, indicating that mutation of any of these residues abolished DNase activity. D209A still reduced CFU by approximately 3 logs, comparable to WT, confirming that D209 is not involved in catalysis.</p>
+
+    <p class="body-text">These results support D190, E290, and D376 as the DED motif of ISHahl1 TnpB and demonstrate the reliability of the combined sequence- and structure-alignment strategy. The lower CFU of E290A under the non-targeting condition may result from expression burden or an unspecific effect of this variant. D190A was therefore selected as the representative dTnpB for subsequent experiments.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/results/figure-8.avif" alt="TnpB interference system based on catalytically inactive dTnpB" class="figure-image">
+    <p class="figure-caption"><b>Figure 8</b> TnpB interference (TnpBi) based on dTnpB. (A) Schematic of the TnpBi system. dTnpB (ISHahl1 D190A) is expressed under the <i>L</i>-arabinose-inducible pBAD promoter, while reRNA is constitutively expressed. (B) Target-site design. The spacer was placed immediately downstream of the 5′-CTAC-3′ TAM and covers the −35 region of the J23118 promoter. (C) Normalized fluorescence (RFU<sub>EYFP</sub>/OD<sub>600</sub>) under D-glucose or <i>L</i>-arabinose. (D) Dose-response curve fitted with a Hill function.</p>
+
+    <p class="body-text">We next assessed whether dTnpB could repress gene expression through steric hindrance. A reporter plasmid expressing eyfp under the constitutive J23118 promoter was constructed, with a spacer designed to bind the promoter region and cover the −35 element adjacent to a 5′-CTAC-3′ TAM (Figure 8A and 8B). Upon induction with <i>L</i>-arabinose, the strain expressing both dTnpB and matched reRNA (reRNA<sub>J23118</sub>) showed a significant decrease in normalized fluorescence to approximately 27% of the D-glucose condition, corresponding to 3.7-fold repression (Figure 8C). Control groups lacking either reRNA or dTnpB showed only slight 1.2–1.5-fold decreases.</p>
+
+    <p class="body-text">Fluorescence decreased with increasing <i>L</i>-arabinose concentration in a sigmoidal manner and was well described by a Hill function (Figure 8D). Fluorescence remained around 800 a.u. below 10<sup>−5</sup> M <i>L</i>-arabinose, was reduced by half at approximately 4 × 10<sup>−5</sup> M, and reached a plateau of about 150 a.u. from approximately 10<sup>−3</sup> M, giving a dynamic range of around 5-fold. TnpBi therefore provides an ultra-compact, programmable, and inducible transcriptional-regulation tool.</p>
+
+    <h2 class="heading-2">1.3 Base editor</h2>
+    <p class="body-text">The ability of dTnpB to bind but not cleave target DNA can also be used to develop precise genome-editing tools without double-strand breaks. Following the design of cytosine base editors (CBEs), we fused cytidine deaminase APOBEC-1 and uracil glycosylase inhibitor (UGI) to dTnpB (ISHahl1 D190A). After dTnpB binds the target, the non-target strand is exposed in the R-loop, where APOBEC-1 can deaminate cytosines into uracils. UGI protects the uracils from excision by uracil DNA glycosylase, allowing the U:G mismatch to become a T:A pair through mismatch repair and DNA replication (Figure 9).</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/results/figure-9.avif" alt="Design and mechanism of the dTnpB-based cytosine base editor" class="figure-image">
+    <p class="figure-caption"><b>Figure 9</b> Design of the dTnpB-based base editor (TnpB-CBE). Schematic of the editing mechanism and protein-fusion structure.</p>
+
+    <p class="body-text">Because the relative position of the deaminase may affect the editing window, we constructed two fusion designs: the N-term construct, in which APOBEC-1 is fused to the N-terminus and UGI to the C-terminus of dTnpB (APOBEC-1–dTnpB–UGI), and the C-term construct, in which UGI is fused to the N-terminus and APOBEC-1 to the C-terminus (UGI–dTnpB–APOBEC-1) (Figure 10A). A construct expressing APOBEC-1 and UGI without dTnpB served as the negative control (NC). For each construct, reRNA with the spacer of a target gene was co-expressed, and target regions were sequenced to calculate C-to-T conversion at each cytosine within the spacer.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/results/figure-10.avif" alt="Base-editing results of the two TnpB-CBE fusion designs" class="figure-image">
+    <p class="figure-caption"><b>Figure 10</b> Base-editing results of the two TnpB-CBE designs. (A) Schematic of the N-term construct, C-term construct, and negative control. (B)–(E) C-to-T editing at each cytosine of four spacers using the N-term construct, C-term construct, and NC. Purple characters represent the 5′-CTAC-3′ TAM, and cytosines are numbered from the TAM-proximal side. The color scale represents editing efficiency.</p>
+
+    <p class="body-text">C-to-T conversions were detected at all four target sites when dTnpB-based base editors were used, whereas no editing was observed in the negative control, confirming that editing depended on dTnpB targeting rather than free deaminase (Figure 10B–E). Editing was confined to a narrow window, with only a subset of cytosines converted. The C-term construct preferentially edited C4 and neighboring positions at two sites and performed better at the <i>nicC</i> site, where C2 and C3 were most efficiently edited. In contrast, the N-term construct performed better at another spacer, with C7 as the major edited site and C1 and C3 as minor sites. Neither fusion design was universally superior, indicating that the optimal orientation depends on target sequence context.</p>
+
+    <h1 class="heading-1">2. Directed evolution of ISHahl1 TnpB for expanded TAM specificities</h1>
+
+    <h2 class="heading-2">2.1 Design of dual-plasmid system for fluorescence intensity-based selection</h2>
+    <p class="body-text">The strict 5′-CTAC-3′ TAM of ISHahl1 TnpB limits the fraction of the genome that can be targeted, and a single-nucleotide substitution in this motif largely abolishes its activity. Because no study has reported engineering the TAM specificity of ISHahl1, and the strategy established for ISDra2 (K76) cannot be transferred directly because of sequence divergence and differences in WED-domain conformation, we first identified the TAM-recognition region of ISHahl1 TnpB in a semi-rational manner before constructing the mutant library.</p>
+
+    <p class="body-text">Multiple-sequence alignment of ISHahl1 TnpB with TnpB subtypes of known TAM specificities was performed using PROMALS3D. The three-dimensional model of ISHahl1 TnpB was superimposed onto the IsDra2 TnpB–DNA complex (PDB: 8EXA) using PyMOL, with particular attention to residues near the TAM and the corresponding alignment blocks (Figure 12). Based on the combined sequence and structural information, residues 50–170 were selected as the target region for random mutagenesis. This region covers structural elements near the TAM rather than the catalytic core, helping preserve catalytic activity while allowing the generation of variants with potentially altered TAM recognition.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/results/figure-12.avif" alt="Identification of the region for random mutagenesis in ISHahl1 TnpB" class="figure-image">
+    <p class="figure-caption"><b>Figure 12</b> Identification of the region for random mutagenesis in ISHahl1 TnpB. (A) Multiple-sequence alignment of ISHahl1 TnpB with TnpB subtypes of different TAM specificities using PROMALS3D. Conserved blocks are boxed. (B) Structural superposition of the ISHahl1 TnpB model from Protenix and the IsDra2 TnpB–DNA complex from PDB 8EXA. Residues in the selected mutagenesis region are highlighted.</p>
+
+    <p class="body-text">To convert TnpB activity into an easily measurable phenotype, we designed a dual-plasmid fluorescence reporter system (Figure 13A). The pEYFP plasmid carries an <i>eyfp</i> reporter driven by the constitutive promoter J23118, while pSTING-EX carries the reRNA and a TnpB variant whose expression is controlled by an <i>L</i>-arabinose-inducible promoter. Because the TAM must be located upstream of the spacer, nine synonymous TAM variants were introduced into the <i>eyfp</i> coding sequence. These variants covered all single-nucleotide substitutions at the first, second, or third position of the 5′-CTAC-3′ TAM and were designated DTAC, CVAC, and CTBC, respectively (Figure 13B). Synonymous codon changes preserved the EYFP amino acid sequence, so the activity of a TnpB variant was reflected by fluorescence: more efficient cleavage and loss of the reporter plasmid resulted in lower normalized EYFP fluorescence.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/results/figure-13.avif" alt="Dual-plasmid fluorescence reporter system for selecting TnpB variants with altered TAM specificities" class="figure-image">
+    <p class="figure-caption"><b>Figure 13</b> Dual-plasmid fluorescence reporter system for selecting TnpB variants with altered TAM specificities. (A) Schematic and composition of the plasmids. pSTING-EX uses a p15A origin, constitutively expresses reRNA from the proD promoter, and carries the arabinose-inducible TnpB variant. pEYFP uses a pBR322 origin and carries <i>eyfp</i> driven by J23118. (B) Design of synonymous TAM variants in <i>eyfp</i>. DTAC contains GTAC, ATAC, and TTAC; CVAC contains CGAC, CAAC, and CCAC; and CTBC contains CTGC, CTTC, and CTCC.</p>
+
+    <h2 class="heading-2">2.2 TAM specificities profiling of evolved variants</h2>
+    <p class="body-text">The library was transformed into <i>E. coli</i> strains carrying the pEYFP reporter for each TAM, and normalized EYFP fluorescence was measured after induction. A two-parameter score combined normalized fluorescence (RFU<sub>EYFP</sub>/OD<sub>600</sub>) with the induction-dependent fluorescence change, preventing variants that merely impaired growth or plasmid maintenance from being preferentially selected (Figure 14). Variants separated from the main population and showing pronounced fluorescence reduction were selected as candidates for downstream assays.</p>
+
+    <p class="body-text">The distributions differed among the nine TAMs. The DTAC and CTBC subgroups yielded clearly separated candidates, including variants 39, 40, 53, and 60 for GTAC; variants 2, 3, 8, and 48 for TTAC; and variants 15, 36, 53, and 59 for CTGC. The CVAC subgroup generally showed a more compact distribution and produced fewer candidates. Selected candidates were re-arrayed for further characterization.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/results/figure-14.avif" alt="First-round fluorescence selection of TnpB variants" class="figure-image">
+    <p class="figure-caption"><b>Figure 14</b> First-round selection of TnpB variants using the fluorescence reporter system. Normalized EYFP fluorescence is plotted against the induction-dependent fluorescence change. The TAM is indicated in each panel: (A)–(C) DTAC subgroup; (D)–(F) CVAC subgroup; (G)–(I) CTBC subgroup. Labelled variants were selected for further characterization.</p>
+
+    <p class="body-text">To extract sequence determinants from the selected variants, we established a scoring workflow consisting of mutation counting, clustering, and scoring (Figure 15A). Mutation sites were counted position by position, the mutation-count distributions were clustered, and each position was scored with a Laplace-smoothed weighting that introduced a pseudocount to avoid overestimating positions with few observations. The resulting scores were mapped onto the TnpB–DNA structure (Figure 15B). High-scoring positions were distributed across regions contacting the TAM and DNA backbone, consistent with the mutagenesis region defined in Section 2.1 and providing a basis for subsequent molecular analysis.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/results/figure-15.avif" alt="Scoring of mutation positions enriched in selected TnpB variants" class="figure-image">
+    <p class="figure-caption"><b>Figure 15</b> Scoring of mutation positions enriched in selected TnpB variants. (A) Workflow for counting, clustering, and scoring mutations, including Laplace-smoothed weighting and Gaussian mixture model weighting. (B) Mapping of scored positions onto the TnpB–DNA structure.</p>
+
+    <h2 class="heading-2">2.3 Molecular dynamics</h2>
+    <p class="body-text">To understand how substitutions in the selected variants affect TAM recognition, molecular-dynamics simulations were performed on the TnpB–reRNA–DNA complexes of the wild type and selected variants (see more information on our Model page).</p>
+
+    <h2 class="heading-2">2.4 Gene editing capability of variants</h2>
+    <p class="body-text">To determine whether fluorescence-selected variants could edit genomic targets, the variants were tested in a simplified genome-editing system targeting <i>maeA</i>. The candidate variants were paired with corresponding TAMs, and deletion of the target locus was evaluated by colony PCR and Sanger sequencing.</p>
+
+    <table>
+        <thead>
+            <tr><th>Variant</th><th>TAM used in selection</th><th>TAM tested in genome editing</th><th>Positive colonies / total</th><th>Editing efficiency</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>WT</td><td>CTAC</td><td>CTAC</td><td>23/23</td><td>100%</td></tr>
+            <tr><td>λ-Red only</td><td>—</td><td>CTAC</td><td>0/8</td><td>0%</td></tr>
+            <tr><td>39</td><td>GTAC</td><td>GTAC</td><td>1/24</td><td>4.2%</td></tr>
+            <tr><td>60</td><td>GTAC</td><td>GTAC</td><td>0/20</td><td>0%</td></tr>
+            <tr><td>39</td><td>GTAC</td><td>TTAC</td><td>0/8</td><td>0%</td></tr>
+            <tr><td>48</td><td>TTAC</td><td>TTAC</td><td>1/8</td><td>12.5%</td></tr>
+            <tr><td>56</td><td>TTAC</td><td>TTAC</td><td>0/8</td><td>0%</td></tr>
+            <tr><td>40</td><td>ATAC</td><td>ATAC</td><td>1/8</td><td>12.5%</td></tr>
+            <tr><td>6</td><td>CGAC</td><td>CGAC</td><td>1/8</td><td>12.5%</td></tr>
+            <tr><td>30</td><td>CGAC</td><td>CGAC</td><td>0/8</td><td>0%</td></tr>
+            <tr><td>46</td><td>CGAC</td><td>CGAC</td><td>1/8</td><td>12.5%</td></tr>
+            <tr><td>1</td><td>CCAC</td><td>CCAC</td><td>0/8</td><td>0%</td></tr>
+            <tr><td>51</td><td>CAAC</td><td>CAAC</td><td>0/8</td><td>0%</td></tr>
+            <tr><td>15</td><td>CTGC</td><td>CTGC</td><td>1/24</td><td>4.2%</td></tr>
+            <tr><td>53</td><td>CTGC</td><td>CTGC</td><td>0/8</td><td>0%</td></tr>
+            <tr><td>55</td><td>CTGC</td><td>CTGC</td><td>0/8</td><td>0%</td></tr>
+            <tr><td>59</td><td>CTGC</td><td>CTGC</td><td>0/24</td><td>0%</td></tr>
+        </tbody>
+    </table>
+    <p class="figure-caption"><b>Table 2</b> Candidate TnpB variants and their genome-editing performance.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/results/figure-16.avif" alt="Genome editing of maeA by selected TnpB variants" class="figure-image">
+    <p class="figure-caption"><b>Figure 16</b> Genome editing of <i>maeA</i> by selected TnpB variants. Top: construction of pEcTnpB-SP1-variant plasmids and confirmation of the Δ<i>maeA</i> junction by Sanger sequencing, with 1,695 bp deleted. Bottom: colony-PCR results for WT ISHahl1 TnpB, the λ-Red system alone, and the indicated variants with their corresponding TAMs. Numbers show positive colonies among tested colonies.</p>
+
+    <p class="body-text">With wild-type ISHahl1 TnpB and the matching CTAC TAM, 23 of 23 colonies showed the expected deletion, confirming that the simplified system retained full editing activity. The λ-Red system alone yielded no positive colonies (0/8), demonstrating that deletion depended on TnpB-mediated cleavage rather than recombination machinery alone. Positive colonies were obtained for variant 39 at GTAC (1/24), variant 48 at TTAC (1/8), variant 40 at ATAC (1/8), variants 6 and 46 at CGAC (1/8 each), and variant 15 at CTGC (1/24). Variants 60, 39 at TTAC, 56, 30, 1, 51, 53, 55, and 59 produced no positive colonies among the tested clones.</p>
+
+    <p class="body-text">The editing efficiencies of the evolved variants were therefore low, ranging from approximately 4.2% to 12.5%, and were substantially below the wild-type efficiency. Nevertheless, editing at GTAC, TTAC, ATAC, CGAC, and CTGC sites demonstrates that the TAM specificity of ISHahl1 TnpB can be altered by directed evolution, extending its targetable range beyond the canonical 5′-CTAC-3′ motif.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/results/figure-17.avif" alt="Plasmid interference assay of selected TnpB variants" class="figure-image">
+    <p class="figure-caption"><b>Figure 17</b> Plasmid interference assay of selected variants. Colony-forming units (CFU) per mL after induction with <i>L</i>-arabinose for (A) variant 39 and (B) variant 15, tested against nine TAM variants and a non-targeting control. Data are presented as mean ± s.d. (<i>n</i> = 3). Statistical significance was determined using a two-tailed Student’s <i>t</i>-test (*<i>P</i> &lt; 0.05).</p>
+
+    <p class="body-text">To rule out false positives from the fluorescence screen, representative variants were further examined by plasmid interference assay (Figure 17). Variant 39, selected with the GTAC reporter, reduced CFU not only with the GTAC target but also with ATAC and TTAC targets; the reductions at ATAC and TTAC were statistically significant relative to their non-targeting controls. Variant 15, selected with CTGC, showed no clear target-dependent CFU reduction under the tested conditions.</p>
+
+    <p class="body-text">These results suggest that the evolved variants did not simply switch from CTAC to a single new TAM. Instead, variant 39 acquired a relaxed TAM requirement and recognized several TAMs within the DTAC subgroup, consistent with its ability to edit both GTAC and TTAC sites. The discrepancy between variant 15 in the interference and genome-editing assays may result from differences in target context, target-plasmid copy number, or assay sensitivity. Because baseline CFU differed among reporter plasmids carrying different TAMs, comparisons were made within each TAM pair rather than across the entire panel.</p>
+
+    <h2 class="heading-2">2.5 Summary and outlook</h2>
+    <p class="body-text">Taken together, we established a fluorescence-based selection system and combined it with structural and algorithmic analysis to obtain ISHahl1 TnpB variants with altered TAM recognition. The selected variants edited genomic sites bearing non-canonical TAMs, demonstrating an expanded targeting range. The main limitation was an activity–specificity trade-off: evolved variants edited with efficiencies approximately one order of magnitude lower than the wild type, and several candidates failed in genome-editing tests.</p>
+
+    <p class="body-text">Further work should increase the throughput and sensitivity of selection, for example by combining fluorescence screening with growth- or survival-based counter-selection, screening more colonies per variant, and extending mutagenesis to positions identified by the scoring workflow rather than the entire 50–170 region. The TAM library varied only the first three nucleotides of 5′-CTAC-3′, while the fourth position remained constant; its recognition therefore remains to be examined. These improvements could yield a compact bacterial editing module with a broader targeting range.</p>
+
+    <h1 class="heading-1">3. Biocontainment based on ISHahl1 TnpB</h1>
+    <p class="body-text">The unintended persistence of genetically engineered bacteria outside their intended environment is an important biosafety concern. Biocontainment strategies are therefore needed to limit the survival of engineered microorganisms beyond their designated applications (1).</p>
+
+    <p class="body-text">Because a double-strand break (DSB) in genomic DNA can be highly lethal to bacteria (2), targeted genomic degradation using RNA-guided nucleases is a promising basis for a genetic biocontainment system or kill switch (3–6). Encouraged by the genome-editing efficiencies of the ISHahl1 TnpB dual-plasmid system, we designed an ISHahl1 TnpB-based biocontainment system using a “self-targeting” strategy. Upon induction of ISHahl1 TnpB, reRNA guides the nuclease to cleave the genome and cause a DSB, eventually resulting in cell death (Figure 11A).</p>
+
+    <h2 class="heading-2">3.1 Selection of essential genes as targets</h2>
+    <p class="body-text">Essential genes can serve as antimicrobial targets because their disruption is poorly tolerated (7, 8). We selected five candidate essential genes in the <i>E. coli</i> BL21(DE3) chassis—<i>dnaX</i>, <i>fabG</i>, <i>lspA</i>, <i>secY</i>, and <i>thiL</i>—which obtained high essentiality scores in the Keio collection (8). These genes participate in distinct cellular processes. All spacers were selected under the 5′-CTAC-3′ TAM constraint. A non-targeting sequence (NT) that matched neither the BL21(DE3) genome nor the experimental plasmids was used as a negative control (Table 1).</p>
+
+    <table>
+        <thead>
+            <tr><th>Target gene / control</th><th>Primary biological function</th><th>Spacer sequence (5′→3′)</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><i>dnaX</i></td><td>DNA polymerase III subunits; chromosome replication</td><td>CAAAACTGGTCGAACAGGTG</td></tr>
+            <tr><td><i>fabG</i></td><td>3-Oxoacyl-ACP reductase; fatty-acid biosynthesis</td><td>GCTGCGGCGAAAGCGGGCTT</td></tr>
+            <tr><td><i>lspA</i></td><td>Prolipoprotein signal peptidase; lipoprotein maturation</td><td>GCTGGCTGTGGCTGGTGGTA</td></tr>
+            <tr><td><i>secY</i></td><td>Sec translocon component; protein translocation</td><td>GGTACTCTGGTGCTGGCAAT</td></tr>
+            <tr><td><i>thiL</i></td><td>Thiamine-monophosphate kinase; TPP biosynthesis</td><td>TTGATCAAACGTCATCTCCG</td></tr>
+            <tr><td>NT</td><td>Non-targeting control</td><td>GGCTCCCTGTCGGTTGTAAT</td></tr>
+        </tbody>
+    </table>
+    <p class="figure-caption"><b>Table 1</b> Selected target genes and the non-targeting control.</p>
+
+    <img src="https://static.igem.wiki/teams/6059/wiki/results/figure-11.avif" alt="Design and evaluation of an ISHahl1 TnpB-based kill switch targeting essential genes" class="figure-image">
+    <p class="figure-caption"><b>Figure 11</b> Design and evaluation of a WT ISHahl1 TnpB-based kill switch targeting essential genes. (A) Schematic of the <i>L</i>-arabinose-inducible ISHahl1 TnpB–reRNA self-targeting system. (B) Genomic locations of the five candidate target genes in <i>E. coli</i> BL21(DE3). (C) Log<sub>10</sub> survival ratios with (+ ISHahl1) or without (− ISHahl1) ISHahl1 encoded on the plasmid for each target and the NT control. Data are presented as mean ± s.d. (<i>n</i> = 3). Statistical significance was determined using a two-tailed Student’s <i>t</i>-test (*<i>P</i> &lt; 0.05, ***<i>P</i> &lt; 0.001, ****<i>P</i> &lt; 0.0001).</p>
+
+    <h2 class="heading-2">3.2 Characterization and analysis of killing effects</h2>
+    <p class="body-text">Taking advantage of the dual-plasmid system used in the genome-editing experiments, we separately cloned pEcreRNA plasmids carrying spacers for the selected target genes and reconstructed pEcTnpB to express ISHahl1 TnpB under an <i>L</i>-arabinose-inducible promoter. A control plasmid lacking the ISHahl1 TnpB coding sequence was also constructed to evaluate potential nuclease cytotoxicity.</p>
+
+    <p class="body-text">A spot assay was performed to assess the killing effect of the ISHahl1 TnpB-based kill switch. Upon addition of <i>L</i>-arabinose, all target genes showed killing effects when ISHahl1 was encoded on the plasmid (Figure 11C). <i>dnaX</i> and <i>secY</i> exhibited strong effects, with approximately 4 and 5 logs of killing, respectively. <i>fabG</i>, <i>lspA</i>, and <i>thiL</i> produced weak to moderate effects. The differences may indicate that essential genes do not all have the same degree of essentiality under the tested conditions. No difference in cell viability was observed between strains with and without ISHahl1 when the NT spacer was used, suggesting that the cytotoxicity of ISHahl1 TnpB itself was negligible. These results support the feasibility of repurposing the ISHahl1 TnpB–reRNA system as a kill switch.</p>
+
+    <h2 class="heading-2">3.3 Summary and outlook</h2>
+    <p class="body-text">Overall, our results support the feasibility of using ISHahl1 TnpB as a programmable component for genetic biocontainment. By targeting chromosomal essential genes under <i>L</i>-arabinose induction, the kill-switch system reduced bacterial survival under defined conditions, providing a potential strategy for limiting the persistence of genetically engineered bacteria beyond their intended applications.</p>
+
+    <p class="body-text">The killing effects varied among the five candidate targets. <i>dnaX</i> showed the most significant reduction in survival, while targeting <i>secY</i> also produced a considerable effect. In contrast, the NT control showed no significant reduction, supporting the association between target-directed TnpB activity and the observed killing. These findings highlight the importance of target selection when developing a TnpB-based biocontainment system.</p>
+
+    <p class="body-text">The system could be further optimized using more stringent induction systems for ISHahl1/reRNA expression. Multiplexed targeting with array-processing parts such as Csy4 (10) could target several essential genes or multi-copy genomic sites simultaneously. However, reduced survival under laboratory conditions alone does not establish reliable biocontainment in complex environments (11). Further work is needed to evaluate long-term genetic stability, identify surviving or escaping cells, and determine whether the system maintains its intended function under conditions relevant to the use and potential release of engineered bacteria.</p>
+
+    <h1 class="heading-reference">References</h1>
 </main>
 
 <img src="https://static.igem.wiki/teams/6059/wiki/description/sword.avif" alt="Sword Scroll Track" class="scroll-sword" id="scrollSword">
