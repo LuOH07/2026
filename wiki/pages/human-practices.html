@@ -12,6 +12,9 @@
 <header class="title-header-wrapper" id="heroWrapper">
     <div class="grid-container" id="heroGridContainer">
         <canvas id="gridCanvas"></canvas>
+
+        <!-- 移动端整块首屏贴图（标题 + DNA / 蛋白装饰 + 引言文字一体）：移动端只渲染它，
+             PC 端由 description.css 隐藏，见该文件第 8.0 / 8.4 节 -->
         <img class="mobile-hero-image"
              src="https://static.igem.wiki/teams/6059/wiki/move/ihp.avif"
              alt="Integrated Human Practices — STING: an international team of students, researchers, and innovators exploring the frontiers of bacterial genome engineering.">
@@ -146,11 +149,11 @@
     <h3 class="heading-3">Engagement and insight</h3>
     <p class="body-text">In discussion of the screening results, <a href="{{ url_for('pages', page='hp') }}#hp-5">Prof. Zhang Yonghui (Read more)</a> pointed out that a positive mutant might simply be a stronger nuclease. We therefore needed to separate two properties that our original screening concept risked conflating: overall activity and TAM specificity.</p>
     <h3 class="heading-3">What changed?</h3>
-    <p class="body-text">This changed the validation pipeline from a single-readout screen into a multi-stage evidence chain. Fluorescence screening identifies candidates; TAM profiling determines whether recognition preference changed; plasmid interference tests intracellular DNA cleavage; and genome-editing assays determine whether the evolved variant remains useful as an editor.</p>
+    <p class="body-text">This changed the validation pipeline from a single-readout screen into a multi-stage evidence chain. Fluorescence screening identifies candidates; TAM profiling determines whether recognition preference changed; and genome-editing assays determine whether the evolved variant remains useful as an editor.</p>
     <h3 class="heading-3">Connection to results</h3>
-    <p class="body-text">This decision is directly reflected in <a href="{{ url_for('pages', page='results') }}#">Results Section 2</a>, which includes fluorescence-based selection, TAM specificity profiling, molecular analysis, plasmid interference and editing-efficiency measurements. Together, these experiments allow the project to distinguish a genuinely broadened TAM profile from a variant that is merely more active.</p>
-    <img src="https://static.igem.wiki/teams/6059/wiki/ihp/figure6.avif" alt="1" class="figure-image">
-    <p class="figure-caption"><b>Figure</b><b>  6</b><b>  From fluorescence-positive candidates to validated TAM expansion.</b>Stakeholder feedback challenged our initial reliance on fluorescence as evidence of TAM broadening, leading us to redefine success through a multi-stage validation pipeline that distinguishes altered TAM specificity from increased overall activity while confirming retained genome-editing function.</p>
+    <p class="body-text">This decision is directly reflected in <a href="{{ url_for('pages', page='results') }}#">Results</a>, which includes fluorescence-based selection, TAM specificity profiling, molecular analysis and editing-efficiency measurements. Together, these experiments allow the project to distinguish a genuinely broadened TAM profile from a variant that is merely more active.</p>
+    <img src="https://static.igem.wiki/teams/6059/wiki/ihp/ihp-2/figure6.avif" alt="1" class="figure-image">
+    <p class="figure-caption"><b>Figure</b><b>  6</b><b>  From plasmid cleavage to genome-targeting validation.</b>Expert feedback from Prof. Zhang Yonghui prompted us to extend our validation strategy beyond plasmid cleavage assays to genome-targeting experiments, providing further evidence of the targeting capability of engineered TnpB variants.</p>
 
     <h2 class="heading-2">2.6 From structure and observation to mechanism — why did TAM recognition change?</h2> 
     <h3 class="heading-3">The question left by the functional tests</h3>
