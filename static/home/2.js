@@ -17,7 +17,7 @@ var VIDEO_GROUPS = {
        · VIDEO_NAMES 里【故意没有】"falls" —— 所以它不接鼠标、不会 hover 出名字，
          也不挡图标 / 文字的 hover 和滚轮（pointer-events 保持 none）。 */
     "falls": [
-        "https://static.igem.wiki/teams/6059/wiki/home/waterfall.avif"
+        "./falls.webm"
     ],
     /* ★ 数组位置 = 序号，对应 2.css 里的 .bg-video-wrap-crispr-<序号>：
        第 1 格 → crispr-1（出场动画）、第 2 格 → crispr-2、第 3 格 → crispr-3（走路）、
