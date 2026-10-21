@@ -9,22 +9,16 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='home/4.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='home/5.css') }}">
 <style>
-  /* 与站点页眉 / 页脚的接缝：只补这几行，static/home/ 里不动。 */
 
-  /* 页眉默认收起（不再把整页往下顺延）。鼠标贴到页面顶部、页脚进入视口、
-     或者往上滚的时候才从上往下拉出；条件一消失就收回。
-     位移用 top 而不是 transform：transform 会让页眉变成 fixed 子元素的包含块，
-     移动端全屏菜单（nav 是 position: fixed）会被压进页眉那一条里。 */
   .site-header {
     top: -5rem;
     transition: top 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
-    pointer-events: none;          /* 收起时不挡首屏的视频 / 播放键 */
+    pointer-events: none;          
   }
   .site-header.is-shown { top: 0; pointer-events: auto; }
   @media (max-width: 1024px) { .site-header { top: -4.2rem; } }   /* 窄屏页眉是 3.1rem */
 
-  /* 舞台高 = 底图高（1.js 写在 body 上的 height）+ 顶部视频引导段 + 手机端接续的底图，
-     页脚正好接在底图末端（--lead-in 由 1.js 写、--m5-blank 由 5.js 写在 :root 上）。 */
+
   #main-content { height: calc(100% + var(--lead-in, 0px) + var(--m5-blank, 0px)); }
 </style>
 {% endblock %}
@@ -75,11 +69,7 @@
 <!--
     <img class="img-box img-1" src="./1.png" alt="">
 -->
-{% endblock %}
 
-{% block page_scripts %}
-{#- 脚本里的视频都写成 HOME_MEDIA + "文件名"，这里把 static/home/ 交给它们。
-    不用 <base>：layout 的页眉页脚链接是相对页面的，加了 base 会被拼歪。 -#}
 <script>
   window.HOME_MEDIA = "{{ url_for('static', filename='home/1.css').rsplit('/', 1)[0] }}/";
 </script>
@@ -88,9 +78,7 @@
 <script src="{{ url_for('static', filename='home/3.js') }}"></script>
 <script src="{{ url_for('static', filename='home/4.js') }}"></script>
 <script src="{{ url_for('static', filename='home/5.js') }}"></script>
-{#- 页眉开合：这一页是整屏滚动页，页眉平时收起，只在三种情况下拉出——
-    ① 鼠标贴到页面顶部（想用导航）；② 页脚进入视口；③ 往上滚。
-    鼠标离开页眉（含下拉菜单）且不再往上滚、页脚也看不见时收回。 -#}
+
 <script>
   (function () {
     var header = document.querySelector(".site-header");
