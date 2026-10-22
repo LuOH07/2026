@@ -1,0 +1,70 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment, but never cancel a running one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: dependencies.txt
+
+      - name: Install dependencies
+        run: pip install --no-cache-dir -r dependencies.txt
+
+      # The large home-page videos are intentionally not committed here (the
+      # iGEM GitLab mirror rejects them).  They live in the public
+      # LuOH07/2026_home repository and are fetched for every Pages build.
+      - name: Fetch home page media
+        env:
+          HOME_MEDIA_REPOSITORY: https://github.com/LuOH07/2026_home.git
+        run: |
+          git clone --depth 1 "$HOME_MEDIA_REPOSITORY" "$RUNNER_TEMP/home-media"
+
+      - name: Build static site
+        env:
+          FLASK_APP: app.py
+        run: |
+          flask freeze
+          # Home scripts reference ./title.mp4, ./model.mp4, ./5.css … from the
+          # page root, so publish the media at the published site root.
+          cp "$RUNNER_TEMP"/home-media/*.webm public/
+          cp "$RUNNER_TEMP"/home-media/*.mp4 public/
+          cp static/home/5.css public/
+          touch public/.nojekyll
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

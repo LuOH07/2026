@@ -1,10 +1,10 @@
 # XMU-China 2026 Wiki
 
-Flask/Jinja wiki for the [iGEM](https://igem.org/) competition, built with [Frozen-Flask](https://frozen-flask.readthedocs.io/) for static export. All pages share a single layout, header, and footer. The **Members** page is implemented at `/members` (also `/team`). The home page and other pages are English placeholders using the shared header and footer. Navigation links open their corresponding pages.
+Flask/Jinja wiki for the [iGEM](https://igem.org/) competition, built with [Frozen-Flask](https://frozen-flask.readthedocs.io/) for static export and deployed to GitHub Pages by GitHub Actions. All pages share a single layout, header, and footer. The **Members** page is implemented at `/members/` (also `/team/`). The home page and other pages are English placeholders using the shared header and footer. Navigation links open their corresponding pages.
 
 ## Quick start
 
-Requires Python 3.12+ and network access (assets load from `static.igem.wiki` via `asset-map.json`).
+Requires Python 3.12+ and network access (most assets load from `static.igem.wiki` via `asset-map.json`).
 
 Create a virtual environment **outside** the repo (keeps the working tree clean):
 
@@ -19,7 +19,7 @@ Run the dev server:
 ..\26web-local\venv\Scripts\python.exe -B app.py
 ```
 
-Open http://127.0.0.1:8080/members
+Open http://127.0.0.1:8080/members/
 
 ## Static build
 
@@ -36,17 +36,25 @@ Preview the build:
 ..\26web-local\venv\Scripts\python.exe -m http.server 8081 --bind 127.0.0.1 --directory ..\26web-local\preview
 ```
 
-**GitLab Pages** — The root `.gitlab-ci.yml` uses Python 3.12, installs the pinned dependencies, runs `FLASK_APP=app.py flask freeze`, and publishes `public/` as the Pages artifact. It follows the working XMU-China GitLab project configuration and runs only on the repository''s default branch. GitLab sets `GITLAB_CI=true` automatically, so the build output stays inside the repository.
+**GitHub Pages** — `.github/workflows/deploy.yml` runs on every push to `main` (and can be started manually from the Actions tab). To enable it once in the repository:
 
-Commit `.gitlab-ci.yml` together with the source files and push to the GitLab repository''s default branch to trigger deployment. The existing `.github/workflows/deploy.yml` is used only by GitHub Actions.
+1. Open **Settings → Pages**.
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+3. Push to `main`; the workflow publishes the generated `public/` directory.
 
-Page URLs match the working GitLab project and have no trailing slash (for example, `/members` and `/description`); the static export produces a corresponding extensionless `<page>` file. Relative links allow navigation and local CSS/JS to work when the site is served below a project path.
+The workflow installs the pinned dependencies, fetches the large home-page videos from the public [`LuOH07/2026_home`](https://github.com/LuOH07/2026_home) repository, builds with `FLASK_APP=app.py flask freeze`, copies those videos and `static/home/5.css` to the published site root, adds `public/.nojekyll`, and uploads `public/` as the Pages artifact. It sets `GITHUB_ACTIONS=true` automatically, so `app.py` writes the build to `public/` instead of the local preview directory.
+
+Page URLs are directory URLs with a trailing slash (for example `/members/` and `/description/`). This is required because GitHub Pages serves a directory's `index.html`; it does not treat an extensionless file as HTML. All template links are generated as relative URLs by `relative_url_for()` in `app.py`, so the site also works below the project path of a GitHub Pages site (`https://<user>.github.io/<repo>/`).
+
+**GitLab Pages (legacy)** — `.gitlab-ci.yml` is still included for the iGEM GitLab mirror. It runs the same frozen build and publishes `public/` as its Pages artifact. GitHub Actions is the primary deployment path.
 
 ## Project layout
 
 | Path | Purpose |
 |---|---|
 | `app.py` | Routes, asset resolution, member data, static build |
+| `.github/workflows/deploy.yml` | GitHub Pages deployment |
+| `.gitlab-ci.yml` | Legacy GitLab Pages deployment |
 | `asset-map.json` | Local path → iGEM CDN URL mapping (80 assets) |
 | `data/members.json` | Member names and mottos |
 | `wiki/layout.html` | Shared HTML shell |
@@ -68,13 +76,15 @@ Create `wiki/pages/example.html`:
 {% endblock %}
 ```
 
-The generic route serves it at `/example` and the freezer includes it in the build. Override `page_styles` and `page_scripts` blocks as needed — no need to duplicate header or footer markup.
+The generic route serves it at `/example/` and the freezer includes it in the build. Override `page_styles` and `page_scripts` blocks as needed — no need to duplicate header or footer markup.
 
 To enable navigation, update `wiki/menu.html`: add `href="{{ url_for('pages', page='example') }}"` and remove `aria-disabled` from the matching link.
 
 ## Assets & license
 
-All images and fonts are hosted on iGEM servers. `asset-map.json` keys are lookup paths, not local files. Invalid or missing URLs cause a startup error with the affected keys listed.
+Most images and fonts are hosted on iGEM servers. `asset-map.json` keys are lookup paths, not local files. Invalid or missing URLs cause a startup error with the affected keys listed.
+
+The home-page videos are too large for the iGEM GitLab repository and are ignored by git. They are kept in the public `LuOH07/2026_home` repository. The home-page scripts reference them with page-relative paths (`./title.mp4`, `./model.mp4`, …), so the GitHub Pages workflow copies the videos and `static/home/5.css` into the published site root after freezing. If that media repository moves, update `HOME_MEDIA_REPOSITORY` in `.github/workflows/deploy.yml`.
 
 Font licenses live in `notices/`. Project code is under [LICENSE](LICENSE); content follows [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 

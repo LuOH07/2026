@@ -2,17 +2,20 @@
 
 import json
 import os
+import posixpath
 from pathlib import Path
 from urllib.parse import urlparse
 
-from flask import Flask, Response, abort, render_template, url_for
+from flask import Flask, Response, abort, render_template, request, url_for
 from flask_frozen import Freezer
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 PAGES_DIRECTORY = PROJECT_ROOT / "wiki" / "pages"
-# GitLab 自动提供此变量；本地无需设置发布开关。
+# GitHub Actions / GitLab CI 会自动设置对应的变量；本地无需设置发布开关。
+IS_GITHUB_ACTIONS = os.environ.get("GITHUB_ACTIONS") == "true"
 IS_GITLAB_CI = os.environ.get("GITLAB_CI") == "true"
+IS_CI = IS_GITHUB_ACTIONS or IS_GITLAB_CI
 
 # 两类数据独立维护：线上素材地址与成员资料。
 ASSET_URLS = json.loads(
@@ -54,20 +57,46 @@ app = Flask(
 )
 app.config.update(
     FREEZER_DESTINATION=str(
-        PROJECT_ROOT / "public" if IS_GITLAB_CI
+        PROJECT_ROOT / "public" if IS_CI
         else PROJECT_ROOT.parent / "26web-local" / "preview"
     ),
-    FREEZER_RELATIVE_URLS=True,
+    # 相对链接由下方 relative_url_for 生成，不使用 Frozen-Flask 的
+    # FREEZER_RELATIVE_URLS（它会给目录链接追加可见的 index.html）。
+    FREEZER_RELATIVE_URLS=False,
     FREEZER_IGNORE_MIMETYPE_WARNINGS=True,
 )
 freezer = Freezer(app)
+
+
+def relative_url_for(endpoint, **values):
+    """与 url_for 相同，但返回相对当前页面的链接。
+
+    GitHub Pages 项目站点部署在 /<repo>/ 子路径下，站内链接必须是相对路径；
+    目录型页面（/members/）保留结尾斜杠，避免 GitHub Pages 把请求
+    当成没有后缀的下载文件。
+    """
+    url = url_for(endpoint, **values)
+    if not url.startswith("/"):
+        return url  # _external=True 等绝对地址保持原样
+
+    path, _, fragment = url.partition("#")
+    path, _, query = path.partition("?")
+    request_path = request.path
+    if not request_path.endswith("/"):
+        request_path = posixpath.dirname(request_path)
+
+    relative = posixpath.relpath(path, request_path)
+    if path.endswith("/") and not relative.endswith("/"):
+        relative += "/"
+    relative += ("?" + query if query else "") + ("#" + fragment if fragment else "")
+    return relative
 
 
 # 模板工具：所有图片与字体共用这一套地址解析规则。
 def asset_url(local_path):
     remote_url = ASSET_URLS[local_path]
     if local_path.startswith("notebook/") and remote_url == "":
-        return url_for("static", filename=local_path)
+        return relative_url_for("static", filename=local_path)
     return remote_url
 
 
@@ -77,6 +106,7 @@ def asset_config():
 
 
 app.jinja_env.globals.update(
+    url_for=relative_url_for,
     asset_url=asset_url,
     asset_config=asset_config,
     member_cards=MEMBER_CARDS,
@@ -102,12 +132,12 @@ def home():
     return render_template("pages/home.html")
 
 
-@app.route("/team")
+@app.route("/team/")
 def team():
     return render_template("pages/members/index.html")
 
 
-@app.route("/<page>")
+@app.route("/<page>/")
 def pages(page):
     page = page.lower()
     template = page_templates().get(page)
@@ -130,7 +160,7 @@ def all_pages():
 
 @app.cli.command()
 def freeze():
-    """本地构建输出到项目外；GitLab CI 自动输出到 public/。"""
+    """本地构建输出到项目外；GitHub/GitLab CI 自动输出到 public/。"""
     freezer.freeze()
 
 
