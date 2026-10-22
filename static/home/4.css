@@ -1,4 +1,11 @@
-
+/* ---------------------- text-1：只有 “Compact” 是卡片 ---------------------- */
+/* ★ 为什么要把 text-1 改成块级：
+   1.css 的 .text-box 是 display:flex + flex-direction:column，
+   它的【直接子元素】会被 blockify 成独立的 flex item —— 那样 <span class="compact">
+   就不再是行内元素，“Compact”会自己占一整行，句子被拆成三行。
+   改成 block 之后 text-1 里恢复正常的行内文字流：
+   <br> 照样断行、字号/行距都不变，
+   而 “Compact” 这个词可以是一个真正的行内卡片。只影响 text-1，别的文字不动。 */
 .text-1 {
     display: block;
     text-align: left;             /* ★ 整句左对齐（.text-box 原本是 text-align: center） */

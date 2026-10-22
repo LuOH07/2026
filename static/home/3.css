@@ -16,6 +16,22 @@
     visibility: hidden;       /* 全部透明时由 3.js 把整个画框收起来 */
 }
 
+/* ============================================================================
+   ★ 挂了图标的文字，一律压在图标【上面】（图标永远在文字下面）
+   ----------------------------------------------------------------------------
+   图层关系：.bug-icons 画框 = z-index: 3，图标全在里面；
+             1.js 给每段文字写的【内联】z-index 是 1、2、3、……（按出场顺序递增）。
+   所以 text-1(1) / text-2(2) / text-3(3) 这三句原本会被图标画框盖住，
+   下面把它们统一抬到 4（= 高于 3），并用 !important 盖掉 1.js 写的内联值。
+
+   ★ 为什么三句写同一个 4：z-index 相等时由 DOM 顺序决定谁在上面，而 DOM 顺序
+     = 出场顺序（后出场的在后面），所以三句之间仍然是“后出场的压在前面那句之上”，
+     不会出现“前面那句反而挡住后面那句”。
+   ★ 其余的配套文字（text-4 及之后）内联值已经 ≥ 4，天然在图标上面，不用再写。
+   ★ 这三句同时也会压在所有背景视频之上（背景是 0~2）—— 这正是“图标在文字下面”
+     必然的结果：想让文字高于图标（3），就只能取 ≥ 4，也就高于所有背景。
+   ★ 以后若再给别的文字挂图标：只要它出场很早（内联值 ≤ 3），就把它的选择器
+     加进下面这个列表里即可。 */
 .text-1,
 .text-2,
 .text-3 {
@@ -41,8 +57,9 @@
     pointer-events: auto;
 }
 
-/* 素材本身：只负责大小和外观，不再参与定位 / 透明度（那些在 slot 上）。
-   普通图片和视频共用 .bug-icon；合成动效会在专用规则里覆盖尺寸。 */
+/* 图片本身：只负责大小和外观，不再参与定位 / 透明度（那些在 slot 上）。
+   ★ 这条规则对【图片 <img>】和【视频 <video>】同时生效：
+     3.js 会根据 src 的后缀（.webm / .mp4 …）决定建哪一种节点，两者都挂 .bug-icon。 */
 .bug-icon {
     display: block;
     height: var(--icon-height, calc(300 * var(--u)));  /* 继承 .bug-icons 的 --icon-height，也可被单条覆盖 */
@@ -51,123 +68,6 @@
     pointer-events: none;               /* 鼠标事件由 slot 接（整块矩形都可 hover） */
     user-select: none;
     -webkit-user-drag: none;
-}
-
-/* B. subtilis 的静帧动效：轻微呼吸与旋转，叠加图标位已有的漂移。 */
-.bug-icon-motion--subtilis {
-    animation: subtilis-motion 3.6s ease-in-out infinite;
-    animation-play-state: paused;
-    transform-origin: center;
-    will-change: transform, filter;
-}
-
-.bug-icon-slot.bug-icon-1.is-live .bug-icon-motion--subtilis {
-    animation-play-state: running;
-}
-
-@keyframes subtilis-motion {
-    0%, 100% {
-        transform: translateY(0) rotate(-1.5deg) scale(.98);
-        filter: drop-shadow(0 0 0 rgba(70, 94, 119, 0));
-    }
-    50% {
-        transform: translateY(-5px) rotate(1.5deg) scale(1.035);
-        filter: drop-shadow(0 5px 9px rgba(70, 94, 119, .2));
-    }
-}
-
-/* Editing: proportions follow the 1740 × 410 reference canvas.
-   gene.avif contains transparent headroom; keep its native aspect ratio. */
-.bug-icon-motion--editing {
-    position: relative;
-    width: calc(682 * var(--u));
-    height: auto;
-    aspect-ratio: 1740 / 410;
-    overflow: visible;
-    --editing-duration: 3.6s;
-}
-.bug-icon-motion--editing img {
-    position: absolute;
-    display: block;
-    max-width: none;
-    height: auto;
-    pointer-events: none;
-    user-select: none;
-}
-.editing-motion__gene,
-.editing-motion__blueTarget {
-    width: 100%;
-    left: 0;
-    top: 16%;
-}
-/* Only recolor the yellow target; the blue DNA stays in its original colors. */
-.editing-motion__blueTarget {
-    clip-path: inset(0 65.7% 0 22%);
-    filter: sepia(1) saturate(2) hue-rotate(165deg) brightness(.72);
-    z-index: 1;
-}
-.editing-motion__geneCut {
-    width: 10.5%;
-    left: 44.75%;
-    top: 43%;
-    z-index: 2;
-}
-.editing-motion__scissorRight,
-.editing-motion__scissorsLeft {
-    width: 5.2%;
-    z-index: 3;
-    transform-origin: 50% 50%;
-}
-.editing-motion__scissorsLeft { left: 41.9%; top: 14%; }
-.editing-motion__scissorRight { left: 52%; top: 68%; transform: rotate(180deg); }
-.bug-icon-motion--editing.is-playing {
-    animation: editing-motion-clock var(--editing-duration) linear both;
-}
-.bug-icon-motion--editing.is-playing .editing-motion__geneCut {
-    animation: editing-fragment-drop var(--editing-duration) ease-in-out both;
-}
-.bug-icon-motion--editing.is-playing .editing-motion__blueTarget {
-    animation: editing-target-reveal var(--editing-duration) ease-in-out both;
-}
-.bug-icon-motion--editing.is-playing .editing-motion__scissorsLeft {
-    animation: editing-left-cut var(--editing-duration) ease-in-out both;
-}
-.bug-icon-motion--editing.is-playing .editing-motion__scissorRight {
-    animation: editing-right-cut var(--editing-duration) ease-in-out both;
-}
-@keyframes editing-motion-clock { from { opacity: 1; } to { opacity: 1; } }
-@keyframes editing-fragment-drop {
-    0%, 36% { transform: translate(0, 0); }
-    44% { transform: translate(0, 22%); }
-    65% { transform: translate(30%, 165%); }
-    77%, 100% { transform: translate(72%, 175%); }
-}
-@keyframes editing-target-reveal {
-    0%, 78% { opacity: 1; }
-    96%, 100% { opacity: 0; }
-}
-@keyframes editing-left-cut {
-    0%, 8% { transform: translateY(0) rotate(0); }
-    29% { transform: translateY(140%) rotate(0); }
-    35% { transform: translateY(140%) rotate(-10deg); }
-    41% { transform: translateY(140%) rotate(4deg); }
-    47%, 100% { transform: translateY(140%) rotate(0); }
-}
-@keyframes editing-right-cut {
-    0%, 8% { transform: translateY(0) rotate(180deg); }
-    29% { transform: translateY(-185%) rotate(180deg); }
-    35% { transform: translateY(-185%) rotate(190deg); }
-    41% { transform: translateY(-185%) rotate(176deg); }
-    47%, 100% { transform: translateY(-185%) rotate(180deg); }
-}
-@media (prefers-reduced-motion: reduce) {
-    .bug-icon-motion--subtilis { animation: none; will-change: auto; }
-    .bug-icon-motion--editing.is-playing,
-    .bug-icon-motion--editing.is-playing img { animation: none; }
-    .bug-icon-motion--editing .editing-motion__blueTarget { opacity: 0; }
-    .bug-icon-motion--editing .editing-motion__geneCut { transform: translate(72%, 175%); }
-    .bug-icon-motion--editing .editing-motion__scissorsLeft { transform: translateY(140%); }
-    .bug-icon-motion--editing .editing-motion__scissorRight { transform: translateY(-185%) rotate(180deg); }
 }
 
 /* 视频图标（ICONS 里 src 写成 .webm / .mp4 / .ogv 那些）：
@@ -388,14 +288,15 @@ video.bug-icon {
 }
 
 /* ============================================================================
-   图标 10（editing.webm / AVIF 剪切动效）—— 跟 text-9 淡入、淡出
+   图标 10（editing.webm）—— text-10 淡入时出现、跟 text-10 一起消失
    ----------------------------------------------------------------------------
    ★ 位置 / 大小就改下面这几行：
-        left / top   ：素材【盒子中点】距屏幕左边 / 上边的距离
-        --icon-height：视频高度；AVIF 动效另用固定宽度并沿用这个高度
+        left / top   ：视频【盒子中点】距屏幕左边 / 上边的距离
+        --icon-height：视频高度（宽度按比例自适应；title.mp4 是 1280×720 = 16:9）
    现在是【文字下方】：文字中心钉在屏幕从上往下 40% 处，取 65% 就落到它下面了；
    想更贴近文字就把 top 调小，想更靠下就调大；左右位置改 left。
-   ★ MEDIA_MODE = "motion" 时显示 AVIF 剪切动效；设为 "video" 时恢复 editing.webm。
+   ★ 它本身是视频图标（3.js 里 src 写成 .mp4 会自动用 <video> 建节点）：
+     只播一次、播完定格在最后一帧。
    ============================================================================ */
 .bug-icon-10 {
     --icon-height: calc(250 * var(--u));
@@ -968,12 +869,12 @@ video.bug-icon {
 }
 
 /* ============================================================================
-   ★ 图标 24（原 end.webm）—— 已停用，样式保留作备份
+   ★ 图标 24（原 End.webm）—— 已停用，样式保留作备份
    ----------------------------------------------------------------------------
    text-23 的配套效果已经换成“左蛋白 → 箭头 → 右盒子”的整组插图：
    由 6.js 建 DOM / 驱动，6.css 的 .t23-scene 定位，不再走图标 slot。
-   3.js 里 ico24 那一条也一起删掉了。想把 end.webm 恢复回来：
-     1) 把 home.html 里的 6.css / 6.js 两行去掉；
+   3.js 里 ico24 那一条也一起注释掉了。想把 end.webm 恢复回来：
+     1) 把 index.html 里的 6.css / 6.js 两行去掉；
      2) 恢复 3.js 的 ICONS 里 ico24 那一条；
      3) 下面的 .bug-icon-24 样式就又能用了。
    ============================================================================ */
@@ -1066,91 +967,3 @@ video.bug-icon {
     .bug-icon-23 { --icon-height: calc(110 * var(--u)); }
 }
 */
-
-.bug-icon-motion--editing.is-scroll-complete .editing-motion__blueTarget {
-    animation: none;
-    opacity: 0;
-}
-
-/* Tool-kit canvas matches the seven reference frames. All assets retain their colors. */
-.bug-icon-motion--toolkit {
-    position: relative; height: var(--icon-height); aspect-ratio: 812 / 662;
-    width: auto; overflow: visible; --toolkit-duration: 3s;
-}
-.bug-icon-motion--toolkit img {
-    position: absolute; display: block; height: auto; max-width: none;
-    pointer-events: none; user-select: none;
-}
-.toolkit-motion__body { left: 35%; top: 65%; width: 30%; z-index: 3; }
-.toolkit-motion__cover-left {
-    left: 35%; top: 62%; width: 15.5%; z-index: 4; transform-origin: 15.4% 15.4%;
-}
-.toolkit-motion__cover-right {
-    left: 49%; top: 62%; width: 16%; z-index: 4; transform-origin: 84% 15.4%;
-}
-.toolkit-motion__hammer {
-    left: 40%; top: 67%; width: 9%; z-index: 2; opacity: 0;
-}
-.toolkit-motion__scissor-left,
-.toolkit-motion__scissor-right { top: 68%; width: 12%; z-index: 2; opacity: 0; }
-.toolkit-motion__scissor-left { left: 39%; }
-.toolkit-motion__scissor-right { left: 51%; }
-.bug-icon-motion--toolkit.is-playing { animation: toolkit-motion-clock var(--toolkit-duration) linear both; }
-.bug-icon-motion--toolkit.is-playing .toolkit-motion__cover-left {
-    animation: toolkit-open-left var(--toolkit-duration) ease-in-out both;
-}
-.bug-icon-motion--toolkit.is-playing .toolkit-motion__cover-right {
-    animation: toolkit-open-right var(--toolkit-duration) ease-in-out both;
-}
-.bug-icon-motion--toolkit.is-playing .toolkit-motion__hammer {
-    animation: toolkit-hammer-flight var(--toolkit-duration) ease-in-out both;
-}
-.bug-icon-motion--toolkit.is-playing .toolkit-motion__scissor-left {
-    animation: toolkit-scissor-left-flight var(--toolkit-duration) ease-in-out both;
-}
-.bug-icon-motion--toolkit.is-playing .toolkit-motion__scissor-right {
-    animation: toolkit-scissor-right-flight var(--toolkit-duration) ease-in-out both;
-}
-@keyframes toolkit-motion-clock { from { opacity: 1; } to { opacity: 1; } }
-@keyframes toolkit-open-left {
-    0%, 8% { transform: rotate(0); }
-    24% { transform: rotate(-45deg); }
-    40% { transform: rotate(-90deg); }
-    60% { transform: rotate(-145deg); }
-    78%, 100% { transform: rotate(-180deg); }
-}
-@keyframes toolkit-open-right {
-    0%, 8% { transform: rotate(0); }
-    24% { transform: rotate(45deg); }
-    40% { transform: rotate(90deg); }
-    60% { transform: rotate(145deg); }
-    78%, 100% { transform: rotate(180deg); }
-}
-@keyframes toolkit-hammer-flight {
-    0%, 35% { opacity: 0; left: 40%; top: 67%; transform: rotate(-15deg) scale(.7); }
-    46% { opacity: 1; }
-    64% { left: 31%; top: 43%; transform: rotate(-35deg) scale(1); }
-    85%, 100% { opacity: 1; left: 13%; top: 32%; transform: rotate(-55deg) scale(1); }
-}
-@keyframes toolkit-scissor-left-flight {
-    0%, 43% { opacity: 0; left: 39%; top: 68%; transform: rotate(-80deg) scale(.6); }
-    58% { opacity: 1; left: 34%; top: 53%; }
-    88%, 100% { opacity: 1; left: 21%; top: 43%; transform: rotate(-105deg) scale(1); }
-}
-@keyframes toolkit-scissor-right-flight {
-    0%, 43% { opacity: 0; left: 51%; top: 68%; transform: rotate(0) scale(.6); }
-    58% { opacity: 1; left: 57%; top: 53%; }
-    88%, 100% { opacity: 1; left: 73%; top: 41%; transform: rotate(25deg) scale(1); }
-}
-@media (prefers-reduced-motion: reduce) {
-    .bug-icon-motion--toolkit.is-playing,
-    .bug-icon-motion--toolkit.is-playing img { animation-duration: .001s; }
-}
-
-/* The two CTAC files have the same 4000 x 1665 canvas. Lock both
-   dimensions so a source change cannot trigger intrinsic-size re-layout. */
-.bug-icon-8 > img.bug-icon {
-    height: var(--icon-height);
-    width: calc(var(--icon-height) * 4000 / 1665);
-    object-fit: contain;
-}

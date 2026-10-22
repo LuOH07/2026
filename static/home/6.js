@@ -63,12 +63,6 @@
     const BOTTOM_PAD_RATIO = 0.02;
     const BOTTOM_PAD_MAX = 24;
 
-    /* 页面底部有 <footer> 时，画面不能画到页脚上面去（这个站点的页脚是
-       z-index: 40 的普通文档流元素，而本效果只有 3，会被页脚盖住）。
-       所以把“可用下边界”改成 min(视口底, 页脚顶 - 这个留白)。
-       页面没有 footer（比如纯静态预览）时这段自动不生效。 */
-    const FOOTER_GAP = 10;
-
     /* 三段的先后（单位 = text-23 的【淡入窗口】 H - A，也就是 0.6 秒那段）：
        左蛋白从 A 开始亮；箭头在淡入窗口的 25% 处冒头、65% 处扫完；
        盒子紧接着在 65% 处开始出现，到 100%（= 文字完全亮起）时到位。
@@ -197,17 +191,6 @@
     }
 
     let lastGeom = { left: NaN, top: NaN, w: NaN, h: NaN };
-    let footerEl = null;
-    let footerLookedUp = false;
-
-    /* 找页面页脚（只找一次；这个站点首页一定有 <footer>，纯静态预览时没有） */
-    function getFooter() {
-        if (!footerLookedUp) {
-            footerEl = document.querySelector("footer");
-            footerLookedUp = true;
-        }
-        return footerEl;
-    }
 
     function layoutScene(hostEl) {
         if (!ratioRead) readSceneRatio();
@@ -226,18 +209,7 @@
         let w = Math.min(rect.width, Math.max(1, vw - 2 * sidePad));
         let h = w * sceneRatio;
         let top = rect.bottom + gap;
-
-        /* 下边界：视口底部，或者页脚顶边（哪个更靠上就用哪个）。
-           ★ 页脚进入视口后，整组会按剩余高度等比缩小、仍然完整待在
-             文字下方和页脚上方，不会被深色页脚切掉一截。 */
-        let bottomLimit = vh - bottomPad;
-        const footer = getFooter();
-        if (footer) {
-            const fr = footer.getBoundingClientRect();
-            if (fr.height > 0 && fr.top > 0 && fr.top < vh) {
-                bottomLimit = Math.min(bottomLimit, fr.top - FOOTER_GAP);
-            }
-        }
+        const bottomLimit = vh - bottomPad;
 
         /* 下面放不下：先用剩余高度把整组等比缩小 */
         if (top + h > bottomLimit) {

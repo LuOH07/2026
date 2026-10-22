@@ -1,4 +1,78 @@
+/* ==========================================================================
+   4.js —— 增量效果层
+   --------------------------------------------------------------------------
+   和 4.css 配对：1.js / 2.js / 3.js / index.html 的正文标记一行都不动，
+   凡是“页面主时间轴之外的小效果”都往这个文件里加。
+   加载顺序是 1.js → 2.js → 3.js → 4.js（见 index.html），
+   所以这里能读到前面三段脚本已经建好的 DOM 和全局变量（如 window.__home）。
 
+   本文件当前做三件事：
+    ① 给 text-1 / text-3 这两句里的某几个词套上样式钩子
+        text-1：
+         “Compact”   → <span class="compact">   （白字 + #467aae / 20px 圆角卡片，见 4.css）
+         “Beginning” → <span class="beginning"> （单独放大到 152px，见 4.css）
+        text-3：
+         “harder”    → <span class="harder">    （先和其他字一样大，整句完全出现后才长大并挤开旁边的字）
+         “Familiar”  → <span class="familiar">  （单独放大到 128px，见 4.css）
+         “Host”      → <span class="host">      （单独放大到 128px，见 4.css）
+        text-6：
+         “Not”       → <span class="not">       （单独放大到 128px，见 4.css）
+        text-9：
+         “cut”（第一个） → <span class="cut9">  （单独放大 + 原地上下蹦，见 4.css）
+        text-11：
+         “Small” 的 S / “TnpB-based” 的 T / “Innovative” 的 I /
+         “Nuclease” 的 N / “Genome” 的 G
+                     → <span class="init-11 init-s"> 这样的五个小盒子
+                       （首字母单独放大成“白心 + #465e11 描边”，见 4.css）
+        text-13：
+         “BUILD”     → <span class="build13">   （单独放大，字号旋钮 --build13-size 见 4.css）
+        text-15：
+         “EXPAND”    → <span class="expand15">  （单独放大，字号旋钮 --expand15-size 见 4.css）
+        text-17：
+         “MODEL”     → <span class="model17">   （单独放大，字号旋钮 --model17-size 见 4.css）
+      其余文字（text-1 的 “ is only the”、text-3 的 “Genome editing gets … beyond”、
+      text-6 的 “But small does … mean flexible.”、text-11 里除这五个字母以外的所有字、
+      text-13 的 “Establish the Editing Tools”、text-15 的 “Broaden the Targeting Toolbox”、
+      text-17 的 “From Data to Mechanism”）
+      原样保留，一个字符都不改。
+    ② 驱动 “BEGINNING” 的出场（等 ico7 箭头的渐入走完 → 弹出并淡入 → 缩回原大小），
+      并把“缩完”那一刻报给 3.js —— ico6 要等它演完才出现。
+    ③ 让 text-3 的 “harder” 在整句【完全出现】之后，用 GROW_SEC 秒从“和其他字一样大”
+       长到 --text3-harder-size（真改 font-size，所以会把旁边的字挤开），同样由滚轮逐帧驱动、
+       可以倒放；具体见下面 “text-3：harder 的撑开 + Familiar Host 的 TNT 爆炸” 那一段。
+    ④ 等 harder 长完，把 “Familiar Host” 当成一块 Minecraft 的 TNT：先快速地上下跳两下、
+       闪白，然后炸开 —— 一片灰白（十几层灰，没有彩色）的像素块从中间往外铺开，
+       再一块块消失。整段一直演到 E（= 这句淡出结束），所以最后一块像素消失的那一刻
+       正好跟文字淡出同时收尾。
+       （像素云 / 白光都由 4.js 生成，跳动幅度旋钮 --tnt-bob 在 4.css，
+         同样由滚轮逐帧驱动、可倒放。）
+    ⑤ 给 text-6 这一句单独加一个动效：它【淡出】的时候，整句跟着往左滑出去
+       （默认页面宽度的 5%，距离旋钮 --t6-shift 在 4.css 的 .text-6 上），
+       滑完停在那儿，之后照常淡出；同样由滚轮逐帧驱动、可以倒放。
+       计时从“完全出现”（H）往后算，不从结尾倒推 —— 见下面 “text-6：完全出现后整句往左移” 那一段。
+    ⑥ text-9 这一句单独左端对齐（4.css 的 .text-9），并把句子里【第一个】“cut”
+       放大、让它在原地一直上下蹦 —— 纯 CSS animation，不需要逐帧驱动；
+       放大程度 / 蹦的幅度 / 蹦的速度三个旋钮都在 4.css 的 .text-9 .cut9 里。
+       另外【点一下这个词】会让这一句配套的视频（3.js 的图标 10：editing.webm）
+       从头再播一遍，选择器 / 做法见下面 “text-9：点一下第一个 cut …” 那一段。
+    ⑦ 等 text-9 自己的视频播完第一遍之后，另一段视频 gene.webm 从上方飞进来、
+       边飞边淡入、在空中转一圈，落在 “where” 的正上方并一直循环播放；
+       整段随滚轮推进 / 倒放，到这一句淡出时跟着一起淡掉。
+       旋钮见下面 “text-9：gene.webm 从上方飞进来” 那一段的 GENE9_* 变量
+       和 4.css 的 .text-9 .gene9（--gene9-w / --gene9-gap / --gene9-dx）。
+
+    ⑧ 把 text-20 的【四句话】拆成四个独立的块（<span class="t20-line t20-p1"> … t20-p4），
+       让每一句都能单独调静态位置 —— 位置旋钮在 4.css 里：
+       --t20-p1-x / --t20-p1-y … --t20-p4-x / --t20-p4-y（默认 0 = 完全保持现在的样子）。
+       文字、字号、颜色、居中方式、出场动效全都不变，见下面 “text-20：把四句话拆成四个块” 那一段。
+
+   ★ 为什么在 JS 里包、而不是改 index.html：
+     index.html 是“文案文件”，保持它一个字都不动；
+     这一层只是给某些词加样式钩子，属于效果层的事。
+     想撤掉某个效果：把下面 TARGETS / PARTS3 里对应的那一行删掉即可
+     （4.css 里那条规则随之失效；留着也无害）。
+   ★ 不会重复包：该词已经在某个 span 里时直接跳过，刷新 / 重跑都安全。
+   ========================================================================== */
 
 (function () {
     "use strict";
@@ -1254,19 +1328,28 @@
     }
 
     /* ======================================================================
-       text-9：点一下第一个 “cut” → 重播剪切动效 / 原视频
+       text-9：点一下第一个 “cut” → 让这一句对应的视频从头再播一遍
        ----------------------------------------------------------------------
-       动效模式重播图标 10 的 AVIF 动效；视频模式则重播 editing.webm。
+       需求：点了 text-9 里那个放大的 “cut” 之后，这一句配套的视频重新播放。
 
-       两种展示节点都只在图标 10 查找，点击时也只会重播这一段。
+       ★ 视频是谁：3.js 的图标 10（ICONS 那一条里 host: ".text-9"、src: "./editing.webm"），
+         它建出来的结构是
+             <div class="bug-icon-slot bug-icon-10 is-pinned">
+                 <video class="bug-icon" …>
+         所以下面用 ".bug-icon-10 video" 找它 —— 只认【text-9 这一句】的那一段视频，
+         别的图标 / 别的视频一概不动。想换成另一段：只改 CUT9_VIDEO 这一行。
+       ★ 为什么必须写 currentTime = 0：这段素材是“只播一次、播完定格在最后一帧”
+         （3.js 里 autoplay: false / loop: false）。它已经播完的时候直接 play() 什么都不会发生，
+         所以先把它拨回第 0 秒，才有“重新播放”的效果；正在播的时候点，就是从头重播。
+       ★ metadata 还没到下时写 currentTime 会抛异常 → 用 try/catch 包住，
+         真抛了就先 play()，等浏览器自己把进度接上（3.js 的 mediaLive 也会补一次 play）。
        ★ 可点范围：.text-box 是 pointer-events: none（整句都点不到），
          4.css 里只给 .cut9 开了 pointer-events: auto + cursor: pointer ——
          所以只有这个词能点，句子其余部分、页面滚轮、文字选择都不受影响。
        ★ 没视频（3.js 没加载 / 图标 10 被删了）就静默什么都不做，不会报错；
          也不会重复绑（dataset 打标记），4.js 被重复执行也只会绑一次。
        ====================================================================== */
-    var CUT9_VIDEO = ".bug-icon-10 video";
-    var CUT9_MOTION = ".bug-icon-10 .bug-icon-motion--editing";
+    var CUT9_VIDEO = ".bug-icon-10 video";   /* ← 点 “cut” 之后要重播的那段视频（3.js 的图标 10） */
 
     var cut9El = document.querySelector(".text-9 .cut9");
     if (cut9El && !cut9El.dataset.cut9Replay) {
@@ -1274,25 +1357,24 @@
 
         cut9El.addEventListener("click", function (e) {
             var v = document.querySelector(CUT9_VIDEO);
-            var motion = document.querySelector(CUT9_MOTION);
-            if (!v && !motion) return;
+            if (!v) return;
 
             e.preventDefault();                     /* 别触发页面里别的默认行为 */
 
-            if (v) {
-                try { v.currentTime = 0; } catch (err) { /* metadata 还没到，忽略 */ }
-                var p = v.play();
-                if (p && typeof p.catch === "function") p.catch(function () {});
-            } else {
-                motion.dispatchEvent(new Event("home:replay-motion"));
-            }
+            /* ① 拨回开头（已经播完、定格在最后一帧的时候必须这一步） */
+            try { v.currentTime = 0; } catch (err) { /* metadata 还没到，忽略 */ }
+
+            /* ② 再播。静音 + playsinline 在 3.js 建节点时就设好了，所以浏览器不会拦这次 play() */
+            var p = v.play();
+            if (p && typeof p.catch === "function") p.catch(function () {});
         });
     }
 
     /* ======================================================================
        text-9：gene.webm 从【屏幕顶边的右侧】飞进来 → 在半路空中转一圈 → 落在 “where” 正上方
        ----------------------------------------------------------------------
-       需求：这一句完全出现后，另一段视频 gene.webm 从顶边的右侧飞入、同时淡入，
+       需求：这一句自己的视频（3.js 的图标 10：editing.webm）播完【第一遍】之后，
+             另一段视频 gene.webm 从顶边的右侧飞入、同时淡入，
              在【半路空中】像过山车那样绕一个完整的圈，然后落在 “where” 的正上方；
              之后一直循环播放；鼠标悬停在它上面会淡出名字 “gene”（颜色 / 字体跟随正文）；
              整段由滚轮驱动（往上滚原样倒放），到这一句淡出时跟着一起淡掉。
@@ -1304,8 +1386,8 @@
 
        起点 = H（整句淡入完全结束那一刻）
           · 也就是说：这一句一“完全出现”，滚轮再往下滑一点，gene 就立刻开始飞进来 ——
-            不依赖图标 10 的剪切动效 / editing.webm 播放进度，
-            两者互不干扰（它是 3.js 的图标，gene 是这里的元素）。
+            【不再去等图标 10 那段视频（editing.webm）播完】，也不读它的时长。
+            那段视频还在播也照样飞，两者互不干扰（它是 3.js 的图标，gene 是这里的元素）。
           · ★ 为什么绑在进度上、而不是听视频的 ended 事件：
             这一段要能随滚轮【倒放】。ended 是真实时间的一次性事件，往回滚它不会复位，
             整段就再也放不了了（和 BEGINNING / TNT 同样的取舍：时间归 1.js 的进度）。
@@ -1343,7 +1425,7 @@
          不白解码（和 3.js 的 mediaLive 是同一个理由）。
        ====================================================================== */
 
-    var GENE9_SRC       = HOME_MEDIA + "gene.webm";   /* ← 要飞进来的视频（相对 index.html 的路径） */
+    var GENE9_SRC       = "./gene.webm";   /* ← 要飞进来的视频（相对 index.html 的路径） */
     var GENE9_FLY_SEC   = 3.2;             /* ← 飞入 + 回环 + 落位总共用多少秒（越小越快；调大 = 整体变慢） */
     var GENE9_SPINS     = 1;               /* ← 回环绕几圈：1 = 一个完整的大回环，2 = 连绕两圈 */
     var GENE9_LOOP_R_VH = 6;               /* ← 回环半径（vh；回环总高 = 2×这个数，0 = 不要回环） */
