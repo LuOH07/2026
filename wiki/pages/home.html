@@ -1,8 +1,3 @@
-{% extends "layout.html" %}
-{% block title %}Home{% endblock %}
-
-{% block page_styles %}
-{#- 整屏滚动页：1~4.css 是桌面版，5.css 是窄屏（手机）专用样式，必须排在最后 #}
 <link rel="stylesheet" href="{{ url_for('static', filename='home/1.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='home/2.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='home/3.css', v='ctac-inplace-20261021-3') }}">
