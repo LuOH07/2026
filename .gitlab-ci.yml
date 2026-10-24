@@ -5,6 +5,10 @@ pages:
   script:
     - pip install --no-cache-dir -r dependencies.txt
     - FLASK_APP=app.py flask freeze
+    - mkdir -p public/assets
+    - cp -R static/home/assets/. public/assets/
+    - cp static/home/*.webm public/
+    - cp static/home/*.mp4 public/
   artifacts:
     paths:
       - public

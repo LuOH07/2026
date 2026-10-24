@@ -30,24 +30,17 @@ jobs:
       - name: Install dependencies
         run: pip install --no-cache-dir -r dependencies.txt
 
-      # The large home-page videos are intentionally not committed here (the
-      # iGEM GitLab mirror rejects them).  They live in the public
-      # LuOH07/2026_home repository and are fetched for every Pages build.
-      - name: Fetch home page media
-        env:
-          HOME_MEDIA_REPOSITORY: https://github.com/LuOH07/2026_home.git
-        run: |
-          git clone --depth 1 "$HOME_MEDIA_REPOSITORY" "$RUNNER_TEMP/home-media"
-
       - name: Build static site
         env:
           FLASK_APP: app.py
         run: |
           flask freeze
-          # Home scripts reference ./title.mp4, ./model.mp4, ./5.css … from the
-          # page root, so publish the media at the published site root.
-          cp "$RUNNER_TEMP"/home-media/*.webm public/
-          cp "$RUNNER_TEMP"/home-media/*.mp4 public/
+          # 1.js / 3.js 用 ./title.mp4、./model.mp4 … 这些相对页面根目录的地址，
+          # 2.js 的人物视频在 ./assets/ 下，所以都发布到站点根目录。
+          mkdir -p public/assets
+          cp -R static/home/assets/. public/assets/
+          cp static/home/*.webm public/
+          cp static/home/*.mp4 public/
           cp static/home/5.css public/
           touch public/.nojekyll
 

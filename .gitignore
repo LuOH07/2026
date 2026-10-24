@@ -7,10 +7,7 @@ __pycache__/
 # GitLab CI output; local preview is generated outside this repository.
 /public/
 
-# 首页动效视频（25 个 webm / mp4）：iGEM 的 wiki 仓库有 pre-receive 钩子，
-/static/home/assets/
-/static/home/*.webm
-/static/home/*.mp4
+# 首页动效视频（webm / mp4）直接提交在 static/home/ 下，构建时拷进发布目录。
 
 # Additional ignores from the working GitLab project.
 env
