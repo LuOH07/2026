@@ -42,7 +42,7 @@ Preview the build:
 2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
 3. Push to `main`; the workflow publishes the generated `public/` directory.
 
-The workflow installs the pinned dependencies, fetches the large home-page videos from the public [`LuOH07/2026_home`](https://github.com/LuOH07/2026_home) repository, builds with `FLASK_APP=app.py flask freeze`, copies those videos and `static/home/5.css` to the published site root, adds `public/.nojekyll`, and uploads `public/` as the Pages artifact. It sets `GITHUB_ACTIONS=true` automatically, so `app.py` writes the build to `public/` instead of the local preview directory.
+The workflow installs the pinned dependencies, builds with `FLASK_APP=app.py flask freeze`, copies the home-page videos (`static/home/*.webm`, `static/home/*.mp4` and `static/home/assets/`) plus `static/home/5.css` to the published site root, adds `public/.nojekyll`, and uploads `public/` as the Pages artifact. It sets `GITHUB_ACTIONS=true` automatically, so `app.py` writes the build to `public/` instead of the local preview directory.
 
 Page URLs are directory URLs with a trailing slash (for example `/members/` and `/description/`). This is required because GitHub Pages serves a directory's `index.html`; it does not treat an extensionless file as HTML. All template links are generated as relative URLs by `relative_url_for()` in `app.py`, so the site also works below the project path of a GitHub Pages site (`https://<user>.github.io/<repo>/`).
 
@@ -84,7 +84,7 @@ To enable navigation, update `wiki/menu.html`: add `href="{{ url_for('pages', pa
 
 Most images and fonts are hosted on iGEM servers. `asset-map.json` keys are lookup paths, not local files. Invalid or missing URLs cause a startup error with the affected keys listed.
 
-The home-page videos are too large for the iGEM GitLab repository and are ignored by git. They are kept in the public `LuOH07/2026_home` repository. The home-page scripts reference them with page-relative paths (`./title.mp4`, `./model.mp4`, …), so the GitHub Pages workflow copies the videos and `static/home/5.css` into the published site root after freezing. If that media repository moves, update `HOME_MEDIA_REPOSITORY` in `.github/workflows/deploy.yml`.
+The home-page videos are committed in `static/home/` (~73 MB of webm/mp4, including `static/home/assets/`, which `2.js` loads as `./assets/…`). The home-page scripts reference them with page-relative paths (`./title.mp4`, `./model.mp4`, …), so the GitHub Pages workflow copies them and `static/home/5.css` into the published site root after freezing. GitHub warns about `static/home/model.mp4` being over the 50 MB recommendation, and the iGEM GitLab mirror's pre-receive hook rejects these files, so that mirror cannot carry them.
 
 Font licenses live in `notices/`. Project code is under [LICENSE](LICENSE); content follows [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
